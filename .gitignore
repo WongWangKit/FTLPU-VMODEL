@@ -1,0 +1,26 @@
+# Simulation outputs
+build/
+obj_dir/
+simv
+simv.exe
+*.vcd
+*.fst
+*.wlf
+*.log
+
+# FPGA / EDA tool outputs
+.Xil/
+*.jou
+*.pb
+*.str
+*.dcp
+*.rpt
+
+# Editors and operating systems
+.idea/
+.vscode/
+*.swp
+*~
+.DS_Store
+Thumbs.db
+
