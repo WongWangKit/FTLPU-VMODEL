@@ -16,6 +16,7 @@ mxm_accumulator_generator="$vector_build_dir/mxm_accumulator"
 mxm_column_generator="$vector_build_dir/mxm_column_direct16"
 mxm_int8_generator="$vector_build_dir/mxm_int8_dequant"
 mxm_block8_generator="$vector_build_dir/mxm_block8"
+smollm2_ffn_generator="$vector_build_dir/smollm2_ffn"
 
 mkdir -p "$vector_build_dir" "$repo_tmp_dir"
 export TMPDIR="$repo_tmp_dir"
@@ -169,3 +170,18 @@ g++ -std=c++20 -O2 \
   "$repo_dir/sim/vectors/mxm_block8_init.hex" \
   "$repo_dir/sim/vectors/mxm_block8_golden.hex" \
   "$repo_dir/sim/vectors/mxm_block8_schedule.hex"
+
+g++ -std=c++20 -O2 \
+  -I "$cmodel_dir/include" -I "$repo_dir/sim/cmodel" \
+  "$repo_dir/sim/cmodel/smollm2_ffn.cpp" \
+  "$cmodel_dir/src/mem/sram.cpp" \
+  "$cmodel_dir/src/mxm/accumulator.cpp" \
+  "$cmodel_dir/src/mxm/block_accumulator.cpp" \
+  -o "$smollm2_ffn_generator"
+
+"$smollm2_ffn_generator" \
+  "$repo_dir/sim/vectors/smollm2_ffn_init.hex" \
+  "$repo_dir/sim/vectors/smollm2_ffn_golden.hex" \
+  "$repo_dir/sim/vectors/smollm2_ffn_gate_schedule.hex" \
+  "$repo_dir/sim/vectors/smollm2_ffn_swiglu_schedule.hex" \
+  "$repo_dir/sim/vectors/smollm2_ffn_down_schedule.hex"

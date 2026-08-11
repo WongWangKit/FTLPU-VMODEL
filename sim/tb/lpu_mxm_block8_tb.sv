@@ -23,7 +23,7 @@ module lpu_mxm_block8_tb;
   logic [15:0] host_address;
   logic [63:0] host_write_data;
   logic [63:0] host_read_data;
-  logic [131:0] queue_fault;
+  logic [137:0] queue_fault;
   logic [2*52*4-1:0] mem_fault;
   logic [1:0] mxm_fault;
   logic [1:0] sxm_fault;
@@ -82,10 +82,11 @@ module lpu_mxm_block8_tb;
   initial begin
     $fsdbDumpfile("mxm_block8.fsdb");
     $fsdbDumpvars(1, lpu_mxm_block8_tb);
-    $fsdbDumpvars(1, dut.gen_mem[0].u_mxm);
-    $fsdbDumpvars(1, dut.gen_mem[0].u_mxm.u_control);
-    $fsdbDumpvars(1, dut.gen_mem[0].u_mxm.u_compute);
-    $fsdbDumpvars(1, dut.gen_mem[0].u_mxm.u_block_accumulator);
+    $fsdbDumpvars(1, dut.gen_mem[0].gen_mxm[0].u_mxm);
+    $fsdbDumpvars(1, dut.gen_mem[0].gen_mxm[0].u_mxm.u_control);
+    $fsdbDumpvars(1, dut.gen_mem[0].gen_mxm[0].u_mxm.u_compute);
+    $fsdbDumpvars(1,
+      dut.gen_mem[0].gen_mxm[0].u_mxm.u_block_accumulator);
     $fsdbDumpoff;
   end
 `endif

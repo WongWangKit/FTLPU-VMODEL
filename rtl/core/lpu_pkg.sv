@@ -19,10 +19,16 @@ package lpu_pkg;
   localparam integer SRAM_DEPTH_ROWS            = 65536;
   localparam integer SRAM_ROW_BYTES             = 32;
 
-  localparam integer MXM_COUNT            = 2;
+  localparam integer MXMS_PER_HEMISPHERE  = 2;
+  localparam integer MXM_COUNT            = 4;
   localparam integer MXM_ROWS             = 32;
   localparam integer MXM_COLUMNS          = 32;
-  localparam integer MXM_ACCUMULATOR_ROWS = 8192;
+  // One logical accumulator block holds a complete 32x32 FP32 partial sum.
+  localparam integer MXM_ACCUMULATOR_BLOCK_COUNT = 32;
+  localparam integer MXM_ACCUMULATOR_ROWS =
+    MXM_ACCUMULATOR_BLOCK_COUNT * MXM_ROWS;
+  localparam integer MXM_BLOCK_ACCUMULATOR_ROWS =
+    MXM_ACCUMULATOR_BLOCK_COUNT * (MXM_ROWS / LANES_PER_TILE);
   localparam integer VXM_ALU_COUNT         = 16;
   localparam integer SXM_COUNT             = 2;
 
@@ -31,7 +37,7 @@ package lpu_pkg;
   localparam integer VXM_INSTRUCTION_WIDTH = 128;
   localparam integer SXM_INSTRUCTION_WIDTH = 416;
   localparam integer ICU_PAYLOAD_WIDTH     = SXM_INSTRUCTION_WIDTH;
-  localparam integer ICU_QUEUE_COUNT       = 132;
+  localparam integer ICU_QUEUE_COUNT       = 138;
 
   localparam integer MEM_QUEUE_BASE           = 0;
   localparam integer MXM_LOAD_QUEUE_BASE      = 104;
@@ -40,6 +46,12 @@ package lpu_pkg;
   localparam integer VXM_QUEUE_BASE           = 112;
   localparam integer SXM_TRANSPOSE_QUEUE_BASE = 128;
   localparam integer SXM_PERMUTE_QUEUE_BASE   = 130;
+  // Preserve the original queue map for local MXM 0 in each hemisphere.
+  // The second local MXM queues are appended so existing programs remain
+  // binary-compatible while the topology grows to match the C model.
+  localparam integer MXM_SECONDARY_LOAD_QUEUE_BASE    = 132;
+  localparam integer MXM_SECONDARY_DEQUANT_QUEUE_BASE = 134;
+  localparam integer MXM_SECONDARY_COMPUTE_QUEUE_BASE = 136;
 
   typedef enum logic {
     HEMISPHERE_EAST = 1'b0,

@@ -10,16 +10,19 @@ The repository now contains the first functional RTL baseline rather than an
 empty shell:
 
 - exact C-model hardware constants and ISA field layouts;
-- 132 independent ICU queues with NOP, Repeat, interval, and MEM row stride;
+- 138 independent, runtime-refillable ICU queues with NOP, Repeat, interval,
+  and MEM row stride;
 - 4-tile northbound control-wave pipelines;
 - byte-stream next-state stages with broadcast consumption;
 - tile-local, four-tile, and dual-hemisphere MEM blocks with Read, Write, and
   ReadWrite;
 - 14-boundary East/West MEM stream fabrics with passive propagation;
 - physical SXM Transpose banks and block-Permute datapaths in both hemispheres;
-- shared VXM boundary bridge with integer and initial floating-point datapaths;
-- two MXM datapaths with Direct16/INT8 weight buffers, BF16/FP16 Vector and
+- shared VXM boundary bridge with integer and floating-point SwiGLU datapaths;
+- four MXM datapaths with Direct16/INT8 weight buffers, BF16/FP16 Vector and
   Block8 compute, narrow and wide accumulator SRAMs, and stream output/readback;
+- top-level `MXM_ACCUMULATOR_BLOCK_COUNT` sizing for complete 32x32 FP32
+  partial-sum blocks (32 blocks / 128 KiB per MXM by default);
 - C-model-generated golden vectors and VCS end-to-end comparison;
 - smoke and functional architecture testbenches.
 
@@ -30,7 +33,7 @@ cycle rules, and remaining datapath work.
 
 ```text
 rtl/core/         Constants, ISA decoders, stream/control primitives
-rtl/icu/          Generic queue and 132-queue ICU
+rtl/icu/          Generic queue and 138-queue ICU
 rtl/mem/          MEM tile, four-tile column, and dual-hemisphere fabric
 rtl/mxm/          MXM control, weight storage, vector compute, and routing
 rtl/sxm/          Transpose/Permute control and byte datapath
@@ -79,6 +82,34 @@ Regenerate only the C-model golden vectors:
 ./scripts/generate_cmodel_vectors.sh
 ```
 
+Run only the C-model-generated RTL SmolLM2 FFN regression:
+
+```bash
+./scripts/smollm2_ffn.sh
+```
+
+Run the full-size C-model SmolLM2 prefill FFN reference (all build products
+remain under this repository's `build/` directory):
+
+```bash
+./scripts/run_smollm2_ffn_reference.sh
+```
+
+Run the TSMC28/ARM SRAM-macro mapping for one complete 64-bit x 65,536-row
+MEM tile slice:
+
+```bash
+./scripts/dc_mem_macro.sh
+```
+
+This target explicitly banks 32 `sram_64_2048` single-port macros, links the
+ARM macro `.db` with the TSMC28 standard-cell library, and fails if DC does not
+preserve exactly 32 macro instances. Reports and the mapped netlist stay under
+`build/dc_mem_macro/`. The default simulation path retains the original
+zero-latency behavioral MEM for C-model cycle compatibility; setting
+`USE_SRAM_MACRO=1` selects the synchronous physical-memory path, where Read is
+one cycle and ReadWrite is serialized as read then write.
+
 The unit-level architecture test verifies ICU NOP/Repeat timing, signed MEM
 repeat stride, and an SRAM Read/Write round trip. The VCS system regression
 also verifies mirrored transfers across passive SR hops and a 16-stream,
@@ -97,8 +128,9 @@ conversion, floating ALU feedback, and Pass/Negate/Abs/Min/Max/ReLU/Cast. A
 second C-model regression checks an FP16 ReLU followed by BF16 and FP32 casts
 across all 32 lanes. Finite normal/zero FP32 Add/Subtract/Multiply use
 round-to-nearest-even and have a separate three-stage C-model differential
-test. Floating Divide, Clamp, Square, Sqrt, Exp, Log, subnormals, NaNs, and
-float-to-Int8 remain explicit-fault cases.
+test. Floating Divide and bounded Exp are synthesizable and checked both
+directly and in the six-stage BF16 SwiGLU program. Clamp, Square, Sqrt, Log,
+subnormals, NaNs, and float-to-Int8 remain explicit-fault cases.
 
 The VXM RTL is split by hardware responsibility: `lpu_vxm_control` advances
 the 16 instruction waves, `lpu_vxm_execute` validates and gathers operands,
@@ -107,6 +139,14 @@ the 16 instruction waves, `lpu_vxm_execute` validates and gathers operands,
 `lpu_vxm_stream_bridge` arbitrates passive crossings and active producers.
 `lpu_vxm_slice` owns only feedback/sticky state and composes those blocks;
 representation and rounding helpers live in `lpu_vxm_math_pkg`.
+
+The SmolLM2 FFN system regression keeps one RTL instance and executes three
+separately scheduled phases over real intermediate SRAM data:
+`INT8 dequant Block8 gate/up -> FP32-to-BF16 SwiGLU -> INT8 dequant Block8
+down`. The checked-in regression uses `X[8,32]` so it remains practical for
+routine VCS runs while preserving the C-model instruction sequence and all 32
+physical lanes. `scripts/run_smollm2_ffn_reference.sh` separately runs the
+full `X[128,576]`, intermediate-1536 C-model workload.
 
 The MXM datapath supports full-supercell and per-column Direct16 IW followed by
 non-overlapping Vector or Block8 Compute using FP16 or BF16

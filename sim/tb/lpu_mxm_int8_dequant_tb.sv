@@ -23,7 +23,7 @@ module lpu_mxm_int8_dequant_tb;
   logic [15:0] host_address;
   logic [63:0] host_write_data;
   logic [63:0] host_read_data;
-  logic [131:0] queue_fault;
+  logic [137:0] queue_fault;
   logic [2*52*4-1:0] mem_fault;
   logic [1:0] mxm_fault;
   logic [1:0] sxm_fault;

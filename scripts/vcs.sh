@@ -67,3 +67,5 @@ vcs_test lpu_mxm_accumulator_tb mxm_accumulator
 vcs_test lpu_mxm_column_tb mxm_column
 vcs_test lpu_mxm_int8_dequant_tb mxm_int8_dequant
 vcs_test lpu_mxm_block8_tb mxm_block8
+vcs_test lpu_mxm_weight_stream_tb mxm_weight_stream
+vcs_test lpu_smollm2_ffn_tb smollm2_ffn

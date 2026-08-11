@@ -1,4 +1,7 @@
-module lpu_mxm_compute (
+module lpu_mxm_compute #(
+  parameter integer ACCUMULATOR_BLOCK_COUNT =
+    lpu_pkg::MXM_ACCUMULATOR_BLOCK_COUNT
+) (
   input  logic clk_i,
   input  logic rst_ni,
   input  logic run_i,
@@ -25,6 +28,8 @@ module lpu_mxm_compute (
   localparam integer BLOCKS = 4;
   localparam integer LANES = 8;
   localparam integer STREAMS = 32;
+  localparam integer ACCUMULATOR_DEPTH = ACCUMULATOR_BLOCK_COUNT * 32;
+  localparam integer BLOCK_ACCUMULATOR_DEPTH = ACCUMULATOR_BLOCK_COUNT * 4;
 
   logic [8*32*32-1:0] sum_q;
   logic [1:0] buffer_active_prev_q;
@@ -63,7 +68,7 @@ module lpu_mxm_compute (
         (instruction[1:0] == 2'd1) &&
         (instruction[8:3] <= 6'd16) &&
         (instruction[14:9] <= 6'd16) &&
-        (instruction[27:15] < 13'd1024) &&
+        (instruction[27:15] < BLOCK_ACCUMULATOR_DEPTH) &&
         (instruction[43:28] != 0);
     else
       instruction_supported =
@@ -178,8 +183,8 @@ module lpu_mxm_compute (
       (active_instruction[46] ? (active_row >> 3) : active_row) *
       active_instruction[43:28];
     active_address_valid = active_instruction[46]
-      ? (active_address_wide < 29'd1024)
-      : (active_address_wide < 29'd8192);
+      ? (active_address_wide < BLOCK_ACCUMULATOR_DEPTH)
+      : (active_address_wide < ACCUMULATOR_DEPTH);
   end
 
   always_comb begin

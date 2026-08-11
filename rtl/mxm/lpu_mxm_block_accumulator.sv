@@ -1,4 +1,7 @@
-module lpu_mxm_block_accumulator (
+module lpu_mxm_block_accumulator #(
+  parameter integer ACCUMULATOR_BLOCK_COUNT =
+    lpu_pkg::MXM_ACCUMULATOR_BLOCK_COUNT
+) (
   input  logic clk_i,
   input  logic rst_ni,
   input  logic run_i,
@@ -21,7 +24,7 @@ module lpu_mxm_block_accumulator (
   localparam integer ROWS = 8;
   localparam integer LANES = 8;
   localparam integer STREAMS = 32;
-  localparam integer DEPTH = 1024;
+  localparam integer DEPTH = ACCUMULATOR_BLOCK_COUNT * 4;
   localparam integer SEGMENT_WIDTH = ROWS*LANES*32;
 
   logic [SEGMENT_WIDTH-1:0] segment_mem_q [0:BLOCKS-1][0:DEPTH-1];
@@ -30,7 +33,7 @@ module lpu_mxm_block_accumulator (
   logic pending_valid_q;
   logic [1:0] pending_block_q;
   logic [8*32*32-1:0] pending_values_q;
-  logic [9:0] pending_address_q;
+  logic [12:0] pending_address_q;
   logic [5:0] pending_stream_base_q;
   logic pending_stream_destination_q;
   logic pending_clear_q;
@@ -44,7 +47,7 @@ module lpu_mxm_block_accumulator (
   logic operation_valid;
   logic operation_write;
   logic [1:0] operation_block;
-  logic [9:0] operation_address;
+  logic [12:0] operation_address;
   logic [5:0] operation_stream_base;
   logic operation_stream_destination;
   logic operation_clear;
@@ -59,7 +62,7 @@ module lpu_mxm_block_accumulator (
       (instruction[1:0] == 2'd2) &&
       (instruction[8:2] == '0) &&
       (instruction[14:9] == '0) &&
-      (instruction[27:25] == '0) &&
+      (instruction[27:15] < DEPTH) &&
       (instruction[45:29] == '0) &&
       instruction[46] && !instruction[47];
   endfunction
@@ -112,7 +115,7 @@ module lpu_mxm_block_accumulator (
       operation_valid = 1'b1;
       operation_write = 1'b1;
       operation_block = 2'd0;
-      operation_address = write_address_i[9:0];
+      operation_address = write_address_i;
       operation_stream_base = write_stream_base_i;
       operation_stream_destination = write_stream_destination_i;
       operation_clear = write_clear_i;
@@ -124,7 +127,7 @@ module lpu_mxm_block_accumulator (
                  read_supported && !write_valid_i) begin
       operation_valid = 1'b1;
       operation_block = read_block;
-      operation_address = read_instruction[24:15];
+      operation_address = read_instruction[27:15];
       operation_stream_base = read_instruction[14:9];
       operation_clear = read_instruction[28];
     end
@@ -132,7 +135,7 @@ module lpu_mxm_block_accumulator (
 
   always_comb begin
     stored_values = '0;
-    if (operation_valid &&
+    if (operation_valid && operation_address < DEPTH &&
         segment_valid_q[operation_block][operation_address])
       stored_values = segment_mem_q[operation_block][operation_address];
     accumulated_values = stored_values;
@@ -146,7 +149,7 @@ module lpu_mxm_block_accumulator (
   always_comb begin
     west_valid_o = '0;
     west_data_o = '0;
-    if (operation_valid &&
+    if (operation_valid && operation_address < DEPTH &&
         (!operation_write || operation_stream_destination)) begin
       for (integer row = 0; row < ROWS; row++) begin
         for (integer lane = 0; lane < LANES; lane++) begin
@@ -197,7 +200,7 @@ module lpu_mxm_block_accumulator (
           (write_valid_i && (!write_ready_o || write_address_i >= DEPTH)))
         fault_o <= 1'b1;
 
-      if (operation_valid) begin
+      if (operation_valid && operation_address < DEPTH) begin
         if (operation_write) begin
           if (operation_stream_destination && operation_clear)
             segment_valid_q[operation_block][operation_address] <= 1'b0;
@@ -219,7 +222,7 @@ module lpu_mxm_block_accumulator (
         pending_valid_q <= 1'b1;
         pending_block_q <= 2'd1;
         pending_values_q <= write_values_i;
-        pending_address_q <= write_address_i[9:0];
+        pending_address_q <= write_address_i;
         pending_stream_base_q <= write_stream_base_i;
         pending_stream_destination_q <= write_stream_destination_i;
         pending_clear_q <= write_clear_i;

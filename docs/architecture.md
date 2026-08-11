@@ -15,15 +15,15 @@ cycle contracts from the sibling `FTLPU-CMODEL` repository's
 | MEM slices | 52 per hemisphere, 104 total |
 | MEM groups / stream-register columns | 13 / 15 |
 | SRAM geometry per MEM slice | 65,536 x 32 bytes |
-| MXM | one 32 x 32 array per hemisphere, two total |
+| MXM | two 32 x 32 arrays per hemisphere, four total |
 | VXM | 16 ALU queues, shared by all lanes |
 | SXM | one per hemisphere |
-| ICU queues | 132 |
+| ICU queues | 138 |
 
 The physical topology is:
 
 ```text
-MXM1 <-> SXM.W <-> MEM.W(52) <-> VXM <-> MEM.E(52) <-> SXM.E <-> MXM0
+MXM.W[0:1] <-> SXM.W <-> MEM.W(52) <-> VXM <-> MEM.E(52) <-> SXM.E <-> MXM.E[0:1]
 ```
 
 ## ICU queue map
@@ -42,17 +42,21 @@ bits.
 | 112..127 | VXM ALU | 128 |
 | 128..129 | SXM transpose | 416 |
 | 130..131 | SXM permute | 416 |
+| 132..133 | secondary MXM weight load, one queue per hemisphere | 48 |
+| 134..135 | secondary MXM BF16 dequant scale, one queue per hemisphere | 16 |
+| 136..137 | secondary MXM compute / accumulator read, one queue per hemisphere | 48 |
 
-Schedules are loaded while `run_i=0`. Raising `run_i` freezes queue loading and
-starts one dispatch decision per queue per cycle. This directly implements the
-C model's offline-schedule contract. `NOP` and `Repeat` use the same 32-bit
-encoding. MEM queues additionally apply the signed 12-bit Repeat stride to SRAM
-row address bits `[30:15]`.
+Schedules may be preloaded while `run_i=0` or refilled while execution is
+active. Each queue independently accepts a simultaneous enqueue/dequeue so
+long schedules do not require layer-sized instruction SRAMs. `NOP` and
+`Repeat` use the same 32-bit encoding. MEM queues additionally apply the signed
+12-bit Repeat stride to SRAM row address bits `[30:15]`.
 
 ## Implemented RTL boundary
 
 - Architectural constants and MEM/MXM/VXM/SXM instruction decoders.
-- All 132 independent ICU queues, including NOP and Repeat timing.
+- All 138 independent ICU queues, including runtime refill, NOP, and Repeat
+  timing.
 - South-to-north four-tile control pipelines.
 - A byte-stream register stage with aggregate broadcast consumption and
   conflicting-producer detection.
@@ -66,9 +70,10 @@ row address bits `[30:15]`.
   Transpose banks, northbound capture control, complete-block Permute maps,
   registered passive boundary-13/14 bypass, and sticky encoding/collision
   faults.
-- One physical MXM per hemisphere split into control-wave, Direct16 weight
-  buffer, vector compute/accumulation, FP32 result emission, and stream-bridge
-  modules.
+- Two physical MXMs per hemisphere split into control-wave, Direct16/INT8
+  weight buffers, vector/Block8 compute and accumulation, FP32 result emission,
+  and stream-bridge modules. Local MXM 0 and 1 own distinct weight-stream
+  windows while sharing activation streams.
 - A top-level schedule-loading interface wired through ICU, MEM control waves,
   SRAM slices, and the MEM stream fabric.
 - A C-model vector generator plus VCS end-to-end comparison for mirrored
@@ -114,6 +119,10 @@ row address bits `[30:15]`.
   four-bank FP32 accumulation, continuous row progression with row stride 3,
   a new-wave row reset, retained AccumulatorRead, read-clear, and
   zero-after-clear across all 32 columns.
+- A three-phase C-model/VCS SmolLM2 FFN regression carries actual RTL
+  intermediates through SRAM from dual-MXM INT8-dequant Block8 gate/up, through
+  the six-stage BF16 SwiGLU VXM program, into the INT8-dequant Block8 down
+  projection, comparing gate/up, SwiGLU, and final FP32 images independently.
 
 ### MXM module boundaries
 
@@ -124,8 +133,8 @@ row address bits `[30:15]`.
 | `lpu_mxm_weight_buffer` | Consumes full-cell or per-column Direct16/INT8 East streams and owns two buffers of four-by-four 8x8 weight cells plus inner-column validity. |
 | `lpu_mxm_dot_bank` | Implements the 32 parallel eight-element FP32 dot products for one active physical tile. |
 | `lpu_mxm_compute` | Selects the active tile, runs one or eight dot-bank rows, accumulates four tile contributions, and emits Vector or Block8 transactions. |
-| `lpu_mxm_accumulator` | Owns four 8192 x 8 FP32 banks, performs read-modify-write accumulation, and emits/clears four staggered stream segments. |
-| `lpu_mxm_block_accumulator` | Owns four 1024 x 8 x 8 FP32 banks and emits 16-stream BF16 Block8 results or 32-stream FP32 reads. |
+| `lpu_mxm_accumulator` | Owns four configurable-depth x 8 FP32 banks, performs read-modify-write accumulation, and emits/clears four staggered stream segments. |
+| `lpu_mxm_block_accumulator` | Owns four configurable-depth x 8 x 8 FP32 banks and emits 16-stream BF16 Block8 results or 32-stream FP32 reads. |
 | `lpu_mxm_slice` | Composes control, weight storage, compute, passive stream routing, collision detection, and sticky faults. |
 
 The functional MXM subset supports full-supercell and Column Direct16 IW,
@@ -138,7 +147,16 @@ encoding.
 
 The RTL is structurally synthesizable: state uses bounded registers/SRAM-style
 arrays, loops have static bounds, and no simulation-only timing constructs are
-present under `rtl/`. Design Compiler L-2016.03 successfully analyzes the MXM
+present under `rtl/`. The MEM tile has two explicit implementations selected
+by `USE_SRAM_MACRO`. The default behavioral path preserves the C-model's
+zero-latency reads. The physical path uses a synchronous 1RW abstraction and
+banks a 64-bit x 65,536-row tile across 32 ARM `sram_64_2048` macros. A MEM
+Read returns one cycle after issue; ReadWrite performs the read first and the
+write on the following cycle because the macro is single-port. Design Compiler
+L-2016.03 maps the surrounding logic to TSMC28 cells and preserves all 32 macro
+instances; `scripts/dc_mem_macro.sh` checks that count before and after compile.
+
+Design Compiler L-2016.03 also successfully analyzes the MXM
 source hierarchy, including the four-bank accumulator and INT8/BF16
 dequantizer plus the Block8 compute/wide-accumulator sources, and elaborates/checks
 the isolated 32-output dot bank. Its
@@ -149,10 +167,17 @@ contributions in parallel, and full-slice elaboration was not completed during
 this milestone because that network is very large. Treat the current block as
 functionally synthesizable, not yet PPA-qualified. Pipelining or resource
 sharing the dot-product bank is required before timing/area signoff.
-The accumulator is represented as four 8192 x 256-bit segment banks plus valid
-state. Its bounded storage and single-segment update path are synthesizable,
+Accumulator capacity is configured at `lpu_top` with
+`MXM_ACCUMULATOR_BLOCK_COUNT`, where one block is one complete 32x32 FP32
+partial-sum tile. The default 32 blocks derive 1024 Vector rows or 128 Block8
+rows, and both layouts therefore contain 128 KiB per MXM. The 13-bit instruction
+address limits the parameter to 1..256 blocks. The Vector
+accumulator is represented as four `(block_count * 32)` x 256-bit segment banks
+plus valid state; the Block8 accumulator uses four `(block_count * 4)` x
+2048-bit banks. Their bounded storage and single-segment update paths are synthesizable,
 but the current asynchronous read-modify-write model and resettable validity
-array still require technology-specific SRAM mapping before PPA signoff.
+array still require their own technology-specific SRAM mapping before full-LPU
+PPA signoff; the current explicit macro target covers the main MEM tile only.
 
 ### VXM module boundaries
 

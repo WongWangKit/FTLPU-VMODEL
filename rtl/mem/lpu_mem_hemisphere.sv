@@ -1,6 +1,7 @@
 module lpu_mem_hemisphere #(
   parameter integer DEPTH_ROWS    = 65536,
-  parameter integer ACTIVE_COLUMNS = 52
+  parameter integer ACTIVE_COLUMNS = 52,
+  parameter bit USE_SRAM_MACRO = 1'b0
 ) (
   input  logic clk_i,
   input  logic rst_ni,
@@ -69,7 +70,10 @@ module lpu_mem_hemisphere #(
       logic [TILES-1:0] fault;
       logic [63:0] host_read;
 
-      lpu_mem_column #(.DEPTH_ROWS(DEPTH_ROWS)) u_column (
+      lpu_mem_column #(
+        .DEPTH_ROWS(DEPTH_ROWS),
+        .USE_SRAM_MACRO(USE_SRAM_MACRO)
+      ) u_column (
         .clk_i,
         .rst_ni,
         .issue_valid_i(issue_valid_i[COLUMN_INDEX]),

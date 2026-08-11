@@ -1,4 +1,7 @@
-module lpu_mxm_accumulator (
+module lpu_mxm_accumulator #(
+  parameter integer ACCUMULATOR_BLOCK_COUNT =
+    lpu_pkg::MXM_ACCUMULATOR_BLOCK_COUNT
+) (
   input  logic clk_i,
   input  logic rst_ni,
   input  logic run_i,
@@ -20,7 +23,7 @@ module lpu_mxm_accumulator (
   localparam integer BLOCKS = 4;
   localparam integer LANES = 8;
   localparam integer STREAMS = 32;
-  localparam integer DEPTH = 8192;
+  localparam integer DEPTH = ACCUMULATOR_BLOCK_COUNT * 32;
   localparam integer SEGMENT_WIDTH = LANES*32;
 
   logic [SEGMENT_WIDTH-1:0] segment_mem_q [0:BLOCKS-1][0:DEPTH-1];
@@ -58,6 +61,7 @@ module lpu_mxm_accumulator (
       (instruction[1:0] == 2'd2) &&
       (instruction[8:2] == '0) &&
       (instruction[14:9] <= 6'd28) &&
+      (instruction[27:15] < DEPTH) &&
       (instruction[45:29] == '0) &&
       !instruction[46] && !instruction[47];
   endfunction
@@ -104,7 +108,7 @@ module lpu_mxm_accumulator (
       operation_clear = pending_clear_q;
       operation_values = pending_values_q[
         pending_block_q*SEGMENT_WIDTH +: SEGMENT_WIDTH];
-    end else if (write_valid_i && write_ready_o) begin
+    end else if (write_valid_i && write_ready_o && write_address_i < DEPTH) begin
       operation_valid = 1'b1;
       operation_write = 1'b1;
       operation_block = 2'd0;
@@ -125,7 +129,7 @@ module lpu_mxm_accumulator (
 
   always_comb begin
     stored_values = '0;
-    if (operation_valid &&
+    if (operation_valid && operation_address < DEPTH &&
         segment_valid_q[operation_block][operation_address]) begin
       stored_values = segment_mem_q[operation_block][operation_address];
     end
@@ -142,7 +146,7 @@ module lpu_mxm_accumulator (
   always_comb begin
     west_valid_o = '0;
     west_data_o = '0;
-    if (operation_valid &&
+    if (operation_valid && operation_address < DEPTH &&
         (!operation_write || operation_stream_destination)) begin
       for (integer byte_index = 0; byte_index < 4; byte_index++) begin
         west_valid_o[
@@ -180,11 +184,11 @@ module lpu_mxm_accumulator (
       if (read_overlapping ||
           (read_active && !read_supported) ||
           (read_active && (pending_valid_q || write_valid_i)) ||
-          (write_valid_i && !write_ready_o)) begin
+          (write_valid_i && (!write_ready_o || write_address_i >= DEPTH))) begin
         fault_o <= 1'b1;
       end
 
-      if (operation_valid) begin
+      if (operation_valid && operation_address < DEPTH) begin
         if (operation_write) begin
           if (operation_stream_destination && operation_clear) begin
             segment_valid_q[operation_block][operation_address] <= 1'b0;
@@ -204,7 +208,7 @@ module lpu_mxm_accumulator (
         end else begin
           pending_block_q <= pending_block_q + 1'b1;
         end
-      end else if (write_valid_i && write_ready_o) begin
+      end else if (write_valid_i && write_ready_o && write_address_i < DEPTH) begin
         pending_valid_q <= 1'b1;
         pending_block_q <= 2'd1;
         pending_values_q <= write_values_i;

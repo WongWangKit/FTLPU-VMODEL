@@ -37,6 +37,8 @@ module lpu_icu_queue #(
   logic [7:0] repeat_cooldown_q;
   logic signed [11:0] repeat_stride_q;
   logic [9:0] repeat_index_q;
+  logic enqueue_fire;
+  logic dequeue_fire;
 
   function automatic [PTR_WIDTH-1:0] increment_ptr(input [PTR_WIDTH-1:0] ptr);
     if (ptr == DEPTH-1) increment_ptr = '0;
@@ -60,7 +62,12 @@ module lpu_icu_queue #(
     end
   endfunction
 
-  assign enqueue_ready_o = !run_i && (level_q < DEPTH);
+  assign dequeue_fire = run_i && (nop_remaining_q == 0) &&
+    (repeat_remaining_q == 0) && (level_q != 0);
+  // The host may refill an executing queue.  Accepting an enqueue alongside
+  // a dequeue also keeps a full queue streaming without a bubble.
+  assign enqueue_ready_o = (level_q < DEPTH) || dequeue_fire;
+  assign enqueue_fire = enqueue_valid_i && enqueue_ready_o;
   assign level_o = level_q;
 
   always_ff @(posedge clk_i or negedge rst_ni) begin
@@ -82,18 +89,24 @@ module lpu_icu_queue #(
       fault_o                   <= 1'b0;
     end else begin
       issue_valid_o <= 1'b0;
+      if (enqueue_fire) begin
+        kind_mem[write_ptr_q] <= enqueue_is_instruction_i
+          ? 2'd0 : enqueue_command_i[1:0];
+        payload_mem[write_ptr_q] <= enqueue_payload_i;
+        command_mem[write_ptr_q] <= enqueue_command_i;
+        write_ptr_q <= increment_ptr(write_ptr_q);
+      end
 
       if (!run_i) begin
-        if (enqueue_valid_i && enqueue_ready_o) begin
-          kind_mem[write_ptr_q] <= enqueue_is_instruction_i ? 2'd0 : enqueue_command_i[1:0];
-          payload_mem[write_ptr_q] <= enqueue_payload_i;
-          command_mem[write_ptr_q] <= enqueue_command_i;
-          write_ptr_q <= increment_ptr(write_ptr_q);
+        if (enqueue_fire)
           level_q <= level_q + 1'b1;
-        end
       end else if (nop_remaining_q != 0) begin
         nop_remaining_q <= nop_remaining_q - 1'b1;
+        if (enqueue_fire)
+          level_q <= level_q + 1'b1;
       end else if (repeat_remaining_q != 0) begin
+        if (enqueue_fire)
+          level_q <= level_q + 1'b1;
         if (repeat_cooldown_q != 0) begin
           repeat_cooldown_q <= repeat_cooldown_q - 1'b1;
         end else begin
@@ -110,7 +123,8 @@ module lpu_icu_queue #(
         end
       end else if (level_q != 0) begin
         read_ptr_q <= increment_ptr(read_ptr_q);
-        level_q <= level_q - 1'b1;
+        if (!enqueue_fire)
+          level_q <= level_q - 1'b1;
         case (kind_mem[read_ptr_q])
           2'd0: begin
             issue_valid_o <= 1'b1;
@@ -152,6 +166,8 @@ module lpu_icu_queue #(
           end
           default: fault_o <= 1'b1;
         endcase
+      end else if (enqueue_fire) begin
+        level_q <= level_q + 1'b1;
       end
     end
   end

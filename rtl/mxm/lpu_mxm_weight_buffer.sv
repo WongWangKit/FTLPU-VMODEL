@@ -1,4 +1,6 @@
-module lpu_mxm_weight_buffer (
+module lpu_mxm_weight_buffer #(
+  parameter integer LOCAL_MXM_INDEX = 0
+) (
   input  logic clk_i,
   input  logic rst_ni,
   input  logic run_i,
@@ -76,12 +78,15 @@ module lpu_mxm_weight_buffer (
       logic inputs_valid;
       logic dequant_matches;
       integer stream_count;
+      integer stream_base;
       instruction = load_row_instruction_i[tile*48 +: 48];
       stream_count = input_stream_count(instruction);
+      stream_base = LOCAL_MXM_INDEX * (instruction[9] ? 16 : 8);
       inputs_valid = 1'b1;
       for (integer stream = 0; stream < 16; stream++)
         if (stream < stream_count)
-          inputs_valid = inputs_valid && east_valid_i[tile*STREAMS+stream];
+          inputs_valid = inputs_valid &&
+            east_valid_i[tile*STREAMS+stream_base+stream];
       dequant_matches = instruction[9]
         ? !dequant_row_valid_i[tile]
         : dequant_row_valid_i[tile];
@@ -90,13 +95,14 @@ module lpu_mxm_weight_buffer (
           dequant_matches)
         for (integer stream = 0; stream < 16; stream++)
           if (stream < stream_count)
-            east_consumed_o[tile*STREAMS+stream] = 1'b1;
+            east_consumed_o[tile*STREAMS+stream_base+stream] = 1'b1;
       for (integer lane = 0; lane < LANES; lane++)
         for (integer column = 0; column < LANES; column++)
           quantized_weights[
             ((tile*LANES+lane)*LANES+column)*8 +: 8] =
               east_data_i[
-                (tile*STREAMS+(instruction[5] ? 0 : column))*64+
+                (tile*STREAMS+stream_base+
+                 (instruction[5] ? 0 : column))*64+
                 lane*8 +: 8];
     end
   end
@@ -123,16 +129,19 @@ module lpu_mxm_weight_buffer (
           integer block;
           integer selected_column;
           integer stream_count;
+          integer stream_base;
           logic dequant_matches;
           instruction = load_row_instruction_i[tile*48 +: 48];
           buffer = instruction[2];
           block = instruction[4:3];
           selected_column = instruction[8:6];
           stream_count = input_stream_count(instruction);
+          stream_base = LOCAL_MXM_INDEX * (instruction[9] ? 16 : 8);
           inputs_valid = 1'b1;
           for (integer stream = 0; stream < 16; stream++)
             if (stream < stream_count)
-              inputs_valid = inputs_valid && east_valid_i[tile*STREAMS+stream];
+              inputs_valid = inputs_valid &&
+                east_valid_i[tile*STREAMS+stream_base+stream];
           dequant_matches = instruction[9]
             ? !dequant_row_valid_i[tile]
             : dequant_row_valid_i[tile];
@@ -144,10 +153,12 @@ module lpu_mxm_weight_buffer (
             all_columns_valid = 1'b1;
             for (integer lane = 0; lane < LANES; lane++) begin
               if (instruction[9])
-                weight_bits_o[weight_index(
-                  buffer, tile, block, lane, selected_column) +: 16] <= {
-                    east_data_i[(tile*STREAMS+1)*64+lane*8 +: 8],
-                    east_data_i[(tile*STREAMS+0)*64+lane*8 +: 8]};
+                  weight_bits_o[weight_index(
+                    buffer, tile, block, lane, selected_column) +: 16] <= {
+                    east_data_i[
+                      (tile*STREAMS+stream_base+1)*64+lane*8 +: 8],
+                    east_data_i[
+                      (tile*STREAMS+stream_base+0)*64+lane*8 +: 8]};
               else
                 weight_bits_o[weight_index(
                   buffer, tile, block, lane, selected_column) +: 16] <=
@@ -170,9 +181,11 @@ module lpu_mxm_weight_buffer (
                   weight_bits_o[weight_index(
                     buffer, tile, block, lane, column) +: 16] <= {
                       east_data_i[
-                        (tile*STREAMS+column*2+1)*64+lane*8 +: 8],
+                        (tile*STREAMS+stream_base+column*2+1)*64+
+                        lane*8 +: 8],
                       east_data_i[
-                        (tile*STREAMS+column*2)*64+lane*8 +: 8]};
+                        (tile*STREAMS+stream_base+column*2)*64+
+                        lane*8 +: 8]};
                 else
                   weight_bits_o[weight_index(
                     buffer, tile, block, lane, column) +: 16] <=

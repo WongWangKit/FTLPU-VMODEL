@@ -196,8 +196,10 @@ module lpu_vxm_execute #(
                 instruction_ok = 1'b0;
               if (!((opcode == 5'd0) || (opcode == 5'd1) ||
                     (opcode == 5'd2) || (opcode == 5'd3) ||
+                    (opcode == 5'd4) ||
                     (opcode == 5'd5) || (opcode == 5'd6) ||
                     (opcode == 5'd7) || (opcode == 5'd8) ||
+                    (opcode == 5'd12) ||
                     (opcode == 5'd14) || (opcode == 5'd15)))
                 instruction_ok = 1'b0;
               if (cast_target == 2'd2)

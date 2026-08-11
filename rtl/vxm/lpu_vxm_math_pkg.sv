@@ -310,4 +310,122 @@ function automatic logic [31:0] fp32_multiply_rne(
   end
 endfunction
 
+function automatic logic [31:0] fp32_divide_rne(
+  input logic [31:0] lhs,
+  input logic [31:0] rhs
+);
+  logic sign;
+  logic [23:0] lhs_significand;
+  logic [23:0] rhs_significand;
+  logic [50:0] scaled_numerator;
+  logic [50:0] quotient;
+  logic [50:0] remainder;
+  logic [26:0] normalized;
+  logic [24:0] rounded;
+  logic [23:0] final_significand;
+  integer exponent;
+  begin
+    sign = lhs[31] ^ rhs[31];
+    lhs_significand = {1'b1, lhs[22:0]};
+    rhs_significand = {1'b1, rhs[22:0]};
+    scaled_numerator = '0;
+    quotient = '0;
+    remainder = '0;
+    normalized = '0;
+    rounded = '0;
+    final_significand = '0;
+    exponent = lhs[30:23] - rhs[30:23] + 127;
+
+    if (rhs[30:0] == 0)
+      fp32_divide_rne = 32'h7fc00001;
+    else if (lhs[30:0] == 0)
+      fp32_divide_rne = {sign, 31'b0};
+    else begin
+      if (lhs_significand < rhs_significand) begin
+        scaled_numerator = {lhs_significand, 27'b0};
+        exponent = exponent - 1;
+      end else
+        scaled_numerator = {1'b0, lhs_significand, 26'b0};
+      quotient = scaled_numerator / rhs_significand;
+      remainder = scaled_numerator % rhs_significand;
+      normalized = quotient[26:0];
+      normalized[0] = normalized[0] | (remainder != 0);
+      rounded = {1'b0, normalized[26:3]};
+      if (normalized[2] &&
+          (normalized[1] || normalized[0] || normalized[3]))
+        rounded = rounded + 1'b1;
+      if (rounded[24]) begin
+        final_significand = rounded[24:1];
+        exponent = exponent + 1;
+      end else
+        final_significand = rounded[23:0];
+
+      if (exponent <= 0)
+        fp32_divide_rne = {sign, 31'b0};
+      else if (exponent >= 255)
+        fp32_divide_rne = {sign, 8'hff, 23'b0};
+      else
+        fp32_divide_rne = {
+          sign, exponent[7:0], final_significand[22:0]};
+    end
+  end
+endfunction
+
+function automatic logic [31:0] fp32_reciprocal_factorial(
+  input integer term
+);
+  begin
+    case (term)
+      0, 1: fp32_reciprocal_factorial = 32'h3f800000;
+      2:  fp32_reciprocal_factorial = 32'h3f000000;
+      3:  fp32_reciprocal_factorial = 32'h3e2aaaab;
+      4:  fp32_reciprocal_factorial = 32'h3d2aaaab;
+      5:  fp32_reciprocal_factorial = 32'h3c088889;
+      6:  fp32_reciprocal_factorial = 32'h3ab60b61;
+      7:  fp32_reciprocal_factorial = 32'h39500d01;
+      8:  fp32_reciprocal_factorial = 32'h37d00d01;
+      9:  fp32_reciprocal_factorial = 32'h3638ef1d;
+      10: fp32_reciprocal_factorial = 32'h3493f27e;
+      11: fp32_reciprocal_factorial = 32'h32d7322b;
+      12: fp32_reciprocal_factorial = 32'h310f76c7;
+      13: fp32_reciprocal_factorial = 32'h2f309231;
+      14: fp32_reciprocal_factorial = 32'h2d49cba5;
+      15: fp32_reciprocal_factorial = 32'h2b573f9f;
+      16: fp32_reciprocal_factorial = 32'h29573f9f;
+      17: fp32_reciprocal_factorial = 32'h274a963c;
+      18: fp32_reciprocal_factorial = 32'h253413c3;
+      19: fp32_reciprocal_factorial = 32'h2317a4da;
+      20: fp32_reciprocal_factorial = 32'h20f2a15d;
+      default: fp32_reciprocal_factorial = 32'b0;
+    endcase
+  end
+endfunction
+
+function automatic logic [31:0] fp32_exp_approx(
+  input logic [31:0] value
+);
+  logic negative;
+  logic [31:0] magnitude;
+  logic [31:0] polynomial;
+  begin
+    negative = value[31];
+    magnitude = {1'b0, value[30:0]};
+    if ((magnitude[30:23] > 8'd130) ||
+        ((magnitude[30:23] == 8'd130) &&
+         (magnitude[22:0] != 0)))
+      magnitude = 32'h41000000;
+
+    polynomial = fp32_reciprocal_factorial(20);
+    for (integer term = 19; term >= 0; term--)
+      polynomial = fp32_add_rne(
+        fp32_multiply_rne(polynomial, magnitude),
+        fp32_reciprocal_factorial(term));
+
+    if (negative)
+      fp32_exp_approx = fp32_divide_rne(32'h3f800000, polynomial);
+    else
+      fp32_exp_approx = polynomial;
+  end
+endfunction
+
 endpackage

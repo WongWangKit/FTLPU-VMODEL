@@ -12,24 +12,24 @@ module lpu_icu #(
   input  logic [31:0]  enqueue_command_i,
   input  logic [415:0] enqueue_payload_i,
 
-  output logic [131:0]       issue_valid_o,
-  output logic [132*416-1:0] issue_payload_o,
-  output logic [131:0]       queue_fault_o
+  output logic [137:0]       issue_valid_o,
+  output logic [138*416-1:0] issue_payload_o,
+  output logic [137:0]       queue_fault_o
 );
-  logic [131:0] queue_ready;
-  logic [131:0] queue_enqueue_valid;
+  logic [137:0] queue_ready;
+  logic [137:0] queue_enqueue_valid;
 
   always_comb begin
     queue_enqueue_valid = '0;
     enqueue_ready_o = 1'b0;
-    if (enqueue_queue_i < 8'd132) begin
+    if (enqueue_queue_i < 8'd138) begin
       queue_enqueue_valid[enqueue_queue_i] = enqueue_valid_i;
       enqueue_ready_o = queue_ready[enqueue_queue_i];
     end
   end
 
   generate
-    for (genvar queue = 0; queue < 132; queue++) begin : gen_queue
+    for (genvar queue = 0; queue < 138; queue++) begin : gen_queue
       logic [$clog2(QUEUE_DEPTH+1)-1:0] unused_level;
       lpu_icu_queue #(
         .PAYLOAD_WIDTH(416),

@@ -1,4 +1,4 @@
-module lpu_mem_tile_slice #(
+module lpu_mem_tile_slice_behavior #(
   parameter integer DEPTH_ROWS = 65536,
   parameter integer LANES      = 8
 ) (

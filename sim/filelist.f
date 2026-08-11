@@ -4,7 +4,10 @@ rtl/core/lpu_stream_stage.sv
 rtl/core/lpu_control_pipeline.sv
 rtl/icu/lpu_icu_queue.sv
 rtl/icu/lpu_icu.sv
+rtl/mem/lpu_sram_1rw_banked.sv
 rtl/mem/lpu_mem_tile_slice.sv
+rtl/mem/lpu_mem_tile_slice_sram.sv
+rtl/mem/lpu_mem_tile_slice_select.sv
 rtl/mem/lpu_mem_column.sv
 rtl/mem/lpu_mem_hemisphere.sv
 rtl/vxm/lpu_vxm_math_pkg.sv
@@ -39,3 +42,5 @@ sim/tb/lpu_mxm_accumulator_tb.sv
 sim/tb/lpu_mxm_column_tb.sv
 sim/tb/lpu_mxm_int8_dequant_tb.sv
 sim/tb/lpu_mxm_block8_tb.sv
+sim/tb/lpu_mxm_weight_stream_tb.sv
+sim/tb/lpu_smollm2_ffn_tb.sv

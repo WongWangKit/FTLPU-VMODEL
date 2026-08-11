@@ -1,4 +1,8 @@
-module lpu_mxm_slice (
+module lpu_mxm_slice #(
+  parameter integer LOCAL_MXM_INDEX = 0,
+  parameter integer ACCUMULATOR_BLOCK_COUNT =
+    lpu_pkg::MXM_ACCUMULATOR_BLOCK_COUNT
+) (
   input  logic clk_i,
   input  logic rst_ni,
   input  logic run_i,
@@ -68,7 +72,9 @@ module lpu_mxm_slice (
     .compute_row_instruction_o(compute_row_instruction)
   );
 
-  lpu_mxm_weight_buffer u_weight_buffer (
+  lpu_mxm_weight_buffer #(
+    .LOCAL_MXM_INDEX(LOCAL_MXM_INDEX)
+  ) u_weight_buffer (
     .clk_i,
     .rst_ni,
     .run_i,
@@ -84,7 +90,9 @@ module lpu_mxm_slice (
     .fault_o(load_fault)
   );
 
-  lpu_mxm_compute u_compute (
+  lpu_mxm_compute #(
+    .ACCUMULATOR_BLOCK_COUNT(ACCUMULATOR_BLOCK_COUNT)
+  ) u_compute (
     .clk_i,
     .rst_ni,
     .run_i,
@@ -106,7 +114,9 @@ module lpu_mxm_slice (
     .fault_o(compute_fault)
   );
 
-  lpu_mxm_accumulator u_accumulator (
+  lpu_mxm_accumulator #(
+    .ACCUMULATOR_BLOCK_COUNT(ACCUMULATOR_BLOCK_COUNT)
+  ) u_accumulator (
     .clk_i,
     .rst_ni,
     .run_i,
@@ -124,7 +134,9 @@ module lpu_mxm_slice (
     .fault_o(accumulator_fault)
   );
 
-  lpu_mxm_block_accumulator u_block_accumulator (
+  lpu_mxm_block_accumulator #(
+    .ACCUMULATOR_BLOCK_COUNT(ACCUMULATOR_BLOCK_COUNT)
+  ) u_block_accumulator (
     .clk_i,
     .rst_ni,
     .run_i,

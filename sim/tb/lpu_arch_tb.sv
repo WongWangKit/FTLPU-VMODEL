@@ -149,6 +149,13 @@ module lpu_arch_tb;
     if (queue_fault)
       $fatal(1, "ICU queue raised an unexpected fault");
 
+    // Refill an empty queue while execution remains active.  Full workloads
+    // stream schedules this way instead of sizing every queue for a layer.
+    enqueue_instruction((47'(19) << 15) | (47'(3) << 3));
+    expect_queue_issue(1'b1, 16'd19);
+    if (queue_fault)
+      $fatal(1, "streaming ICU refill raised an unexpected fault");
+
     // Host initialization followed by an architectural MEM Read.
     queue_run = 1'b0;
     @(negedge clk);

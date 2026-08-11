@@ -19,18 +19,18 @@ module lpu_vxm_fp32_arithmetic_tb;
   logic [15:0] host_address;
   logic [63:0] host_write_data;
   logic [63:0] host_read_data;
-  logic [131:0] queue_fault;
+  logic [137:0] queue_fault;
   logic [2*52*4-1:0] mem_fault;
   logic [1:0] sxm_fault;
   logic vxm_fault;
   logic [1:0] stream_conflict;
   logic [63:0] cycle;
   logic [63:0] cmodel_init [0:15];
-  logic [63:0] cmodel_golden [0:47];
-  logic [479:0] cmodel_schedule [0:25];
+  logic [63:0] cmodel_golden [0:79];
+  logic [479:0] cmodel_schedule [0:59];
 
   lpu_top #(
-    .ICU_QUEUE_DEPTH(8),
+    .ICU_QUEUE_DEPTH(12),
     .MEM_DEPTH_ROWS(16),
     .ACTIVE_MEM_COLUMNS(4)
   ) dut (
@@ -133,12 +133,12 @@ module lpu_vxm_fp32_arithmetic_tb;
       for (integer tile = 0; tile < 4; tile++)
         host_write_tile(column[6:0], tile[1:0],
                         cmodel_init[column*4+tile]);
-    for (integer record = 0; record < 26; record++)
+    for (integer record = 0; record < 60; record++)
       enqueue_cmodel_record(record);
 
     @(negedge clk);
     run = 1'b1;
-    repeat (32) @(posedge clk);
+    repeat (40) @(posedge clk);
     @(negedge clk);
 
     if (queue_fault != '0 || mem_fault != '0 || sxm_fault != '0 ||
@@ -148,24 +148,30 @@ module lpu_vxm_fp32_arithmetic_tb;
         queue_fault, mem_fault, sxm_fault, vxm_fault, stream_conflict);
     run = 1'b0;
 
-    for (integer address = 1; address <= 3; address++) begin
+    for (integer address = 1; address <= 6; address++) begin
       host_address = address[15:0];
-      for (integer column = 0; column < 4; column++) begin
+      for (integer column = 0;
+           column < (address >= 5 ? 2 : 4);
+           column++) begin
         host_column = column[6:0];
         for (integer tile = 0; tile < 4; tile++) begin
           host_tile = tile[1:0];
           #1ns;
           if (host_read_data !==
-              cmodel_golden[(address-1)*16+column*4+tile])
+              cmodel_golden[(address < 5
+                ? (address-1)*16+column*4+tile
+                : 64+(address-5)*8+column*4+tile)])
             $fatal(1,
               "VXM arithmetic address %0d column %0d tile %0d mismatch got=%h expected=%h",
               address, column, tile, host_read_data,
-              cmodel_golden[(address-1)*16+column*4+tile]);
+              cmodel_golden[(address < 5
+                ? (address-1)*16+column*4+tile
+                : 64+(address-5)*8+column*4+tile)]);
         end
       end
     end
 
-    $display("FTLPU-VMODEL C-model VXM FP32 Add/Subtract/Multiply passed in %0d cycles",
+    $display("FTLPU-VMODEL C-model VXM arithmetic and BF16 SwiGLU passed in %0d cycles",
              cycle);
     $finish;
   end

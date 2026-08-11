@@ -23,7 +23,10 @@ module lpu_mem_instruction_decode (
   end
 endmodule
 
-module lpu_mxm_instruction_decode (
+module lpu_mxm_instruction_decode #(
+  parameter integer ACCUMULATOR_BLOCK_COUNT =
+    lpu_pkg::MXM_ACCUMULATOR_BLOCK_COUNT
+) (
   input  logic [47:0] instruction_i,
   output logic [1:0]  opcode_o,
   output logic        weight_buffer_o,
@@ -41,6 +44,9 @@ module lpu_mxm_instruction_decode (
   output logic        compute_mode_block8_o,
   output logic        legal_o
 );
+  localparam integer ACCUMULATOR_DEPTH = ACCUMULATOR_BLOCK_COUNT * 32;
+  localparam integer BLOCK_ACCUMULATOR_DEPTH = ACCUMULATOR_BLOCK_COUNT * 4;
+
   always_comb begin
     opcode_o                    = instruction_i[1:0];
     weight_buffer_o             = instruction_i[2];
@@ -67,13 +73,15 @@ module lpu_mxm_instruction_decode (
         (instruction_i[8:3] <= (instruction_i[46] ? 6'd16 : 6'd30)) &&
         (instruction_i[14:9] <= (instruction_i[46] ? 6'd16 : 6'd28)) &&
         (instruction_i[43:28] != 16'd0) &&
-        (!instruction_i[46] || (instruction_i[27:15] < 13'd1024));
+        (instruction_i[27:15] < (instruction_i[46]
+          ? BLOCK_ACCUMULATOR_DEPTH : ACCUMULATOR_DEPTH));
       2'd2: legal_o =
         (instruction_i[45:29] == '0) &&
         (instruction_i[47] == 1'b0) &&
         (instruction_i[8:2] == '0) &&
         (instruction_i[14:9] <= (instruction_i[46] ? 6'd0 : 6'd28)) &&
-        (!instruction_i[46] || (instruction_i[27:15] < 13'd1024));
+        (instruction_i[27:15] < (instruction_i[46]
+          ? BLOCK_ACCUMULATOR_DEPTH : ACCUMULATOR_DEPTH));
       default: legal_o = 1'b0;
     endcase
   end

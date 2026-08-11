@@ -1,5 +1,6 @@
 module lpu_mem_column #(
-  parameter integer DEPTH_ROWS = 65536
+  parameter integer DEPTH_ROWS = 65536,
+  parameter bit USE_SRAM_MACRO = 1'b0
 ) (
   input  logic clk_i,
   input  logic rst_ni,
@@ -45,7 +46,10 @@ module lpu_mem_column #(
       logic fault;
       logic [63:0] host_read;
 
-      lpu_mem_tile_slice #(.DEPTH_ROWS(DEPTH_ROWS)) u_tile (
+      lpu_mem_tile_slice #(
+        .DEPTH_ROWS(DEPTH_ROWS),
+        .USE_SRAM_MACRO(USE_SRAM_MACRO)
+      ) u_tile (
         .clk_i,
         .rst_ni,
         .instruction_valid_i(instruction_valid[TILE_INDEX]),

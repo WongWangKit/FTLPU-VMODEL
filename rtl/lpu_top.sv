@@ -1,7 +1,10 @@
 module lpu_top #(
   parameter integer ICU_QUEUE_DEPTH = 16,
   parameter integer MEM_DEPTH_ROWS  = 65536,
-  parameter integer ACTIVE_MEM_COLUMNS = 52
+  parameter integer ACTIVE_MEM_COLUMNS = 52,
+  parameter integer MXM_ACCUMULATOR_BLOCK_COUNT =
+    lpu_pkg::MXM_ACCUMULATOR_BLOCK_COUNT,
+  parameter bit USE_SRAM_MACRO = 1'b0
 ) (
   input  logic clk_i,
   input  logic rst_ni,
@@ -37,9 +40,9 @@ module lpu_top #(
 
   // Architectural dispatch monitor. Queue numbering is defined in lpu_pkg;
   // MEM queue pulses also feed the integrated hemisphere datapaths below.
-  output logic [131:0]       dispatch_valid_o,
-  output logic [132*416-1:0] dispatch_payload_o,
-  output logic [131:0]       queue_fault_o,
+  output logic [137:0]       dispatch_valid_o,
+  output logic [138*416-1:0] dispatch_payload_o,
+  output logic [137:0]       queue_fault_o,
   output logic [2*52*4-1:0]  mem_fault_o,
   output logic [1:0]         mxm_fault_o,
   output logic [1:0]         sxm_fault_o,
@@ -48,9 +51,9 @@ module lpu_top #(
   output logic [63:0]        cycle_o
 );
   logic [2*52*47-1:0] mem_issue_instruction;
-  logic [2*48-1:0] mxm_load_instruction;
-  logic [2*16-1:0] mxm_dequant_instruction;
-  logic [2*48-1:0] mxm_compute_instruction;
+  logic [4*48-1:0] mxm_load_instruction;
+  logic [4*16-1:0] mxm_dequant_instruction;
+  logic [4*48-1:0] mxm_compute_instruction;
   logic [16*128-1:0] vxm_issue_instruction;
   logic [2*64-1:0] host_mem_read_data;
   logic [2*4*32-1:0] mem_to_vxm_west_valid;
@@ -87,13 +90,19 @@ module lpu_top #(
     for (integer alu = 0; alu < 16; alu++)
       vxm_issue_instruction[alu*128 +: 128] =
         dispatch_payload_o[(112+alu)*416 +: 128];
-    for (integer mxm = 0; mxm < 2; mxm++) begin
-      mxm_load_instruction[mxm*48 +: 48] =
-        dispatch_payload_o[(104+mxm)*416 +: 48];
-      mxm_compute_instruction[mxm*48 +: 48] =
-        dispatch_payload_o[(108+mxm)*416 +: 48];
-      mxm_dequant_instruction[mxm*16 +: 16] =
-        dispatch_payload_o[(106+mxm)*416 +: 16];
+    for (integer hemisphere = 0; hemisphere < 2; hemisphere++) begin
+      mxm_load_instruction[(hemisphere*2)*48 +: 48] =
+        dispatch_payload_o[(104+hemisphere)*416 +: 48];
+      mxm_dequant_instruction[(hemisphere*2)*16 +: 16] =
+        dispatch_payload_o[(106+hemisphere)*416 +: 16];
+      mxm_compute_instruction[(hemisphere*2)*48 +: 48] =
+        dispatch_payload_o[(108+hemisphere)*416 +: 48];
+      mxm_load_instruction[(hemisphere*2+1)*48 +: 48] =
+        dispatch_payload_o[(132+hemisphere)*416 +: 48];
+      mxm_dequant_instruction[(hemisphere*2+1)*16 +: 16] =
+        dispatch_payload_o[(134+hemisphere)*416 +: 16];
+      mxm_compute_instruction[(hemisphere*2+1)*48 +: 48] =
+        dispatch_payload_o[(136+hemisphere)*416 +: 48];
     end
 
     if (host_mem_column_i < 52)
@@ -117,6 +126,12 @@ module lpu_top #(
       logic [4*32*64-1:0] mxm_west_data;
       logic [4*32-1:0] mxm_east_valid;
       logic [4*32*64-1:0] mxm_east_data;
+      logic [2*4*32-1:0] local_mxm_west_valid;
+      logic [2*4*32*64-1:0] local_mxm_west_data;
+      logic [2*4*32-1:0] local_mxm_east_valid;
+      logic [2*4*32*64-1:0] local_mxm_east_data;
+      logic [1:0] local_mxm_fault;
+      logic [1:0] local_mxm_conflict;
       logic [63:0] host_read;
       logic [5:0] host_local_column;
       logic [52*4-1:0] mem_fault;
@@ -133,7 +148,8 @@ module lpu_top #(
 
       lpu_mem_hemisphere #(
         .DEPTH_ROWS(MEM_DEPTH_ROWS),
-        .ACTIVE_COLUMNS(ACTIVE_MEM_COLUMNS)
+        .ACTIVE_COLUMNS(ACTIVE_MEM_COLUMNS),
+        .USE_SRAM_MACRO(USE_SRAM_MACRO)
       ) u_mem (
         .clk_i,
         .rst_ni,
@@ -187,32 +203,71 @@ module lpu_top #(
         .conflict_o(sxm_stream_conflict)
       );
 
-      lpu_mxm_slice u_mxm (
-        .clk_i,
-        .rst_ni,
-        .run_i,
-        .load_issue_valid_i(dispatch_valid_o[104+HEMISPHERE_INDEX]),
-        .load_issue_instruction_i(
-          mxm_load_instruction[HEMISPHERE_INDEX*48 +: 48]),
-        .dequant_issue_valid_i(dispatch_valid_o[106+HEMISPHERE_INDEX]),
-        .dequant_issue_instruction_i(
-          mxm_dequant_instruction[HEMISPHERE_INDEX*16 +: 16]),
-        .compute_issue_valid_i(dispatch_valid_o[108+HEMISPHERE_INDEX]),
-        .compute_issue_instruction_i(
-          mxm_compute_instruction[HEMISPHERE_INDEX*48 +: 48]),
-        .east_from_sxm_valid_i(sxm_east_valid),
-        .east_from_sxm_data_i(sxm_east_data),
-        .external_west_valid_i(
-          mem_west_edge_valid_i[HEMISPHERE_INDEX*4*32 +: 4*32]),
-        .external_west_data_i(
-          mem_west_edge_data_i[HEMISPHERE_INDEX*4*32*64 +: 4*32*64]),
-        .east_external_valid_o(mxm_east_valid),
-        .east_external_data_o(mxm_east_data),
-        .west_to_sxm_valid_o(mxm_west_valid),
-        .west_to_sxm_data_o(mxm_west_data),
-        .fault_o(mxm_fault),
-        .conflict_o(mxm_stream_conflict)
-      );
+      for (genvar local_mxm = 0; local_mxm < 2; local_mxm++) begin : gen_mxm
+        localparam integer MXM_INDEX = HEMISPHERE_INDEX*2 + local_mxm;
+        localparam integer LOAD_QUEUE = local_mxm == 0
+          ? 104 + HEMISPHERE_INDEX : 132 + HEMISPHERE_INDEX;
+        localparam integer DEQUANT_QUEUE = local_mxm == 0
+          ? 106 + HEMISPHERE_INDEX : 134 + HEMISPHERE_INDEX;
+        localparam integer COMPUTE_QUEUE = local_mxm == 0
+          ? 108 + HEMISPHERE_INDEX : 136 + HEMISPHERE_INDEX;
+
+        lpu_mxm_slice #(
+          .LOCAL_MXM_INDEX(local_mxm),
+          .ACCUMULATOR_BLOCK_COUNT(MXM_ACCUMULATOR_BLOCK_COUNT)
+        ) u_mxm (
+          .clk_i,
+          .rst_ni,
+          .run_i,
+          .load_issue_valid_i(dispatch_valid_o[LOAD_QUEUE]),
+          .load_issue_instruction_i(
+            mxm_load_instruction[MXM_INDEX*48 +: 48]),
+          .dequant_issue_valid_i(dispatch_valid_o[DEQUANT_QUEUE]),
+          .dequant_issue_instruction_i(
+            mxm_dequant_instruction[MXM_INDEX*16 +: 16]),
+          .compute_issue_valid_i(dispatch_valid_o[COMPUTE_QUEUE]),
+          .compute_issue_instruction_i(
+            mxm_compute_instruction[MXM_INDEX*48 +: 48]),
+          .east_from_sxm_valid_i(sxm_east_valid),
+          .east_from_sxm_data_i(sxm_east_data),
+          .external_west_valid_i(local_mxm == 0
+            ? mem_west_edge_valid_i[HEMISPHERE_INDEX*4*32 +: 4*32]
+            : '0),
+          .external_west_data_i(
+            mem_west_edge_data_i[HEMISPHERE_INDEX*4*32*64 +: 4*32*64]),
+          .east_external_valid_o(
+            local_mxm_east_valid[local_mxm*4*32 +: 4*32]),
+          .east_external_data_o(
+            local_mxm_east_data[local_mxm*4*32*64 +: 4*32*64]),
+          .west_to_sxm_valid_o(
+            local_mxm_west_valid[local_mxm*4*32 +: 4*32]),
+          .west_to_sxm_data_o(
+            local_mxm_west_data[local_mxm*4*32*64 +: 4*32*64]),
+          .fault_o(local_mxm_fault[local_mxm]),
+          .conflict_o(local_mxm_conflict[local_mxm])
+        );
+      end
+
+      always_comb begin
+        mxm_east_valid = local_mxm_east_valid[0 +: 4*32] &
+          local_mxm_east_valid[4*32 +: 4*32];
+        mxm_east_data = local_mxm_east_data[0 +: 4*32*64];
+        mxm_west_valid = local_mxm_west_valid[0 +: 4*32];
+        mxm_west_data = local_mxm_west_data[0 +: 4*32*64];
+        mxm_stream_conflict = |local_mxm_conflict;
+        for (integer stream_cell = 0; stream_cell < 4*32; stream_cell++) begin
+          if (local_mxm_west_valid[4*32+stream_cell]) begin
+            if (mxm_west_valid[stream_cell])
+              mxm_stream_conflict = 1'b1;
+            else begin
+              mxm_west_valid[stream_cell] = 1'b1;
+              mxm_west_data[stream_cell*64 +: 64] =
+                local_mxm_west_data[(4*32+stream_cell)*64 +: 64];
+            end
+          end
+        end
+        mxm_fault = |local_mxm_fault;
+      end
 
       assign mem_east_edge_valid_o[HEMISPHERE_INDEX*4*32 +: 4*32] = mxm_east_valid;
       assign mem_east_edge_data_o[HEMISPHERE_INDEX*4*32*64 +: 4*32*64] = mxm_east_data;

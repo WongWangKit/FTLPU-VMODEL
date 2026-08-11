@@ -239,10 +239,12 @@ module lpu_vxm_alu #(
               5'd2: result = fp32_add_rne(
                 lhs, {~rhs[31], rhs[30:0]});
               5'd3: result = fp32_multiply_rne(lhs, rhs);
+              5'd4: result = fp32_divide_rne(lhs, rhs);
               5'd5: result = {~lhs[31], lhs[30:0]};
               5'd6: result = {1'b0, lhs[30:0]};
               5'd7: result = fp32_less(rhs, lhs) ? rhs : lhs;
               5'd8: result = fp32_less(lhs, rhs) ? rhs : lhs;
+              5'd12: result = fp32_exp_approx(lhs);
               5'd14: result = lhs[31] ? 32'b0 : lhs;
               5'd15: begin
                 if (cast_target == 2'd3)
