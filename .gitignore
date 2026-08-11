@@ -3,7 +3,9 @@ build/
 obj_dir/
 simv
 simv.exe
+ucli.key
 *.vcd
+*.fsdb
 *.fst
 *.wlf
 *.log
@@ -15,6 +17,11 @@ simv.exe
 *.str
 *.dcp
 *.rpt
+*.mr
+*.pvk
+*.pvl
+*.svf
+*.syn
 
 # Editors and operating systems
 .idea/
@@ -23,4 +30,3 @@ simv.exe
 *~
 .DS_Store
 Thumbs.db
-
