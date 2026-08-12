@@ -110,6 +110,20 @@ zero-latency behavioral MEM for C-model cycle compatibility; setting
 `USE_SRAM_MACRO=1` selects the synchronous physical-memory path, where Read is
 one cycle and ReadWrite is serialized as read then write.
 
+Run the 128 KiB Vector-accumulator macro target with:
+
+```bash
+./scripts/dc_acc_macro.sh
+```
+
+It banks sixteen ARM `sram_128_512` macros as eight 256-bit row banks and uses
+one cycle-shared DesignWare FP32 adder. `FTLPU_USE_SRAM128X512_MACRO` selects
+this physical backend. The physical backend intentionally rejects Block8;
+the default architectural simulation backend keeps Vector and Block8 support
+for C-model regression compatibility. `scripts/dc_full_macro.sh` is the
+full-size 52-column MEM+ACC synthesis target and also defines
+`FTLPU_DISABLE_BLOCK8` so only one Vector dot row is elaborated.
+
 The unit-level architecture test verifies ICU NOP/Repeat timing, signed MEM
 repeat stride, and an SRAM Read/Write round trip. The VCS system regression
 also verifies mirrored transfers across passive SR hops and a 16-stream,

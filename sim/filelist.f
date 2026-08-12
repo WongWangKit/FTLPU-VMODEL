@@ -16,6 +16,8 @@ rtl/mxm/lpu_mxm_dequantizer.sv
 rtl/mxm/lpu_mxm_weight_buffer.sv
 rtl/mxm/lpu_mxm_dot_bank.sv
 rtl/mxm/lpu_mxm_compute.sv
+rtl/mxm/lpu_mxm_accumulator_sram.sv
+rtl/mxm/lpu_mxm_shared_accumulator.sv
 rtl/mxm/lpu_mxm_accumulator.sv
 rtl/mxm/lpu_mxm_block_accumulator.sv
 rtl/mxm/lpu_mxm_slice.sv

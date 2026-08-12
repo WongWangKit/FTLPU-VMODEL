@@ -24,7 +24,10 @@ module lpu_sxm_control (
   // The register also enforces the required full-cycle separation from a
   // Transpose capture issued on the previous schedule cycle.
   always_ff @(posedge clk_i or negedge rst_ni) begin
-    if (!rst_ni || !run_i) begin
+    if (!rst_ni) begin
+      permute_valid_o <= 1'b0;
+      permute_instruction_o <= '0;
+    end else if (!run_i) begin
       permute_valid_o <= 1'b0;
       permute_instruction_o <= '0;
     end else begin

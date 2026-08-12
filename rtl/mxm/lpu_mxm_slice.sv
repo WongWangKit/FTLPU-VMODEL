@@ -41,18 +41,11 @@ module lpu_mxm_slice #(
   logic result_clear;
   logic result_block_mode;
   logic result_ready;
-  logic vector_result_ready;
-  logic block_result_ready;
-  logic [3:0] vector_read_row_valid;
-  logic [3:0] block_read_row_valid;
-  logic [4*32-1:0] vector_produced_valid;
-  logic [4*32*64-1:0] vector_produced_data;
-  logic [4*32-1:0] block_produced_valid;
-  logic [4*32*64-1:0] block_produced_data;
+  logic [4*32-1:0] accumulator_produced_valid;
+  logic [4*32*64-1:0] accumulator_produced_data;
   logic load_fault;
   logic compute_fault;
   logic accumulator_fault;
-  logic block_accumulator_fault;
   logic conflict_d;
 
   lpu_mxm_control u_control (
@@ -114,58 +107,26 @@ module lpu_mxm_slice #(
     .fault_o(compute_fault)
   );
 
-  lpu_mxm_accumulator #(
+  lpu_mxm_shared_accumulator #(
     .ACCUMULATOR_BLOCK_COUNT(ACCUMULATOR_BLOCK_COUNT)
   ) u_accumulator (
     .clk_i,
     .rst_ni,
     .run_i,
-    .write_valid_i(result_valid && !result_block_mode),
-    .write_values_i(result_values[0 +: 32*32]),
-    .write_address_i(result_address),
-    .write_stream_base_i(result_stream_base),
-    .write_stream_destination_i(result_stream_destination),
-    .write_clear_i(result_clear),
-    .write_ready_o(vector_result_ready),
-    .read_row_valid_i(vector_read_row_valid),
-    .read_row_instruction_i(compute_row_instruction),
-    .west_valid_o(vector_produced_valid),
-    .west_data_o(vector_produced_data),
-    .fault_o(accumulator_fault)
-  );
-
-  lpu_mxm_block_accumulator #(
-    .ACCUMULATOR_BLOCK_COUNT(ACCUMULATOR_BLOCK_COUNT)
-  ) u_block_accumulator (
-    .clk_i,
-    .rst_ni,
-    .run_i,
-    .write_valid_i(result_valid && result_block_mode),
+    .write_valid_i(result_valid),
+    .write_block_mode_i(result_block_mode),
     .write_values_i(result_values),
     .write_address_i(result_address),
     .write_stream_base_i(result_stream_base),
     .write_stream_destination_i(result_stream_destination),
     .write_clear_i(result_clear),
-    .write_ready_o(block_result_ready),
-    .read_row_valid_i(block_read_row_valid),
+    .write_ready_o(result_ready),
+    .read_row_valid_i(compute_row_valid),
     .read_row_instruction_i(compute_row_instruction),
-    .west_valid_o(block_produced_valid),
-    .west_data_o(block_produced_data),
-    .fault_o(block_accumulator_fault)
+    .west_valid_o(accumulator_produced_valid),
+    .west_data_o(accumulator_produced_data),
+    .fault_o(accumulator_fault)
   );
-
-  always_comb begin
-    result_ready = result_block_mode
-      ? block_result_ready : vector_result_ready;
-    vector_read_row_valid = '0;
-    block_read_row_valid = '0;
-    for (integer tile = 0; tile < 4; tile++) begin
-      if (compute_row_instruction[tile*48+46])
-        block_read_row_valid[tile] = compute_row_valid[tile];
-      else
-        vector_read_row_valid[tile] = compute_row_valid[tile];
-    end
-  end
 
   always_comb begin
     east_external_valid_o = east_from_sxm_valid_i &
@@ -177,19 +138,13 @@ module lpu_mxm_slice #(
     if (|(load_consumed & compute_consumed))
       conflict_d = 1'b1;
     for (integer cell_index = 0; cell_index < 4*32; cell_index++) begin
-      if (vector_produced_valid[cell_index] &&
-          block_produced_valid[cell_index])
-        conflict_d = 1'b1;
-      if (vector_produced_valid[cell_index] ||
-          block_produced_valid[cell_index]) begin
+      if (accumulator_produced_valid[cell_index]) begin
         if (west_to_sxm_valid_o[cell_index])
           conflict_d = 1'b1;
         else begin
           west_to_sxm_valid_o[cell_index] = 1'b1;
           west_to_sxm_data_o[cell_index*64 +: 64] =
-            vector_produced_valid[cell_index]
-              ? vector_produced_data[cell_index*64 +: 64]
-              : block_produced_data[cell_index*64 +: 64];
+            accumulator_produced_data[cell_index*64 +: 64];
         end
       end
     end
@@ -204,6 +159,5 @@ module lpu_mxm_slice #(
       conflict_o <= conflict_o | conflict_d;
   end
 
-  assign fault_o = load_fault | compute_fault | accumulator_fault |
-    block_accumulator_fault;
+  assign fault_o = load_fault | compute_fault | accumulator_fault;
 endmodule

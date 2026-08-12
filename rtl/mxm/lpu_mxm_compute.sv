@@ -28,10 +28,15 @@ module lpu_mxm_compute #(
   localparam integer BLOCKS = 4;
   localparam integer LANES = 8;
   localparam integer STREAMS = 32;
+`ifdef FTLPU_DISABLE_BLOCK8
+  localparam integer DOT_ROWS = 1;
+`else
+  localparam integer DOT_ROWS = 8;
+`endif
   localparam integer ACCUMULATOR_DEPTH = ACCUMULATOR_BLOCK_COUNT * 32;
   localparam integer BLOCK_ACCUMULATOR_DEPTH = ACCUMULATOR_BLOCK_COUNT * 4;
 
-  logic [8*32*32-1:0] sum_q;
+  logic [DOT_ROWS*32*32-1:0] sum_q;
   logic [1:0] buffer_active_prev_q;
   logic [4:0] next_row_q [0:1][0:TILES-1];
 
@@ -43,9 +48,9 @@ module lpu_mxm_compute #(
   logic active_inputs_valid;
   logic active_cells_valid;
   logic active_transaction_valid;
-  logic [8*8*16-1:0] active_activation_bits;
+  logic [DOT_ROWS*8*16-1:0] active_activation_bits;
   logic [4*8*8*16-1:0] active_weight_bits;
-  logic [8*32*32-1:0] partial_values;
+  logic [DOT_ROWS*32*32-1:0] partial_values;
   logic [8*32*32-1:0] total_values;
   logic [4:0] active_row;
   logic [28:0] active_address_wide;
@@ -64,12 +69,16 @@ module lpu_mxm_compute #(
 
   function automatic logic instruction_supported(input logic [47:0] instruction);
     if (instruction[46])
+`ifdef FTLPU_DISABLE_BLOCK8
+      instruction_supported = 1'b0;
+`else
       instruction_supported =
         (instruction[1:0] == 2'd1) &&
         (instruction[8:3] <= 6'd16) &&
         (instruction[14:9] <= 6'd16) &&
         (instruction[27:15] < BLOCK_ACCUMULATOR_DEPTH) &&
         (instruction[43:28] != 0);
+`endif
     else
       instruction_supported =
         (instruction[1:0] == 2'd1) &&
@@ -90,7 +99,7 @@ module lpu_mxm_compute #(
     (compute_opcode_valid & (compute_opcode_valid - 1'b1)) != 0;
 
   generate
-    for (genvar row_gen = 0; row_gen < 8; row_gen++) begin : gen_dot_row
+    for (genvar row_gen = 0; row_gen < DOT_ROWS; row_gen++) begin : gen_dot_row
       lpu_mxm_dot_bank u_dot_bank (
         .format_bf16_i(active_instruction[45]),
         .activation_bits_i(
@@ -120,7 +129,7 @@ module lpu_mxm_compute #(
         if (compute_row_instruction_i[tile*48+3 +: 6] <=
             (compute_row_instruction_i[tile*48+46] ? 6'd16 : 6'd30)) begin
           active_inputs_valid = 1'b1;
-          for (integer output_row = 0; output_row < 8; output_row++) begin
+          for (integer output_row = 0; output_row < DOT_ROWS; output_row++) begin
             if (compute_row_instruction_i[tile*48+46] || output_row == 0) begin
               active_inputs_valid = active_inputs_valid &&
                 east_valid_i[
@@ -189,7 +198,7 @@ module lpu_mxm_compute #(
 
   always_comb begin
     total_values = '0;
-    for (integer value = 0; value < 8*BLOCKS*LANES; value++) begin
+    for (integer value = 0; value < DOT_ROWS*BLOCKS*LANES; value++) begin
       if (active_tile == 0)
         total_values[value*32 +: 32] = partial_values[value*32 +: 32];
       else
@@ -265,7 +274,7 @@ module lpu_mxm_compute #(
           end
           next_row_q[active_instruction[2]][active_tile] <= active_row +
             (active_instruction[46] ? 5'd8 : 5'd1);
-          sum_q <= total_values;
+          sum_q <= total_values[0 +: DOT_ROWS*32*32];
         end
       end
     end

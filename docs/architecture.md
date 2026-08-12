@@ -133,8 +133,10 @@ long schedules do not require layer-sized instruction SRAMs. `NOP` and
 | `lpu_mxm_weight_buffer` | Consumes full-cell or per-column Direct16/INT8 East streams and owns two buffers of four-by-four 8x8 weight cells plus inner-column validity. |
 | `lpu_mxm_dot_bank` | Implements the 32 parallel eight-element FP32 dot products for one active physical tile. |
 | `lpu_mxm_compute` | Selects the active tile, runs one or eight dot-bank rows, accumulates four tile contributions, and emits Vector or Block8 transactions. |
-| `lpu_mxm_accumulator` | Owns four configurable-depth x 8 FP32 banks, performs read-modify-write accumulation, and emits/clears four staggered stream segments. |
-| `lpu_mxm_block_accumulator` | Owns four configurable-depth x 8 x 8 FP32 banks and emits 16-stream BF16 Block8 results or 32-stream FP32 reads. |
+| `lpu_mxm_accumulator` | Architectural Vector reference backend used by the default regression build. |
+| `lpu_mxm_block_accumulator` | Architectural Block8 reference backend used by the default regression build. |
+| `lpu_mxm_shared_accumulator` | Selects the cycle-compatible reference backends or the physical Vector-only SRAM backend. |
+| `lpu_mxm_accumulator_sram` | Composes two 512 x 128 single-port macros into one 512 x 256 row bank. |
 | `lpu_mxm_slice` | Composes control, weight storage, compute, passive stream routing, collision detection, and sticky faults. |
 
 The functional MXM subset supports full-supercell and Column Direct16 IW,
@@ -156,28 +158,26 @@ write on the following cycle because the macro is single-port. Design Compiler
 L-2016.03 maps the surrounding logic to TSMC28 cells and preserves all 32 macro
 instances; `scripts/dc_mem_macro.sh` checks that count before and after compile.
 
-Design Compiler L-2016.03 also successfully analyzes the MXM
-source hierarchy, including the four-bank accumulator and INT8/BF16
-dequantizer plus the Block8 compute/wide-accumulator sources, and elaborates/checks
-the isolated 32-output dot bank. Its
-pre-optimization check reports dead intermediate cells inside the expanded
-custom FP functions; a later compile pass must remove and recheck those cells.
-The first compute implementation deliberately expands the four 8x8 tile
-contributions in parallel, and full-slice elaboration was not completed during
-this milestone because that network is very large. Treat the current block as
-functionally synthesizable, not yet PPA-qualified. Pipelining or resource
-sharing the dot-product bank is required before timing/area signoff.
+Design Compiler L-2016.03 maps the physical Vector accumulator to sixteen ARM
+`sram_128_512` macros: eight independently selected 256-bit row banks, with two
+128-bit macros per bank. One DesignWare FP32 adder is reused across the eight
+lanes. At TT 0.9 V/25 C the isolated target has 522,018.7 um2 cell area,
+including 491,773.8 um2 of SRAM macro area, and a 2.37 ns critical path under a
+10 ns clock constraint. `scripts/dc_acc_macro.sh` checks the macro count before
+and after mapping and writes all reports under `build/dc_acc_macro/`.
 Accumulator capacity is configured at `lpu_top` with
 `MXM_ACCUMULATOR_BLOCK_COUNT`, where one block is one complete 32x32 FP32
 partial-sum tile. The default 32 blocks derive 1024 Vector rows or 128 Block8
 rows, and both layouts therefore contain 128 KiB per MXM. The 13-bit instruction
-address limits the parameter to 1..256 blocks. The Vector
-accumulator is represented as four `(block_count * 32)` x 256-bit segment banks
-plus valid state; the Block8 accumulator uses four `(block_count * 4)` x
-2048-bit banks. Their bounded storage and single-segment update paths are synthesizable,
-but the current asynchronous read-modify-write model and resettable validity
-array still require their own technology-specific SRAM mapping before full-LPU
-PPA signoff; the current explicit macro target covers the main MEM tile only.
+address limits the parameter to 1..256 blocks. The default reference build
+represents the Vector accumulator as four `(block_count * 32)` x 256-bit
+segment banks and Block8 as four `(block_count * 4)` x 2048-bit banks. The
+macro build instead uses one shared 128 KiB physical store for Vector data,
+performs a post-reset zero sweep, and serializes its read-modify-write
+operation. Block8 is intentionally unsupported in this backend. The full macro
+script additionally defines `FTLPU_DISABLE_BLOCK8`, reducing the MXM compute
+array from eight dot rows to one and making Block8 instructions fault rather
+than allocating unused adders.
 
 ### VXM module boundaries
 
