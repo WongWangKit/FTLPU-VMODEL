@@ -36,6 +36,14 @@ package lpu_pkg;
   localparam integer MXM_INSTRUCTION_WIDTH = 48;
   localparam integer VXM_INSTRUCTION_WIDTH = 128;
   localparam integer SXM_INSTRUCTION_WIDTH = 416;
+  // VMODEL SXM packet fields.  Bits [239:208] were not consumed by the
+  // existing SXM RTL; reserve [210:208] for the explicit native-compatible
+  // Permute destination-tile selector.
+  localparam integer SXM_OUTPUT_TILE_LSB   = 208;
+  localparam integer SXM_OUTPUT_TILE_MSB   = 210;
+  localparam integer SXM_OUTPUT_TILE_WIDTH =
+    SXM_OUTPUT_TILE_MSB - SXM_OUTPUT_TILE_LSB + 1;
+  localparam logic [SXM_OUTPUT_TILE_WIDTH-1:0] SXM_OUTPUT_TILE_ALL = 3'd4;
   localparam integer ICU_PAYLOAD_WIDTH     = SXM_INSTRUCTION_WIDTH;
   localparam integer ICU_QUEUE_COUNT       = 138;
 
