@@ -3,6 +3,7 @@ build/
 obj_dir/
 simv
 simv.exe
+*.vvp
 ucli.key
 *.vcd
 *.fsdb
