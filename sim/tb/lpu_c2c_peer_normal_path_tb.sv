@@ -15,7 +15,9 @@ module c2c_peer_normal_checker #(
   logic [255:0] rx_inject_data_o;
   logic [19:0] rx_inject_stream_idx_o;
 
-  lpu_c2c_peer_normal_path #(.FIFO_DEPTH(2), .LINK_LATENCY(LINK_LATENCY)) dut (.*);
+  lpu_c2c_peer_normal_path #(
+    .FIFO_DEPTH(2), .LINK_LATENCY(LINK_LATENCY), .P_VECTOR_CREDITS(16)
+  ) dut (.*);
 
   function automatic logic has_start(
     input integer k, input [15:0] starts, input integer slots

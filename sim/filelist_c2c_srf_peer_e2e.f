@@ -4,6 +4,7 @@ rtl/srf/ftlpu_sr_direction_fabric.sv
 rtl/srf/ftlpu_sr_hemisphere_fabric.sv
 rtl/c2c_native/c2c_tx_gather.sv
 rtl/c2c_native/c2c_completed_fifo.sv
+rtl/c2c_native/c2c_vector_credit_serializer.sv
 rtl/c2c_native/c2c_peer_transport.sv
 rtl/c2c_native/c2c_rx_ready_fifo.sv
 rtl/c2c_native/c2c_rx_issue_pair.sv

@@ -20,6 +20,7 @@ module lpu_c2c_rx_srf_integration #(
   output logic rx_ready_full_o,
   output logic rx_ready_empty_o,
   output logic [$clog2(FIFO_DEPTH+1)-1:0] rx_ready_count_o,
+  output logic credit_return_o,
   output logic [2*COLUMNS*SUPERLANES*LOCAL_PRODUCERS*STREAMS-1:0]
     srf_inject_valid_o,
   output logic [2*COLUMNS*SUPERLANES*LOCAL_PRODUCERS*STREAMS*64-1:0]
@@ -47,6 +48,9 @@ module lpu_c2c_rx_srf_integration #(
     .ready_pop_o(ready_pop), .replay_valid_o(pair_valid),
     .replay_payload_o(pair_payload), .replay_stream_idx_o(pair_stream)
   );
+  // A complete vector releases credit exactly when Receive pairing pops the
+  // RX-ready FIFO; replay completion must not delay this return.
+  assign credit_return_o = ready_pop;
   c2c_rx_replay u_replay (
     .clk_i, .rst_ni, .vector_valid_i(pair_valid),
     .vector_payload_i(pair_payload), .vector_stream_idx_i(pair_stream),

@@ -6,7 +6,8 @@
 // No SRF attachment, command pairing, slot mapping, or wrapper state.
 module lpu_c2c_peer_normal_path #(
   parameter integer FIFO_DEPTH = 2,
-  parameter integer LINK_LATENCY = 1
+  parameter integer LINK_LATENCY = 1,
+  parameter integer P_VECTOR_CREDITS = 4
 ) (
   input  logic clk_i,
   input  logic rst_ni,
@@ -25,11 +26,16 @@ module lpu_c2c_peer_normal_path #(
   logic [255:0] peer_rx_payload;
 
   lpu_c2c_tx_peer_path #(
-    .FIFO_DEPTH(FIFO_DEPTH), .LINK_LATENCY(LINK_LATENCY)
+    .FIFO_DEPTH(FIFO_DEPTH), .LINK_LATENCY(LINK_LATENCY),
+    .P_VECTOR_CREDITS(P_VECTOR_CREDITS)
   ) u_tx (
     .clk_i, .rst_ni,
     .tile_data_i(tx_tile_data_i), .tile_valid_i(tx_tile_valid_i),
     .tile_consume_o(tx_tile_consume_o),
+    // This test-only utility has no RX-ready FIFO endpoint. It never invents
+    // an architectural credit return; its test config supplies sufficient
+    // static credits for each bounded schedule.
+    .credit_return_i(1'b0),
     .peer_rx_valid_o(peer_rx_valid), .peer_rx_payload_o(peer_rx_payload)
   );
 

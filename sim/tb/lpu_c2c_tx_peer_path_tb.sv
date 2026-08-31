@@ -9,8 +9,11 @@ module c2c_tx_peer_path_checker #(
   logic rst_ni;
   logic [255:0] tile_data_i;
   logic [3:0] tile_valid_i, tile_consume_o;
+  logic credit_return_i;
   logic peer_rx_valid_o;
   logic [255:0] peer_rx_payload_o;
+  logic [2:0] credit_count_o;
+  logic serializer_busy_o, credit_error_o;
   integer check_cycle_id;
 
   lpu_c2c_tx_peer_path #(.FIFO_DEPTH(2), .LINK_LATENCY(LINK_LATENCY)) dut (.*);
@@ -83,8 +86,9 @@ module c2c_tx_peer_path_checker #(
   task automatic reset_path;
     @(negedge clk_i);
     rst_ni = 1'b0;
-    tile_valid_i = '1;
-    tile_data_i = '1;
+      tile_valid_i = '1;
+      tile_data_i = '1;
+      credit_return_i = 1'b0;
     #1;
     if (tile_consume_o !== 4'b0000 || dut.gather_completed_valid !== 1'b0 ||
         {dut.u_gather.stage2_valid_q, dut.u_gather.stage1_valid_q,
@@ -95,6 +99,7 @@ module c2c_tx_peer_path_checker #(
     repeat (2) @(posedge clk_i);
     @(negedge clk_i);
     tile_valid_i = '0;
+    credit_return_i = 1'b0;
     rst_ni = 1'b1;
     #1;
     check_fifo(0, '0);
