@@ -16,10 +16,13 @@ module lpu_icu_queue #(
   output logic                     issue_valid_o,
   output logic [PAYLOAD_WIDTH-1:0] issue_payload_o,
   output logic                     fault_o,
-  output logic [$clog2(DEPTH+1)-1:0] level_o
+  output logic [$clog2(DEPTH+1)-1:0] level_o,
+  output logic                     idle_o
 );
   localparam integer PTR_WIDTH = (DEPTH <= 1) ? 1 : $clog2(DEPTH);
   localparam integer LEVEL_WIDTH = $clog2(DEPTH + 1);
+  localparam integer STRIDE_PAYLOAD_WIDTH =
+    (PAYLOAD_WIDTH < 31) ? 31 : PAYLOAD_WIDTH;
 
   logic [1:0] kind_mem [0:DEPTH-1];
   logic [PAYLOAD_WIDTH-1:0] payload_mem [0:DEPTH-1];
@@ -50,15 +53,18 @@ module lpu_icu_queue #(
     input logic signed [11:0] stride,
     input logic [9:0] index
   );
+    logic [STRIDE_PAYLOAD_WIDTH-1:0] wide_payload;
     logic signed [22:0] delta;
     logic signed [23:0] address;
     begin
-      apply_stride = payload;
+      wide_payload = '0;
+      wide_payload[PAYLOAD_WIDTH-1:0] = payload;
       if (APPLY_MEM_STRIDE) begin
         delta = stride * $signed({1'b0, index});
-        address = $signed({1'b0, payload[30:15]}) + delta;
-        apply_stride[30:15] = address[15:0];
+        address = $signed({1'b0, wide_payload[30:15]}) + delta;
+        wide_payload[30:15] = address[15:0];
       end
+      apply_stride = wide_payload[PAYLOAD_WIDTH-1:0];
     end
   endfunction
 
@@ -69,6 +75,8 @@ module lpu_icu_queue #(
   assign enqueue_ready_o = (level_q < DEPTH) || dequeue_fire;
   assign enqueue_fire = enqueue_valid_i && enqueue_ready_o;
   assign level_o = level_q;
+  assign idle_o = (level_q == 0) && (nop_remaining_q == 0) &&
+    (repeat_remaining_q == 0);
 
   always_ff @(posedge clk_i or negedge rst_ni) begin
     if (!rst_ni) begin

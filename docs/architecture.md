@@ -16,9 +16,9 @@ cycle contracts from the sibling `FTLPU-CMODEL` repository's
 | MEM groups / stream-register columns | 13 / 15 |
 | SRAM geometry per MEM slice | 65,536 x 32 bytes |
 | MXM | two 32 x 32 arrays per hemisphere, four total |
-| VXM | 16 ALU queues, shared by all lanes |
+| VXM | one four-row VXM, 8 heterogeneous local ALU queues plus 1 global configuration queue |
 | SXM | one per hemisphere |
-| ICU queues | 138 |
+| ICU address slots / physical queues | 138 / 131 |
 
 The physical topology is:
 
@@ -28,9 +28,9 @@ MXM.W[0:1] <-> SXM.W <-> MEM.W(52) <-> VXM <-> MEM.E(52) <-> SXM.E <-> MXM.E[0:1
 
 ## ICU queue map
 
-The RTL uses a uniform 416-bit queue payload so that the largest, 13-word SXM
-packet fits without a side channel. Narrower instruction types occupy the low
-bits.
+The schedule-loading interface is uniformly 416 bits so that the largest,
+13-word SXM packet fits without a side channel. Physical VXM FIFO memories use
+only their architectural 5/6/7/15-bit payload widths.
 
 | Queue indices | Consumer | Payload bits |
 | --- | --- | ---: |
@@ -39,7 +39,16 @@ bits.
 | 106..107 | MXM BF16 dequant scale, one queue per hemisphere | 16 |
 | 108..109 | MXM compute / accumulator read, one queue per hemisphere | 48 |
 | 110..111 | Reserved | - |
-| 112..127 | VXM ALU | 128 |
+| 112 | VXM local Q0 | 6 |
+| 113 | VXM local Q1 | 5 |
+| 114 | VXM local Q2 | 7 |
+| 115 | VXM local Q3 | 5 |
+| 116 | VXM local Q4 | 7 |
+| 117 | VXM local Q5 | 5 |
+| 118 | VXM local Q6 | 7 |
+| 119 | VXM local Q7 | 5 |
+| 120 | VXM global configuration | 15 |
+| 121..127 | Reserved | - |
 | 128..129 | SXM transpose | 416 |
 | 130..131 | SXM permute | 416 |
 | 132..133 | secondary MXM weight load, one queue per hemisphere | 48 |
@@ -55,8 +64,9 @@ long schedules do not require layer-sized instruction SRAMs. `NOP` and
 ## Implemented RTL boundary
 
 - Architectural constants and MEM/MXM/VXM/SXM instruction decoders.
-- All 138 independent ICU queues, including runtime refill, NOP, and Repeat
-  timing.
+- 131 independent physical ICU queues in a stable 138-slot address map,
+  including runtime refill, NOP, and Repeat timing. VXM slots 121..127 are
+  unimplemented reservations.
 - South-to-north four-tile control pipelines.
 - A byte-stream register stage with aggregate broadcast consumption and
   conflicting-producer detection.
@@ -83,18 +93,22 @@ long schedules do not require layer-sized instruction SRAMs. `NOP` and
 - A full 32x32 FP16 wavefront regression with four overlapping Transpose
   captures, MEM Repeat address strides, seven distinct cross-tile Permute maps,
   and comparison of all 1,024 output elements against C-model SRAM state.
-- A shared boundary-0 VXM bridge with passive West-to-opposite-East routing,
-  16 northbound ALU controls, per-lane ALU feedback state, and an exact integer
-  subset covering `StreamInt8`, integral immediates, arithmetic, and saturated
-  Int8 output.
-- A C-model/VCS `MEM.W -> VXM Add -> MEM.E` comparison across all 32 lanes.
-- Synthesizable FP16/BF16/FP32 stream conversion, sign/compare/ReLU operations,
-  and format-aware floating ALU feedback.
-- A C-model/VCS FP16 ReLU -> BF16 Cast -> FP32 Cast chain covering 2-byte and
-  4-byte output packing across all 32 lanes.
-- Synthesizable FP32 Add/Subtract/Multiply with guard/round/sticky alignment,
-  normalization, and round-to-nearest-even, checked against C-model results
-  containing non-exact decimal immediates.
+- One four-Tile VXM between the two hemispheres, with global-direction input
+  selection, opposite-side result routing, and passive boundary crossing.
+- Eight heterogeneous compact local-control waves plus one independently
+  committed global configuration wave.
+- A position-parameterized 32-bit ALU interface with FP16, BF16, and FP32
+  Basic and Special arithmetic.
+- FP16 FTZ/RNE Bypass, Add, Subtract, Multiply, Negate, Max, Exp,
+  Reciprocal, and Rsqrt units. Basic operations have one-cycle latency except
+  Multiply at two cycles; special operations use five arithmetic stages plus
+  a variable single-port-SRAM arbitration wait.
+- FP32 Bypass, Add, Subtract, Multiply, Negate, and Max with the same Basic
+  timing contract.
+- FP32 Exp, Reciprocal, and Rsqrt with FP16 LUT coefficients widened before
+  FP32 address/interpolation arithmetic.
+- BF16 Basic and Special operations with FP32 internal arithmetic and RNE
+  narrowing at each ALU result; the Special LUT remains FP16.
 - C-model/VCS `MEM -> MXM -> MEM` comparisons using non-symmetric 32x32 BF16
   and FP16 permutation matrices. Each format loads and computes both weight
   buffers with distinct permutations and signed activation sets. Together the
@@ -183,19 +197,98 @@ than allocating unused adders.
 
 | Module | Hardware responsibility |
 | --- | --- |
-| `lpu_vxm_control` | Advances each of the 16 ALU instruction waves through four tiles. |
-| `lpu_vxm_execute` | Validates issued operations, gathers stream/immediate/feedback operands, consumes successful West operands, and dispatches the lane bank. |
-| `lpu_vxm_alu` | Executes a parameterized bank of independent integer or floating-point lane operations and reports per-operation faults. |
-| `lpu_vxm_result_packer` | Converts successful lane results to the selected output format and detects active-producer collisions. |
-| `lpu_vxm_math_pkg` | Provides reusable FP16/BF16/FP32 conversion, rounding, integral-immediate, and Int8 saturation helpers. |
+| `lpu_vxm_control` | Advances eight heterogeneous local words and the global configuration through four Tile rows, one row per cycle. |
+| `lpu_vxm_input_converter` | Performs supported chain-head conversions among FP16, BF16, and FP32 while preserving a stable 32-bit container. |
+| `lpu_vxm_alu` | Validates format/opcode, dispatches Basic versus position-specific Special execution, and detects result collisions. |
+| `lpu_vxm_basic_alu` | Executes FP16/BF16/FP32 Bypass/Add/Subtract/Multiply/Negate/Max with one/two-cycle timing. BF16/FP32 share the wide adder, ADD/SUBTRACT/MAX share one comparator front end, and all formats share the segmented multiplier. |
+| `lpu_vxm_mul8x8` | Defines one operand-isolated 8x8 unsigned multiplier boundary while leaving its internal implementation to synthesis. |
+| `lpu_vxm_significand_multiplier` | Builds a shared 24x24 significand multiplier from nine gated 8x8 blocks; BF16 enables one block, FP16 up to four, and FP32 up to nine. |
+| `lpu_vxm_shared_float_multiplier` | Left-aligns FP16/BF16/FP32 significands, drives the shared block multiplier, performs FP32-style normalization/RNE, and packs the selected result format. |
+| `lpu_vxm_shared_float_compare` | Sanitizes operands and implements the shared magnitude/order/MAX front end: FP16/BF16 use the low 15-bit layer and FP32 adds a high 16-bit layer. |
+| `lpu_vxm_lut_storage` | Provides the legacy/standalone configurable LUT used by isolated ALU tests. |
+| `lpu_vxm_lut_sram` | Implements one physical 64x32 single-read function SRAM, storing each FP16 `{k,b}` pair in one row. |
+| `lpu_vxm_tile_pair_lut` | Implements one adjacent-Tile shared set of 24 SRAMs: one single-read SRAM for every special-function/Lane pair, with one-cycle Tile/Stage-tagged return and collision detection. |
+| `lpu_vxm_special_alu` | Performs range reduction, waits for its tagged external LUT response, interpolates `k*dx+b`, and restores the result exponent. |
+| `lpu_vxm_fp16_pkg` | Implements FP16 classification, FTZ, RNE arithmetic, division, square-root, reciprocal, and rsqrt helpers. |
+| `lpu_vxm_math_pkg` | Retains reusable format-conversion and FP32 helpers shared by the remaining RTL. |
 | `lpu_vxm_stream_bridge` | Arbitrates external East traffic, unconsumed cross-hemisphere West traffic, and active VXM result producers. |
-| `lpu_vxm_slice` | Composes the VXM blocks and owns feedback registers plus sticky fault/conflict state. |
+| `lpu_vxm_slice` | Composes four execution Tiles into the single VXM and applies the global direction bit to its boundary-input MUXes and result routes. |
+| `lpu_vxm_global_config` | Holds shadow/current global VXM state and commits it only at a safe configuration boundary. |
 
-The tile/ALU/lane coordinates are flattened only at the ALU-bank interface.
-The stateful control and feedback ownership remains in `lpu_vxm_slice`, while
-execute, ALU, result packing, and bridge routing are independently reviewable
-combinational blocks. This is an implementation hierarchy change only; it does
-not alter the C-model instruction encoding or cycle contract.
+The ALU uses a 32-bit data container and a 2-bit format selector. FP16, BF16,
+and FP32 Basic and Special operations share the interface. The reserved format
+does not issue and raises `unsupported_format_o`; unsupported position/opcode
+combinations raise `illegal_opcode_o`. Arithmetic uses deterministic
+RNE/flush-to-zero handling and a canonical quiet NaN.
+
+Basic multiplication uses one explicitly segmented significand multiplier for
+all three formats. The 24-bit operands are divided into three 8-bit chunks.
+Format gating plus zero-chunk operand isolation activates only `P22` for BF16,
+up to `P11/P12/P21/P22` for FP16, and up to all nine blocks for FP32. Each 8x8
+leaf still uses the synthesizable `*` operator, so the target synthesis flow
+chooses its internal Array/Booth/library implementation.
+
+Basic comparison is also explicitly hierarchical. One 15-bit comparator
+covers the complete signless FP16/BF16 encoding and the low portion of FP32;
+FP32 first compares `[30:15]` and consults the shared low layer only on a tie.
+The resulting magnitude order selects the larger operand for floating-point
+addition/subtraction alignment and also drives signed MAX selection, avoiding
+three independently inferred comparators in each physical ALU.
+
+The Special path uses function ID 0 for Exp, 1 for Reciprocal, and 2 for
+Rsqrt. One adjacent-Tile pair physically instantiates 24 independent 64x32
+single-read SRAMs, one per `{function, Lane}`; each row stores one FP16 `{k,b}`
+coefficient pair. Four Tile rows use two shared sets, so one Slice contains 48
+SRAMs. Every function also owns programmable FP16 `input_min` and
+`segment_width` state, replicated consistently across its eight Lane SRAMs.
+The one-cycle control/data wave alternates ownership between adjacent Tiles.
+Tile and physical-Stage tags route the next-cycle response without an arbiter.
+Two Tiles, or two Stages within one Tile, requesting the same function/Lane in
+one cycle is a protocol fault that the compiler schedule must prevent.
+
+The compute unit clamps the derived address, consumes the tagged `{k,b}`
+response, and evaluates `k*dx+b` before exponent/sign restoration. LUT-free
+special cases retain the base pipeline latency; a lookup adds only its
+arbitration wait. In BF16 and FP32 modes, `input_min`, `segment_width`, `k`, and `b`
+are widened from FP16 and all address/interpolation arithmetic remains FP32;
+BF16 narrows the final ALU result with RNE. The
+default SRAM depth is 64 and is parameterized. One Slice LUT programming port
+broadcasts identical contents into both pair sets and all eight Lane replicas
+of the selected function.
+
+The active ICU-to-Slice control path separates one 15-bit global queue from
+eight physical local FIFOs with 6/5/7/5/7/5/7/5-bit payloads.  The local words
+and the committed global word advance through four Tile rows. Each Tile stores
+its resident configuration. Queues 121..127 are no longer instantiated. The
+former 16 x 128-bit control path is not active. Compact local decode, fixed
+stream operand selection, 16-stage ALU chaining, and FP16/BF16/FP32 result
+serialization are connected at Tile level; the Slice connects all four Tiles
+to the two boundary hemispheres.
+
+The 15-bit global configuration begins with a 1-bit `flow_direction`, followed
+by 2-bit `chain_length`, `active_width`, and `compute_dtype` fields and
+independent 2-bit read-width and dtype fields for LHS and RHS. The direction
+bit selects the left or right input boundary and routes results to the opposite
+hemisphere. Chain-head conversion is selected from source and compute dtypes
+without a redundant conversion-enable bit.
+
+`lhs_read_bits` and `rhs_read_bits` encode 16-bit one-beat or 32-bit two-beat
+collection independently. FP16/BF16 use one beat. FP32 uses little-endian
+phase order: low 16 bits
+first and high 16 bits second over the same fixed stream pair. The assembled
+operand and all internal/feedback/accumulator tokens remain 32 bits. FP32 tail
+traffic is serialized over the corresponding result pair in the same order.
+The collector retains a complete operand through the following execute cycle,
+giving repeated FP32 traffic a low/high/execute cadence without overwriting a
+resident operand.
+
+VXM unit tests are separated by boundary. `lpu_vxm_icu_map_tb` checks all
+eight heterogeneous local FIFOs plus the global FIFO in the physical ICU, and
+`lpu_vxm_control_tb` checks four-Tile local/global propagation.
+Each FP16 opcode also has its own top-level test (`lpu_vxm_bypass_tb` through
+`lpu_vxm_rsqrt_tb`), backed by a shared harness that programs external LUT
+storage for Special operations. `lpu_vxm_alu_tb` remains the combined ALU
+regression.
 
 The full C-model `TspSliceSystem` currently constructs its MEM region through
 `TileArrayModel::LegacyLocalLinear()`: a MEM Read injects at the slice group's
@@ -204,9 +297,12 @@ placement. RTL follows the full-system mapping because existing workloads and
 their `read_latency()` schedules use it. This distinction is captured in code
 comments and in the generated East/West regression.
 
-The remaining MXM modes and VXM arithmetic pipelines for Divide, Clamp, Square,
-Sqrt, Exp, Log, subnormal arithmetic, and exceptional-value propagation are
-subsequent implementation stages. SXM ShiftSelect and Distribute are
+The remaining MXM modes are subsequent implementation stages. VXM subnormal
+values intentionally use the C-model FTZ policy. The Special ALU and
+programmable LUT storage remain separate modules; Tile integration encodes the
+requesting Stage, while Slice integration provides fixed-phase adjacent-Tile
+sharing and tagged one-cycle response routing around the Lane-level SRAMs.
+SXM ShiftSelect and Distribute are
 intentionally still control/ISA-only. Their interfaces should consume the
 already stable ISA and control-wave blocks; no new encoding should be
 introduced without first updating the C model codec tests.

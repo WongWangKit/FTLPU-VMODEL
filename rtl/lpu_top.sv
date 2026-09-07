@@ -54,7 +54,12 @@ module lpu_top #(
   logic [4*48-1:0] mxm_load_instruction;
   logic [4*16-1:0] mxm_dequant_instruction;
   logic [4*48-1:0] mxm_compute_instruction;
-  logic [16*128-1:0] vxm_issue_instruction;
+  logic [7:0] vxm_local_issue_valid;
+  logic [8*lpu_pkg::VXM_LOCAL_MAX_INSTRUCTION_WIDTH-1:0]
+    vxm_local_issue_instruction;
+  logic vxm_global_issue_valid;
+  logic [lpu_pkg::VXM_GLOBAL_CONFIG_WIDTH-1:0]
+    vxm_global_issue_instruction;
   logic [2*64-1:0] host_mem_read_data;
   logic [2*4*32-1:0] mem_to_vxm_west_valid;
   logic [2*4*32*64-1:0] mem_to_vxm_west_data;
@@ -82,14 +87,25 @@ module lpu_top #(
     mxm_load_instruction = '0;
     mxm_dequant_instruction = '0;
     mxm_compute_instruction = '0;
-    vxm_issue_instruction = '0;
+    vxm_local_issue_valid = dispatch_valid_o[
+      lpu_pkg::VXM_QUEUE_BASE +: lpu_pkg::VXM_LOCAL_QUEUE_COUNT];
+    vxm_local_issue_instruction = '0;
+    vxm_global_issue_valid = dispatch_valid_o[lpu_pkg::VXM_GLOBAL_QUEUE];
+    vxm_global_issue_instruction = dispatch_payload_o[
+      lpu_pkg::VXM_GLOBAL_QUEUE*416 +:
+      lpu_pkg::VXM_GLOBAL_CONFIG_WIDTH];
     host_mem_read_data_o = '0;
     for (integer column = 0; column < 104; column++)
       mem_issue_instruction[column*47 +: 47] =
         dispatch_payload_o[column*416 +: 47];
-    for (integer alu = 0; alu < 16; alu++)
-      vxm_issue_instruction[alu*128 +: 128] =
-        dispatch_payload_o[(112+alu)*416 +: 128];
+    for (integer queue = 0;
+         queue < lpu_pkg::VXM_LOCAL_QUEUE_COUNT; queue++)
+      vxm_local_issue_instruction[
+        queue*lpu_pkg::VXM_LOCAL_MAX_INSTRUCTION_WIDTH +:
+        lpu_pkg::VXM_LOCAL_MAX_INSTRUCTION_WIDTH] =
+        dispatch_payload_o[
+          (lpu_pkg::VXM_QUEUE_BASE+queue)*416 +:
+          lpu_pkg::VXM_LOCAL_MAX_INSTRUCTION_WIDTH];
     for (integer hemisphere = 0; hemisphere < 2; hemisphere++) begin
       mxm_load_instruction[(hemisphere*2)*48 +: 48] =
         dispatch_payload_o[(104+hemisphere)*416 +: 48];
@@ -291,9 +307,20 @@ module lpu_top #(
     .clk_i,
     .rst_ni,
     .run_i,
-    .issue_valid_i(dispatch_valid_o[112 +: 16]),
-    .issue_instruction_i(vxm_issue_instruction),
-    .west_from_mem_valid_i(mem_to_vxm_west_valid),
+    .local_issue_valid_i(vxm_local_issue_valid),
+    .local_issue_instruction_i(vxm_local_issue_instruction),
+      .global_issue_valid_i(vxm_global_issue_valid),
+      .global_issue_instruction_i(vxm_global_issue_instruction),
+      .lut_config_valid_i(1'b0),
+      .lut_config_bank_i('0),
+      .lut_config_input_min_i('0),
+      .lut_config_segment_width_i('0),
+      .lut_write_valid_i(1'b0),
+      .lut_write_bank_i('0),
+      .lut_write_address_i('0),
+      .lut_write_k_i('0),
+      .lut_write_b_i('0),
+      .west_from_mem_valid_i(mem_to_vxm_west_valid),
     .west_from_mem_data_i(mem_to_vxm_west_data),
     .external_east_valid_i(mem_east_edge_valid_i),
     .external_east_data_i(mem_east_edge_data_i),

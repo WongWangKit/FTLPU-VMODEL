@@ -22,15 +22,28 @@ set relative_rtl_files [list \
   rtl/mem/lpu_sram_1rw_banked.sv rtl/mem/lpu_mem_tile_slice.sv \
   rtl/mem/lpu_mem_tile_slice_sram.sv rtl/mem/lpu_mem_tile_slice_select.sv \
   rtl/mem/lpu_mem_column.sv rtl/mem/lpu_mem_hemisphere.sv \
-  rtl/vxm/lpu_vxm_math_pkg.sv rtl/mxm/lpu_mxm_control.sv \
+  rtl/vxm/lpu_vxm_math_pkg.sv rtl/vxm/lpu_vxm_fp16_pkg.sv \
+  rtl/vxm/lpu_vxm_input_converter.sv \
+  rtl/mxm/lpu_mxm_control.sv \
   rtl/mxm/lpu_mxm_dequantizer.sv rtl/mxm/lpu_mxm_weight_buffer.sv \
   rtl/mxm/lpu_mxm_dot_bank.sv rtl/mxm/lpu_mxm_compute.sv \
   rtl/mxm/lpu_mxm_accumulator_sram.sv \
   rtl/mxm/lpu_mxm_accumulator.sv rtl/mxm/lpu_mxm_block_accumulator.sv \
   rtl/mxm/lpu_mxm_shared_accumulator.sv rtl/mxm/lpu_mxm_slice.sv \
   rtl/sxm/lpu_sxm_control.sv rtl/sxm/lpu_sxm_slice.sv \
-  rtl/vxm/lpu_vxm_control.sv rtl/vxm/lpu_vxm_alu.sv \
-  rtl/vxm/lpu_vxm_execute.sv rtl/vxm/lpu_vxm_result_packer.sv \
+  rtl/vxm/lpu_vxm_global_config.sv rtl/vxm/lpu_vxm_control.sv \
+  rtl/vxm/lpu_vxm_fp16_stream_groups.sv \
+  rtl/vxm/lpu_vxm_local_decoder.sv rtl/vxm/lpu_vxm_datapath_mux.sv \
+  rtl/vxm/lpu_vxm_datapath_stage.sv \
+  rtl/vxm/lpu_vxm_instruction_controller.sv \
+  rtl/vxm/lpu_vxm_mul8x8.sv rtl/vxm/lpu_vxm_significand_multiplier.sv \
+  rtl/vxm/lpu_vxm_shared_float_multiplier.sv \
+  rtl/vxm/lpu_vxm_shared_float_compare.sv \
+  rtl/vxm/lpu_vxm_basic_alu.sv \
+  rtl/vxm/lpu_vxm_lut_sram.sv rtl/vxm/lpu_vxm_tile_pair_lut.sv \
+  rtl/vxm/lpu_vxm_special_alu.sv \
+  rtl/vxm/lpu_vxm_alu.sv \
+  rtl/vxm/lpu_vxm_execution_stage.sv rtl/vxm/lpu_vxm_tile_execution.sv \
   rtl/vxm/lpu_vxm_stream_bridge.sv rtl/vxm/lpu_vxm_slice.sv rtl/lpu_top.sv]
 set rtl_files [list]
 foreach rtl_file $relative_rtl_files {

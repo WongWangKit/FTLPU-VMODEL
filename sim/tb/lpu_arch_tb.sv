@@ -49,7 +49,8 @@ module lpu_arch_tb;
     .issue_valid_o(issue_valid),
     .issue_payload_o(issue_payload),
     .fault_o(queue_fault),
-    .level_o(queue_level)
+    .level_o(queue_level),
+    .idle_o()
   );
 
   lpu_mem_tile_slice #(.DEPTH_ROWS(32)) u_mem (

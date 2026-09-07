@@ -147,6 +147,41 @@ function automatic logic [15:0] fp32_to_bf16(input logic [31:0] value);
   end
 endfunction
 
+function automatic logic bf16_is_nan(input logic [15:0] value);
+  bf16_is_nan = (value[14:7] == 8'hff) && (value[6:0] != 0);
+endfunction
+
+function automatic logic bf16_is_inf(input logic [15:0] value);
+  bf16_is_inf = (value[14:7] == 8'hff) && (value[6:0] == 0);
+endfunction
+
+function automatic logic [15:0] bf16_sanitize_ftz(
+  input logic [15:0] value
+);
+  begin
+    if (bf16_is_nan(value))
+      bf16_sanitize_ftz = {value[15], 8'hff, 7'h40};
+    else if (value[14:7] == 0)
+      bf16_sanitize_ftz = {value[15], 15'b0};
+    else
+      bf16_sanitize_ftz = value;
+  end
+endfunction
+
+function automatic logic [31:0] bf16_to_fp32(input logic [15:0] value);
+  bf16_to_fp32 = {bf16_sanitize_ftz(value), 16'b0};
+endfunction
+
+function automatic logic [15:0] fp32_to_bf16_ftz(
+  input logic [31:0] value
+);
+  logic [15:0] rounded;
+  begin
+    rounded = fp32_to_bf16(value);
+    fp32_to_bf16_ftz = bf16_sanitize_ftz(rounded);
+  end
+endfunction
+
 function automatic logic [26:0] fp32_shift_right_sticky(
   input logic [26:0] value,
   input integer distance
@@ -167,9 +202,10 @@ function automatic logic [26:0] fp32_shift_right_sticky(
   end
 endfunction
 
-function automatic logic [31:0] fp32_add_rne(
+function automatic logic [31:0] fp32_add_rne_ordered(
   input logic [31:0] lhs,
-  input logic [31:0] rhs
+  input logic [31:0] rhs,
+  input logic        lhs_magnitude_ge
 );
   logic sign_big;
   logic sign_small;
@@ -186,13 +222,13 @@ function automatic logic [31:0] fp32_add_rne(
   integer distance;
   begin
     if (lhs[30:0] == 0 && rhs[30:0] == 0)
-      fp32_add_rne = {lhs[31] & rhs[31], 31'b0};
+      fp32_add_rne_ordered = {lhs[31] & rhs[31], 31'b0};
     else if (lhs[30:0] == 0)
-      fp32_add_rne = rhs;
+      fp32_add_rne_ordered = rhs;
     else if (rhs[30:0] == 0)
-      fp32_add_rne = lhs;
+      fp32_add_rne_ordered = lhs;
     else begin
-      if (lhs[30:0] >= rhs[30:0]) begin
+      if (lhs_magnitude_ge) begin
         sign_big = lhs[31];
         sign_small = rhs[31];
         exponent_big = lhs[30:23];
@@ -221,7 +257,7 @@ function automatic logic [31:0] fp32_add_rne(
       end else begin
         normalized = significand_big - aligned_small;
         if (normalized == 0) begin
-          fp32_add_rne = 32'b0;
+          fp32_add_rne_ordered = 32'b0;
           normalized = '0;
         end else begin
           for (integer normalize_step = 0;
@@ -234,7 +270,7 @@ function automatic logic [31:0] fp32_add_rne(
       end
       if (normalized != 0) begin
         if ((exponent == 1) && !normalized[26])
-          fp32_add_rne = 32'h7fc00001;
+          fp32_add_rne_ordered = 32'h7fc00001;
         else begin
           rounded = {1'b0, normalized[26:3]};
           if (normalized[2] &&
@@ -246,14 +282,23 @@ function automatic logic [31:0] fp32_add_rne(
           end else
             final_significand = rounded[23:0];
           if (exponent >= 255)
-            fp32_add_rne = {sign_big, 8'hff, 23'b0};
+            fp32_add_rne_ordered = {sign_big, 8'hff, 23'b0};
           else
-            fp32_add_rne = {
+            fp32_add_rne_ordered = {
               sign_big, exponent[7:0], final_significand[22:0]};
         end
       end
     end
   end
+endfunction
+
+// Compatibility wrapper for users without an external shared comparator.
+function automatic logic [31:0] fp32_add_rne(
+  input logic [31:0] lhs,
+  input logic [31:0] rhs
+);
+  fp32_add_rne = fp32_add_rne_ordered(
+    lhs, rhs, lhs[30:0] >= rhs[30:0]);
 endfunction
 
 function automatic logic [31:0] fp32_multiply_rne(
