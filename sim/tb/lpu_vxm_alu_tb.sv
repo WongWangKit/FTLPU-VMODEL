@@ -44,6 +44,7 @@ module lpu_vxm_alu_tb;
   logic [31:0] exp_lhs;
   wire exp_output_valid;
   wire [31:0] exp_result;
+  wire exp_illegal;
   wire exp_unsupported;
   wire exp_lut_fault;
 
@@ -73,6 +74,7 @@ module lpu_vxm_alu_tb;
   logic [31:0] recip_lhs;
   wire recip_output_valid;
   wire [31:0] recip_result;
+  wire recip_illegal;
   wire recip_unsupported;
   wire recip_lut_fault;
   logic special_fault_seen;
@@ -153,7 +155,7 @@ module lpu_vxm_alu_tb;
     .input_ready_o(),
     .output_valid_o(exp_output_valid),
     .result_o(exp_result),
-    .illegal_opcode_o(),
+    .illegal_opcode_o(exp_illegal),
     .unsupported_format_o(exp_unsupported),
     .result_collision_o(),
     .lut_fault_o(exp_lut_fault)
@@ -205,7 +207,7 @@ module lpu_vxm_alu_tb;
     .input_ready_o(),
     .output_valid_o(recip_output_valid),
     .result_o(recip_result),
-    .illegal_opcode_o(),
+    .illegal_opcode_o(recip_illegal),
     .unsupported_format_o(recip_unsupported),
     .result_collision_o(),
     .lut_fault_o(recip_lut_fault)
