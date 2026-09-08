@@ -47,6 +47,14 @@ module lpu_vxm_slice_tb;
 
   always #5 clk = ~clk;
 
+  // Keep the Slice waveform beside its VCS build products.  The VCS
+  // +vcs+vcdpluson runtime switch only takes effect when the testbench
+  // actually opens a VPD database, so do that explicitly here.
+  initial begin
+    $vcdplusfile("build/vcs/vxm_slice/vxm_slice.vpd");
+    $vcdpluson(0, lpu_vxm_slice_tb);
+  end
+
   lpu_vxm_slice dut (
     .clk_i(clk),
     .rst_ni(rst_n),
