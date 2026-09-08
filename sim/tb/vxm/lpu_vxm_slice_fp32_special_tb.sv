@@ -201,8 +201,12 @@ module lpu_vxm_slice_fp32_special_tb;
           end
         end
       end
-      if (fault)
+      if (fault) begin
+        $display("FP32 Special fault detail: global=%b config_wave=%b tile=%b pair_lut=%b pair_collision=%b bridge_conflict=%b",
+          dut.global_config_fault, dut.config_wave_fault, dut.tile_fault,
+          dut.pair_lut_fault, dut.pair_lut_collision, dut.bridge_conflict);
         $fatal(1, "FP32 Special Slice reported a fault");
+      end
       if (conflict)
         $fatal(1, "FP32 Special Slice reported a routing conflict");
     end
