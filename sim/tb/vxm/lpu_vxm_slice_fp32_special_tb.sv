@@ -205,6 +205,16 @@ module lpu_vxm_slice_fp32_special_tb;
         $display("FP32 Special fault detail: global=%b config_wave=%b tile=%b pair_lut=%b pair_collision=%b bridge_conflict=%b",
           dut.global_config_fault, dut.config_wave_fault, dut.tile_fault,
           dut.pair_lut_fault, dut.pair_lut_collision, dut.bridge_conflict);
+        $display("Tile0 internals: lane_fault=%b lut_protocol=%b lut_storage=%b lut_collision=%b",
+          dut.gen_tile[0].u_tile.lane_fault,
+          dut.gen_tile[0].u_tile.lut_lane_protocol_fault,
+          dut.gen_tile[0].u_tile.lut_storage_fault,
+          dut.gen_tile[0].u_tile.internal_lut_collision);
+        $display("Tile1 internals: lane_fault=%b lut_protocol=%b lut_storage=%b lut_collision=%b",
+          dut.gen_tile[1].u_tile.lane_fault,
+          dut.gen_tile[1].u_tile.lut_lane_protocol_fault,
+          dut.gen_tile[1].u_tile.lut_storage_fault,
+          dut.gen_tile[1].u_tile.internal_lut_collision);
         $fatal(1, "FP32 Special Slice reported a fault");
       end
       if (conflict)
