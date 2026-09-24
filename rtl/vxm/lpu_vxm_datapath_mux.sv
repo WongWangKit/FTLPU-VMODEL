@@ -71,7 +71,8 @@ module lpu_vxm_datapath_mux #(
     .illegal_instruction_o(decoder_illegal)
   );
 
-  // Conversion is confined to chain heads. Native FP16/BF16/FP32,
+  // Conversion is confined to chain heads. Native FP16/BF16/FP32 payloads
+  // pass unchanged; the selected numeric ALU applies DAZ/NaN policy.
   // FP16/BF16-to-FP32 widening, and FP16/FP32-to-BF16 conversion are
   // implemented.
   lpu_vxm_input_converter #(.CONTAINER_WIDTH(CONTAINER_WIDTH)) u_lhs_converter (

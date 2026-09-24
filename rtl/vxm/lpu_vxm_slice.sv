@@ -61,7 +61,10 @@ module lpu_vxm_slice (
   logic [TILES-1:0] row_config_ready;
   logic [TILES-1:0] row_config_fire;
   logic [TILES-1:0] tile_config_ready;
-  logic [TILES-1:0] tile_execute_pending_q;
+  // Fixed one-cycle execute wave. This is a timing pipeline register, not an
+  // instruction buffer: a Superlane may not retain or retry the command when
+  // it is not ready. The compiler schedules the matching data beats.
+  logic [TILES-1:0] tile_execute_wave_q;
   logic [TILES-1:0] tile_execute_ready;
   logic [TILES-1:0] tile_config_done;
   logic [TILES-1:0] tile_idle;
@@ -90,12 +93,13 @@ module lpu_vxm_slice (
   logic [BOUNDARY_CELLS*STREAMS-1:0] produced_valid;
   logic [BOUNDARY_CELLS*STREAMS*WORD_WIDTH-1:0] produced_data;
   logic config_wave_fault;
+  logic execute_wave_fault;
   wire bridge_conflict;
 
   lpu_vxm_control u_control (
     .clk_i,
     .rst_ni,
-    .datapath_idle_i((&tile_idle) && !(|tile_execute_pending_q)),
+    .datapath_idle_i((&tile_idle) && !(|tile_execute_wave_q)),
     .local_issue_valid_i,
     .local_issue_instruction_i,
     .global_issue_valid_i,
@@ -113,31 +117,34 @@ module lpu_vxm_slice (
     row_config_ready = '0;
     row_config_fire = '0;
     config_wave_fault = 1'b0;
+    execute_wave_fault = 1'b0;
     for (integer row = 0; row < TILES; row++) begin
       row_config_wave[row] = |tile_local_valid[row*8 +: 8];
       row_config_ready[row] =
-        tile_config_ready[row] && !tile_execute_pending_q[row];
+        tile_config_ready[row] && !tile_execute_wave_q[row];
       row_config_fire[row] = run_i && row_config_wave[row] &&
         row_config_ready[row] && tile_global_config_valid[row];
       if (run_i && row_config_wave[row] &&
           (!row_config_ready[row] || !tile_global_config_valid[row]))
         config_wave_fault = 1'b1;
+      // Static scheduling has no retry path. If the command cannot enter the
+      // Superlane on its assigned cycle, report a schedule error immediately.
+      if (run_i && tile_execute_wave_q[row] && !tile_execute_ready[row])
+        execute_wave_fault = 1'b1;
     end
   end
 
-  // A configuration wave schedules one single execution in this first Slice
-  // integration. Repeat-count decoding will replace this pending bit with the
-  // shared instruction controller without changing the Tile interfaces.
+  // A configuration reaches Superlane N one cycle after Superlane N-1. The
+  // following execute pulse has the same fixed geometry and is never held for
+  // ready: there is deliberately no local Superlane instruction FIFO.
   always_ff @(posedge clk_i or negedge rst_ni) begin
     if (!rst_ni) begin
-      tile_execute_pending_q <= '0;
+      tile_execute_wave_q <= '0;
       tile_flow_direction_q <= '0;
     end else begin
+      tile_execute_wave_q <= row_config_fire;
       for (integer row = 0; row < TILES; row++) begin
-        if (tile_execute_pending_q[row] && tile_execute_ready[row] && run_i)
-          tile_execute_pending_q[row] <= 1'b0;
         if (row_config_fire[row]) begin
-          tile_execute_pending_q[row] <= 1'b1;
           tile_flow_direction_q[row] <= tile_global_config[
             row*CONFIG_WIDTH + VXM_GLOBAL_FLOW_DIRECTION_BIT];
         end
@@ -158,7 +165,7 @@ module lpu_vxm_slice (
           .local_config_active_i(tile_local_valid[row*8 +: 8]),
           .local_config_instruction_i(tile_local_instruction[
             row*8*LOCAL_MAX_WIDTH +: 8*LOCAL_MAX_WIDTH]),
-          .execute_valid_i(tile_execute_pending_q[row] && run_i),
+          .execute_valid_i(tile_execute_wave_q[row] && run_i),
           .execute_ready_o(tile_execute_ready[row]),
           .repeat_control_i(SINGLE_EXECUTE_CONTROL),
           .config_done_o(tile_config_done[row]),
@@ -333,6 +340,7 @@ module lpu_vxm_slice (
       conflict_o <= 1'b0;
     end else begin
       fault_o <= fault_o | global_config_fault | config_wave_fault |
+        execute_wave_fault |
         (|tile_fault) | (|pair_lut_fault);
       conflict_o <= conflict_o | bridge_conflict | (|pair_lut_collision);
     end

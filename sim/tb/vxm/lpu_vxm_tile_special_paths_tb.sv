@@ -593,9 +593,9 @@ module lpu_vxm_tile_special_paths_tb;
     // Concurrent tile-level LUT traffic: Q1/Q5 Exp, Q3 Reciprocal and
     // Q7 Rsqrt, all across eight lockstep lanes and both mirrored stages.
     reset_tile(VXM_CHAIN_LENGTH_2);
-    program_lut(2'd0, 16'hb800, 16'h3c00, 16'h3c00, 16'h3800);
-    program_lut(2'd1, 16'h3c00, 16'h3c00, 16'h0000, 16'h3c00);
-    program_lut(2'd2, 16'h3c00, 16'h3c00, 16'h0000, 16'h3c00);
+    program_lut(2'd0, 16'h0000, 16'h3c00, 16'h1000, 16'h0000);
+    program_lut(2'd1, 16'h3c00, 16'h3c00, 16'h0000, 16'h8000);
+    program_lut(2'd2, 16'h3c00, 16'h3c00, 16'h0000, 16'h8000);
     set_stream_block(0, 16'h0000, 16'h0000); // Exp(0) = 1.
     set_stream_block(1, 16'h4000, 16'h0000); // Reciprocal(2) = 0.5.
     set_stream_block(2, 16'h0000, 16'h0000); // Exp(0) = 1.
@@ -641,9 +641,9 @@ module lpu_vxm_tile_special_paths_tb;
     global_config = config_fields;
     stream_valid = '0;
     stream_data = '0;
-    program_lut(2'd0, 16'hb800, 16'h3c00, 16'h3c00, 16'h3800);
-    program_lut(2'd1, 16'h3c00, 16'h3c00, 16'h0000, 16'h3c00);
-    program_lut(2'd2, 16'h3c00, 16'h3c00, 16'h0000, 16'h3c00);
+    program_lut(2'd0, 16'h0000, 16'h3c00, 16'h1000, 16'h0000);
+    program_lut(2'd1, 16'h3c00, 16'h3c00, 16'h0000, 16'h8000);
+    program_lut(2'd2, 16'h3c00, 16'h3c00, 16'h0000, 16'h8000);
     local_config_instruction = '0;
     set_repeat_control(1'b1, 1'b0, 1'b1, 1'b1);
     set_instruction(1, 7'h06); // Exp(0).
@@ -673,9 +673,9 @@ module lpu_vxm_tile_special_paths_tb;
     config_fields.lhs_dtype = VXM_FORMAT_BF16;
     config_fields.rhs_dtype = VXM_FORMAT_BF16;
     global_config = config_fields;
-    program_lut(2'd0, 16'hb800, 16'h3c00, 16'h3c00, 16'h3800);
-    program_lut(2'd1, 16'h3c00, 16'h3c00, 16'h0000, 16'h3c00);
-    program_lut(2'd2, 16'h3c00, 16'h3c00, 16'h0000, 16'h3c00);
+    program_lut(2'd0, 16'h0000, 16'h3c00, 16'h1000, 16'h0000);
+    program_lut(2'd1, 16'h3c00, 16'h3c00, 16'h0000, 16'h8000);
+    program_lut(2'd2, 16'h3c00, 16'h3c00, 16'h0000, 16'h8000);
     set_stream_block(0, 16'h0000, 16'h0000); // Exp(0) = 1.
     set_stream_block(1, 16'h4000, 16'h0000); // Reciprocal(2) = 0.5.
     set_stream_block(2, 16'h0000, 16'h0000);

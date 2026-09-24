@@ -232,9 +232,9 @@ module lpu_vxm_slice_bf16_special_tb;
       repeat (3) @(posedge clk);
       @(negedge clk);
       rst_n = 1'b1;
-      program_lut(2'd0, 16'hb800, 16'h3c00, 16'h3c00, 16'h3800);
-      program_lut(2'd1, 16'h3c00, 16'h3c00, 16'h0000, 16'h3c00);
-      program_lut(2'd2, 16'h3c00, 16'h3c00, 16'h0000, 16'h3c00);
+      program_lut(2'd0, 16'h0000, 16'h3c00, 16'h1000, 16'h0000);
+      program_lut(2'd1, 16'h3c00, 16'h3c00, 16'h0000, 16'h8000);
+      program_lut(2'd2, 16'h3c00, 16'h3c00, 16'h0000, 16'h8000);
 
       global_fields = '0;
       global_fields.flow_direction = direction;

@@ -31,7 +31,8 @@ module lpu_vxm_input_converter #(
         VXM_FORMAT_FP16: begin
           case (compute_dtype_i)
             VXM_FORMAT_FP16: begin
-              converted_data_o[15:0] = fp16_input;
+              // No conversion: leave payload handling to the selected ALU.
+              converted_data_o[15:0] = raw_data_i[15:0];
               valid_o = 1'b1;
             end
             VXM_FORMAT_FP32: begin
@@ -51,8 +52,7 @@ module lpu_vxm_input_converter #(
         VXM_FORMAT_BF16: begin
           case (compute_dtype_i)
             VXM_FORMAT_BF16: begin
-              converted_data_o[15:0] =
-                bf16_sanitize_ftz(raw_data_i[15:0]);
+              converted_data_o[15:0] = raw_data_i[15:0];
               valid_o = 1'b1;
             end
             VXM_FORMAT_FP32: begin

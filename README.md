@@ -143,15 +143,41 @@ any wait introduced by single-port SRAM arbitration. Each Tile owns three
 separately programmable FP16 `{k,b}` SRAMs. BF16 and FP32 Special execution widen LUT
 range configuration and coefficients, then perform address arithmetic and
 `k*dx+b` interpolation in FP32. BF16 rounds back to 16 bits at each ALU result.
-All floating-point paths use the project's deterministic RNE/flush-to-zero
-policy and canonicalize NaNs. Basic BF16 and FP32 explicitly share one wide
-operand MUX and FP32 add/subtract hardware. FP16 keeps its narrow adder, while
+Floating-point arithmetic paths use the project's deterministic RNE/DAZ/FTZ
+policy and canonicalize NaNs. Bypass preserves every source bit, and Negate
+changes only the active format's sign bit. FP16, BF16, and FP32 Add/Subtract share one
+27-bit segmented significand datapath plus carry behind a front format MUX.
+FP16 uses a 7-bit signed working exponent; BF16/FP32 use 10-bit signed working
+exponents. Operand isolation uses one 14-bit low adder group for FP16/BF16 and
+enables a 13-bit high group for FP32. Near subtraction uses one grouped 27-bit
+leading-zero encoder; far subtraction bypasses it with a zero/one-bit shift.
 FP16/BF16 share the complete low-15-bit magnitude comparator and FP32 reuses
 that comparator below an added high-16-bit comparison. ADD, SUBTRACT, and MAX
-consume the same per-ALU comparison result. Basic multiplication is shared by
+consume the same per-ALU comparison result. MAX propagates either input NaN as
+the selected format's canonical quiet NaN, treats DAZ inputs as signed zero,
+returns positive zero for every effective-zero pair, and selects LHS for equal
+nonzero operands. Basic multiplication is shared by
 all three formats through nine operand-isolated 8x8 significand blocks: BF16 uses
 one block, FP16 uses at most four, and FP32 uses at most nine. The 8x8 leaf
-implementation remains synthesis-selected.
+implementation remains synthesis-selected. Their former carry-propagating
+addition tree has been replaced by a shared 3:2 carry-save compressor tree.
+BF16 bypasses compression, FP16 adds P22 only at its second and final CSA level,
+and FP32 follows the complete `9 -> 6 -> 4 -> 3 -> 2` tree before the one shared
+carry-propagating adder. Multiplication consumes the common unpacked format
+fields directly instead of widening FP16/BF16 through FP32. Its shared signed
+exponent path generates only `E0 = Ea + Eb - Bias` and `E1 = E0 + 1` while the
+significand array is active; normalization or an RNE carry selects E1 through a
+two-input MUX. The former sequential exponent corrections are removed, and no
+E2 candidate is instantiated.
+Multiply's two-cycle interface now corresponds to two real hardware stages.
+The common Basic front end performs operand unpack/DAZ/classification once and
+resolves the Multiply special-result class (`NaN`, `Inf`, or `Zero`) before the
+multiplier boundary; the multiplier does not inspect raw floating encodings.
+Stage 1 performs the segmented significand multiply, CSA compression, final
+carry-propagating addition, and parallel E0/E1 generation, then registers the
+48-bit product plus format/sign/special metadata. Stage 2 normalizes, performs
+RNE, selects E0/E1, packs the native result, and writes the Basic ALU output
+register. Consecutive Multiply requests remain accepted every cycle.
 
 The global VXM word is 15 bits: one flow-direction bit selects the input
 hemisphere and the opposite output boundary, while the remaining fields include

@@ -284,6 +284,76 @@ module lpu_vxm_alu_tb;
     end
   endtask
 
+  task automatic issue_basic_fp16_multiply(
+    input logic [15:0] lhs,
+    input logic [15:0] rhs,
+    input logic [15:0] expected
+  );
+    begin
+      @(negedge clk);
+      basic_format = VXM_FORMAT_FP16;
+      basic_opcode = VXM_LOCAL_MULTIPLY;
+      basic_lhs = {16'b0, lhs};
+      basic_rhs = {16'b0, rhs};
+      basic_input_valid = 1'b1;
+      #1;
+      if (!basic_ready || basic_unsupported || basic_illegal)
+        $fatal(1, "FP16 Multiply was not accepted");
+      @(posedge clk);
+      #1;
+      if (basic_output_valid)
+        $fatal(1, "FP16 Multiply returned in one cycle");
+      @(negedge clk);
+      basic_input_valid = 1'b0;
+      @(posedge clk);
+      #1;
+      if (!basic_output_valid || basic_result !== {16'b0, expected})
+        $fatal(1,
+          "FP16 Multiply expected %h got valid=%b result=%h",
+          expected, basic_output_valid, basic_result);
+    end
+  endtask
+
+  task automatic check_back_to_back_fp16_multiply;
+    begin
+      // Request A enters the internal product register.
+      @(negedge clk);
+      basic_format = VXM_FORMAT_FP16;
+      basic_opcode = VXM_LOCAL_MULTIPLY;
+      basic_lhs = 32'h00003e00;
+      basic_rhs = 32'h00004000;
+      basic_input_valid = 1'b1;
+      #1;
+      if (!basic_ready)
+        $fatal(1, "back-to-back Multiply A was not accepted");
+      @(posedge clk);
+      #1;
+      if (basic_output_valid)
+        $fatal(1, "back-to-back Multiply A returned early");
+
+      // Request B enters stage 1 while A completes stage 2.
+      @(negedge clk);
+      basic_lhs = 32'h00003e00;
+      basic_rhs = 32'h00003e00;
+      #1;
+      if (!basic_ready)
+        $fatal(1, "back-to-back Multiply B was not accepted");
+      @(posedge clk);
+      #1;
+      if (!basic_output_valid || basic_result !== 32'h00004200)
+        $fatal(1, "back-to-back Multiply A result mismatch: %h",
+          basic_result);
+
+      @(negedge clk);
+      basic_input_valid = 1'b0;
+      @(posedge clk);
+      #1;
+      if (!basic_output_valid || basic_result !== 32'h00004080)
+        $fatal(1, "back-to-back Multiply B result mismatch: %h",
+          basic_result);
+    end
+  endtask
+
   task automatic issue_basic_fp32(
     input logic [2:0] operation,
     input logic [31:0] lhs,
@@ -354,6 +424,34 @@ module lpu_vxm_alu_tb;
     end
   endtask
 
+  // Drives nonzero garbage in the unused upper half of the public 32-bit
+  // container. The selected 16-bit format must isolate it before arithmetic.
+  task automatic issue_basic_16_with_upper_noise(
+    input logic [1:0] format,
+    input logic [2:0] operation,
+    input logic [31:0] lhs,
+    input logic [31:0] rhs,
+    input logic [15:0] expected
+  );
+    begin
+      @(negedge clk);
+      basic_format = format;
+      basic_opcode = operation;
+      basic_lhs = lhs;
+      basic_rhs = rhs;
+      basic_input_valid = 1'b1;
+      @(posedge clk);
+      #1;
+      if (!basic_output_valid || basic_result !== {16'b0, expected})
+        $fatal(1,
+          "16-bit format MUX failed: format=%0d expected=%h got=%h",
+          format, expected, basic_result);
+      @(negedge clk);
+      basic_input_valid = 1'b0;
+      basic_format = VXM_FORMAT_FP16;
+    end
+  endtask
+
   task automatic issue_special_and_expect(
     input logic select_recip,
     input logic [2:0] operation,
@@ -375,11 +473,11 @@ module lpu_vxm_alu_tb;
       #1;
       if ((select_recip && recip_output_valid) ||
           (!select_recip && exp_output_valid))
-        $fatal(1, "special result returned before five pipeline stages");
+        $fatal(1, "special result returned before eight pipeline stages");
       @(negedge clk);
       recip_input_valid = 1'b0;
       exp_input_valid = 1'b0;
-      repeat (3) begin
+      repeat (6) begin
         @(posedge clk);
         #1;
         if ((select_recip && recip_output_valid) ||
@@ -405,6 +503,8 @@ module lpu_vxm_alu_tb;
     input logic [31:0] operand,
     input logic [31:0] expected
   );
+    integer timeout;
+    logic observed;
     begin
       @(negedge clk);
       if (select_recip) begin
@@ -426,24 +526,23 @@ module lpu_vxm_alu_tb;
       #1;
       if ((select_recip && recip_output_valid) ||
           (!select_recip && exp_output_valid))
-        $fatal(1, "FP32 special result returned before five stages");
+        $fatal(1, "FP32 special result returned before eight stages");
       @(negedge clk);
       recip_input_valid = 1'b0;
       exp_input_valid = 1'b0;
-      repeat (3) begin
+      timeout = 0;
+      observed = 1'b0;
+      while (!observed && (timeout < 12)) begin
         @(posedge clk);
         #1;
-        if ((select_recip && recip_output_valid) ||
-            (!select_recip && exp_output_valid))
-          $fatal(1, "FP32 special result returned early");
+        observed = select_recip ? recip_output_valid : exp_output_valid;
+        timeout = timeout + 1;
       end
-      @(posedge clk);
-      #1;
       if (select_recip) begin
-        if (!recip_output_valid || recip_result !== expected)
+        if (!observed || recip_result !== expected)
           $fatal(1, "FP32 special opcode %0d expected %h got %h",
                  operation, expected, recip_result);
-      end else if (!exp_output_valid || exp_result !== expected) begin
+      end else if (!observed || exp_result !== expected) begin
         $fatal(1, "FP32 exp expected %h got %h", expected, exp_result);
       end
       exp_format = VXM_FORMAT_FP16;
@@ -478,11 +577,11 @@ module lpu_vxm_alu_tb;
       #1;
       if ((select_recip && recip_output_valid) ||
           (!select_recip && exp_output_valid))
-        $fatal(1, "BF16 special result returned before five stages");
+        $fatal(1, "BF16 special result returned before eight stages");
       @(negedge clk);
       recip_input_valid = 1'b0;
       exp_input_valid = 1'b0;
-      repeat (3) begin
+      repeat (6) begin
         @(posedge clk);
         #1;
         if ((select_recip && recip_output_valid) ||
@@ -543,12 +642,12 @@ module lpu_vxm_alu_tb;
 
     // Minimal programmed tables for the exact points checked below. The
     // memory is external to both special execution units.
-    program_lut_entry_zero(1'b0, 2'd0, 16'hb800, 16'h3c00,
-                           16'h3c00, 16'h3800);
+    program_lut_entry_zero(1'b0, 2'd0, 16'h0000, 16'h3c00,
+                           16'h1000, 16'h0000);
     program_lut_entry_zero(1'b1, 2'd1, 16'h3c00, 16'h3c00,
-                           16'h0000, 16'h3c00);
+                           16'h0000, 16'h8000);
     program_lut_entry_zero(1'b1, 2'd2, 16'h3c00, 16'h3c00,
-                           16'h0000, 16'h3c00);
+                           16'h0000, 16'h8000);
 
     issue_basic_one_cycle(VXM_LOCAL_BYPASS, 16'h3c00, 16'h0000,
                           16'h3c00);
@@ -556,32 +655,79 @@ module lpu_vxm_alu_tb;
                           16'h4200);
     issue_basic_one_cycle(VXM_LOCAL_SUBTRACT, 16'h4200, 16'h4000,
                           16'h3c00);
+    issue_basic_one_cycle(VXM_LOCAL_ADD, 16'h4000, 16'hbc00,
+                          16'h3c00);
+    // FP16 alignment uses a zero-extended exponent in the shared subtractor.
+    issue_basic_one_cycle(VXM_LOCAL_ADD, 16'h3c00, 16'h0400,
+                          16'h3c00);
+    issue_basic_one_cycle(VXM_LOCAL_ADD, 16'h7bff, 16'h0400,
+                          16'h7bff);
+    issue_basic_one_cycle(VXM_LOCAL_SUBTRACT, 16'h0400, 16'h3c00,
+                          16'hbc00);
+    issue_basic_one_cycle(VXM_LOCAL_SUBTRACT, 16'h3c00, 16'h4000,
+                          16'hbc00);
+    // Near subtraction exercises full leading-zero normalization; the
+    // two-exponent-gap case takes the one-bit far-path bypass.
+    issue_basic_one_cycle(VXM_LOCAL_SUBTRACT, 16'h3c01, 16'h3c00,
+                          16'h1400);
+    issue_basic_one_cycle(VXM_LOCAL_SUBTRACT, 16'h3c00, 16'h3bff,
+                          16'h1000);
+    issue_basic_one_cycle(VXM_LOCAL_SUBTRACT, 16'h3c00, 16'h3400,
+                          16'h3a00);
+    issue_basic_one_cycle(VXM_LOCAL_SUBTRACT, 16'h0401, 16'h0400,
+                          16'h0000); // A nonzero subnormal result is FTZ.
+    issue_basic_one_cycle(VXM_LOCAL_SUBTRACT, 16'h0400, 16'h0401,
+                          16'h8000); // FTZ preserves the arithmetic sign.
+    issue_basic_one_cycle(VXM_LOCAL_ADD, 16'h7bff, 16'h7bff,
+                          16'h7c00);
+    issue_basic_16_with_upper_noise(VXM_FORMAT_FP16, VXM_LOCAL_ADD,
+      32'hdead3c00, 32'hbeef4000, 16'h4200);
     issue_basic_one_cycle(VXM_LOCAL_NEGATE, 16'h3c00, 16'h0000,
                           16'hbc00);
     issue_basic_one_cycle(VXM_LOCAL_MAX, 16'hc000, 16'h3e00,
                           16'h3e00);
 
-    // Multiply has one extra registered stage and accepts a new multiply
-    // every cycle.
-    @(negedge clk);
-    basic_opcode = VXM_LOCAL_MULTIPLY;
-    basic_lhs = 32'h00003e00;
-    basic_rhs = 32'h00004000;
-    basic_input_valid = 1'b1;
-    @(posedge clk);
-    #1;
-    if (basic_output_valid)
-      $fatal(1, "multiply returned in one cycle");
-    @(negedge clk);
-    basic_input_valid = 1'b0;
-    @(posedge clk);
-    #1;
-    if (!basic_output_valid || basic_result !== 32'h00004200)
-      $fatal(1, "multiply expected 3.0, got %h", basic_result);
+    // Multiply has one extra registered stage. These cases select E0, select
+    // E1 after product normalization, and select E1 after an RNE carry.
+    issue_basic_fp16_multiply(16'h3e00, 16'h4000, 16'h4200);
+    issue_basic_fp16_multiply(16'h3e00, 16'h3e00, 16'h4080);
+    issue_basic_fp16_multiply(16'h3c01, 16'h3ffe, 16'h4000);
+    issue_basic_fp16_multiply(16'h7bff, 16'h4000, 16'h7c00);
+    issue_basic_fp16_multiply(16'h0400, 16'h3800, 16'h0000);
+    issue_basic_fp16_multiply(16'h7c00, 16'h0000, 16'h7e00);
+    issue_basic_fp16_multiply(16'hbc00, 16'h4000, 16'hc000);
+    check_back_to_back_fp16_multiply();
 
-    // Subnormal inputs are flushed before execution.
+    // BYPASS and NEGATE are raw-bit operations; arithmetic DAZ does not alter
+    // their payloads.
     issue_basic_one_cycle(VXM_LOCAL_BYPASS, 16'h0001, 16'h0000,
+                          16'h0001);
+    issue_basic_one_cycle(VXM_LOCAL_NEGATE, 16'h0001, 16'h0000,
+                          16'h8001);
+    issue_basic_one_cycle(VXM_LOCAL_BYPASS, 16'h7e01, 16'h0000,
+                          16'h7e01);
+    issue_basic_one_cycle(VXM_LOCAL_ADD, 16'h0001, 16'h3c00,
+                          16'h3c00);
+    issue_basic_one_cycle(VXM_LOCAL_SUBTRACT, 16'h0001, 16'h3c00,
+                          16'hbc00);
+    issue_basic_one_cycle(VXM_LOCAL_ADD, 16'h8000, 16'h8000,
+                          16'h8000);
+    issue_basic_one_cycle(VXM_LOCAL_ADD, 16'h0000, 16'h8000,
                           16'h0000);
+    issue_basic_one_cycle(VXM_LOCAL_ADD, 16'h7c00, 16'hfc00,
+                          16'h7e00);
+    issue_basic_one_cycle(VXM_LOCAL_SUBTRACT, 16'h7c00, 16'h7c00,
+                          16'h7e00);
+    issue_basic_one_cycle(VXM_LOCAL_SUBTRACT, 16'h3c00, 16'h7c00,
+                          16'hfc00);
+    issue_basic_one_cycle(VXM_LOCAL_SUBTRACT, 16'h8000, 16'h0000,
+                          16'h8000);
+    issue_basic_one_cycle(VXM_LOCAL_ADD, 16'h3c00, 16'h7e01,
+                          16'h7e00);
+    issue_basic_one_cycle(VXM_LOCAL_MAX, 16'h0000, 16'h8000,
+                          16'h0000);
+    issue_basic_one_cycle(VXM_LOCAL_MAX, 16'h3c00, 16'h7e01,
+                          16'h7e00);
 
     // FP32 requests use the same public ALU ports and preserve the existing
     // one-cycle/two-cycle Basic timing contract.
@@ -591,15 +737,61 @@ module lpu_vxm_alu_tb;
                      32'h40600000, 1);
     issue_basic_fp32(VXM_LOCAL_SUBTRACT, 32'h40400000, 32'h40000000,
                      32'h3f800000, 1);
+    issue_basic_fp32(VXM_LOCAL_ADD, 32'h40000000, 32'hbf800000,
+                     32'h3f800000, 1);
+    // Wide exponent gap, with each input order, still selects one subtractor.
+    issue_basic_fp32(VXM_LOCAL_ADD, 32'h3f800000, 32'h00800000,
+                     32'h3f800000, 1);
+    issue_basic_fp32(VXM_LOCAL_ADD, 32'h7f7fffff, 32'h00800000,
+                     32'h7f7fffff, 1); // Exponent distance 253.
+    issue_basic_fp32(VXM_LOCAL_SUBTRACT, 32'h00800000, 32'h3f800000,
+                     32'hbf800000, 1);
+    issue_basic_fp32(VXM_LOCAL_SUBTRACT, 32'h3f800000, 32'h40000000,
+                     32'hbf800000, 1);
+    issue_basic_fp32(VXM_LOCAL_SUBTRACT, 32'h3f800001, 32'h3f800000,
+                     32'h34000000, 1);
+    issue_basic_fp32(VXM_LOCAL_SUBTRACT, 32'h3f800000, 32'h3f7fffff,
+                     32'h33800000, 1);
+    issue_basic_fp32(VXM_LOCAL_SUBTRACT, 32'h3f800000, 32'h3e800000,
+                     32'h3f400000, 1);
+    issue_basic_fp32(VXM_LOCAL_SUBTRACT, 32'h00800001, 32'h00800000,
+                     32'h00000000, 1);
+    issue_basic_fp32(VXM_LOCAL_ADD, 32'h7f7fffff, 32'h7f7fffff,
+                     32'h7f800000, 1);
     issue_basic_fp32(VXM_LOCAL_MULTIPLY, 32'h3fc00000, 32'h40000000,
                      32'h40400000, 2);
+    issue_basic_fp32(VXM_LOCAL_MULTIPLY, 32'h3fc00000, 32'h3fc00000,
+                     32'h40100000, 2);
+    issue_basic_fp32(VXM_LOCAL_MULTIPLY, 32'h3f800001, 32'h3ffffffe,
+                     32'h40000000, 2);
+    issue_basic_fp32(VXM_LOCAL_MULTIPLY, 32'hff7fffff, 32'h40000000,
+                     32'hff800000, 2);
     issue_basic_fp32(VXM_LOCAL_NEGATE, 32'h3f800000, 32'h00000000,
                      32'hbf800000, 1);
     issue_basic_fp32(VXM_LOCAL_MAX, 32'hc0000000, 32'h3fc00000,
                      32'h3fc00000, 1);
-    // Match the existing VXM FTZ policy and make exceptional behavior
-    // deterministic at the public ALU boundary.
+    // Raw-bit operations preserve FP32 subnormal and NaN payload bits.
     issue_basic_fp32(VXM_LOCAL_BYPASS, 32'h00000001, 32'h00000000,
+                     32'h00000001, 1);
+    issue_basic_fp32(VXM_LOCAL_NEGATE, 32'h00000001, 32'h00000000,
+                     32'h80000001, 1);
+    issue_basic_fp32(VXM_LOCAL_BYPASS, 32'h7fc00001, 32'h00000000,
+                     32'h7fc00001, 1);
+    issue_basic_fp32(VXM_LOCAL_ADD, 32'h00000001, 32'h3f800000,
+                     32'h3f800000, 1);
+    issue_basic_fp32(VXM_LOCAL_SUBTRACT, 32'h00000001, 32'h3f800000,
+                     32'hbf800000, 1);
+    issue_basic_fp32(VXM_LOCAL_ADD, 32'h80000000, 32'h80000000,
+                     32'h80000000, 1);
+    issue_basic_fp32(VXM_LOCAL_ADD, 32'h00000000, 32'h80000000,
+                     32'h00000000, 1);
+    issue_basic_fp32(VXM_LOCAL_SUBTRACT, 32'h7f800000, 32'h7f800000,
+                     32'h7fc00000, 1);
+    issue_basic_fp32(VXM_LOCAL_SUBTRACT, 32'h3f800000, 32'h7f800000,
+                     32'hff800000, 1);
+    issue_basic_fp32(VXM_LOCAL_ADD, 32'h3f800000, 32'h7fc00001,
+                     32'h7fc00000, 1);
+    issue_basic_fp32(VXM_LOCAL_MAX, 32'h00000000, 32'h80000000,
                      32'h00000000, 1);
     issue_basic_fp32(VXM_LOCAL_ADD, 32'h7f800000, 32'hff800000,
                      32'h7fc00000, 1);
@@ -610,24 +802,76 @@ module lpu_vxm_alu_tb;
     issue_basic_fp32(VXM_LOCAL_MAX, 32'h7fc00001, 32'h3f800000,
                      32'h7fc00000, 1);
     issue_basic_fp32(VXM_LOCAL_MAX, 32'h40000000, 32'h7fc00001,
-                     32'h40000000, 1);
+                     32'h7fc00000, 1);
 
-    // BF16 occupies one 16-bit stream beat. Every arithmetic operation is
-    // evaluated through FP32 helpers and rounded back to BF16 at this ALU.
+    // BF16 occupies one 16-bit stream beat. ADD/SUB use the native BF16
+    // active width of the shared significand datapath and round directly.
     issue_basic_bf16(VXM_LOCAL_BYPASS, 16'h3fc0, 16'h0000,
                      16'h3fc0, 1);
     issue_basic_bf16(VXM_LOCAL_ADD, 16'h3fc0, 16'h4000,
                      16'h4060, 1);
     issue_basic_bf16(VXM_LOCAL_SUBTRACT, 16'h4040, 16'h4000,
                      16'h3f80, 1);
+    issue_basic_bf16(VXM_LOCAL_ADD, 16'h4000, 16'hbf80,
+                     16'h3f80, 1);
+    issue_basic_bf16(VXM_LOCAL_ADD, 16'h3f80, 16'h0080,
+                     16'h3f80, 1);
+    issue_basic_bf16(VXM_LOCAL_ADD, 16'h7f7f, 16'h0080,
+                     16'h7f7f, 1); // Exponent distance 253.
+    issue_basic_bf16(VXM_LOCAL_SUBTRACT, 16'h0080, 16'h3f80,
+                     16'hbf80, 1);
+    issue_basic_bf16(VXM_LOCAL_SUBTRACT, 16'h3f80, 16'h4000,
+                     16'hbf80, 1);
+    issue_basic_bf16(VXM_LOCAL_SUBTRACT, 16'h3f81, 16'h3f80,
+                     16'h3c00, 1);
+    issue_basic_bf16(VXM_LOCAL_SUBTRACT, 16'h3f80, 16'h3f7f,
+                     16'h3b80, 1);
+    issue_basic_bf16(VXM_LOCAL_SUBTRACT, 16'h3f80, 16'h3e80,
+                     16'h3f40, 1);
+    issue_basic_bf16(VXM_LOCAL_SUBTRACT, 16'h0081, 16'h0080,
+                     16'h0000, 1);
+    issue_basic_bf16(VXM_LOCAL_ADD, 16'h7f7f, 16'h7f7f,
+                     16'h7f80, 1);
+    issue_basic_16_with_upper_noise(VXM_FORMAT_BF16, VXM_LOCAL_ADD,
+      32'hdead3f80, 32'hbeef4000, 16'h4040);
     issue_basic_bf16(VXM_LOCAL_MULTIPLY, 16'h3fc0, 16'h4000,
                      16'h4040, 2);
+    issue_basic_bf16(VXM_LOCAL_MULTIPLY, 16'h3fc0, 16'h3fc0,
+                     16'h4010, 2);
+    issue_basic_bf16(VXM_LOCAL_MULTIPLY, 16'h3f81, 16'h3ffe,
+                     16'h4000, 2);
+    issue_basic_bf16(VXM_LOCAL_MULTIPLY, 16'hff7f, 16'h4000,
+                     16'hff80, 2);
+    issue_basic_bf16(VXM_LOCAL_MULTIPLY, 16'h0080, 16'h3f00,
+                     16'h0000, 2);
     issue_basic_bf16(VXM_LOCAL_NEGATE, 16'h3f80, 16'h0000,
                      16'hbf80, 1);
     issue_basic_bf16(VXM_LOCAL_MAX, 16'hc000, 16'h3fc0,
                      16'h3fc0, 1);
     issue_basic_bf16(VXM_LOCAL_BYPASS, 16'h0001, 16'h0000,
+                     16'h0001, 1);
+    issue_basic_bf16(VXM_LOCAL_NEGATE, 16'h0001, 16'h0000,
+                     16'h8001, 1);
+    issue_basic_bf16(VXM_LOCAL_BYPASS, 16'h7fc1, 16'h0000,
+                     16'h7fc1, 1);
+    issue_basic_bf16(VXM_LOCAL_ADD, 16'h0001, 16'h3f80,
+                     16'h3f80, 1);
+    issue_basic_bf16(VXM_LOCAL_SUBTRACT, 16'h0001, 16'h3f80,
+                     16'hbf80, 1);
+    issue_basic_bf16(VXM_LOCAL_ADD, 16'h8000, 16'h8000,
+                     16'h8000, 1);
+    issue_basic_bf16(VXM_LOCAL_ADD, 16'h0000, 16'h8000,
                      16'h0000, 1);
+    issue_basic_bf16(VXM_LOCAL_SUBTRACT, 16'h7f80, 16'h7f80,
+                     16'h7fc0, 1);
+    issue_basic_bf16(VXM_LOCAL_SUBTRACT, 16'h3f80, 16'h7f80,
+                     16'hff80, 1);
+    issue_basic_bf16(VXM_LOCAL_ADD, 16'h3f80, 16'h7fc1,
+                     16'h7fc0, 1);
+    issue_basic_bf16(VXM_LOCAL_MAX, 16'h0000, 16'h8000,
+                     16'h0000, 1);
+    issue_basic_bf16(VXM_LOCAL_MAX, 16'h3f80, 16'h7fc1,
+                     16'h7fc0, 1);
     issue_basic_bf16(VXM_LOCAL_ADD, 16'h7f80, 16'hff80,
                      16'h7fc0, 1);
     // Halfway cases verify RNE on the per-ALU BF16 result boundary.
@@ -664,8 +908,8 @@ module lpu_vxm_alu_tb;
     issue_special_and_expect(1'b1, VXM_LOCAL_SPECIAL1,
                              16'h4400, 16'h3800); // rsqrt(4) = 0.5
 
-    // FP32 keeps its input and interpolation arithmetic wide while the
-    // compact FP16 LUT coefficients are widened on read.
+    // FP32 EXP uses the packed UQ1.25 base and cubic Horner continuation;
+    // RECIP/RSQRT retain their format-specific coefficient paths.
     issue_special_fp32_and_expect(1'b0, VXM_LOCAL_SPECIAL0,
                                   32'h00000000, 32'h3f800000);
     issue_special_fp32_and_expect(1'b1, VXM_LOCAL_SPECIAL0,
@@ -681,8 +925,8 @@ module lpu_vxm_alu_tb;
     issue_special_fp32_and_expect(1'b1, VXM_LOCAL_SPECIAL1,
                                   32'hbf800000, 32'h7fc00000);
 
-    // BF16 special operations reuse the FP32 interpolation path. The LUT
-    // input bounds and k/b coefficients remain compact FP16 values.
+    // BF16 special operations reuse FP32 interpolation arithmetic and round
+    // only at the output. EXP uses its packed UQ1.25 base in linear mode.
     issue_special_bf16_and_expect(1'b0, VXM_LOCAL_SPECIAL0,
                                   16'h0000, 16'h3f80);
     issue_special_bf16_and_expect(1'b1, VXM_LOCAL_SPECIAL0,

@@ -61,7 +61,7 @@ module lpu_vxm_input_converter_tb;
     // FP16 1.5 -> FP32 1.5.
     expect_conversion(VXM_FORMAT_FP16, VXM_FORMAT_FP32,
                       32'h00003e00, 1'b1, 32'h3fc00000, 1'b1, 1'b0);
-    // FP16 computation retains a sanitized low-half representation.
+    // A native format passes its low-half payload through unchanged.
     expect_conversion(VXM_FORMAT_FP16, VXM_FORMAT_FP16,
                       32'hffff3c00, 1'b1, 32'h00003c00, 1'b0, 1'b0);
     // FP16 subnormal input is flushed before widening.
@@ -85,11 +85,21 @@ module lpu_vxm_input_converter_tb;
                       32'h3f808000, 1'b1, 32'h00003f80, 1'b1, 1'b0);
     expect_conversion(VXM_FORMAT_FP32, VXM_FORMAT_BF16,
                       32'h3f818000, 1'b1, 32'h00003f82, 1'b1, 1'b0);
-    // BF16 follows the same deterministic FTZ policy as the other formats.
+    // Native BF16 retains its raw payload; numeric ALUs apply DAZ/NaN policy.
     expect_conversion(VXM_FORMAT_BF16, VXM_FORMAT_BF16,
-                      32'h00000001, 1'b1, 32'h00000000, 1'b0, 1'b0);
+                      32'h00000001, 1'b1, 32'h00000001, 1'b0, 1'b0);
     expect_conversion(VXM_FORMAT_BF16, VXM_FORMAT_BF16,
-                      32'h00007f81, 1'b1, 32'h00007fc0, 1'b0, 1'b0);
+                      32'h00007f81, 1'b1, 32'h00007f81, 1'b0, 1'b0);
+
+    // Raw-bit operations see unmodified subnormal and NaN payloads.
+    expect_conversion(VXM_FORMAT_FP16, VXM_FORMAT_FP16,
+                      32'hffff0001, 1'b1, 32'h00000001, 1'b0, 1'b0);
+    expect_conversion(VXM_FORMAT_FP16, VXM_FORMAT_FP16,
+                      32'hffff7e01, 1'b1, 32'h00007e01, 1'b0, 1'b0);
+    expect_conversion(VXM_FORMAT_BF16, VXM_FORMAT_BF16,
+                      32'hffff0001, 1'b1, 32'h00000001, 1'b0, 1'b0);
+    expect_conversion(VXM_FORMAT_BF16, VXM_FORMAT_BF16,
+                      32'hffff7fc1, 1'b1, 32'h00007fc1, 1'b0, 1'b0);
     expect_conversion(VXM_FORMAT_RESERVED, VXM_FORMAT_FP32,
                       32'h00000000, 1'b0, 32'h00000000, 1'b0, 1'b1);
 

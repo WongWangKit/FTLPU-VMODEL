@@ -81,7 +81,8 @@ module lpu_vxm_execution_stage #(
   logic alu_lut_fault;
 
   // One transaction is kept in flight per physical ALU for now. This makes
-  // Basic (1/2-cycle) and LUT (5-cycle) results share one exact metadata path
+  // Basic (1/2-cycle) and special-function (8-cycle) results share one exact
+  // metadata path
   // without permitting a later short operation to pass an older long one.
   logic metadata_valid_q;
   logic [CONTAINER_WIDTH-1:0] metadata_original_q;

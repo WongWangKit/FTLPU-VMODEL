@@ -28,7 +28,25 @@ verilator --lint-only --Wall -Wno-DECLFILENAME -Wno-fatal \
 verilator --lint-only --Wall -Wno-DECLFILENAME -Wno-fatal \
   -f sim/filelist.f --top-module lpu_vxm_significand_multiplier_tb
 verilator --lint-only --Wall -Wno-DECLFILENAME -Wno-fatal \
+  -f sim/filelist.f --top-module lpu_vxm_special_coefficient_multiplier_tb
+verilator --lint-only --Wall -Wno-DECLFILENAME -Wno-fatal \
+  -f sim/filelist.f --top-module lpu_vxm_recip_linear_fixed_tb
+verilator --lint-only --Wall -Wno-DECLFILENAME -Wno-fatal \
+  -f sim/filelist.f --top-module lpu_vxm_rsqrt_linear_fixed_tb
+verilator --lint-only --Wall -Wno-DECLFILENAME -Wno-fatal \
+  -f sim/filelist.f --top-module lpu_vxm_fp32_rsqrt_correction_tb
+verilator --lint-only --Wall -Wno-DECLFILENAME -Wno-fatal \
+  -f sim/filelist.f --top-module lpu_vxm_segmented_addsub_tb
+verilator --lint-only --Wall -Wno-DECLFILENAME -Wno-fatal \
+  -f sim/filelist.f --top-module lpu_vxm_grouped_lzc_tb
+verilator --lint-only --Wall -Wno-DECLFILENAME -Wno-fatal \
+  -f sim/filelist.f --top-module lpu_vxm_shared_left_shift_tb
+verilator --lint-only --Wall -Wno-DECLFILENAME -Wno-fatal \
+  -f sim/filelist.f --top-module lpu_vxm_basic_frontend_tb
+verilator --lint-only --Wall -Wno-DECLFILENAME -Wno-fatal \
   -f sim/filelist.f --top-module lpu_vxm_shared_float_compare_tb
+verilator --lint-only --Wall -Wno-DECLFILENAME -Wno-fatal \
+  -f sim/filelist.f --top-module lpu_vxm_addsub_max_instruction_tb
 verilator --lint-only --Wall -Wno-DECLFILENAME -Wno-fatal \
   -f sim/filelist.f --top-module lpu_vxm_tile_pair_lut_tb
 verilator --lint-only --Wall -Wno-DECLFILENAME -Wno-fatal \

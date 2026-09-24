@@ -67,9 +67,21 @@ set rtl_files [list \
   rtl/vxm/lpu_vxm_datapath_stage.sv \
   rtl/vxm/lpu_vxm_instruction_controller.sv \
   rtl/vxm/lpu_vxm_mul8x8.sv \
+  rtl/vxm/lpu_vxm_csa3_2.sv \
   rtl/vxm/lpu_vxm_significand_multiplier.sv \
   rtl/vxm/lpu_vxm_shared_float_multiplier.sv \
+  rtl/vxm/lpu_vxm_special_coefficient_multiplier.sv \
+  rtl/vxm/lpu_vxm_recip_linear_fixed.sv \
+  rtl/vxm/lpu_vxm_fp32_newton_multiplier.sv \
+  rtl/vxm/lpu_vxm_rsqrt_linear_fixed.sv \
+  rtl/vxm/lpu_vxm_fp32_rsqrt_correction.sv \
+  rtl/vxm/lpu_vxm_float_unpack.sv \
+  rtl/vxm/lpu_vxm_basic_opcode_decode.sv \
   rtl/vxm/lpu_vxm_shared_float_compare.sv \
+  rtl/vxm/lpu_vxm_segmented_addsub.sv \
+  rtl/vxm/lpu_vxm_grouped_lzc.sv \
+  rtl/vxm/lpu_vxm_shared_left_shift.sv \
+  rtl/vxm/lpu_vxm_shared_float_adder.sv \
   rtl/vxm/lpu_vxm_basic_alu.sv \
   rtl/vxm/lpu_vxm_lut_sram.sv \
   rtl/vxm/lpu_vxm_tile_pair_lut.sv \

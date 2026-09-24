@@ -64,14 +64,20 @@ module lpu_vxm_tile_pair_lut_tb;
     input integer function_id,
     input integer address
   );
-    expected_k = 16'h1000 + function_id*16'h0100 + address;
+    // EXP transports the high UQ1.25 half in 13 bits; RECIP and RSQRT use
+    // UQ1.15 coefficient containers.
+    expected_k = function_id == 0 ? 16'h1000 + address :
+      (function_id == 1 ? 16'h8000 + address :
+       16'h1000 + function_id*16'h0100 + address);
   endfunction
 
   function automatic logic [15:0] expected_b(
     input integer function_id,
     input integer address
   );
-    expected_b = 16'h8000 + function_id*16'h0100 + address;
+    expected_b = function_id == 0 ? 16'h0100 + address :
+      (function_id == 1 ? 16'h4000 + address :
+       16'h8000 + function_id*16'h0100 + address);
   endfunction
 
   function automatic integer request_index(
@@ -218,6 +224,36 @@ module lpu_vxm_tile_pair_lut_tb;
     if (fault)
       $fatal(1, "legal fixed-phase traffic raised a fault");
     request_valid = '0;
+
+    // EXP stores two packed 13-bit halves. RECIP uses the complete 16-bit
+    // containers as UQ1.15, so only EXP has unused upper container bits.
+    @(negedge clk);
+    write_valid = 1'b1;
+    write_function = 2'd0;
+    write_address = 6'd9;
+    write_k = 16'h2000;
+    write_b = 16'h0400;
+    @(posedge clk);
+    @(negedge clk);
+    if (!fault)
+      $fatal(1, "EXP packed UQ1.25 half wider than 13 bits did not fault");
+    write_valid = 1'b0;
+    write_k = '0;
+    write_b = '0;
+    @(posedge clk);
+    @(negedge clk);
+    write_valid = 1'b1;
+    write_function = 2'd1;
+    write_address = 6'd9;
+    write_k = 16'h8000;
+    write_b = 16'h6000;
+    @(posedge clk);
+    @(negedge clk);
+    if (fault)
+      $fatal(1, "legal full-width RECIP UQ1.15 coefficients faulted");
+    write_valid = 1'b0;
+    write_k = '0;
+    write_b = '0;
 
     // The same function/Lane cannot be owned by both adjacent Tiles.
     @(negedge clk);

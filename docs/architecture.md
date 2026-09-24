@@ -99,7 +99,7 @@ long schedules do not require layer-sized instruction SRAMs. `NOP` and
   committed global configuration wave.
 - A position-parameterized 32-bit ALU interface with FP16, BF16, and FP32
   Basic and Special arithmetic.
-- FP16 FTZ/RNE Bypass, Add, Subtract, Multiply, Negate, Max, Exp,
+- FP16 Bypass, Add, Subtract, Multiply, Negate, Max, Exp,
   Reciprocal, and Rsqrt units. Basic operations have one-cycle latency except
   Multiply at two cycles; special operations use five arithmetic stages plus
   a variable single-port-SRAM arbitration wait.
@@ -200,11 +200,16 @@ than allocating unused adders.
 | `lpu_vxm_control` | Advances eight heterogeneous local words and the global configuration through four Tile rows, one row per cycle. |
 | `lpu_vxm_input_converter` | Performs supported chain-head conversions among FP16, BF16, and FP32 while preserving a stable 32-bit container. |
 | `lpu_vxm_alu` | Validates format/opcode, dispatches Basic versus position-specific Special execution, and detects result collisions. |
-| `lpu_vxm_basic_alu` | Executes FP16/BF16/FP32 Bypass/Add/Subtract/Multiply/Negate/Max with one/two-cycle timing. BF16/FP32 share the wide adder, ADD/SUBTRACT/MAX share one comparator front end, and all formats share the segmented multiplier. |
+| `lpu_vxm_float_unpack` | Combinationally extracts the selected format's sign, exponent, fraction, and class; arithmetic fields apply DAZ while raw-bit operations bypass the module. |
+| `lpu_vxm_basic_opcode_decode` | Decodes the six Basic opcodes in parallel with operand unpack and produces one-hot operation enables. |
+| `lpu_vxm_basic_alu` | Executes FP16/BF16/FP32 Bypass/Add/Subtract/Multiply/Negate/Max with one/two-cycle timing. ADD/SUBTRACT/MAX share one comparator front end, and all formats share the segmented adder and multiplier. |
+| `lpu_vxm_segmented_addsub` | Implements one 27-bit shared significand add/subtract datapath as carry-connected 14-bit and 13-bit groups, plus a carry output. BF16/FP16 isolate the high group; per-format operand masking selects 11/14/27 active bits. |
+| `lpu_vxm_grouped_lzc` | Encodes leading zeros from one format-masked 27-bit subtraction result using four 7/7/7/6-bit groups (low to high); only the near-subtraction path enables it. |
+| `lpu_vxm_shared_float_adder` | Consumes the common unpackers' fields and Zero/Inf/NaN flags without reclassifying raw bits; selects FP16/BF16/FP32, isolates special/idle operands, uses 7-bit or 10-bit signed working exponents, and shares the 14+13 add/subtract hardware. Near subtraction uses the grouped LZC; far subtraction needs at most one left shift. The variable shifter remains behavioral before RNE/FTZ packing. |
 | `lpu_vxm_mul8x8` | Defines one operand-isolated 8x8 unsigned multiplier boundary while leaving its internal implementation to synthesis. |
 | `lpu_vxm_significand_multiplier` | Builds a shared 24x24 significand multiplier from nine gated 8x8 blocks; BF16 enables one block, FP16 up to four, and FP32 up to nine. |
 | `lpu_vxm_shared_float_multiplier` | Left-aligns FP16/BF16/FP32 significands, drives the shared block multiplier, performs FP32-style normalization/RNE, and packs the selected result format. |
-| `lpu_vxm_shared_float_compare` | Sanitizes operands and implements the shared magnitude/order/MAX front end: FP16/BF16 use the low 15-bit layer and FP32 adds a high 16-bit layer. |
+| `lpu_vxm_shared_float_compare` | Consumes the common unpacked fields and implements shared magnitude/ordered relations: FP16/BF16 use the low 15-bit layer and FP32 adds a high 16-bit layer. MAX result semantics remain in the Basic ALU. |
 | `lpu_vxm_lut_storage` | Provides the legacy/standalone configurable LUT used by isolated ALU tests. |
 | `lpu_vxm_lut_sram` | Implements one physical 64x32 single-read function SRAM, storing each FP16 `{k,b}` pair in one row. |
 | `lpu_vxm_tile_pair_lut` | Implements one adjacent-Tile shared set of 24 SRAMs: one single-read SRAM for every special-function/Lane pair, with one-cycle Tile/Stage-tagged return and collision detection. |
@@ -219,7 +224,8 @@ The ALU uses a 32-bit data container and a 2-bit format selector. FP16, BF16,
 and FP32 Basic and Special operations share the interface. The reserved format
 does not issue and raises `unsupported_format_o`; unsupported position/opcode
 combinations raise `illegal_opcode_o`. Arithmetic uses deterministic
-RNE/flush-to-zero handling and a canonical quiet NaN.
+RNE/DAZ/FTZ handling and a canonical quiet NaN. Bypass preserves the selected
+format's raw bits, while Negate changes only its sign bit.
 
 Basic multiplication uses one explicitly segmented significand multiplier for
 all three formats. The 24-bit operands are divided into three 8-bit chunks.
@@ -285,10 +291,12 @@ resident operand.
 VXM unit tests are separated by boundary. `lpu_vxm_icu_map_tb` checks all
 eight heterogeneous local FIFOs plus the global FIFO in the physical ICU, and
 `lpu_vxm_control_tb` checks four-Tile local/global propagation.
-Each FP16 opcode also has its own top-level test (`lpu_vxm_bypass_tb` through
-`lpu_vxm_rsqrt_tb`), backed by a shared harness that programs external LUT
-storage for Special operations. `lpu_vxm_alu_tb` remains the combined ALU
-regression.
+The primary ALU acceptance tests are organized by physical position under
+`sim/tb/vxm/alu_positions`. Each of the 16 tops runs the shared execution-stage
+checker, so the position-specific compact decoder, legal operation set, source
+MUX, chain role, data format, and arithmetic result are verified together.
+`lpu_vxm_alu_tb` remains the lower-level combined arithmetic-core regression,
+while `lpu_vxm_16_alu_tb` runs all physical positions concurrently.
 
 The full C-model `TspSliceSystem` currently constructs its MEM region through
 `TileArrayModel::LegacyLocalLinear()`: a MEM Read injects at the slice group's

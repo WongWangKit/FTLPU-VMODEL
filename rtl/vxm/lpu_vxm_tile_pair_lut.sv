@@ -1,6 +1,10 @@
 // Two adjacent Tiles share one fully pipelined LUT set. Each function owns
-// one independent single-read SRAM per Lane (3 x 8 SRAMs by default). The
-// instruction wave guarantees that both Tiles do not request the same
+// one independent single-read SRAM per Lane (3 x 8 SRAMs by default). EXP
+// stores one UQ1.25 base value packed as {k[12:0], b[12:0]} (26-bit
+// row). RECIP and RSQRT each store two UQ1.15 coefficients (32-bit row).
+// The external programming/response
+// containers stay 16 bits for interface stability.
+// The instruction wave guarantees that both Tiles do not request the same
 // function/Lane SRAM in one cycle; a collision is reported if violated.
 module lpu_vxm_tile_pair_lut #(
   parameter integer FUNCTION_COUNT = 3,
@@ -133,8 +137,19 @@ module lpu_vxm_tile_pair_lut #(
       for (lane_index = 0; lane_index < LANES;
            lane_index++) begin : g_lane_sram
         localparam integer SRAM_INDEX = function_index*LANES + lane_index;
+        localparam integer COEFFICIENT_WIDTH =
+          function_index == 0 ? 13 : 16;
+        logic [COEFFICIENT_WIDTH-1:0] coefficient_k;
+        logic [COEFFICIENT_WIDTH-1:0] coefficient_b;
+
+        assign sram_response_k[SRAM_INDEX*16 +: 16] =
+          {{(16-COEFFICIENT_WIDTH){1'b0}}, coefficient_k};
+        assign sram_response_b[SRAM_INDEX*16 +: 16] =
+          {{(16-COEFFICIENT_WIDTH){1'b0}}, coefficient_b};
+
         lpu_vxm_lut_sram #(
           .ENTRY_COUNT(ENTRY_COUNT),
+          .COEFFICIENT_WIDTH(COEFFICIENT_WIDTH),
           .ADDRESS_WIDTH(ADDRESS_WIDTH)
         ) u_sram (
           .clk_i,
@@ -144,16 +159,19 @@ module lpu_vxm_tile_pair_lut #(
           .config_input_min_i,
           .config_segment_width_i,
           .write_valid_i(write_valid_i &&
-            (write_function_i == function_index)),
+            (write_function_i == function_index) &&
+            ((function_index == 0 &&
+              !(|write_k_i[15:13]) && !(|write_b_i[15:13])) ||
+             (function_index > 0))),
           .write_address_i,
-          .write_k_i,
-          .write_b_i,
+          .write_k_i(write_k_i[COEFFICIENT_WIDTH-1:0]),
+          .write_b_i(write_b_i[COEFFICIENT_WIDTH-1:0]),
           .read_valid_i(sram_request_valid[SRAM_INDEX]),
           .read_address_i(sram_request_address[
             SRAM_INDEX*ADDRESS_WIDTH +: ADDRESS_WIDTH]),
           .read_valid_o(sram_response_valid[SRAM_INDEX]),
-          .read_k_o(sram_response_k[SRAM_INDEX*16 +: 16]),
-          .read_b_o(sram_response_b[SRAM_INDEX*16 +: 16]),
+          .read_k_o(coefficient_k),
+          .read_b_o(coefficient_b),
           .configured_o(sram_configured[SRAM_INDEX]),
           .input_min_o(sram_input_min[SRAM_INDEX*16 +: 16]),
           .segment_width_o(
@@ -174,7 +192,9 @@ module lpu_vxm_tile_pair_lut #(
       response_tag_valid_q <= sram_request_valid;
       fault_o <= request_collision || (|sram_fault) ||
         (config_valid_i && (config_function_i >= FUNCTION_COUNT)) ||
-        (write_valid_i && (write_function_i >= FUNCTION_COUNT));
+        (write_valid_i && (write_function_i >= FUNCTION_COUNT)) ||
+        (write_valid_i && (write_function_i == 0) &&
+         ((|write_k_i[15:13]) || (|write_b_i[15:13])));
       for (integer sram_index = 0;
            sram_index < SRAM_COUNT; sram_index++) begin
         integer tile0_index;
@@ -197,7 +217,9 @@ module lpu_vxm_tile_pair_lut #(
   end
 
   initial begin
-    if ((FUNCTION_COUNT != 3) || (LANES != 8) || (TILE_COUNT != 2))
-      $error("VXM LUT sharing requires two Tiles, three functions, eight Lanes");
+    if ((FUNCTION_COUNT != 3) ||
+        ((LANES != 1) && (LANES != lpu_pkg::LANES_PER_TILE)) ||
+        (TILE_COUNT != 2))
+      $error("VXM LUT sharing requires two Tiles, three functions, and 1 or 8 Lanes");
   end
 endmodule

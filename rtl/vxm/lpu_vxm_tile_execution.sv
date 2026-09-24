@@ -877,9 +877,11 @@ module lpu_vxm_tile_execution #(
             (lane_chain_tail[clear_stage*LANES +: LANES] !=
              {LANES{stage_chain_tail[clear_stage]}}))
           fault_o <= 1'b1;
+        // Only Lane 0 carries the shared end marker. Shifting the complete
+        // Lane vector avoids a zero-width part select when LANES=1.
         if (stage_result_any[clear_stage] &&
-            (|lane_result_end_marker[
-              clear_stage*LANES+1 +: LANES-1]))
+            (|(lane_result_end_marker[
+              clear_stage*LANES +: LANES] >> 1)))
           fault_o <= 1'b1;
       end
 
@@ -1063,7 +1065,11 @@ module lpu_vxm_tile_execution #(
   end
 
   initial begin
-    if ((STAGES != 16) || (LANES != 8) || (CONTAINER_WIDTH != 32))
-      $error("Current VXM tile assembly requires 16 stages, 8 lanes, 32 bits");
+    // LANES=1 is the independently verifiable Lane building block; LANES=8
+    // is the production Superlane with shared control and lockstep datapaths.
+    if ((STAGES != 16) ||
+        ((LANES != 1) && (LANES != lpu_pkg::LANES_PER_TILE)) ||
+        (CONTAINER_WIDTH != 32))
+      $error("VXM execution requires 16 stages, 1 or 8 lanes, and 32-bit containers");
   end
 endmodule

@@ -48,6 +48,50 @@ module lpu_vxm_alu #(
   logic special_ready;
   logic special_valid;
   logic [31:0] special_result;
+  logic lhs_format_valid;
+  logic lhs_sign;
+  logic [7:0] lhs_exponent;
+  logic [22:0] lhs_fraction;
+  logic lhs_zero;
+  logic lhs_inf;
+  logic lhs_nan;
+  logic rhs_format_valid;
+  logic rhs_sign;
+  logic [7:0] rhs_exponent;
+  logic [22:0] rhs_fraction;
+  logic rhs_zero;
+  logic rhs_inf;
+  logic rhs_nan;
+
+  // One physical classification front end per source operand is shared by
+  // every downstream operation.  Opcode decode remains parallel to unpack.
+  lpu_vxm_float_unpack u_lhs_unpack (
+    .data_format_i,
+    .value_i(lhs_i),
+    .format_valid_o(lhs_format_valid),
+    .sign_o(lhs_sign),
+    .exponent_o(lhs_exponent),
+    .fraction_o(lhs_fraction),
+    .effective_zero_o(lhs_zero),
+    .was_subnormal_o(),
+    .is_normal_o(),
+    .is_inf_o(lhs_inf),
+    .is_nan_o(lhs_nan)
+  );
+
+  lpu_vxm_float_unpack u_rhs_unpack (
+    .data_format_i,
+    .value_i(rhs_i),
+    .format_valid_o(rhs_format_valid),
+    .sign_o(rhs_sign),
+    .exponent_o(rhs_exponent),
+    .fraction_o(rhs_fraction),
+    .effective_zero_o(rhs_zero),
+    .was_subnormal_o(),
+    .is_normal_o(),
+    .is_inf_o(rhs_inf),
+    .is_nan_o(rhs_nan)
+  );
 
   always_comb begin
     special_opcode_supported =
@@ -59,13 +103,9 @@ module lpu_vxm_alu #(
     opcode_supported = (opcode_i <= VXM_LOCAL_MAX) ||
       special_opcode_supported;
     unsupported_format_o = input_valid_i &&
-      (data_format_i != VXM_FORMAT_FP16 &&
-       data_format_i != VXM_FORMAT_BF16 &&
-       data_format_i != VXM_FORMAT_FP32);
-    illegal_opcode_o = input_valid_i &&
-      ((data_format_i == VXM_FORMAT_FP16) ||
-       (data_format_i == VXM_FORMAT_BF16) ||
-       (data_format_i == VXM_FORMAT_FP32)) && !opcode_supported;
+      (!lhs_format_valid || !rhs_format_valid);
+    illegal_opcode_o = input_valid_i && lhs_format_valid &&
+      rhs_format_valid && !opcode_supported;
     supported_request = input_valid_i && !unsupported_format_o &&
       !illegal_opcode_o;
     basic_request = supported_request && (opcode_i <= VXM_LOCAL_MAX);
@@ -94,6 +134,20 @@ module lpu_vxm_alu #(
     .opcode_i(opcode_i),
     .lhs_i(lhs_i),
     .rhs_i(rhs_i),
+    .lhs_format_valid_i(lhs_format_valid),
+    .lhs_sign_i(lhs_sign),
+    .lhs_exponent_i(lhs_exponent),
+    .lhs_fraction_i(lhs_fraction),
+    .lhs_zero_i(lhs_zero),
+    .lhs_inf_i(lhs_inf),
+    .lhs_nan_i(lhs_nan),
+    .rhs_format_valid_i(rhs_format_valid),
+    .rhs_sign_i(rhs_sign),
+    .rhs_exponent_i(rhs_exponent),
+    .rhs_fraction_i(rhs_fraction),
+    .rhs_zero_i(rhs_zero),
+    .rhs_inf_i(rhs_inf),
+    .rhs_nan_i(rhs_nan),
     .ready_o(basic_ready),
     .valid_o(basic_valid),
     .result_o(basic_result),
@@ -113,7 +167,13 @@ module lpu_vxm_alu #(
     .valid_i(special_request),
     .data_format_i(data_format_i),
     .opcode_i(opcode_i),
-    .operand_i(lhs_i),
+    .operand_format_valid_i(lhs_format_valid),
+    .operand_sign_i(lhs_sign),
+    .operand_exponent_i(lhs_exponent),
+    .operand_fraction_i(lhs_fraction),
+    .operand_zero_i(lhs_zero),
+    .operand_inf_i(lhs_inf),
+    .operand_nan_i(lhs_nan),
     .lut_configured_i,
     .lut_input_min_i,
     .lut_segment_width_i,

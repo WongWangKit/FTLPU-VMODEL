@@ -383,30 +383,36 @@ module lpu_vxm_alu_stage_checker #(
     end
   endtask
 
-  task automatic test_fp32_basic_path;
+  task automatic issue_formatted_basic_and_expect(
+    input logic [1:0] format,
+    input logic [2:0] opcode,
+    input logic [31:0] lhs_value,
+    input logic [31:0] rhs_value,
+    input logic [31:0] expected
+  );
     logic observed;
     integer timeout;
+    logic [31:0] expected_original;
     begin
       set_default_sources();
-      compute_dtype = VXM_FORMAT_FP32;
-      lhs_dtype = VXM_FORMAT_FP32;
-      rhs_dtype = VXM_FORMAT_FP32;
-      head_lhs_data = 32'h3fc00000;       // 1.5
-      head_rhs_data = 32'h40000000;       // 2.0
-      previous_value = 32'h3fc00000;
-      // Odd stages are internal at chain length 2 and select Original as
-      // their default RHS. Keep that value at 2.0 so every physical stage
-      // independently computes the same 1.5 + 2.0 reference result.
-      previous_original = 32'h40000000;
-      previous_auxiliary = 32'h40000000;
+      compute_dtype = format;
+      lhs_dtype = format;
+      rhs_dtype = format;
+      head_lhs_data = lhs_value;
+      head_rhs_data = rhs_value;
+      previous_value = lhs_value;
+      previous_original = rhs_value;
+      previous_auxiliary = rhs_value;
+      expected_original = ((PHYSICAL_STAGE % 2) == 0) ?
+        lhs_value : rhs_value;
 
       @(negedge clk_i);
       chain_length = VXM_CHAIN_LENGTH_2;
-      instruction = encode_instruction(VXM_LOCAL_ADD, 2'd0, 2'd0);
+      instruction = encode_instruction(opcode, 2'd0, 2'd0);
       instruction_valid = 1'b1;
       #1;
       if (!input_ready || !request_accepted || execution_fault)
-        fail("FP32 Add request was not accepted through module ports");
+        fail("formatted Basic request was not accepted through module ports");
       @(posedge clk_i);
       #1;
       observed = result_valid;
@@ -419,62 +425,48 @@ module lpu_vxm_alu_stage_checker #(
         observed = result_valid;
         timeout = timeout + 1;
       end
-      if (!observed || result_value !== 32'h40600000)
-        fail("FP32 Add result mismatch");
-      if (result_original !==
-            (((PHYSICAL_STAGE % 2) == 0) ? 32'h3fc00000 : 32'h40000000) ||
-          result_auxiliary !== 32'h40000000)
-        fail("FP32 token metadata mismatch");
+      if (!observed || result_value !== expected)
+        fail("formatted Basic result mismatch");
+      if (result_original !== expected_original ||
+          result_auxiliary !== rhs_value)
+        fail("formatted Basic token metadata mismatch");
       compute_dtype = VXM_FORMAT_FP16;
       lhs_dtype = VXM_FORMAT_FP16;
       rhs_dtype = VXM_FORMAT_FP16;
     end
   endtask
 
-  task automatic test_bf16_basic_path;
-    logic observed;
-    integer timeout;
-    logic [31:0] expected_original;
+  task automatic test_fp32_basic_path;
     begin
-      set_default_sources();
-      compute_dtype = VXM_FORMAT_BF16;
-      lhs_dtype = VXM_FORMAT_BF16;
-      rhs_dtype = VXM_FORMAT_BF16;
-      head_lhs_data = 32'h00003fc0;       // 1.5 BF16
-      head_rhs_data = 32'h00004000;       // 2.0 BF16
-      previous_value = 32'h00003fc0;
-      previous_original = 32'h00004000;
-      previous_auxiliary = 32'h00004000;
-      expected_original = ((PHYSICAL_STAGE % 2) == 0) ?
-        32'h00003fc0 : 32'h00004000;
+      issue_formatted_basic_and_expect(VXM_FORMAT_FP32, VXM_LOCAL_BYPASS,
+        32'h3fc00000, 32'h40000000, 32'h3fc00000);
+      issue_formatted_basic_and_expect(VXM_FORMAT_FP32, VXM_LOCAL_ADD,
+        32'h3fc00000, 32'h40000000, 32'h40600000);
+      issue_formatted_basic_and_expect(VXM_FORMAT_FP32, VXM_LOCAL_SUBTRACT,
+        32'h40400000, 32'h40000000, 32'h3f800000);
+      issue_formatted_basic_and_expect(VXM_FORMAT_FP32, VXM_LOCAL_MULTIPLY,
+        32'h3fc00000, 32'h40000000, 32'h40400000);
+      issue_formatted_basic_and_expect(VXM_FORMAT_FP32, VXM_LOCAL_NEGATE,
+        32'h3f800000, 32'h40000000, 32'hbf800000);
+      issue_formatted_basic_and_expect(VXM_FORMAT_FP32, VXM_LOCAL_MAX,
+        32'hc0000000, 32'h3fc00000, 32'h3fc00000);
+    end
+  endtask
 
-      @(negedge clk_i);
-      chain_length = VXM_CHAIN_LENGTH_2;
-      instruction = encode_instruction(VXM_LOCAL_ADD, 2'd0, 2'd0);
-      instruction_valid = 1'b1;
-      #1;
-      if (!input_ready || !request_accepted || execution_fault)
-        fail("BF16 Add request was not accepted through module ports");
-      @(posedge clk_i);
-      #1;
-      observed = result_valid;
-      @(negedge clk_i);
-      instruction_valid = 1'b0;
-      timeout = 0;
-      while (!observed && (timeout < 4)) begin
-        @(posedge clk_i);
-        #1;
-        observed = result_valid;
-        timeout = timeout + 1;
-      end
-      if (!observed || result_value !== 32'h00004060)
-        fail("BF16 Add result mismatch");
-      if (result_original !== expected_original ||
-          result_auxiliary !== 32'h00004000)
-        fail("BF16 token metadata mismatch");
-      compute_dtype = VXM_FORMAT_FP16;
-      lhs_dtype = VXM_FORMAT_FP16;
-      rhs_dtype = VXM_FORMAT_FP16;
+  task automatic test_bf16_basic_path;
+    begin
+      issue_formatted_basic_and_expect(VXM_FORMAT_BF16, VXM_LOCAL_BYPASS,
+        32'h00003fc0, 32'h00004000, 32'h00003fc0);
+      issue_formatted_basic_and_expect(VXM_FORMAT_BF16, VXM_LOCAL_ADD,
+        32'h00003fc0, 32'h00004000, 32'h00004060);
+      issue_formatted_basic_and_expect(VXM_FORMAT_BF16, VXM_LOCAL_SUBTRACT,
+        32'h00004040, 32'h00004000, 32'h00003f80);
+      issue_formatted_basic_and_expect(VXM_FORMAT_BF16, VXM_LOCAL_MULTIPLY,
+        32'h00003fc0, 32'h00004000, 32'h00004040);
+      issue_formatted_basic_and_expect(VXM_FORMAT_BF16, VXM_LOCAL_NEGATE,
+        32'h00003f80, 32'h00004000, 32'h0000bf80);
+      issue_formatted_basic_and_expect(VXM_FORMAT_BF16, VXM_LOCAL_MAX,
+        32'h0000c000, 32'h00003fc0, 32'h00003fc0);
     end
   endtask
 
@@ -528,16 +520,31 @@ module lpu_vxm_alu_stage_checker #(
 
   task automatic test_fp32_special_operations;
     begin
-      if (SPECIAL_KIND == VXM_SPECIAL_EXP)
+      if (SPECIAL_KIND == VXM_SPECIAL_EXP) begin
         issue_fp32_special_and_expect(
           VXM_LOCAL_SPECIAL0, 32'h00000000, 32'h3f800000);
-      else if (SPECIAL_KIND == VXM_SPECIAL_RECIP_RSQRT) begin
+        // With B=1 and delta=0.125, exercise all three Horner terms.
+        issue_fp32_special_and_expect(
+          VXM_LOCAL_SPECIAL0, 32'h3e000000, 32'h3f910aab);
+      end else if (SPECIAL_KIND == VXM_SPECIAL_RECIP_RSQRT) begin
+        // Exact power-of-two input selects the unity exponent candidate.
+        issue_fp32_special_and_expect(
+          VXM_LOCAL_SPECIAL0, 32'h3f800000, 32'h3f800000);
         issue_fp32_special_and_expect(
           VXM_LOCAL_SPECIAL0, 32'h40000000, 32'h3f000000);
-        // Bank 1 entry 1 is programmed to 0.75 and proves that FP32 address
-        // calculation is not accidentally truncated through the FP16 path.
+        // Bank 1 entry 32 starts from UQ1.15 0.75; the expected value includes
+        // the optional FP32 Newton correction y*(2-m*y).
         issue_fp32_special_and_expect(
-          VXM_LOCAL_SPECIAL0, 32'h3fc00000, 32'h3f400000);
+          VXM_LOCAL_SPECIAL0, 32'h3fc00000, 32'h3f280000);
+        issue_fp32_special_and_expect(
+          VXM_LOCAL_SPECIAL0, 32'h3fc10000, 32'h3f275ff8);
+        // The same row with e=1 selects the fractional exponent candidate.
+        issue_fp32_special_and_expect(
+          VXM_LOCAL_SPECIAL0, 32'h40400000, 32'h3ea80000);
+        issue_fp32_special_and_expect(
+          VXM_LOCAL_SPECIAL0, 32'h00800000, 32'h7e800000);
+        issue_fp32_special_and_expect(
+          VXM_LOCAL_SPECIAL0, 32'h7f000000, 32'h00000000);
         issue_fp32_special_and_expect(
           VXM_LOCAL_SPECIAL1, 32'h40800000, 32'h3f000000);
       end
@@ -594,16 +601,28 @@ module lpu_vxm_alu_stage_checker #(
 
   task automatic test_bf16_special_operations;
     begin
-      if (SPECIAL_KIND == VXM_SPECIAL_EXP)
+      if (SPECIAL_KIND == VXM_SPECIAL_EXP) begin
         issue_bf16_special_and_expect(
           VXM_LOCAL_SPECIAL0, 16'h0000, 16'h3f80);
-      else if (SPECIAL_KIND == VXM_SPECIAL_RECIP_RSQRT) begin
+        issue_bf16_special_and_expect(
+          VXM_LOCAL_SPECIAL0, 16'h3e00, 16'h3f90);
+      end else if (SPECIAL_KIND == VXM_SPECIAL_RECIP_RSQRT) begin
+        issue_bf16_special_and_expect(
+          VXM_LOCAL_SPECIAL0, 16'h3f80, 16'h3f80);
         issue_bf16_special_and_expect(
           VXM_LOCAL_SPECIAL0, 16'h4000, 16'h3f00);
-        // The FP16 LUT coefficient 0.75 is widened before interpolation and
-        // the result is rounded only when it leaves this BF16 ALU.
+        // The UQ1.15 coefficient 0.75 is widened before interpolation and the
+        // result is rounded only when it leaves this BF16 ALU.
         issue_bf16_special_and_expect(
           VXM_LOCAL_SPECIAL0, 16'h3fc0, 16'h3f40);
+        issue_bf16_special_and_expect(
+          VXM_LOCAL_SPECIAL0, 16'h3fc1, 16'h3f3e);
+        issue_bf16_special_and_expect(
+          VXM_LOCAL_SPECIAL0, 16'h4040, 16'h3ec0);
+        issue_bf16_special_and_expect(
+          VXM_LOCAL_SPECIAL0, 16'h0080, 16'h7e80);
+        issue_bf16_special_and_expect(
+          VXM_LOCAL_SPECIAL0, 16'h7f00, 16'h0000);
         issue_bf16_special_and_expect(
           VXM_LOCAL_SPECIAL1, 16'h4080, 16'h3f00);
       end
@@ -809,6 +828,10 @@ module lpu_vxm_alu_stage_checker #(
         issue_and_expect(VXM_CHAIN_LENGTH_8, VXM_LOCAL_SPECIAL0,
                          2'd0, 2'd0, 16'h3c00,
                          previous_original, previous_auxiliary); // FTZ -> exp(0)
+        previous_value = 32'h00003000;
+        issue_and_expect(VXM_CHAIN_LENGTH_8, VXM_LOCAL_SPECIAL0,
+                         2'd0, 2'd0, 16'h3c80,
+                         previous_original, previous_auxiliary); // linear B+B*delta
       end else if (SPECIAL_KIND == VXM_SPECIAL_RECIP_RSQRT) begin
         set_default_sources();
         previous_value = 32'h00000000;
@@ -831,10 +854,30 @@ module lpu_vxm_alu_stage_checker #(
         issue_and_expect(VXM_CHAIN_LENGTH_8, VXM_LOCAL_SPECIAL0,
                          2'd0, 2'd0, 16'hb800,
                          previous_original, previous_auxiliary); // recip(-2)
+        previous_value = 32'h00003c00;
+        issue_and_expect(VXM_CHAIN_LENGTH_8, VXM_LOCAL_SPECIAL0,
+                         2'd0, 2'd0, 16'h3c00,
+                         previous_original, previous_auxiliary); // unity candidate
         previous_value = 32'h00003e00;
         issue_and_expect(VXM_CHAIN_LENGTH_8, VXM_LOCAL_SPECIAL0,
                          2'd0, 2'd0, 16'h3a00,
-                         previous_original, previous_auxiliary); // LUT address 1
+                         previous_original, previous_auxiliary); // LUT address 32
+        previous_value = 32'h00004200;
+        issue_and_expect(VXM_CHAIN_LENGTH_8, VXM_LOCAL_SPECIAL0,
+                         2'd0, 2'd0, 16'h3600,
+                         previous_original, previous_auxiliary); // fraction candidate
+        previous_value = 32'h00000400;
+        issue_and_expect(VXM_CHAIN_LENGTH_8, VXM_LOCAL_SPECIAL0,
+                         2'd0, 2'd0, 16'h7400,
+                         previous_original, previous_auxiliary); // upper exponent edge
+        previous_value = 32'h00007800;
+        issue_and_expect(VXM_CHAIN_LENGTH_8, VXM_LOCAL_SPECIAL0,
+                         2'd0, 2'd0, 16'h0000,
+                         previous_original, previous_auxiliary); // FTZ lower edge
+        previous_value = 32'h00003e08;
+        issue_and_expect(VXM_CHAIN_LENGTH_8, VXM_LOCAL_SPECIAL0,
+                         2'd0, 2'd0, 16'h39f0,
+                         previous_original, previous_auxiliary); // b-a*dx
         previous_value = 32'h00007d01;
         issue_and_expect(VXM_CHAIN_LENGTH_8, VXM_LOCAL_SPECIAL0,
                          2'd0, 2'd0, 16'h7e00,
@@ -999,10 +1042,16 @@ module lpu_vxm_alu_stage_checker #(
 
       // Position-specific illegal operation encodings.
       if ((LOCAL_QUEUE % 2) == 0)
-        expect_rejected_fault(
-          encode_instruction(VXM_LOCAL_SPECIAL0, 2'd0, 2'd0),
-          VXM_CHAIN_LENGTH_2, VXM_FORMAT_FP16,
-          VXM_FORMAT_FP16, VXM_FORMAT_FP16);
+        begin
+          expect_rejected_fault(
+            encode_instruction(VXM_LOCAL_SPECIAL0, 2'd0, 2'd0),
+            VXM_CHAIN_LENGTH_2, VXM_FORMAT_FP16,
+            VXM_FORMAT_FP16, VXM_FORMAT_FP16);
+          expect_rejected_fault(
+            encode_instruction(VXM_LOCAL_SPECIAL1, 2'd0, 2'd0),
+            VXM_CHAIN_LENGTH_2, VXM_FORMAT_FP16,
+            VXM_FORMAT_FP16, VXM_FORMAT_FP16);
+        end
       else if ((LOCAL_QUEUE == 1) || (LOCAL_QUEUE == 5))
         expect_rejected_fault(
           encode_instruction(VXM_LOCAL_SPECIAL1, 2'd0, 2'd0),
@@ -1033,10 +1082,10 @@ module lpu_vxm_alu_stage_checker #(
 
     wait (rst_ni);
     // Program the exact piecewise-linear points used by special tests.
-    program_lut_bank(2'd0, 16'hb800, 16'h3c00, 16'h3c00, 16'h3800);
-    program_lut_bank(2'd1, 16'h3c00, 16'h3800, 16'h0000, 16'h3c00);
-    program_lut_bank(2'd2, 16'h3c00, 16'h3c00, 16'h0000, 16'h3c00);
-    write_lut_entry(2'd1, 6'd1, 16'h0000, 16'h3a00);
+    program_lut_bank(2'd0, 16'h0000, 16'h3c00, 16'h1000, 16'h0000);
+    program_lut_bank(2'd1, 16'h3c00, 16'h3800, 16'h0000, 16'h8000);
+    program_lut_bank(2'd2, 16'h3c00, 16'h3c00, 16'h0000, 16'h8000);
+    write_lut_entry(2'd1, 6'd32, 16'h8000, 16'h6000);
 
     test_basic_operations();
     test_fp32_basic_path();
