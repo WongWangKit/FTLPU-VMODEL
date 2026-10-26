@@ -32,7 +32,7 @@ module lpu_vxm_datapath_mux #(
   input  logic [CONTAINER_WIDTH-1:0] accumulator_data_i,
 
   output logic                       operands_valid_o,
-  output logic [2:0]                 opcode_o,
+  output logic [3:0]                 opcode_o,
   output logic [CONTAINER_WIDTH-1:0] lhs_o,
   output logic [CONTAINER_WIDTH-1:0] rhs_o,
   output logic [CONTAINER_WIDTH-1:0] token_original_o,

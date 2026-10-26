@@ -50,6 +50,7 @@ module lpu_vxm_execution_stage #(
   input  logic                         lut_read_valid_i,
   input  logic [15:0]                  lut_read_k_i,
   input  logic [15:0]                  lut_read_b_i,
+  input  logic [49:0]                  lut_read_log_i,
 
   output logic input_ready_o,
   output logic request_accepted_o,
@@ -63,7 +64,7 @@ module lpu_vxm_execution_stage #(
   output logic fault_o
 );
   logic operands_valid;
-  logic [2:0] opcode;
+  logic [3:0] opcode;
   logic [CONTAINER_WIDTH-1:0] lhs;
   logic [CONTAINER_WIDTH-1:0] rhs;
   logic [CONTAINER_WIDTH-1:0] request_original;
@@ -186,6 +187,7 @@ module lpu_vxm_execution_stage #(
     .lut_read_valid_i,
     .lut_read_k_i,
     .lut_read_b_i,
+    .lut_read_log_i,
     .input_ready_o(alu_input_ready),
     .output_valid_o(alu_output_valid),
     .result_o(alu_result),

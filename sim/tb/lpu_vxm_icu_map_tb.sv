@@ -92,14 +92,31 @@ module lpu_vxm_icu_map_tb;
     expect_payload(112, 6);
     expect_payload(113, 5);
     expect_payload(114, 7);
-    expect_payload(115, 5);
+    expect_payload(115, 6);
     expect_payload(116, 7);
     expect_payload(117, 5);
     expect_payload(118, 7);
-    expect_payload(119, 5);
+    expect_payload(119, 6);
     expect_payload(120, lpu_pkg::VXM_GLOBAL_CONFIG_WIDTH);
     if (queue_fault != '0)
       $fatal(1, "VXM ICU mapping fault: %h", queue_fault);
+
+    // Q3/Q7 must retain extension bit 5 through the physical ICU FIFOs.
+    @(negedge clk);run=1'b0;
+    for (integer q=115;q<=119;q=q+4) begin
+      @(negedge clk);enqueue_queue=8'(q);
+      enqueue_payload='0;
+      enqueue_payload[5:0]=lpu_pkg::VXM_LOG_INSTRUCTION;
+      enqueue_valid=1'b1;#1ps;
+      if(!enqueue_ready) $fatal(1,"Log ICU queue not ready");
+      @(negedge clk);enqueue_valid=1'b0;
+    end
+    @(negedge clk);run=1'b1;
+    @(posedge clk);#1ns;
+    if(!issue_valid[115]||!issue_valid[119]||
+       issue_payload[115*416+:6]!==lpu_pkg::VXM_LOG_INSTRUCTION||
+       issue_payload[119*416+:6]!==lpu_pkg::VXM_LOG_INSTRUCTION)
+      $fatal(1,"Log extension bit was truncated by ICU");
 
     $display("VXM physical 8 local plus global ICU queue map passed");
     $finish;

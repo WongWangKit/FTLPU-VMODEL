@@ -40,13 +40,12 @@ for every physical ALU, source, opcode, and data format.
   Run only this regression on a VCS server with
   `bash scripts/vcs_addsub_max.sh`; compile and simulation logs are kept in
   `build/vcs/vxm_addsub_max_instruction/`.
-- `lpu_vxm_tile_pair_lut_tb.sv` programs only through module ports and checks
-  eight Lane-parallel reads, back-to-back ownership by adjacent Tiles,
-  simultaneous access to different functions, Stage-tagged returns, and
-  explicit same-function/Lane collision reporting. It also checks that the
-  EXP banks store one packed UQ1.25 base in a 26-bit row, RECIP banks store
-  UQ1.15 coefficient pairs in 32-bit rows for both RECIP and RSQRT. The test
-  also checks each bank's upper-container faults.
+- `lpu_vxm_tile_lut_tb.sv` programs two private Superlane LUT sets through
+  broadcast ports and checks concurrent same-function/same-Lane reads at
+  different addresses, consecutive-cycle responses, all eight Lanes and all
+  four functions, one-cycle Stage tags, configuration broadcast, and reset.
+  It checks 26-bit EXP, 32-bit RECIP/RSQRT, and 50-bit Log rows, plus invalid
+  EXP upper-container faults. Superlanes have independent read ports.
 - `lpu_vxm_16_alu_tb.sv` is the regression top. It instantiates the checker for
   physical stages 0 through 15 and finishes only after all stages pass.
 - `lpu_vxm_instruction_controller_tb.sv` verifies that one resident global +
@@ -123,3 +122,15 @@ zero/Inf/NaN/negative/FTZ cases. Reciprocal additionally accesses a nonzero
 LUT address so the test does not validate only entry zero. Its directed
 FP16/BF16/FP32 cases distinguish the unity and fractional exponent candidates,
 check scaling across input exponents, and cover the FTZ exponent boundary.
+
+Log regression: `lpu_vxm_log_tb.sv` uses the 50-bit bank-3 Lane SRAM and
+independently generated numerical vectors. `lpu_vxm_log_reference_pkg.sv`
+also permits constant evaluation of production arithmetic helpers. Generated
+`lpu_vxm_log_constants.sv` contains 2,335 reference checks. See the C3 Log
+extension section in `docs/architecture.md` and `scripts/vcs_vxm_log.sh`.
+
+Private LUT compile/elaboration check (requires `pyslang` on Python's import
+path or installed under `build/tools`): `python scripts/check_vxm_lut_compile.py`.
+This checks the LUT, Log, Tile, and FP32/BF16 Slice benches; it does not run
+cycle-level simulation. The private LUT simulation is included in
+`bash scripts/vcs.sh` as `lpu_vxm_tile_lut_tb`.

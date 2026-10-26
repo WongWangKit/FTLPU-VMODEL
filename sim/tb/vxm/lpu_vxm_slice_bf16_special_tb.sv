@@ -137,8 +137,8 @@ module lpu_vxm_slice_bf16_special_tb;
       cycle_count <= cycle_count + 1;
       done_seen <= done_seen | dut.tile_config_done;
       for (integer row = 0; row < TILES; row++) begin
-        integer cell;
-        cell = destination_cell(row);
+        integer boundary_cell;
+        boundary_cell = destination_cell(row);
         if (dut.row_config_fire[row] && (row_load_cycle[row] < 0))
           row_load_cycle[row] <= cycle_count;
 
@@ -160,23 +160,23 @@ module lpu_vxm_slice_bf16_special_tb;
           logic [15:0] observed;
           logic [15:0] expected;
           low_stream = block*2;
-          pair_valid = east_valid[cell*STREAMS+low_stream] &&
-            east_valid[cell*STREAMS+low_stream+1];
+          pair_valid = east_valid[boundary_cell*STREAMS+low_stream] &&
+            east_valid[boundary_cell*STREAMS+low_stream+1];
           if (pair_valid) begin
             expected = ((block % 4) == 0 || (block % 4) == 2) ?
               16'h3f80 : 16'h3f00;
             for (integer lane = 0; lane < LANES; lane++) begin
               observed[7:0] = east_data[
-                ((cell*STREAMS+low_stream)*LANES+lane)*8 +: 8];
+                ((boundary_cell*STREAMS+low_stream)*LANES+lane)*8 +: 8];
               observed[15:8] = east_data[
-                ((cell*STREAMS+low_stream+1)*LANES+lane)*8 +: 8];
+                ((boundary_cell*STREAMS+low_stream+1)*LANES+lane)*8 +: 8];
               if (observed !== expected)
                 $fatal(1,
                   "direction %0d row %0d block %0d BF16 Special mismatch",
                   active_direction, row, block);
             end
-            result_seen[cell*STREAMS+low_stream] <= 1'b1;
-            result_seen[cell*STREAMS+low_stream+1] <= 1'b1;
+            result_seen[boundary_cell*STREAMS+low_stream] <= 1'b1;
+            result_seen[boundary_cell*STREAMS+low_stream+1] <= 1'b1;
           end
         end
       end

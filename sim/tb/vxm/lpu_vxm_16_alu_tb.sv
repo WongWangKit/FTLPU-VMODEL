@@ -10,7 +10,7 @@ module lpu_vxm_16_alu_tb;
   genvar stage;
   generate
     for (stage = 0; stage < 16; stage = stage + 1) begin : g_stage
-      lpu_vxm_alu_stage_checker #(.PHYSICAL_STAGE(stage)) checker (
+      lpu_vxm_alu_stage_checker #(.PHYSICAL_STAGE(stage)) u_checker (
         .clk_i(clk),
         .rst_ni(rst_n),
         .done_o(done[stage])

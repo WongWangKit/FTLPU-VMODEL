@@ -52,7 +52,9 @@ set relative_rtl_files [list \
   rtl/vxm/lpu_vxm_shared_left_shift.sv \
   rtl/vxm/lpu_vxm_shared_float_adder.sv \
   rtl/vxm/lpu_vxm_basic_alu.sv \
-  rtl/vxm/lpu_vxm_lut_sram.sv rtl/vxm/lpu_vxm_tile_pair_lut.sv \
+  rtl/vxm/lpu_vxm_lut_sram.sv rtl/vxm/lpu_vxm_tile_lut.sv \
+  rtl/vxm/lpu_vxm_log_math_pkg.sv \
+  rtl/vxm/lpu_vxm_log.sv \
   rtl/vxm/lpu_vxm_special_alu.sv \
   rtl/vxm/lpu_vxm_alu.sv \
   rtl/vxm/lpu_vxm_execution_stage.sv rtl/vxm/lpu_vxm_tile_execution.sv \

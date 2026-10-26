@@ -48,11 +48,11 @@ package lpu_pkg;
   localparam integer VXM_Q0_INSTRUCTION_WIDTH = 6;
   localparam integer VXM_Q1_INSTRUCTION_WIDTH = 5;
   localparam integer VXM_Q2_INSTRUCTION_WIDTH = 7;
-  localparam integer VXM_Q3_INSTRUCTION_WIDTH = 5;
+  localparam integer VXM_Q3_INSTRUCTION_WIDTH = 6;
   localparam integer VXM_Q4_INSTRUCTION_WIDTH = 7;
   localparam integer VXM_Q5_INSTRUCTION_WIDTH = 5;
   localparam integer VXM_Q6_INSTRUCTION_WIDTH = 7;
-  localparam integer VXM_Q7_INSTRUCTION_WIDTH = 5;
+  localparam integer VXM_Q7_INSTRUCTION_WIDTH = 6;
   // One repeat-phase word accompanies each execution of a resident Tile
   // configuration. Local queues retain only execute/source fields.
   localparam integer VXM_REPEAT_CONTROL_WIDTH = 4;
@@ -91,17 +91,24 @@ package lpu_pkg;
     VXM_FORMAT_RESERVED = 2'd3
   } vxm_data_format_e;
 
-  typedef enum logic [2:0] {
-    VXM_LOCAL_BYPASS   = 3'd0,
-    VXM_LOCAL_ADD      = 3'd1,
-    VXM_LOCAL_SUBTRACT = 3'd2,
-    VXM_LOCAL_MULTIPLY = 3'd3,
-    VXM_LOCAL_NEGATE   = 3'd4,
-    VXM_LOCAL_MAX      = 3'd5,
+  typedef enum logic [3:0] {
+    VXM_LOCAL_BYPASS   = 4'd0,
+    VXM_LOCAL_ADD      = 4'd1,
+    VXM_LOCAL_SUBTRACT = 4'd2,
+    VXM_LOCAL_MULTIPLY = 4'd3,
+    VXM_LOCAL_NEGATE   = 4'd4,
+    VXM_LOCAL_MAX      = 4'd5,
     // 3'd6 and 3'd7 are position-dependent special operations.
-    VXM_LOCAL_SPECIAL0 = 3'd6,
-    VXM_LOCAL_SPECIAL1 = 3'd7
+    VXM_LOCAL_SPECIAL0 = 4'd6,
+    VXM_LOCAL_SPECIAL1 = 4'd7,
+    VXM_LOCAL_LOG      = 4'd8
   } vxm_local_opcode_e;
+
+  // C3/C7 compact Log: extension bit 5 plus SPECIAL0, RHS code zero.
+  // Old five-bit instructions retain their encoding.
+  localparam logic [5:0] VXM_LOG_INSTRUCTION = 6'b100110;
+  localparam integer VXM_LOG_LUT_BANK = 3;
+  localparam integer VXM_LOG_LUT_WIDTH = 50;
 
   // A local source field is decoded against the physical stage's current
   // chain position.  Keeping the semantic source wider than its compact

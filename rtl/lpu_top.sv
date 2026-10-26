@@ -320,6 +320,7 @@ module lpu_top #(
       .lut_write_address_i('0),
       .lut_write_k_i('0),
       .lut_write_b_i('0),
+      .lut_write_log_i('0),
       .west_from_mem_valid_i(mem_to_vxm_west_valid),
     .west_from_mem_data_i(mem_to_vxm_west_data),
     .external_east_valid_i(mem_east_edge_valid_i),

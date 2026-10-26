@@ -6,7 +6,7 @@ module lpu_vxm_local_decoder #(
     instruction_i,
   input  logic [1:0] chain_length_i,
 
-  output logic [2:0] opcode_o,
+  output logic [3:0] opcode_o,
   output logic [2:0] lhs_source_o,
   output logic [2:0] rhs_source_o,
   output logic       chain_head_o,
@@ -22,7 +22,7 @@ module lpu_vxm_local_decoder #(
   logic       source_illegal;
 
   always_comb begin
-    opcode_o = instruction_i[2:0];
+    opcode_o = {1'b0, instruction_i[2:0]};
     lhs_code = 2'b00;
     rhs_code = 2'b00;
     upper_bits_nonzero = 1'b0;
@@ -63,9 +63,18 @@ module lpu_vxm_local_decoder #(
         rhs_code = {1'b0, instruction_i[5]};
         upper_bits_nonzero = instruction_i[6];
       end
-      1, 3, 5, 7: begin
+      1, 5: begin
         rhs_code = instruction_i[4:3];
         upper_bits_nonzero = |instruction_i[6:5];
+      end
+      3, 7: begin
+        rhs_code = instruction_i[4:3];
+        upper_bits_nonzero = instruction_i[6];
+        if (instruction_i[5]) begin
+          opcode_o = VXM_LOCAL_LOG;
+          if (instruction_i[5:0] != VXM_LOG_INSTRUCTION)
+            source_illegal = 1'b1;
+        end
       end
       2, 4, 6: begin
         lhs_code = instruction_i[4:3];

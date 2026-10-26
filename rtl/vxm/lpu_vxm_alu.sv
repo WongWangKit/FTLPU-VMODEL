@@ -1,5 +1,5 @@
 module lpu_vxm_alu #(
-  // 0: C0/C2 basic-only, 1: C1 with Exp, 2: C3 with Reciprocal/Rsqrt.
+  // 0: C0/C2 basic-only, 1: C1 with Exp, 2: C3 with Reciprocal/Rsqrt/Log.
   parameter integer SPECIAL_KIND = lpu_pkg::VXM_SPECIAL_NONE,
   parameter integer LUT_BANK_COUNT = 3,
   parameter integer LUT_ENTRY_COUNT = 64,
@@ -12,7 +12,7 @@ module lpu_vxm_alu #(
   input  logic        rst_ni,
   input  logic        input_valid_i,
   input  logic [1:0]  data_format_i,
-  input  logic [2:0]  opcode_i,
+  input  logic [3:0]  opcode_i,
   input  logic [31:0] lhs_i,
   input  logic [31:0] rhs_i,
 
@@ -25,6 +25,7 @@ module lpu_vxm_alu #(
   input  logic                         lut_read_valid_i,
   input  logic [15:0]                  lut_read_k_i,
   input  logic [15:0]                  lut_read_b_i,
+  input  logic [49:0]                  lut_read_log_i,
 
   output logic        input_ready_o,
   output logic        output_valid_o,
@@ -99,7 +100,8 @@ module lpu_vxm_alu #(
        (opcode_i == VXM_LOCAL_SPECIAL0)) ||
       ((SPECIAL_KIND == VXM_SPECIAL_RECIP_RSQRT) &&
        ((opcode_i == VXM_LOCAL_SPECIAL0) ||
-        (opcode_i == VXM_LOCAL_SPECIAL1)));
+        (opcode_i == VXM_LOCAL_SPECIAL1) ||
+        (opcode_i == VXM_LOCAL_LOG)));
     opcode_supported = (opcode_i <= VXM_LOCAL_MAX) ||
       special_opcode_supported;
     unsupported_format_o = input_valid_i &&
@@ -131,7 +133,7 @@ module lpu_vxm_alu #(
     .rst_ni(rst_ni),
     .valid_i(basic_request),
     .data_format_i(data_format_i),
-    .opcode_i(opcode_i),
+    .opcode_i(opcode_i[2:0]),
     .lhs_i(lhs_i),
     .rhs_i(rhs_i),
     .lhs_format_valid_i(lhs_format_valid),
@@ -183,6 +185,7 @@ module lpu_vxm_alu #(
     .lut_read_valid_i,
     .lut_read_k_i,
     .lut_read_b_i,
+    .lut_read_log_i,
     .ready_o(special_ready),
     .valid_o(special_valid),
     .result_o(special_result),

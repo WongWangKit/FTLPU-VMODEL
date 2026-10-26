@@ -11,7 +11,7 @@ module lpu_vxm_slice (
     global_issue_instruction_i,
 
   // One programming stream broadcasts identical compact LUT contents to
-  // the two adjacent-Tile shared LUT sets in this VXM.
+  // all private Superlane/Lane LUT copies in this VXM.
   input  logic        lut_config_valid_i,
   input  logic [1:0]  lut_config_bank_i,
   input  logic [15:0] lut_config_input_min_i,
@@ -21,6 +21,7 @@ module lpu_vxm_slice (
   input  logic [5:0]  lut_write_address_i,
   input  logic [15:0] lut_write_k_i,
   input  logic [15:0] lut_write_b_i,
+  input  logic [49:0] lut_write_log_i,
 
   input  logic [2*4*32-1:0]    west_from_mem_valid_i,
   input  logic [2*4*32*64-1:0] west_from_mem_data_i,
@@ -40,11 +41,10 @@ module lpu_vxm_slice (
   localparam integer STREAMS     = lpu_pkg::STREAMS_PER_DIRECTION;
   localparam integer LANES       = lpu_pkg::LANES_PER_TILE;
   localparam integer WORD_WIDTH  = LANES*8;
-  localparam integer LUT_FUNCTIONS = 3;
+  localparam integer LUT_FUNCTIONS = 4;
   localparam integer LUT_ADDRESS_WIDTH = 6;
   localparam integer LUT_STAGE_WIDTH = 4;
   localparam integer LUT_LANE_REQUESTS = LUT_FUNCTIONS*LANES;
-  localparam integer TILE_PAIRS = TILES/2;
   localparam integer LOCAL_MAX_WIDTH =
     lpu_pkg::VXM_LOCAL_MAX_INSTRUCTION_WIDTH;
   localparam integer CONFIG_WIDTH = lpu_pkg::VXM_GLOBAL_CONFIG_WIDTH;
@@ -83,12 +83,12 @@ module lpu_vxm_slice (
     tile_lut_response_stage;
   logic [TILES*LUT_LANE_REQUESTS*16-1:0] tile_lut_response_k;
   logic [TILES*LUT_LANE_REQUESTS*16-1:0] tile_lut_response_b;
-  logic [TILE_PAIRS*LUT_FUNCTIONS-1:0] pair_lut_configured;
-  logic [TILE_PAIRS*LUT_FUNCTIONS*16-1:0] pair_lut_input_min;
-  logic [TILE_PAIRS*LUT_FUNCTIONS*16-1:0]
-    pair_lut_segment_width;
-  logic [TILE_PAIRS-1:0] pair_lut_collision;
-  logic [TILE_PAIRS-1:0] pair_lut_fault;
+  logic [TILES*LUT_LANE_REQUESTS*50-1:0] tile_lut_response_log;
+  logic [TILES*LUT_FUNCTIONS-1:0] tile_lut_configured;
+  logic [TILES*LUT_FUNCTIONS*16-1:0] tile_lut_input_min;
+  logic [TILES*LUT_FUNCTIONS*16-1:0]
+    tile_lut_segment_width;
+  logic [TILES-1:0] tile_lut_fault;
   logic [BOUNDARY_CELLS*STREAMS-1:0] west_consumed;
   logic [BOUNDARY_CELLS*STREAMS-1:0] produced_valid;
   logic [BOUNDARY_CELLS*STREAMS*WORD_WIDTH-1:0] produced_data;
@@ -154,8 +154,8 @@ module lpu_vxm_slice (
 
   generate
     for (genvar row = 0; row < TILES; row++) begin : gen_tile
-      localparam integer PAIR = row/2;
       lpu_vxm_tile_execution #(
+        .LUT_BANK_COUNT(LUT_FUNCTIONS),
         .EXTERNAL_LUT(1)
       ) u_tile (
           .clk_i,
@@ -191,12 +191,13 @@ module lpu_vxm_slice (
           .lut_write_address_i('0),
           .lut_write_k_i('0),
           .lut_write_b_i('0),
-          .lut_shared_configured_i(pair_lut_configured[
-            PAIR*LUT_FUNCTIONS +: LUT_FUNCTIONS]),
-          .lut_shared_input_min_i(pair_lut_input_min[
-            PAIR*LUT_FUNCTIONS*16 +: LUT_FUNCTIONS*16]),
-          .lut_shared_segment_width_i(pair_lut_segment_width[
-            PAIR*LUT_FUNCTIONS*16 +: LUT_FUNCTIONS*16]),
+          .lut_write_log_i('0),
+          .lut_shared_configured_i(tile_lut_configured[
+            row*LUT_FUNCTIONS +: LUT_FUNCTIONS]),
+          .lut_shared_input_min_i(tile_lut_input_min[
+            row*LUT_FUNCTIONS*16 +: LUT_FUNCTIONS*16]),
+          .lut_shared_segment_width_i(tile_lut_segment_width[
+            row*LUT_FUNCTIONS*16 +: LUT_FUNCTIONS*16]),
           .lut_lane_request_valid_o(tile_lut_request_valid[
             row*LUT_LANE_REQUESTS +: LUT_LANE_REQUESTS]),
           .lut_lane_request_address_o(tile_lut_request_address[
@@ -214,6 +215,8 @@ module lpu_vxm_slice (
             row*LUT_LANE_REQUESTS*16 +: LUT_LANE_REQUESTS*16]),
           .lut_lane_response_b_i(tile_lut_response_b[
             row*LUT_LANE_REQUESTS*16 +: LUT_LANE_REQUESTS*16]),
+          .lut_lane_response_log_i(tile_lut_response_log[
+            row*LUT_LANE_REQUESTS*50 +: LUT_LANE_REQUESTS*50]),
           .output_ready_i('1),
           .output_valid_o(tile_output_valid[row*STREAMS +: STREAMS]),
           .output_data_o(tile_output_data[
@@ -232,17 +235,15 @@ module lpu_vxm_slice (
       );
     end
 
-    // Rows 0/1 and rows 2/3 each share 24 SRAMs: one SRAM for every
-    // {special function, Lane}. The one-cycle Tile wave provides fixed-phase
-    // ownership; illegal same-cycle ownership is detected, never serialized.
-    for (genvar pair = 0; pair < TILE_PAIRS; pair++) begin : gen_lut_pair
-      localparam integer FIRST_TILE = pair*2;
-      lpu_vxm_tile_pair_lut #(
+    // Each Superlane owns 4 functions x 8 Lane SRAMs. All Superlanes
+    // can read the same function/Lane concurrently at independent addresses.
+    for (genvar row = 0; row < TILES; row++) begin : gen_lut_tile
+      lpu_vxm_tile_lut #(
         .FUNCTION_COUNT(LUT_FUNCTIONS),
         .LANES(LANES),
         .ENTRY_COUNT(1 << LUT_ADDRESS_WIDTH),
         .STAGE_WIDTH(LUT_STAGE_WIDTH)
-      ) u_pair_lut (
+      ) u_tile_lut (
         .clk_i,
         .rst_ni,
         .config_valid_i(lut_config_valid_i),
@@ -254,33 +255,35 @@ module lpu_vxm_slice (
         .write_address_i(lut_write_address_i),
         .write_k_i(lut_write_k_i),
         .write_b_i(lut_write_b_i),
+        .write_log_i(lut_write_log_i),
         .request_valid_i(tile_lut_request_valid[
-          FIRST_TILE*LUT_LANE_REQUESTS +: 2*LUT_LANE_REQUESTS]),
+          row*LUT_LANE_REQUESTS +: LUT_LANE_REQUESTS]),
         .request_address_i(tile_lut_request_address[
-          FIRST_TILE*LUT_LANE_REQUESTS*LUT_ADDRESS_WIDTH +:
-            2*LUT_LANE_REQUESTS*LUT_ADDRESS_WIDTH]),
+          row*LUT_LANE_REQUESTS*LUT_ADDRESS_WIDTH +:
+            LUT_LANE_REQUESTS*LUT_ADDRESS_WIDTH]),
         .request_stage_i(tile_lut_request_stage[
-          FIRST_TILE*LUT_LANE_REQUESTS*LUT_STAGE_WIDTH +:
-            2*LUT_LANE_REQUESTS*LUT_STAGE_WIDTH]),
+          row*LUT_LANE_REQUESTS*LUT_STAGE_WIDTH +:
+            LUT_LANE_REQUESTS*LUT_STAGE_WIDTH]),
         .response_valid_o(tile_lut_response_valid[
-          FIRST_TILE*LUT_LANE_REQUESTS +: 2*LUT_LANE_REQUESTS]),
+          row*LUT_LANE_REQUESTS +: LUT_LANE_REQUESTS]),
         .response_stage_o(tile_lut_response_stage[
-          FIRST_TILE*LUT_LANE_REQUESTS*LUT_STAGE_WIDTH +:
-            2*LUT_LANE_REQUESTS*LUT_STAGE_WIDTH]),
+          row*LUT_LANE_REQUESTS*LUT_STAGE_WIDTH +:
+            LUT_LANE_REQUESTS*LUT_STAGE_WIDTH]),
         .response_k_o(tile_lut_response_k[
-          FIRST_TILE*LUT_LANE_REQUESTS*16 +:
-            2*LUT_LANE_REQUESTS*16]),
+          row*LUT_LANE_REQUESTS*16 +:
+            LUT_LANE_REQUESTS*16]),
         .response_b_o(tile_lut_response_b[
-          FIRST_TILE*LUT_LANE_REQUESTS*16 +:
-            2*LUT_LANE_REQUESTS*16]),
-        .configured_o(pair_lut_configured[
-          pair*LUT_FUNCTIONS +: LUT_FUNCTIONS]),
-        .input_min_o(pair_lut_input_min[
-          pair*LUT_FUNCTIONS*16 +: LUT_FUNCTIONS*16]),
-        .segment_width_o(pair_lut_segment_width[
-          pair*LUT_FUNCTIONS*16 +: LUT_FUNCTIONS*16]),
-        .collision_o(pair_lut_collision[pair]),
-        .fault_o(pair_lut_fault[pair])
+          row*LUT_LANE_REQUESTS*16 +:
+            LUT_LANE_REQUESTS*16]),
+        .response_log_o(tile_lut_response_log[
+          row*LUT_LANE_REQUESTS*50 +: LUT_LANE_REQUESTS*50]),
+        .configured_o(tile_lut_configured[
+          row*LUT_FUNCTIONS +: LUT_FUNCTIONS]),
+        .input_min_o(tile_lut_input_min[
+          row*LUT_FUNCTIONS*16 +: LUT_FUNCTIONS*16]),
+        .segment_width_o(tile_lut_segment_width[
+          row*LUT_FUNCTIONS*16 +: LUT_FUNCTIONS*16]),
+        .fault_o(tile_lut_fault[row])
       );
     end
   endgenerate
@@ -341,8 +344,8 @@ module lpu_vxm_slice (
     end else begin
       fault_o <= fault_o | global_config_fault | config_wave_fault |
         execute_wave_fault |
-        (|tile_fault) | (|pair_lut_fault);
-      conflict_o <= conflict_o | bridge_conflict | (|pair_lut_collision);
+        (|tile_fault) | (|tile_lut_fault);
+      conflict_o <= conflict_o | bridge_conflict;
     end
   end
 

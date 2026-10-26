@@ -11,7 +11,7 @@ module lpu_vxm_special_alu #(
   input  logic                         rst_ni,
   input  logic                         valid_i,
   input  logic [1:0]                   data_format_i,
-  input  logic [2:0]                   opcode_i,
+  input  logic [3:0]                   opcode_i,
   input  logic                         operand_format_valid_i,
   input  logic                         operand_sign_i,
   input  logic [7:0]                   operand_exponent_i,
@@ -32,6 +32,7 @@ module lpu_vxm_special_alu #(
   input  logic                         lut_read_valid_i,
   input  logic [15:0]                  lut_read_k_i,
   input  logic [15:0]                  lut_read_b_i,
+  input  logic [49:0]                  lut_read_log_i,
 
   output logic                         ready_o,
   output logic                         valid_o,
@@ -220,7 +221,46 @@ module lpu_vxm_special_alu #(
     end
   endfunction
 
+  logic [31:0] reciprocal_newton_stage1_product;
   logic supported_opcode;
+  logic log_ready, log_valid, log_fault, log_lut_request;
+  logic [5:0] log_lut_address;
+  logic [31:0] log_result;
+  logic log_configured;
+  logic log_multiply_enable;
+  logic [31:0] log_multiply_lhs, log_multiply_rhs;
+  always_comb begin
+    log_configured = 1'b0;
+    for (integer bank = 0; bank < LUT_BANK_COUNT; bank++)
+      if (bank == VXM_LOG_LUT_BANK) log_configured = lut_configured_i[bank];
+  end
+  generate if (SPECIAL_KIND == VXM_SPECIAL_RECIP_RSQRT) begin : g_log
+  lpu_vxm_log u_log (
+    .clk_i, .rst_ni,
+    .valid_i(valid_i && operand_format_valid_i && supported_opcode && ready_o &&
+      (opcode_i == VXM_LOCAL_LOG)),
+    .data_format_i, .operand_sign_i, .operand_exponent_i, .operand_fraction_i,
+    .operand_zero_i, .operand_inf_i, .operand_nan_i,
+    .lut_configured_i(log_configured),
+    .lut_read_valid_o(log_lut_request), .lut_read_address_o(log_lut_address),
+    .lut_read_valid_i, .lut_read_data_i(lut_read_log_i),
+    .multiply_enable_o(log_multiply_enable),
+    .multiply_lhs_o(log_multiply_lhs), .multiply_rhs_o(log_multiply_rhs),
+    .multiply_product_i(reciprocal_newton_stage1_product),
+    .ready_o(log_ready), .valid_o(log_valid), .result_o(log_result), .fault_o(log_fault)
+  );
+  end else begin : g_no_log
+    assign log_ready = 1'b1;
+    assign log_valid = 1'b0;
+    assign log_fault = 1'b0;
+    assign log_lut_request = 1'b0;
+    assign log_lut_address = '0;
+    assign log_result = '0;
+    assign log_multiply_enable = 1'b0;
+    assign log_multiply_lhs = '0;
+    assign log_multiply_rhs = '0;
+  end endgenerate
+
   logic [15:0] sanitized_operand16;
   logic [15:0] sanitized_operand_bf16;
   logic [31:0] working_operand32;
@@ -392,7 +432,6 @@ module lpu_vxm_special_alu #(
   logic rsqrt_linear_enable;
   logic [31:0] rsqrt_linear_y0;
   logic rsqrt_linear_fault;
-  logic [31:0] reciprocal_newton_stage1_product;
   logic [31:0] reciprocal_newton_stage2_product;
   logic [31:0] rsqrt_square_product;
   logic [31:0] rsqrt_correction_value;
@@ -467,9 +506,9 @@ module lpu_vxm_special_alu #(
   );
 
   lpu_vxm_fp32_newton_multiplier u_recip_newton_multiply_stage1 (
-    .enable_i(add_valid_q && add_reciprocal_newton_q),
-    .lhs_i(add_reciprocal_m_q),
-    .rhs_i(add_result_q),
+    .enable_i((add_valid_q && add_reciprocal_newton_q) || log_multiply_enable),
+    .lhs_i(log_multiply_enable ? log_multiply_lhs : add_reciprocal_m_q),
+    .rhs_i(log_multiply_enable ? log_multiply_rhs : add_result_q),
     .product_o(reciprocal_newton_stage1_product)
   );
 
@@ -512,7 +551,7 @@ module lpu_vxm_special_alu #(
                 reciprocal_correction_valid_q || reciprocal_newton_valid_q ||
                 rsqrt_square_valid_q || rsqrt_correction_valid_q ||
                 rsqrt_newton_valid_q ||
-                bypass1_valid_q || bypass2_valid_q || bypass3_valid_q);
+                bypass1_valid_q || bypass2_valid_q || bypass3_valid_q) && log_ready;
   end
 
   always_comb begin
@@ -557,7 +596,8 @@ module lpu_vxm_special_alu #(
        (opcode_i == VXM_LOCAL_SPECIAL0)) ||
       ((SPECIAL_KIND == VXM_SPECIAL_RECIP_RSQRT) &&
        ((opcode_i == VXM_LOCAL_SPECIAL0) ||
-        (opcode_i == VXM_LOCAL_SPECIAL1)));
+        (opcode_i == VXM_LOCAL_SPECIAL1) ||
+        (opcode_i == VXM_LOCAL_LOG)));
     illegal_opcode_o = valid_i &&
       (!operand_format_valid_i || !supported_opcode);
     // Reconstruct the DAZ-effective operand from the single shared unpack
@@ -866,6 +906,11 @@ module lpu_vxm_special_alu #(
     lut_read_valid_o = stage0_valid_q && stage0_lookup_q;
     lut_read_bank_o = stage0_bank_q;
     lut_read_address_o = lookup_index[LUT_ADDRESS_WIDTH-1:0];
+    if (log_lut_request) begin
+      lut_read_valid_o = 1'b1;
+      lut_read_bank_o = LUT_BANK_WIDTH'(VXM_LOG_LUT_BANK);
+      lut_read_address_o = LUT_ADDRESS_WIDTH'(log_lut_address);
+    end
   end
 
   always_comb begin
@@ -1081,11 +1126,13 @@ module lpu_vxm_special_alu #(
       lut_fault_o <=
         (reciprocal_linear_enable && reciprocal_linear_fault) ||
         (rsqrt_linear_enable && rsqrt_linear_fault) ||
-        (rsqrt_square_valid_q && rsqrt_correction_fault);
+        (rsqrt_square_valid_q && rsqrt_correction_fault) || log_fault;
 
       valid_o <= exp_base_valid_q || reciprocal_newton_valid_q ||
-                 rsqrt_newton_valid_q || bypass3_valid_q;
-      if (rsqrt_newton_valid_q)
+                 rsqrt_newton_valid_q || bypass3_valid_q || log_valid;
+      if (log_valid)
+        result_o <= log_result;
+      else if (rsqrt_newton_valid_q)
         result_o <= rsqrt_newton_restored_result;
       else if (reciprocal_newton_valid_q)
         result_o <= reciprocal_newton_restored_result;
@@ -1325,7 +1372,8 @@ module lpu_vxm_special_alu #(
         stage0_valid_q <= 1'b0;
       end
 
-      if (valid_i && operand_format_valid_i && supported_opcode && ready_o) begin
+      if (valid_i && operand_format_valid_i && supported_opcode && ready_o &&
+          (opcode_i != VXM_LOCAL_LOG)) begin
         stage0_valid_q <= 1'b1;
         stage0_lookup_q <= request_lookup && request_configured;
         stage0_format_q <= data_format_i;

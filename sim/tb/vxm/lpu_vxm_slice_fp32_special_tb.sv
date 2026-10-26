@@ -146,8 +146,8 @@ module lpu_vxm_slice_fp32_special_tb;
       cycle_count <= cycle_count + 1;
       done_seen <= done_seen | dut.tile_config_done;
       for (integer row = 0; row < TILES; row++) begin
-        integer cell;
-        cell = destination_cell(row);
+        integer boundary_cell;
+        boundary_cell = destination_cell(row);
         if (dut.row_config_fire[row] && (row_load_cycle[row] < 0))
           row_load_cycle[row] <= cycle_count;
 
@@ -174,37 +174,37 @@ module lpu_vxm_slice_fp32_special_tb;
           logic [15:0] observed;
           logic [15:0] expected;
           low_stream = block*2;
-          pair_valid = east_valid[cell*STREAMS+low_stream] &&
-            east_valid[cell*STREAMS+low_stream+1];
+          pair_valid = east_valid[boundary_cell*STREAMS+low_stream] &&
+            east_valid[boundary_cell*STREAMS+low_stream+1];
           if (pair_valid) begin
-            expected = !output_low_seen[cell*STREAMS+low_stream] ?
+            expected = !output_low_seen[boundary_cell*STREAMS+low_stream] ?
               16'h0000 :
               (((block % 4) == 0 || (block % 4) == 2) ?
                 16'h3f80 : 16'h3f00);
             for (integer lane = 0; lane < LANES; lane++) begin
               observed[7:0] = east_data[
-                ((cell*STREAMS+low_stream)*LANES+lane)*8 +: 8];
+                ((boundary_cell*STREAMS+low_stream)*LANES+lane)*8 +: 8];
               observed[15:8] = east_data[
-                ((cell*STREAMS+low_stream+1)*LANES+lane)*8 +: 8];
+                ((boundary_cell*STREAMS+low_stream+1)*LANES+lane)*8 +: 8];
               if (observed !== expected)
                 $fatal(1,
                   "direction %0d row %0d block %0d FP32 Special mismatch",
                   active_direction, row, block);
             end
-            if (!output_low_seen[cell*STREAMS+low_stream]) begin
-              output_low_seen[cell*STREAMS+low_stream] <= 1'b1;
-              output_low_seen[cell*STREAMS+low_stream+1] <= 1'b1;
+            if (!output_low_seen[boundary_cell*STREAMS+low_stream]) begin
+              output_low_seen[boundary_cell*STREAMS+low_stream] <= 1'b1;
+              output_low_seen[boundary_cell*STREAMS+low_stream+1] <= 1'b1;
             end else begin
-              result_seen[cell*STREAMS+low_stream] <= 1'b1;
-              result_seen[cell*STREAMS+low_stream+1] <= 1'b1;
+              result_seen[boundary_cell*STREAMS+low_stream] <= 1'b1;
+              result_seen[boundary_cell*STREAMS+low_stream+1] <= 1'b1;
             end
           end
         end
       end
       if (fault) begin
-        $display("FP32 Special fault detail: global=%b config_wave=%b tile=%b pair_lut=%b pair_collision=%b bridge_conflict=%b",
+        $display("FP32 Special fault detail: global=%b config_wave=%b tile=%b tile_lut=%b bridge_conflict=%b",
           dut.global_config_fault, dut.config_wave_fault, dut.tile_fault,
-          dut.pair_lut_fault, dut.pair_lut_collision, dut.bridge_conflict);
+          dut.tile_lut_fault, dut.bridge_conflict);
         $display("Tile0 internals: lane_fault=%b lut_protocol=%b lut_storage=%b lut_collision=%b",
           dut.gen_tile[0].u_tile.lane_fault,
           dut.gen_tile[0].u_tile.lut_lane_protocol_fault,

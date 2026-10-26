@@ -56,6 +56,7 @@ module lpu_icu #(
         localparam integer LOCAL_QUEUE = queue - lpu_pkg::VXM_QUEUE_BASE;
         localparam integer LOCAL_WIDTH =
           lpu_pkg::vxm_local_instruction_width(LOCAL_QUEUE);
+        // Q3/Q7 include bit 5 of the backward-compatible Log extension.
         logic [LOCAL_WIDTH-1:0] local_issue_payload;
         logic [$clog2(QUEUE_DEPTH+1)-1:0] unused_level;
 

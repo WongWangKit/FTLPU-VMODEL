@@ -48,7 +48,7 @@ verilator --lint-only --Wall -Wno-DECLFILENAME -Wno-fatal \
 verilator --lint-only --Wall -Wno-DECLFILENAME -Wno-fatal \
   -f sim/filelist.f --top-module lpu_vxm_addsub_max_instruction_tb
 verilator --lint-only --Wall -Wno-DECLFILENAME -Wno-fatal \
-  -f sim/filelist.f --top-module lpu_vxm_tile_pair_lut_tb
+  -f sim/filelist.f --top-module lpu_vxm_tile_lut_tb
 verilator --lint-only --Wall -Wno-DECLFILENAME -Wno-fatal \
   -f sim/filelist.f --top-module lpu_vxm_16_alu_tb
 verilator --lint-only --Wall -Wno-DECLFILENAME -Wno-fatal \
@@ -65,3 +65,6 @@ verilator --lint-only --Wall -Wno-DECLFILENAME -Wno-fatal \
   -f sim/filelist.f --top-module lpu_vxm_slice_fp32_special_tb
 verilator --lint-only --Wall -Wno-DECLFILENAME -Wno-fatal \
   -f sim/filelist.f --top-module lpu_vxm_slice_bf16_special_tb
+
+verilator --lint-only --Wall -Wno-DECLFILENAME -Wno-fatal \
+  -f sim/filelist_vxm_log.f --top-module lpu_vxm_log_tb

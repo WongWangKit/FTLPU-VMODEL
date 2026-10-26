@@ -211,8 +211,8 @@ than allocating unused adders.
 | `lpu_vxm_shared_float_multiplier` | Left-aligns FP16/BF16/FP32 significands, drives the shared block multiplier, performs FP32-style normalization/RNE, and packs the selected result format. |
 | `lpu_vxm_shared_float_compare` | Consumes the common unpacked fields and implements shared magnitude/ordered relations: FP16/BF16 use the low 15-bit layer and FP32 adds a high 16-bit layer. MAX result semantics remain in the Basic ALU. |
 | `lpu_vxm_lut_storage` | Provides the legacy/standalone configurable LUT used by isolated ALU tests. |
-| `lpu_vxm_lut_sram` | Implements one physical 64x32 single-read function SRAM, storing each FP16 `{k,b}` pair in one row. |
-| `lpu_vxm_tile_pair_lut` | Implements one adjacent-Tile shared set of 24 SRAMs: one single-read SRAM for every special-function/Lane pair, with one-cycle Tile/Stage-tagged return and collision detection. |
+| `lpu_vxm_lut_sram` | Implements one private single-read function/Lane SRAM with 64 rows; each row holds a complete coefficient pair or Log entry (26/32/50 bits). |
+| `lpu_vxm_tile_lut` | Implements one private Tile/Superlane LUT set: one single-read SRAM for every special-function/Lane pair, with one-cycle Stage-tagged return and no cross-Superlane read sharing. |
 | `lpu_vxm_special_alu` | Performs range reduction, waits for its tagged external LUT response, interpolates `k*dx+b`, and restores the result exponent. |
 | `lpu_vxm_fp16_pkg` | Implements FP16 classification, FTZ, RNE arithmetic, division, square-root, reciprocal, and rsqrt helpers. |
 | `lpu_vxm_math_pkg` | Retains reusable format-conversion and FP32 helpers shared by the remaining RTL. |
@@ -241,16 +241,18 @@ The resulting magnitude order selects the larger operand for floating-point
 addition/subtraction alignment and also drives signed MAX selection, avoiding
 three independently inferred comparators in each physical ALU.
 
-The Special path uses function ID 0 for Exp, 1 for Reciprocal, and 2 for
-Rsqrt. One adjacent-Tile pair physically instantiates 24 independent 64x32
-single-read SRAMs, one per `{function, Lane}`; each row stores one FP16 `{k,b}`
-coefficient pair. Four Tile rows use two shared sets, so one Slice contains 48
-SRAMs. Every function also owns programmable FP16 `input_min` and
-`segment_width` state, replicated consistently across its eight Lane SRAMs.
-The one-cycle control/data wave alternates ownership between adjacent Tiles.
-Tile and physical-Stage tags route the next-cycle response without an arbiter.
-Two Tiles, or two Stages within one Tile, requesting the same function/Lane in
-one cycle is a protocol fault that the compiler schedule must prevent.
+The Special path uses function ID 0 for Exp, 1 for Reciprocal, 2 for
+Rsqrt, and 3 for Log. Every Tile/Superlane owns an independent LUT set;
+each of its eight Lanes has one single-read SRAM per function. With Log,
+there are 32 SRAMs per Superlane and 128 per four-Superlane Slice. All SRAMs
+have 64 rows: Exp uses 26-bit rows, Reciprocal/Rsqrt use 32-bit rows, and Log
+uses 50-bit rows. Programmable FP16 `input_min` and `segment_width` state
+is replicated across each function's eight Lane SRAMs.
+Superlanes can access the same function and Lane concurrently with unrelated
+addresses. Each private SRAM returns its physical-Stage tag in one cycle;
+there is no cross-Superlane ownership selection or collision. Two Stages
+within one Superlane requesting the same function/Lane in one cycle still
+constitute a protocol fault that the compiler schedule must prevent.
 
 The compute unit clamps the derived address, consumes the tagged `{k,b}`
 response, and evaluates `k*dx+b` before exponent/sign restoration. LUT-free
@@ -259,8 +261,9 @@ arbitration wait. In BF16 and FP32 modes, `input_min`, `segment_width`, `k`, and
 are widened from FP16 and all address/interpolation arithmetic remains FP32;
 BF16 narrows the final ALU result with RNE. The
 default SRAM depth is 64 and is parameterized. One Slice LUT programming port
-broadcasts identical contents into both pair sets and all eight Lane replicas
-of the selected function.
+broadcasts identical contents into all four private Superlane sets and all
+eight Lane replicas of the selected function. Only programming is broadcast;
+read addresses, SRAM storage, and response tags are independent.
 
 The active ICU-to-Slice control path separates one 15-bit global queue from
 eight physical local FIFOs with 6/5/7/5/7/5/7/5-bit payloads.  The local words
@@ -308,8 +311,8 @@ comments and in the generated East/West regression.
 The remaining MXM modes are subsequent implementation stages. VXM subnormal
 values intentionally use the C-model FTZ policy. The Special ALU and
 programmable LUT storage remain separate modules; Tile integration encodes the
-requesting Stage, while Slice integration provides fixed-phase adjacent-Tile
-sharing and tagged one-cycle response routing around the Lane-level SRAMs.
+requesting Stage, while Slice integration instantiates private per-Superlane,
+per-Lane SRAMs with tagged one-cycle response routing.
 SXM ShiftSelect and Distribute are
 intentionally still control/ISA-only. Their interfaces should consume the
 already stable ISA and control-wave blocks; no new encoding should be
@@ -343,3 +346,53 @@ RTL vectors.
 For small simulations, `lpu_top.ACTIVE_MEM_COLUMNS` can elaborate a prefix of
 the 52 physical columns in each hemisphere while preserving architectural queue
 numbering. Its synthesis/default value is 52.
+
+### C3 Log extension
+
+Log is available at physical stages C3/C7/C11/C15 in every chain mode. Q3
+and Q7 grow from five to six physical instruction bits. The canonical Log
+word is `6'b100110` (`0x26`): bit 5 extends the opcode and bits 4:3 must be
+zero. All old five-bit words keep their meanings. Noncanonical extension
+words are illegal. The local decoder exports the four-bit semantic opcode
+`VXM_LOCAL_LOG=8`; Basic opcodes and operand-source encodings are unchanged.
+ICU queues 115 and 119 and their control waves use the package width helper,
+so the extension is retained through the physical FIFO and mirrored decode.
+
+The Slice has four LUT functions. Bank 3 is Log; each Superlane has
+eight additional independent single-read Lane SRAMs. A Log row is exactly
+50 bits: `{base_uq0_28[27:0], inverse_uq1_21[21:0]}`. The 64 anchors are
+`c=1+address/64`, `base=RNE(ln(c)*2^28)`, and
+`inverse=RNE((1/c)*2^21)`. Program bank 3 with input_min `0x3c00` and width
+`0x2400` (1/64). `lut_write_log_i[49:0]` programs a complete row atomically,
+using the existing write-valid/bank/address; k/b are ignored for bank 3.
+Legacy banks retain their 16+16 programming interface and physical row widths.
+The Log response has its own 50-bit container and the same Tile/Stage tag.
+
+The common unpackers supply DAZ-effective sign/exponent/fraction and
+Zero/Inf/NaN flags. Log performs no second source classification. Positive
+normal inputs use the high six fraction bits as address and the remaining
+bits as the exact residual. A missing table reports a fault and returns NaN;
+special values and the near-one polynomial bypass the SRAM.
+
+BF16 activates 14 base fraction bits and 9 inverse fraction bits; FP16 uses
+15 and 12; FP32 uses all 28 and 21. Narrow coefficients use RNE, not simple
+truncation. One shared multiply demand point reuses C3's first Reciprocal
+Newton multiplier. A phase-selected Horner adder evaluates one/two/four
+Taylor terms. Narrow modes bypass unused phases. The base remains fixed
+point through a signed 48-bit Q40 exponent/base/polynomial sum, with one RNE
+normalization before final format packing. It is not first rounded to FP32.
+
+For FP32/FP16 inputs in [63/64,65/64], and BF16 inputs in
+[127/128,129/128], use the same polynomial with `u=x-1`, base=0 and e=0.
+This avoids cancellation near one. NaN/negative nonzero map to canonical NaN,
+DAZ-effective zero maps to -Inf, and +Inf maps to +Inf. Special values cross
+the same phases. The single-outstanding contract remains; without LUT wait,
+the accepted edge plus seven following edges gives the existing eight-cycle
+external Special latency. Adding Log does not make the ALU II=1.
+
+`sim/vectors/vxm_log_lut.hex` and `vxm_log_cases.hex` are regenerated by
+`python3 sim/cmodel/generate_log_vectors.py`. Run the full low-format
+numerical sweep with `python3 sim/cmodel/check_log_low_precision.py` and the
+cycle-level VCS regression with `bash scripts/vcs_vxm_log.sh`. The test checks
+all C3-class decode positions, chain modes, the 50-bit SRAM read path, native
+format results, special values, eight-cycle timing, metadata and reset.

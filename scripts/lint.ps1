@@ -15,7 +15,7 @@ if (-not (Get-Command verilator -ErrorAction SilentlyContinue)) {
 Push-Location $repoRoot
 try {
   foreach ($top in @('lpu_smoke_tb', 'lpu_arch_tb', 'lpu_mem_stream_tb',
-                     'lpu_vxm_alu_tb', 'lpu_vxm_input_converter_tb',
+                     'lpu_vxm_alu_tb', 'lpu_vxm_log_tb', 'lpu_vxm_input_converter_tb',
                      'lpu_vxm_fp16_stream_groups_tb',
                      'lpu_vxm_datapath_mux_tb',
                       'lpu_vxm_execution_stage_tb',
@@ -30,7 +30,7 @@ try {
                       'lpu_vxm_basic_frontend_tb',
                       'lpu_vxm_shared_float_compare_tb',
                       'lpu_vxm_addsub_max_instruction_tb',
-                      'lpu_vxm_tile_pair_lut_tb',
+                      'lpu_vxm_tile_lut_tb',
                       'lpu_vxm_16_alu_tb',
                       'lpu_vxm_instruction_controller_tb',
                       'lpu_vxm_tile_execution_tb',

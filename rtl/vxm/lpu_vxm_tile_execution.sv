@@ -51,6 +51,7 @@ module lpu_vxm_tile_execution #(
   input  logic [LUT_ADDRESS_WIDTH-1:0] lut_write_address_i,
   input  logic [15:0]                  lut_write_k_i,
   input  logic [15:0]                  lut_write_b_i,
+  input  logic [49:0]                  lut_write_log_i,
 
   input  logic [LUT_BANK_COUNT-1:0]    lut_shared_configured_i,
   input  logic [LUT_BANK_COUNT*16-1:0] lut_shared_input_min_i,
@@ -69,6 +70,8 @@ module lpu_vxm_tile_execution #(
     lut_lane_response_k_i,
   input  logic [LUT_BANK_COUNT*LANES*16-1:0]
     lut_lane_response_b_i,
+  input  logic [LUT_BANK_COUNT*LANES*50-1:0]
+    lut_lane_response_log_i,
 
   // Every physical two-ALU block owns one fixed pair of byte streams for its
   // result. FP16/BF16 use one beat; FP32 uses low-16 then high-16 beats.
@@ -97,7 +100,7 @@ module lpu_vxm_tile_execution #(
 
   localparam integer STREAM_BLOCKS = STAGES/2;
 
-  vxm_global_config_t config;
+  vxm_global_config_t active_config;
   vxm_global_config_t incoming_config;
   logic config_loaded_q;
   logic [VXM_GLOBAL_CONFIG_WIDTH-1:0] global_config_q;
@@ -150,6 +153,8 @@ module lpu_vxm_tile_execution #(
   logic [STAGES*LANES-1:0] lut_response_valid;
   logic [STAGES*LANES*16-1:0] lut_response_k;
   logic [STAGES*LANES*16-1:0] lut_response_b;
+  logic [STAGES*LANES*50-1:0] lut_response_log;
+  logic [LUT_BANK_COUNT*LANES*50-1:0] selected_lut_response_log;
   logic [LUT_BANK_COUNT-1:0] lut_configured;
   logic [LUT_BANK_COUNT*16-1:0] lut_input_min;
   logic [LUT_BANK_COUNT*16-1:0] lut_segment_width;
@@ -254,16 +259,16 @@ module lpu_vxm_tile_execution #(
 
   always_comb begin
     integer feedback_source_stage;
-    config = vxm_global_config_t'(global_config_q);
+    active_config = vxm_global_config_t'(global_config_q);
     completion_tail_stage = -1;
     completion_head_stage = -1;
     for (integer find_tail = 0; find_tail < STAGES; find_tail++) begin
       if (active_stage_q[find_tail] &&
-          chain_tail_for(find_tail, config.chain_length))
+          chain_tail_for(find_tail, active_config.chain_length))
         completion_tail_stage = find_tail;
     end
     if (completion_tail_stage >= 0) begin
-      case (config.chain_length)
+      case (active_config.chain_length)
         VXM_CHAIN_LENGTH_2:
           completion_head_stage = completion_tail_stage - 1;
         VXM_CHAIN_LENGTH_4:
@@ -322,8 +327,8 @@ module lpu_vxm_tile_execution #(
     accumulator_to_stage_valid = accumulator_valid_q;
     accumulator_to_stage_data = accumulator_data_q;
     for (integer stage = 0; stage < STAGES; stage++) begin
-      stage_chain_head[stage] = chain_head_for(stage, config.chain_length);
-      stage_chain_tail[stage] = chain_tail_for(stage, config.chain_length);
+      stage_chain_head[stage] = chain_head_for(stage, active_config.chain_length);
+      stage_chain_tail[stage] = chain_tail_for(stage, active_config.chain_length);
       stage_accept[stage] = pending_valid_q[stage] &&
         (&lane_request_accepted[stage*LANES +: LANES]);
       stage_result_any[stage] =
@@ -362,16 +367,16 @@ module lpu_vxm_tile_execution #(
             (stage*LANES+reset_lane)*CONTAINER_WIDTH +: CONTAINER_WIDTH] =
             pending_instruction_q[
               stage*VXM_LOCAL_MAX_INSTRUCTION_WIDTH +: 3] == VXM_LOCAL_MAX ?
-              (config.compute_dtype == VXM_FORMAT_FP32 ?
+              (active_config.compute_dtype == VXM_FORMAT_FP32 ?
                 32'hff800000 :
-                (config.compute_dtype == VXM_FORMAT_BF16 ?
+                (active_config.compute_dtype == VXM_FORMAT_BF16 ?
                   32'h0000ff80 : 32'h0000fc00)) : 32'h00000000;
         end
       end
 
       feedback_source_stage = -1;
       if (stage_chain_head[stage]) begin
-        case (config.chain_length)
+        case (active_config.chain_length)
           VXM_CHAIN_LENGTH_2: feedback_source_stage = stage + 1;
           VXM_CHAIN_LENGTH_4: feedback_source_stage = stage + 3;
           VXM_CHAIN_LENGTH_8: feedback_source_stage = stage + 7;
@@ -421,7 +426,7 @@ module lpu_vxm_tile_execution #(
       logic rhs_uses_stream;
       head_stage = block*2;
       head_pending = pending_valid_q[head_stage] &&
-        chain_head_for(head_stage, config.chain_length);
+        chain_head_for(head_stage, active_config.chain_length);
       lhs_uses_stream = pending_instruction_q[
         head_stage*VXM_LOCAL_MAX_INSTRUCTION_WIDTH+3 +: 2] == 2'b00;
       if ((head_stage % VXM_LOCAL_QUEUE_COUNT) == 0)
@@ -459,6 +464,7 @@ module lpu_vxm_tile_execution #(
     lut_response_valid = '0;
     lut_response_k = '0;
     lut_response_b = '0;
+    lut_response_log = '0;
     lut_lane_protocol_fault = 1'b0;
 
     for (integer function_id = 0;
@@ -503,6 +509,8 @@ module lpu_vxm_tile_execution #(
             lut_response_k[response_client*16 +: 16] =
               selected_lut_response_k[
                 lane_function_index*16 +: 16];
+            lut_response_log[response_client*50 +: 50] =
+              selected_lut_response_log[lane_function_index*50 +: 50];
             lut_response_b[response_client*16 +: 16] =
               selected_lut_response_b[
                 lane_function_index*16 +: 16];
@@ -530,17 +538,13 @@ module lpu_vxm_tile_execution #(
       assign selected_lut_response_stage = lut_lane_response_stage_i;
       assign selected_lut_response_k = lut_lane_response_k_i;
       assign selected_lut_response_b = lut_lane_response_b_i;
+      assign selected_lut_response_log = lut_lane_response_log_i;
       assign lut_storage_fault = 1'b0;
       assign internal_lut_collision = 1'b0;
     end else begin : g_internal_lut
-      localparam integer LANE_FUNCTIONS = LUT_BANK_COUNT*LANES;
-      logic [2*LANE_FUNCTIONS-1:0] pair_response_valid;
-      logic [2*LANE_FUNCTIONS*LUT_STAGE_WIDTH-1:0]
-        pair_response_stage;
-      logic [2*LANE_FUNCTIONS*16-1:0] pair_response_k;
-      logic [2*LANE_FUNCTIONS*16-1:0] pair_response_b;
+      assign internal_lut_collision = 1'b0;
 
-      lpu_vxm_tile_pair_lut #(
+      lpu_vxm_tile_lut #(
         .FUNCTION_COUNT(LUT_BANK_COUNT),
         .LANES(LANES),
         .ENTRY_COUNT(LUT_ENTRY_COUNT),
@@ -559,31 +563,21 @@ module lpu_vxm_tile_execution #(
         .write_address_i(lut_write_address_i),
         .write_k_i(lut_write_k_i),
         .write_b_i(lut_write_b_i),
-        .request_valid_i({{LANE_FUNCTIONS{1'b0}},
-                          lut_lane_request_valid_o}),
-        .request_address_i({{LANE_FUNCTIONS*LUT_ADDRESS_WIDTH{1'b0}},
-                            lut_lane_request_address_o}),
-        .request_stage_i({{LANE_FUNCTIONS*LUT_STAGE_WIDTH{1'b0}},
-                          lut_lane_request_stage_o}),
-        .response_valid_o(pair_response_valid),
-        .response_stage_o(pair_response_stage),
-        .response_k_o(pair_response_k),
-        .response_b_o(pair_response_b),
+        .write_log_i(lut_write_log_i),
+        .request_valid_i(lut_lane_request_valid_o),
+        .request_address_i(lut_lane_request_address_o),
+        .request_stage_i(lut_lane_request_stage_o),
+        .response_valid_o(selected_lut_response_valid),
+        .response_stage_o(selected_lut_response_stage),
+        .response_k_o(selected_lut_response_k),
+        .response_b_o(selected_lut_response_b),
+        .response_log_o(selected_lut_response_log),
         .configured_o(lut_configured),
         .input_min_o(lut_input_min),
         .segment_width_o(lut_segment_width),
-        .collision_o(internal_lut_collision),
         .fault_o(lut_storage_fault)
       );
 
-      assign selected_lut_response_valid =
-        pair_response_valid[0 +: LANE_FUNCTIONS];
-      assign selected_lut_response_stage = pair_response_stage[
-        0 +: LANE_FUNCTIONS*LUT_STAGE_WIDTH];
-      assign selected_lut_response_k =
-        pair_response_k[0 +: LANE_FUNCTIONS*16];
-      assign selected_lut_response_b =
-        pair_response_b[0 +: LANE_FUNCTIONS*16];
     end
   endgenerate
 
@@ -630,10 +624,10 @@ module lpu_vxm_tile_execution #(
           .instruction_i(pending_instruction_q[
             stage*VXM_LOCAL_MAX_INSTRUCTION_WIDTH +:
               VXM_LOCAL_MAX_INSTRUCTION_WIDTH]),
-          .chain_length_i(config.chain_length),
-          .compute_dtype_i(config.compute_dtype),
-          .lhs_dtype_i(config.lhs_dtype),
-          .rhs_dtype_i(config.rhs_dtype),
+          .chain_length_i(active_config.chain_length),
+          .compute_dtype_i(active_config.compute_dtype),
+          .lhs_dtype_i(active_config.lhs_dtype),
+          .rhs_dtype_i(active_config.rhs_dtype),
           .head_lhs_valid_i(fixed_lhs_valid),
           .head_lhs_data_i(fixed_lhs_data),
           .head_rhs_valid_i(fixed_rhs_valid),
@@ -674,6 +668,7 @@ module lpu_vxm_tile_execution #(
           .lut_read_valid_i(lut_response_valid[stage*LANES+lane]),
           .lut_read_k_i(lut_response_k[(stage*LANES+lane)*16 +: 16]),
           .lut_read_b_i(lut_response_b[(stage*LANES+lane)*16 +: 16]),
+          .lut_read_log_i(lut_response_log[(stage*LANES+lane)*50 +: 50]),
           .input_ready_o(lane_input_ready[stage*LANES+lane]),
           .request_accepted_o(lane_request_accepted[stage*LANES+lane]),
           .result_valid_o(lane_result_valid[stage*LANES+lane]),
@@ -757,7 +752,7 @@ module lpu_vxm_tile_execution #(
 
         if (lhs_input_capture[input_block]) begin
           for (integer input_lane = 0; input_lane < LANES; input_lane++) begin
-            if ((config.lhs_read_bits == VXM_READ_BITS_32) &&
+            if ((active_config.lhs_read_bits == VXM_READ_BITS_32) &&
                 lhs_input_phase_q[input_block])
               lhs_input_data_q[
                 (input_block*LANES+input_lane)*CONTAINER_WIDTH+16 +: 16] <= {
@@ -773,14 +768,14 @@ module lpu_vxm_tile_execution #(
                 16'b0;
             end
           end
-          if (config.lhs_read_bits == VXM_READ_BITS_32) begin
+          if (active_config.lhs_read_bits == VXM_READ_BITS_32) begin
             if (lhs_input_phase_q[input_block]) begin
               lhs_input_ready_q[input_block] <= 1'b1;
               lhs_input_phase_q[input_block] <= 1'b0;
             end else begin
               lhs_input_phase_q[input_block] <= 1'b1;
             end
-          end else if (config.lhs_read_bits == VXM_READ_BITS_16) begin
+          end else if (active_config.lhs_read_bits == VXM_READ_BITS_16) begin
             lhs_input_ready_q[input_block] <= 1'b1;
           end else begin
             fault_o <= 1'b1;
@@ -789,7 +784,7 @@ module lpu_vxm_tile_execution #(
 
         if (rhs_input_capture[input_block]) begin
           for (integer input_lane = 0; input_lane < LANES; input_lane++) begin
-            if ((config.rhs_read_bits == VXM_READ_BITS_32) &&
+            if ((active_config.rhs_read_bits == VXM_READ_BITS_32) &&
                 rhs_input_phase_q[input_block])
               rhs_input_data_q[
                 (input_block*LANES+input_lane)*CONTAINER_WIDTH+16 +: 16] <= {
@@ -805,14 +800,14 @@ module lpu_vxm_tile_execution #(
                 16'b0;
             end
           end
-          if (config.rhs_read_bits == VXM_READ_BITS_32) begin
+          if (active_config.rhs_read_bits == VXM_READ_BITS_32) begin
             if (rhs_input_phase_q[input_block]) begin
               rhs_input_ready_q[input_block] <= 1'b1;
               rhs_input_phase_q[input_block] <= 1'b0;
             end else begin
               rhs_input_phase_q[input_block] <= 1'b1;
             end
-          end else if (config.rhs_read_bits == VXM_READ_BITS_16) begin
+          end else if (active_config.rhs_read_bits == VXM_READ_BITS_16) begin
             rhs_input_ready_q[input_block] <= 1'b1;
           end else begin
             fault_o <= 1'b1;
@@ -859,7 +854,7 @@ module lpu_vxm_tile_execution #(
             (pending_instruction_q[
               clear_stage*VXM_LOCAL_MAX_INSTRUCTION_WIDTH+3 +: 2] ==
              2'b10)) begin
-          case (config.chain_length)
+          case (active_config.chain_length)
             VXM_CHAIN_LENGTH_2:
               feedback_valid_q[(clear_stage+1)*LANES +: LANES] <= '0;
             VXM_CHAIN_LENGTH_4:
@@ -952,7 +947,7 @@ module lpu_vxm_tile_execution #(
             output_pending_q[source_stage/2] <= 1'b1;
             output_phase_q[source_stage/2] <= 1'b0;
             output_fp32_q[source_stage/2] <=
-              config.compute_dtype == VXM_FORMAT_FP32;
+              active_config.compute_dtype == VXM_FORMAT_FP32;
             for (integer output_lane = 0;
                  output_lane < LANES; output_lane++) begin
               output_value_q[
@@ -964,7 +959,7 @@ module lpu_vxm_tile_execution #(
             end
           end else begin
             if ((|feedback_valid_q[source_stage*LANES +: LANES]) &&
-                !feedback_slot_consumed(source_stage, config.chain_length))
+                !feedback_slot_consumed(source_stage, active_config.chain_length))
               fault_o <= 1'b1;
             feedback_valid_q[source_stage*LANES +: LANES] <= '1;
             for (integer feedback_lane = 0;

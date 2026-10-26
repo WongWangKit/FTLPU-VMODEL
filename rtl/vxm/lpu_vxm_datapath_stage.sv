@@ -30,7 +30,7 @@ module lpu_vxm_datapath_stage #(
   input  logic [LANES*CONTAINER_WIDTH-1:0] accumulator_data_i,
 
   output logic [LANES-1:0] operands_valid_o,
-  output logic [2:0] opcode_o,
+  output logic [3:0] opcode_o,
   output logic [LANES*CONTAINER_WIDTH-1:0] lhs_o,
   output logic [LANES*CONTAINER_WIDTH-1:0] rhs_o,
   output logic [LANES*CONTAINER_WIDTH-1:0] token_original_o,
@@ -44,7 +44,7 @@ module lpu_vxm_datapath_stage #(
   logic fixed_rhs_valid;
   logic [LANES*CONTAINER_WIDTH-1:0] fixed_lhs_data;
   logic [LANES*CONTAINER_WIDTH-1:0] fixed_rhs_data;
-  logic [LANES*3-1:0] lane_opcodes;
+  logic [LANES*4-1:0] lane_opcodes;
   logic [LANES-1:0] lane_chain_head;
   logic [LANES-1:0] lane_chain_tail;
   logic [LANES-1:0] lane_decode_fault;
@@ -103,7 +103,7 @@ module lpu_vxm_datapath_stage #(
         .accumulator_data_i(
           accumulator_data_i[lane*CONTAINER_WIDTH +: CONTAINER_WIDTH]),
         .operands_valid_o(operands_valid_o[lane]),
-        .opcode_o(lane_opcodes[lane*3 +: 3]),
+        .opcode_o(lane_opcodes[lane*4 +: 4]),
         .lhs_o(lhs_o[lane*CONTAINER_WIDTH +: CONTAINER_WIDTH]),
         .rhs_o(rhs_o[lane*CONTAINER_WIDTH +: CONTAINER_WIDTH]),
         .token_original_o(
@@ -119,7 +119,7 @@ module lpu_vxm_datapath_stage #(
   endgenerate
 
   always_comb begin
-    opcode_o = lane_opcodes[2:0];
+    opcode_o = lane_opcodes[3:0];
     chain_head_o = lane_chain_head[0];
     chain_tail_o = lane_chain_tail[0];
     decode_fault_o = |lane_decode_fault;
