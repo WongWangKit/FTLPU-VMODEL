@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.20)
+if(NOT DEFINED CMODEL OR NOT DEFINED INPUT_JSON OR NOT DEFINED OUTPUT_HEADER)
+  message(FATAL_ERROR "CMODEL, INPUT_JSON and OUTPUT_HEADER are required")
+endif()
+include("${CMODEL}/cmake/FTLPUHardwareConfig.cmake")
+ftlpu_generate_hardware_config("${INPUT_JSON}" "${OUTPUT_HEADER}")

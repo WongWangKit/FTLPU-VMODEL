@@ -10,6 +10,8 @@ ucli.key
 *.fst
 *.wlf
 *.log
+xsim.dir/
+*.wdb
 
 # FPGA / EDA tool outputs
 .Xil/
@@ -23,6 +25,28 @@ ucli.key
 *.pvl
 *.svf
 *.syn
+
+# Python runtime caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Local design documents and architecture research (kept on this workstation)
+/spec_new_*/
+/docs_zh/
+/research/
+/sim/mem_p1/*.md
+/sim/mem_profiles/*.md
+/sim/srf_p1/*.md
+/sim/tb/srf/*.md
+/sim/mem_profiles/integration_registry.json
+
+# Local FPGA study documents and generated runs; source scripts remain visible
+/fpga/README.md
+/fpga/docs/
+/fpga/test/**/README.md
+/fpga/test/**/results/
+/fpga/tmp/
 
 # Editors and operating systems
 .idea/

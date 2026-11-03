@@ -2,7 +2,7 @@
 
 // One independent south-to-north command pipeline for a logical MEM bank.
 // tile0 sees the current south command combinationally. Registered state is
-// used only for tile1, tile2, tile3, and the north trace output.
+// used only for tile1..T-1 and the north trace output.
 module mem_bank_control_column #(
     parameter P_TILE_ROWS = 4,
     parameter P_MEM_CONTROL_HOP_CYCLES = 1
@@ -26,24 +26,15 @@ module mem_bank_control_column #(
     output wire                         pipeline_busy_o
 );
 
-    reg        stage1_valid;
-    reg        stage2_valid;
-    reg        stage3_valid;
-    reg [31:0] stage1_cmd;
-    reg [31:0] stage2_cmd;
-    reg [31:0] stage3_cmd;
-
     wire [P_TILE_ROWS*32-1:0] leaf_cmd_raw;
 
 `ifndef SYNTHESIS
     initial begin
-        if (P_TILE_ROWS != 4) begin
-            $display("ERROR mem_bank_control_column supports P_TILE_ROWS=4 only");
-            $finish;
+        if (P_TILE_ROWS != 2 && P_TILE_ROWS != 4 && P_TILE_ROWS != 8) begin
+            $fatal(1, "mem_bank_control_column supports P_TILE_ROWS=2/4/8 only");
         end
         if (P_MEM_CONTROL_HOP_CYCLES != 1) begin
-            $display("ERROR mem_bank_control_column supports one-cycle hops only");
-            $finish;
+            $fatal(1, "mem_bank_control_column supports one-cycle hops only");
         end
     end
 `endif
@@ -51,16 +42,25 @@ module mem_bank_control_column #(
     // tile0 executes the south command in the current cycle; there is no
     // stage0 register and therefore no accidental extra cycle of latency.
     assign leaf_cmd_valid_o[0] = south_cmd_valid_i;
-    assign leaf_cmd_valid_o[1] = stage1_valid;
-    assign leaf_cmd_valid_o[2] = stage2_valid;
-    assign leaf_cmd_valid_o[3] = stage3_valid;
-
     assign leaf_cmd_raw[0*32 +: 32] = south_cmd_i;
-    assign leaf_cmd_raw[1*32 +: 32] = stage1_cmd;
-    assign leaf_cmd_raw[2*32 +: 32] = stage2_cmd;
-    assign leaf_cmd_raw[3*32 +: 32] = stage3_cmd;
 
-    // Busy describes commands currently executing at tile0..tile3. The north
+    for (genvar hop = 1; hop < P_TILE_ROWS; hop = hop + 1) begin : gen_hop
+        reg valid_q;
+        reg [31:0] command_q;
+        always @(posedge clk_i or negedge rst_ni) begin
+            if (!rst_ni) begin
+                valid_q <= 1'b0;
+                command_q <= 32'b0;
+            end else begin
+                valid_q <= leaf_cmd_valid_o[hop-1];
+                command_q <= leaf_cmd_raw[(hop-1)*32 +: 32];
+            end
+        end
+        assign leaf_cmd_valid_o[hop] = valid_q;
+        assign leaf_cmd_raw[hop*32 +: 32] = command_q;
+    end
+
+    // Busy describes commands currently executing at tile0..T-1. The north
     // trace register is observational and does not extend functional busy.
     assign pipeline_busy_o = |leaf_cmd_valid_o;
 
@@ -79,26 +79,13 @@ module mem_bank_control_column #(
 
     always @(posedge clk_i or negedge rst_ni) begin
         if (!rst_ni) begin
-            stage1_valid      <= 1'b0;
-            stage2_valid      <= 1'b0;
-            stage3_valid      <= 1'b0;
             north_cmd_valid_o <= 1'b0;
-            stage1_cmd        <= 32'b0;
-            stage2_cmd        <= 32'b0;
-            stage3_cmd        <= 32'b0;
             north_cmd_o       <= 32'b0;
         end else begin
             // IMPLEMENTATION CHOICE: north trace is a registered copy of the
-            // command presented to tile3 in this cycle. It does not feed back.
-            north_cmd_valid_o <= stage3_valid;
-            north_cmd_o       <= stage3_cmd;
-
-            stage3_valid <= stage2_valid;
-            stage3_cmd   <= stage2_cmd;
-            stage2_valid <= stage1_valid;
-            stage2_cmd   <= stage1_cmd;
-            stage1_valid <= south_cmd_valid_i;
-            stage1_cmd   <= south_cmd_i;
+            // command presented to the last tile. It does not feed back.
+            north_cmd_valid_o <= leaf_cmd_valid_o[P_TILE_ROWS-1];
+            north_cmd_o <= leaf_cmd_raw[(P_TILE_ROWS-1)*32 +: 32];
         end
     end
 

@@ -1,4 +1,10 @@
+rtl/core/lpu_native_config_pkg.sv
 rtl/core/lpu_pkg.sv
+sim/tb/srf/lpu_srf_runtime_checker.sv
+sim/tb/srf/lpu_srf_superlane_col_dir_bind.sv
+sim/tb/srf/lpu_srf_column_dir_bind.sv
+sim/tb/srf/lpu_srf_direction_fabric_bind.sv
+sim/tb/srf/lpu_srf_hemisphere_fabric_bind.sv
 rtl/srf/ftlpu_sr_superlane_col_dir.sv
 rtl/srf/ftlpu_sr_column_dir.sv
 rtl/srf/ftlpu_sr_direction_fabric.sv

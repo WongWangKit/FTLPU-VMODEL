@@ -1,0 +1,12 @@
+sim/tb/srf/lpu_srf_runtime_checker.sv
+sim/tb/srf/lpu_srf_superlane_col_dir_bind.sv
+sim/tb/srf/lpu_srf_column_dir_bind.sv
+sim/tb/srf/lpu_srf_direction_fabric_bind.sv
+sim/tb/srf/lpu_srf_hemisphere_fabric_bind.sv
+sim/tb/srf/lpu_srf_fabric_bind.sv
+rtl/srf/ftlpu_sr_superlane_col_dir.sv
+rtl/srf/ftlpu_sr_column_dir.sv
+rtl/srf/ftlpu_sr_direction_fabric.sv
+rtl/srf/ftlpu_sr_hemisphere_fabric.sv
+rtl/srf/ftlpu_sr_fabric.sv
+sim/srf_p1/legacy_trace_tb.sv

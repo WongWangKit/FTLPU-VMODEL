@@ -11,7 +11,8 @@ module mem_logical_bank_column #(
     parameter P_MEM_BANK_DEPTH_ROWS     = 32768,
     parameter P_MEM_CONTROL_HOP_CYCLES  = 1,
     parameter P_MEM_READ_TO_SR_CYCLES   = 1,
-    parameter P_MEM_FAULT_BITS          = 2
+    parameter P_MEM_FAULT_BITS          = 2,
+    parameter P_MEM_ACTIVE_ROWS         = P_MEM_BANK_DEPTH_ROWS
 ) (
     input  wire                         clk_i,
     input  wire                         rst_ni,
@@ -84,6 +85,7 @@ module mem_logical_bank_column #(
         for (tile = 0; tile < P_TILE_ROWS; tile = tile + 1) begin : gen_leaf
             mem_bank_superlane_leaf #(
                 .P_MEM_BANK_DEPTH_ROWS(P_MEM_BANK_DEPTH_ROWS),
+                .P_MEM_ACTIVE_ROWS(P_MEM_ACTIVE_ROWS),
                 .P_LANES_PER_TILE(P_LANES_PER_TILE),
                 .P_MEM_ELEMENT_BITS(P_MEM_ELEMENT_BITS),
                 .P_MEM_READ_TO_SR_CYCLES(P_MEM_READ_TO_SR_CYCLES),
