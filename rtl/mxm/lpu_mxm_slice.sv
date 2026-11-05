@@ -48,7 +48,9 @@ module lpu_mxm_slice #(
   logic accumulator_fault;
   logic conflict_d;
 
-  lpu_mxm_control u_control (
+  // Legacy datapath cannot consume overlapping batch commands. Keep its
+  // compatibility control isolated; the new array uses lpu_mxm_frontend.
+  lpu_mxm_legacy_control u_control (
     .clk_i,
     .rst_ni,
     .load_valid_i(load_issue_valid_i),

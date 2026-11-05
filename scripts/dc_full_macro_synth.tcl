@@ -16,6 +16,22 @@ set_app_var target_library [list $stdcell_db]
 set_app_var link_library [list * $stdcell_db $mem_db $acc_db dw_foundation.sldb]
 
 set relative_rtl_files [list \
+  rtl/mxm/lpu_mxm_config_pkg.sv \
+  rtl/mxm/lpu_mxm_supercell_math_pkg.sv \
+  rtl/mxm/lpu_mxm_bf16_dot_csa.sv \
+  rtl/mxm/lpu_mxm_fp32_add_pipe.sv \
+  rtl/mxm/lpu_mxm_output_pipe.sv \
+  rtl/mxm/lpu_mxm_supercell.sv \
+  rtl/mxm/lpu_mxm_isa_pkg.sv \
+  rtl/mxm/lpu_mxm_command_queue.sv \
+  rtl/mxm/lpu_mxm_instruction_wave.sv \
+  rtl/mxm/lpu_mxm_control.sv \
+  rtl/mxm/lpu_mxm_frontend.sv \
+  rtl/mxm/lpu_mxm_backend_isa_pkg.sv \
+  rtl/mxm/lpu_mxm_accumulator_bank.sv \
+  rtl/mxm/lpu_mxm_backend_column.sv \
+  rtl/mxm/lpu_mxm_backend.sv \
+  rtl/mxm/lpu_mxm_core.sv \
   rtl/core/lpu_pkg.sv rtl/core/lpu_isa_decode.sv \
   rtl/core/lpu_stream_stage.sv rtl/core/lpu_control_pipeline.sv \
   rtl/icu/lpu_icu_queue.sv rtl/icu/lpu_icu.sv \
@@ -24,7 +40,7 @@ set relative_rtl_files [list \
   rtl/mem/lpu_mem_column.sv rtl/mem/lpu_mem_hemisphere.sv \
   rtl/vxm/lpu_vxm_math_pkg.sv rtl/vxm/lpu_vxm_fp16_pkg.sv \
   rtl/vxm/lpu_vxm_input_converter.sv \
-  rtl/mxm/lpu_mxm_control.sv \
+  rtl/mxm/legacy/lpu_mxm_legacy_control.sv \
   rtl/mxm/lpu_mxm_dequantizer.sv rtl/mxm/lpu_mxm_weight_buffer.sv \
   rtl/mxm/lpu_mxm_dot_bank.sv rtl/mxm/lpu_mxm_compute.sv \
   rtl/mxm/lpu_mxm_accumulator_sram.sv \

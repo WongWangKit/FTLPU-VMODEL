@@ -1,0 +1,16 @@
+rtl/mxm/lpu_mxm_config_pkg.sv
+rtl/mxm/lpu_mxm_supercell_math_pkg.sv
+rtl/mxm/lpu_mxm_bf16_dot_csa.sv
+rtl/mxm/lpu_mxm_fp32_add_pipe.sv
+rtl/mxm/lpu_mxm_output_pipe.sv
+rtl/mxm/lpu_mxm_supercell.sv
+rtl/mxm/lpu_mxm_isa_pkg.sv
+rtl/mxm/lpu_mxm_command_queue.sv
+rtl/mxm/lpu_mxm_instruction_wave.sv
+rtl/mxm/lpu_mxm_control.sv
+rtl/mxm/lpu_mxm_frontend.sv
+rtl/mxm/lpu_mxm_backend_isa_pkg.sv
+rtl/mxm/lpu_mxm_accumulator_bank.sv
+rtl/mxm/lpu_mxm_backend_column.sv
+rtl/mxm/lpu_mxm_backend.sv
+rtl/mxm/lpu_mxm_core.sv

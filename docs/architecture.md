@@ -140,9 +140,54 @@ long schedules do not require layer-sized instruction SRAMs. `NOP` and
 
 ### MXM module boundaries
 
+The compiler-facing timing, input and bank-scheduling obligations are collected
+in [the MXM scheduling contract](mxm_scheduling_contract.md), including the
+distinction between hardware guarantees and compiler padding policies.
+
+The standalone parameterized BF16 Supercell is implemented separately from
+the legacy MXM below. It uses two weight register buffers, a 64-bit common-
+exponent CSA dot-product pipeline and three-stage FP32 upward addition.
+Activation broadcasts to all local output groups simultaneously and advances
+right through one link register per cell; local group outputs are aligned.
+Weight tails also cross one register per cell with data/valid/buffer ID together,
+so each cell can start replacing its retired buffer on the following edge.
+Continuous 32-activation tiles now overlap 32-beat loads of four distinct weight
+tiles without compute bubbles; a 40-activation test also keeps compute continuous
+while weight inputs idle. COLUMN packets retain their target/data through the
+same cell phase and do not discard a preceding MATRIX tail. See
+[`mxm_supercell.md`](mxm_supercell.md) for ports, numerical rules, cycle
+conventions and executable regressions. The new `lpu_mxm_frontend` now connects
+the physical array to independent queued 64-bit compute/load instructions.
+Each array instruction stream has a local three-cycle relay counter in each
+nonterminal Superlane; the top row has none. Matrix loads last 32 local beats,
+column loads one, and compute commands have COUNT >= 32. A third independent
+queue in `lpu_mxm_backend` controls DIRECT_OUT/STORE/ACC_STORE/ACC_OUT, two 1RW
+banks per column and parallel FP32 addition with five-cycle read-to-write
+latency. `lpu_mxm_core` connects the array and backend. Both output opcodes
+select FP32 or BF16 RNE using backend bit34. A shared registered output stage
+gives all four combinations the same six-cycle launch-to-output latency.
+Commands launch two cycles before array data availability: SRAM is prefetched,
+and the fresh array bus directly enters A1 with the returned B. Three wide
+new-partial waiting registers have been removed; array availability to output
+is four cycles. STORE uses the existing three-stage passthrough so all writes
+share the accumulation writeback phase and retain five-cycle read-to-write timing.
+BF16 occupies the low half of each 32-bit core lane with a format sideband;
+final stream packing/routing and the legacy `lpu_top` migration remain separate. See
+[`mxm_instructions.md`](mxm_instructions.md).
+
+New frontend modules are `lpu_mxm_isa_pkg`, `lpu_mxm_command_queue`,
+`lpu_mxm_instruction_wave`, `lpu_mxm_control`, and `lpu_mxm_frontend`;
+new backend modules are `lpu_mxm_backend_isa_pkg`, `lpu_mxm_accumulator_bank`,
+`lpu_mxm_backend_column`, `lpu_mxm_output_pipe`, `lpu_mxm_backend`, and `lpu_mxm_core`.
+No dequantization, Block8, per-cycle vertical instruction shift or result
+feedback path exists in this new frontend. The following table describes the
+legacy compatibility datapath only; its old control is explicitly isolated
+under `rtl/mxm/legacy/` because `lpu_top` and existing C-model schedules still
+use it. Shared control pipelines used by MEM/SXM/VXM are not removed.
+
 | Module | Hardware responsibility |
 | --- | --- |
-| `lpu_mxm_control` | Advances independent load, dequant, and compute instructions through four physical tiles. |
+| `lpu_mxm_legacy_control` | Compatibility-only per-cycle load, dequant, and compute propagation for the old slice. |
 | `lpu_mxm_dequantizer` | Converts signed INT8 weights times a BF16 scale into BF16 with round-to-nearest-even. |
 | `lpu_mxm_weight_buffer` | Consumes full-cell or per-column Direct16/INT8 East streams and owns two buffers of four-by-four 8x8 weight cells plus inner-column validity. |
 | `lpu_mxm_dot_bank` | Implements the 32 parallel eight-element FP32 dot products for one active physical tile. |

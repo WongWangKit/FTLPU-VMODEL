@@ -1,0 +1,211 @@
+// Compile-time defaults for the next parameterized MXM implementation.
+// The new queued frontend and Supercell consume these defaults. Legacy MXM
+// modules retain their current interfaces until their backend is migrated.
+package lpu_mxm_config_pkg;
+  // ---------- User configuration ----------
+
+  // Supercell grid: default 4 x 4 cells of 8 x 8 weights = 32 x 32.
+  parameter integer SC_ROWS = 4;
+  parameter integer SC_COLS = 4;
+  parameter integer CELL_K = 8;
+  parameter integer CELL_N = 8;
+
+  // Reserved choices are interface definitions, not implemented capabilities.
+  typedef enum logic [1:0] {
+    MXM_DTYPE_FP16 = 2'd0,
+    MXM_DTYPE_BF16 = 2'd1,
+    MXM_DTYPE_FP32 = 2'd2,
+    MXM_DTYPE_INT8 = 2'd3
+  } mxm_data_type_e;
+  parameter mxm_data_type_e DATA_TYPE = MXM_DTYPE_BF16;
+
+  // Ping-pong weight storage, matching the current two-buffer layout.
+  parameter integer WEIGHT_BUFFER_COUNT = 2;
+
+  // Accumulator shape: LENGTH FP32 elements per result, DEPTH results.
+  // Default: 32 elements x 1024 results x 4 bytes = 128 KiB per MXM.
+  parameter integer ACCUMULATOR_RESULT_LENGTH = SC_COLS * CELL_N;
+  parameter integer ACCUMULATOR_DEPTH = 1024;
+  parameter integer INSTRUCTION_QUEUE_DEPTH = 16;
+  localparam integer COMPUTE_MIN_COUNT = 32;
+  localparam integer COMPUTE_COUNT_BITS = 16;
+  localparam integer SUPERLANE_INSTRUCTION_INTERVAL = 3;
+  localparam integer DOT_PIPELINE_CYCLES = 9;
+  localparam integer PARTIAL_ADD_CYCLES = 3;
+  // Work backwards from direct A/B capture, without new-partial wait registers.
+  // Launch L0, prefetch L1, array A + SRAM B available L2, A1 captures L3.
+  localparam integer BACKEND_COMMAND_TO_READ_CYCLES = 1;
+  localparam integer BACKEND_COMMAND_TO_OPERAND_CYCLES = 3;
+  localparam integer BACKEND_COMMAND_TO_WRITE_CYCLES = 6;
+  localparam integer BACKEND_COMMAND_LEAD_CYCLES = 2; // Before array data availability.
+  localparam integer OUTPUT_CONVERSION_CYCLES = 1; // Shared FP32/BF16 output register.
+  localparam integer BACKEND_OUTPUT_CYCLES = 5 + OUTPUT_CONVERSION_CYCLES;
+  localparam integer BACKEND_PARTIAL_TO_OUTPUT_CYCLES = 3 + OUTPUT_CONVERSION_CYCLES;
+
+  // ---------- Derived properties: do not configure independently ----------
+
+  localparam integer SC_COUNT = SC_ROWS * SC_COLS;
+  localparam integer MATRIX_K = SC_ROWS * CELL_K;
+  localparam integer MATRIX_N = SC_COLS * CELL_N;
+
+  // Each Lane supplies one activation per cycle. The CELL_K values broadcast
+  // to all CELL_N groups together; a single link register forwards them to
+  // the next Supercell each cycle, independently of CELL_N.
+  // Each group owns CELL_K multipliers: an 8 x 8 cell has 8 groups of 8,
+  // hence 64 multipliers, not an extra replicated Block8 compute dimension.
+  // Dot-product results travel upward; instructions/data are time-skewed
+  // vertically adjacent cells to align the partial sums. The standalone RTL
+  // uses nine dot stages and three upward-add stages; see mxm_supercell.md.
+  localparam integer K_PAR = CELL_K;
+  localparam integer N_PAR = CELL_N;
+  localparam integer ACTIVATION_LANES = K_PAR;
+  localparam integer DOT_OUTPUTS_PER_CELL = N_PAR;
+  localparam integer MULTIPLIERS_PER_CELL = N_PAR * K_PAR;
+  localparam integer ARRAY_MULTIPLIER_COUNT = SC_COUNT * MULTIPLIERS_PER_CELL;
+
+  // Initial implementation target: BF16 inputs and FP32 dot/partial sums.
+  // BF16 has an 8-bit significand (including the hidden bit), so each
+  // multiplier uses an 8 x 8 significand product. The FP16-specific internal
+  // exact-sum width must not be reused: BF16 has a much wider exponent range.
+  // These flags describe operand support in the standalone Supercell.
+  localparam bit SUPPORT_FP16 = 1'b0;
+  localparam bit SUPPORT_BF16 = 1'b1;
+  localparam bit SUPPORT_FP32 = 1'b0;
+  localparam bit SUPPORT_INT8 = 1'b0;
+  localparam integer OPERAND_BITS = 16;
+  localparam integer ACCUMULATOR_BITS = 32;
+
+  // Local dot-product representation, not IEEE FP64: signed integers with
+  // a shared, separately carried exponent. Keep this width through the CSA
+  // tree and final carry-propagate adder; normalize/round to FP32 only after
+  // all CELL_K products have been summed.
+  localparam integer DOT_INTERNAL_BITS = 64;
+  localparam integer DOT_GROWTH_BITS = CELL_K > 1 ? $clog2(CELL_K) : 0;
+  localparam integer DOT_ALIGNED_PRODUCT_BITS =
+    DOT_INTERNAL_BITS - 1 - DOT_GROWTH_BITS;
+  // For CELL_K=8: 1 sign + 3 growth + 60 aligned-product bits.
+  // Products outside the retained alignment window can lose low bits;
+  // 64 bits does not guarantee exact summation for all BF16 exponent spans.
+
+  localparam integer WEIGHT_BITS_PER_CELL = CELL_K * CELL_N * OPERAND_BITS;
+  localparam integer WEIGHT_STORAGE_BITS =
+    WEIGHT_BUFFER_COUNT * SC_COUNT * WEIGHT_BITS_PER_CELL;
+
+  // ---------- New MXM weight-load instruction semantics ----------
+  // W[k][n]: a load beat contains all MATRIX_K weights of one output column
+  // n, split across SC_ROWS parallel row inputs (CELL_K values per row).
+  // Default: 32 BF16 values / 512 bits per beat, four 128-bit row inputs.
+  // A MATRIX load supplies MATRIX_N consecutive beats to the selected buffer
+  // using the horizontal shift chains. Tail data/valid/buffer ID cross ONE
+  // register per cell, matching activation. Last-cell completion is later
+  // by SC_COLS-1 edges, overlapped by the same activation offset. At COUNT
+  // >= MATRIX_N, next-buffer loading fits inside the current compute block.
+  // A COLUMN load supplies one beat and
+  // selectively updates one addressed column, keeping all others unchanged.
+  // lpu_mxm_frontend registers COLUMN packets one edge per cell to the target;
+  // they never discard a preceding MATRIX tail in the independent tail link.
+  // lpu_mxm_isa_pkg defines the executable new 64-bit instruction format.
+  localparam integer WEIGHT_LOAD_ELEMENTS_PER_BEAT = MATRIX_K;
+  localparam integer WEIGHT_LOAD_BEAT_BITS =
+    WEIGHT_LOAD_ELEMENTS_PER_BEAT * OPERAND_BITS;
+  localparam integer WEIGHT_LOAD_ROW_BEAT_BITS = CELL_K * OPERAND_BITS;
+  localparam integer WEIGHT_LOAD_MATRIX_CYCLES = MATRIX_N;
+  localparam integer WEIGHT_LOAD_COLUMN_CYCLES = 1;
+  localparam integer WEIGHT_LOAD_COLUMN_ADDRESS_BITS =
+    MATRIX_N > 1 ? $clog2(MATRIX_N) : 1;
+  localparam integer WEIGHT_LOAD_BUFFER_ADDRESS_BITS =
+    WEIGHT_BUFFER_COUNT > 1 ? $clog2(WEIGHT_BUFFER_COUNT) : 1;
+  // Durations count weight input beats at the array interface, not command
+  // propagation or result-pipeline drain. No automatic stall/retry: sources
+  // and the selected destination buffer must be scheduled ready each beat.
+  // The compiler chooses compute batch lengths (e.g. 32); they are not tied
+  // to either load duration. One-cycle COLUMN commands may be back-to-back,
+  // so each nonterminal row has a local forwarding counter per stream,
+  // restarted by replacement of that row's instruction. No timer is needed
+  // on the final row. Only neighbor handoff and local execution constrain
+  // replacement; older commands may still travel in upper rows.
+
+  // ---------- New MXM accumulator architecture contract ----------
+  // Implemented by lpu_mxm_backend / lpu_mxm_core; not migrated into the
+  // legacy accumulator or lpu_top stream network.
+  // Each vertical Supercell column owns CELL_N parallel FP32 adders and a
+  // private pair of single-port logical SRAM banks. One batch is the CELL_N
+  // simultaneous results from that column, never a single FP32 element.
+  localparam integer ACCUMULATOR_COLUMN_COUNT = SC_COLS;
+  localparam integer ACCUMULATOR_ELEMENTS_PER_BATCH = CELL_N;
+  localparam integer ACCUMULATOR_ADDERS_PER_COLUMN = CELL_N;
+  localparam integer ACCUMULATOR_BANK_COUNT_PER_COLUMN = 2;
+  localparam integer ACCUMULATOR_BANK_PORTS = 1; // One read OR write per edge.
+  localparam integer ACCUMULATOR_BANK_WORD_BITS =
+    ACCUMULATOR_ELEMENTS_PER_BATCH * ACCUMULATOR_BITS;
+  localparam integer ACCUMULATOR_BANK_DEPTH = ACCUMULATOR_DEPTH / 2;
+  localparam integer ACCUMULATOR_BANK_ADDRESS_BITS =
+    ACCUMULATOR_BANK_DEPTH > 1 ? $clog2(ACCUMULATOR_BANK_DEPTH) : 1;
+  localparam integer ACCUMULATOR_STORAGE_BITS =
+    ACCUMULATOR_RESULT_LENGTH * ACCUMULATOR_DEPTH * ACCUMULATOR_BITS;
+  localparam integer ACCUMULATOR_STORAGE_BYTES = ACCUMULATOR_STORAGE_BITS / 8;
+  // Default per column: 8 adders, two 512 x 256-bit banks. Four columns
+  // together retain 128 KiB of logical capacity, with no third scratch bank.
+  // Logical widths scale with CELL_N; 256 bits is the default, not a limit.
+  // A technology wrapper may concatenate narrower macros using the same
+  // address/control. RTL arrays alone do not guarantee SRAM macro mapping.
+
+  // Logical batch address a: bank = a % 2, bank row = a / 2. Every batch
+  // keeps all CELL_N FP32 values together and writes back to the SAME bank
+  // and row. Each column starts its own stream at Bank0, then Bank1, etc.;
+  // horizontally adjacent columns retain their one-edge launch offsets.
+  localparam bit ACCUMULATOR_IN_PLACE_WRITEBACK = 1'b1;
+  localparam integer ACCUMULATOR_FIRST_BANK = 0;
+
+  // Fixed edge contract for the backend: read request accepted E0;
+  // read data available E1; adder captures A1/A2/A3 at E2/E3/E4; the SRAM
+  // accepts/commits the write at E5. No uncounted stage may be inserted.
+  // Cycle-accurate RTL contract, not a measured physical macro latency.
+  localparam integer ACCUMULATOR_SRAM_READ_CYCLES = 1;
+  localparam integer ACCUMULATOR_FP32_ADD_CYCLES = 3;
+  localparam integer ACCUMULATOR_SRAM_WRITE_CYCLES = 1;
+  localparam integer ACCUMULATOR_READ_TO_WRITE_CYCLES =
+    ACCUMULATOR_SRAM_READ_CYCLES + ACCUMULATOR_FP32_ADD_CYCLES +
+    ACCUMULATOR_SRAM_WRITE_CYCLES;
+  // D=5 is odd: alternating reads and their in-place writes use opposite
+  // banks on each service edge. This is NOT a guarantee for arbitrary
+  // addresses/bubbles. The compiler preserves clock-based bank phase,
+  // avoids direct-write/output conflicts, aligns SRAM B and observes address
+  // dependencies. A bank-conflicting access is not silently queued/retried.
+  localparam integer ACCUMULATOR_BATCH_II = 1;
+  // No result-to-operand feedback register or forwarding/bypass network.
+  // This is a fixed architecture property, not an implemented mode switch.
+  localparam bit ACCUMULATOR_FEEDBACK_ENABLED = 1'b0;
+
+  // Data routes: new FP32 dot -> A, SRAM write, or output. SRAM read -> B
+  // only; B has no feedback or zero source. Add result -> SRAM write or output.
+  // First results bypass addition. The compiler must not reread an address
+  // until its previous write commits; a read and write of that bank cannot
+  // share the commit edge. A 32-row round-robin accumulation pass revisits
+  // each address after 32 edges, exceeding D=5. Input width alone does not
+  // guarantee this spacing; shorter passes must be explicitly scheduled.
+  // SRAM is not cleared on reset: consumers must initialize each address
+  // before reading it. A separate backend ISA/queue owns these operations;
+  // compute instructions carry no SRAM address, route or output-format flags.
+  // Both output instructions select FP32 or BF16 RNE using backend bit34.
+  // One shared output register gives both types the SAME launch-to-output
+  // latency (6), II=1. Array-data availability to output is 4 cycles.
+  // SRAM/accumulation stay FP32, with D=5 unchanged. STORE reuses the
+  // three-stage passthrough so all writes occupy the same A+3 commit phase.
+  // BF16 output preserves subnormals and quiets NaNs; no output DAZ/FTZ.
+  // Core carrier: each 32-bit lane holds FP32 or zero-extended BF16 plus a
+  // per-column format flag. Final stream packing/destination remain deferred.
+
+  // Consumers must reject an invalid configuration at elaboration; reserved
+  // data types must never silently fall back to BF16. Pipeline latency,
+  // initiation interval and accumulator hazards require separate RTL design;
+  // multiplier count alone does not establish an end-to-end II of one.
+  localparam bit CONFIG_VALID =
+    (SC_ROWS > 0) && (SC_COLS > 0) && (CELL_K > 0) && (CELL_N > 0) &&
+    (DATA_TYPE == MXM_DTYPE_BF16) &&
+    (WEIGHT_BUFFER_COUNT == 2) &&
+    (DOT_ALIGNED_PRODUCT_BITS >= 16) &&
+    (ACCUMULATOR_RESULT_LENGTH == MATRIX_N) &&
+    (ACCUMULATOR_DEPTH >= 2) && ((ACCUMULATOR_DEPTH % 2) == 0) &&
+    ((ACCUMULATOR_READ_TO_WRITE_CYCLES % 2) == 1);
+endpackage
