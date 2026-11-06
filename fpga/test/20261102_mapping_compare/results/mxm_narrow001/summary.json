@@ -1,0 +1,133 @@
+[
+  {
+    "command": [
+      "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\vivado.bat",
+      "-mode",
+      "batch",
+      "-source",
+      "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_narrow001/mxm_mul_narrow_dsp/synth.tcl",
+      "-log",
+      "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_narrow001/mxm_mul_narrow_dsp/vivado.log",
+      "-journal",
+      "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_narrow001/mxm_mul_narrow_dsp/vivado.jou"
+    ],
+    "returncode": 0,
+    "status": "completed",
+    "elapsed_s": 172.8,
+    "case": "mxm_mul_narrow_dsp",
+    "complete": true,
+    "simulation": [
+      {
+        "mode": "rtl",
+        "passed": true,
+        "steps": [
+          {
+            "command": [
+              "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xvlog.bat",
+              "--sv",
+              "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_narrow001/src/rtl/vxm/lpu_vxm_math_pkg.sv",
+              "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_narrow001/src/experiment/rtl/mxm_mul_narrow.sv",
+              "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_narrow001/src/experiment/rtl/math_reference_pkg.sv",
+              "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_narrow001/src/experiment/tb/mxm_mul_tb.sv"
+            ],
+            "returncode": 0,
+            "status": "completed",
+            "elapsed_s": 3.0
+          },
+          {
+            "command": [
+              "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xelab.bat",
+              "mxm_mul_tb",
+              "-s",
+              "snapshot",
+              "--timescale",
+              "1ns/1ps",
+              "--mt",
+              "2"
+            ],
+            "returncode": 0,
+            "status": "completed",
+            "elapsed_s": 3.8
+          },
+          {
+            "command": [
+              "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xsim.bat",
+              "snapshot",
+              "-runall"
+            ],
+            "returncode": 0,
+            "status": "completed",
+            "elapsed_s": 5.3
+          }
+        ]
+      },
+      {
+        "mode": "gate",
+        "passed": true,
+        "steps": [
+          {
+            "command": [
+              "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xvlog.bat",
+              "--sv",
+              "-d",
+              "GATE",
+              "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_narrow001/mxm_mul_narrow_dsp/netlist.v",
+              "C:/Users/huazh/Desktop/Vivado2023/Vivado/2023.2/data/verilog/src/glbl.v",
+              "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_narrow001/src/experiment/rtl/math_reference_pkg.sv",
+              "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_narrow001/src/experiment/tb/mxm_mul_tb.sv"
+            ],
+            "returncode": 0,
+            "status": "completed",
+            "elapsed_s": 2.9
+          },
+          {
+            "command": [
+              "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xelab.bat",
+              "mxm_mul_tb",
+              "glbl",
+              "-L",
+              "unisims_ver",
+              "-s",
+              "snapshot",
+              "--timescale",
+              "1ns/1ps",
+              "--mt",
+              "2"
+            ],
+            "returncode": 0,
+            "status": "completed",
+            "elapsed_s": 8.6
+          },
+          {
+            "command": [
+              "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xsim.bat",
+              "snapshot",
+              "-runall"
+            ],
+            "returncode": 0,
+            "status": "completed",
+            "elapsed_s": 5.9
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "command": [
+      "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\vivado.bat",
+      "-mode",
+      "batch",
+      "-source",
+      "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_narrow001/mxm_column_narrow_dsp/synth.tcl",
+      "-log",
+      "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_narrow001/mxm_column_narrow_dsp/vivado.log",
+      "-journal",
+      "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_narrow001/mxm_column_narrow_dsp/vivado.jou"
+    ],
+    "returncode": null,
+    "status": "timeout",
+    "elapsed_s": 900.4,
+    "case": "mxm_column_narrow_dsp",
+    "complete": false
+  }
+]

@@ -1,0 +1,43 @@
+{
+  "parameters": 1334625280,
+  "all_bf16_weight_bytes": 2669250560,
+  "w8_matrix_bytes": 1283457024,
+  "scale_bf16_bytes": 40108032,
+  "bf16_router_norm_tied_embedding_bytes": 102336512,
+  "mixed_weight_bytes": 1425901568,
+  "one_expert_w8_bytes": 1572864,
+  "one_expert_scale_bytes": 49152,
+  "layer_w8_matrix_bytes": 53477376,
+  "active_experts_w8_bytes": 12582912,
+  "kv_cache_bytes": {
+    "24": 1179648,
+    "32": 1572864,
+    "64": 3145728,
+    "128": 6291456
+  },
+  "decode_linear_MACs": 428605440,
+  "decode_attention_MACs_at_context24": 1179648,
+  "prefill16_linear_MACs_no_all_token_lm_head": 6102712320,
+  "no_cache_decode_weight_stream_bytes": 491520000,
+  "illustrative_weight_stream_lower_bound_ms_at_GBps": {
+    "0.125": 3932.1600000000003,
+    "1": 491.52000000000004,
+    "8": 61.440000000000005,
+    "16": 30.720000000000002
+  },
+  "tile128_w8_bytes": 16384,
+  "tile128_scale_bytes": 512,
+  "tile128_dequant_bf16_bytes": 32768,
+  "prefill16_route_count": 128,
+  "prefill16_routed_input_bytes": 262144,
+  "prefill16_worst_tokens_per_expert": 16,
+  "mem_group_plan": {
+    "group_bytes": 131072,
+    "total_groups": 26,
+    "kv_groups": 12,
+    "weight_staging_groups": 4,
+    "scratch_groups": 6,
+    "reserve_groups": 4
+  },
+  "caveat": "Byte-capacity plan only. No bank/port schedule, SRAM placement, real-weight accuracy or throughput validation."
+}

@@ -1,0 +1,8 @@
+{
+  "status": "archive_download_failed",
+  "date": "2026-11-04",
+  "failed_url": "https://www.hitechglobal.com/Boards/VirtexUltraScale%2B_VU19P_Board.htm",
+  "error": "Invoke-WebRequest: Access Denied. First request failed; script stopped; no downloaded artifacts.",
+  "alternate_evidence": "Official pages were successfully read with web browsing. Sources and claims are linked in main report and cases/board_candidates.json.",
+  "scope": "No attempt to bypass access restriction."
+}

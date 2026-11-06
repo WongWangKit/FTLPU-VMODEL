@@ -1,0 +1,56 @@
+
+****** Vivado v2023.2 (64-bit)
+  **** SW Build 4029153 on Fri Oct 13 20:14:34 MDT 2023
+  **** IP Build 4028589 on Sat Oct 14 00:45:43 MDT 2023
+  **** SharedData Build 4025554 on Tue Oct 10 17:18:54 MDT 2023
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+
+source C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_area003_sta001/mxm_column_default/retime.tcl
+# set_param general.maxThreads 1
+# open_checkpoint {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_area003/mxm_column_default/synthesized.dcp}
+Command: open_checkpoint C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_area003/mxm_column_default/synthesized.dcp
+
+Starting open_checkpoint Task
+
+Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.072 . Memory (MB): peak = 401.570 ; gain = 4.363
+INFO: [Device 21-403] Loading part xcvu9p-flga2104-2L-e
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.139 . Memory (MB): peak = 1756.363 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 915 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+WARNING: [Netlist 29-101] Netlist 'fpga_mxm_column' is not ideal for floorplanning, since the cellview 'fpga_mxm_column' contains a large number of primitives.  Please consider enabling hierarchy in synthesis if you want to do floorplanning.
+INFO: [Project 1-479] Netlist was created with Vivado 2023.2
+INFO: [Project 1-570] Preparing netlist for logic optimization
+Read ShapeDB Complete: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.061 . Memory (MB): peak = 1892.289 ; gain = 2.754
+INFO: [Timing 38-478] Restoring timing data from binary archive.
+INFO: [Timing 38-479] Binary timing data restore complete.
+INFO: [Project 1-856] Restoring constraints from binary archive.
+INFO: [Project 1-853] Binary constraint restore complete.
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.006 . Memory (MB): peak = 2243.492 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 16 instances were transformed.
+  DSP48E2 => DSP48E2 (DSP_ALU, DSP_A_B_DATA, DSP_C_DATA, DSP_MULTIPLIER, DSP_M_DATA, DSP_OUTPUT, DSP_PREADD, DSP_PREADD_DATA): 16 instances
+
+The system cannot find the path specified.
+INFO: [Project 1-604] Checkpoint was created with Vivado v2023.2 (64-bit) build 4029153
+open_checkpoint: Time (s): cpu = 00:00:06 ; elapsed = 00:00:37 . Memory (MB): peak = 2243.492 ; gain = 1855.465
+# set data_inputs [get_ports -filter {DIRECTION == IN && NAME != clk_i && NAME != rst_ni}]
+# for {set i 0} {$i < [llength $data_inputs]} {incr i 512} {set_input_delay 1.0 -clock clk [lrange $data_inputs $i [expr {$i+511}]]}
+# set data_outputs [all_outputs]
+# for {set i 0} {$i < [llength $data_outputs]} {incr i 512} {set_output_delay 1.0 -clock clk [lrange $data_outputs $i [expr {$i+511}]]}
+# report_timing_summary -max_paths 3 -report_unconstrained -file {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_area003_sta001/mxm_column_default/timing_summary.rpt}
+INFO: [Timing 38-91] UpdateTimingParams: Speed grade: -2L, Temperature grade: E, Delay Type: min_max.
+report_timing_summary: Time (s): cpu = 00:00:10 ; elapsed = 00:01:13 . Memory (MB): peak = 3862.668 ; gain = 1619.176
+# report_drc -file {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_area003_sta001/mxm_column_default/drc.rpt}
+Command: report_drc -file C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_area003_sta001/mxm_column_default/drc.rpt
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1704] No user IP repositories specified
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Users/huazh/Desktop/Vivado2023/Vivado/2023.2/data/ip'.
+INFO: [Vivado_Tcl 2-168] The results of DRC are in file C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_area003_sta001/mxm_column_default/drc.rpt.
+report_drc completed successfully
+report_drc: Time (s): cpu = 00:00:01 ; elapsed = 00:00:06 . Memory (MB): peak = 3862.668 ; gain = 0.000
+# write_xdc -force {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_area003_sta001/mxm_column_default/resolved_timing.xdc}
+# puts "RETIME_COMPLETED"
+RETIME_COMPLETED
+# exit
+INFO: [Common 17-206] Exiting Vivado at Mon Nov  2 17:49:28 2026...

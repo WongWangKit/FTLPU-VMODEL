@@ -1,0 +1,408 @@
+#-----------------------------------------------------------
+# Vivado v2023.2 (64-bit)
+# SW Build 4029153 on Fri Oct 13 20:14:34 MDT 2023
+# IP Build 4028589 on Sat Oct 14 00:45:43 MDT 2023
+# SharedData Build 4025554 on Tue Oct 10 17:18:54 MDT 2023
+# Start of session at: Mon Nov  2 15:38:42 2026
+# Process ID: 10012
+# Current directory: C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run007/mem_slice_bram
+# Command line: vivado.exe -mode batch -source C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run007/src/fpga_experiment/scripts/synth.tcl -log C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_initial_synth/results/run007/mem_slice_bram/vivado.log -journal C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run007/mem_slice_bram/vivado.jou -tclargs C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run007/src C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_initial_synth/results/run007/mem_slice_bram mem_slice_bram xcvu9p-flga2104-2L-e
+# Log file: C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_initial_synth/results/run007/mem_slice_bram/vivado.log
+# Journal file: C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run007/mem_slice_bram/vivado.jou
+# Running On: huazhe, OS: Windows, CPU Frequency: 2918 MHz, CPU Physical cores: 14, Host memory: 42660 MB
+#-----------------------------------------------------------
+source C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run007/src/fpga_experiment/scripts/synth.tcl
+# puts "RAW_ARGV=$argv"
+RAW_ARGV=C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run007/src C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_initial_synth/results/run007/mem_slice_bram mem_slice_bram xcvu9p-flga2104-2L-e
+# set src [lindex $argv 0]
+# set out [lindex $argv 1]
+# set case_name [lindex $argv 2]
+# set part [lindex $argv 3]
+# set_param general.maxThreads 4
+# file mkdir $out
+# create_project -in_memory -part $part
+create_project: Time (s): cpu = 00:00:09 ; elapsed = 00:00:19 . Memory (MB): peak = 567.465 ; gain = 179.883
+# set rtl {}
+# set fd [open [file join $src sim filelist.f] r]
+# foreach line [split [read $fd] "\n"] {
+#   set line [string trim $line]
+#   if {[string match "rtl/*" $line]} {lappend rtl [file join $src $line]}
+# }
+# close $fd
+# set generics {}
+# switch $case_name {
+#   mem_leaf {
+#     set rtl [list [file join $src rtl/mem_native/mem_bank_superlane_leaf.sv]]
+#     set top mem_bank_superlane_leaf
+#     set generics {P_MEM_BANK_DEPTH_ROWS=1024 P_MEM_ACTIVE_ROWS=1024}
+#   }
+#   mem_leaf_bram {
+#     set rtl [list [file join $src fpga_experiment/rtl/mem_leaf_bram.sv]]
+#     set top mem_bank_superlane_leaf
+#     set generics {P_MEM_BANK_DEPTH_ROWS=1024 P_MEM_ACTIVE_ROWS=1024}
+#   }
+#   mem_slice {
+#     set rtl {}
+#     foreach f {mem_bank_superlane_leaf mem_bank_control_column mem_logical_bank_column mem_slice} {
+#       lappend rtl [file join $src rtl/mem_native/$f.sv]
+#     }
+#     set top mem_slice
+#     set generics {P_TILE_ROWS=2 P_MEM_BANK_DEPTH_ROWS=1024 P_MEM_ACTIVE_ROWS=1024}
+#   }
+#   mem_slice_bram {
+#     set rtl [list [file join $src fpga_experiment/rtl/mem_leaf_bram.sv]]
+#     foreach f {mem_bank_control_column mem_logical_bank_column mem_slice} {
+#       lappend rtl [file join $src rtl/mem_native/$f.sv]
+#     }
+#     set top mem_slice
+#     set generics {P_TILE_ROWS=2 P_MEM_BANK_DEPTH_ROWS=1024 P_MEM_ACTIVE_ROWS=1024}
+#   }
+#   srf_leaf {
+#     set rtl [list [file join $src rtl/srf/ftlpu_sr_superlane_col_dir.sv]]
+#     set top ftlpu_sr_superlane_col_dir_lane
+#   }
+#   old_mem {
+#     set rtl [list [file join $src rtl/core/lpu_pkg.sv] [file join $src rtl/core/lpu_isa_decode.sv] [file join $src rtl/mem/lpu_mem_tile_slice.sv]]
+#     set top lpu_mem_tile_slice_behavior
+#     set generics {DEPTH_ROWS=1024}
+#   }
+#   old_dot {
+#     set rtl [list [file join $src rtl/vxm/lpu_vxm_math_pkg.sv] [file join $src rtl/mxm/lpu_mxm_dot_bank.sv]]
+#     set top lpu_mxm_dot_bank
+#   }
+#   alu_basic {set top lpu_vxm_alu; set generics {SPECIAL_KIND=0}}
+#   alu_exp {set top lpu_vxm_alu; set generics {SPECIAL_KIND=1}}
+#   alu_recip {set top lpu_vxm_alu; set generics {SPECIAL_KIND=2}}
+#   old_top {
+#     set top lpu_top
+#     set generics {ICU_QUEUE_DEPTH=4 MEM_DEPTH_ROWS=64 ACTIVE_MEM_COLUMNS=4 MXM_ACCUMULATOR_BLOCK_COUNT=1}
+#     set_property verilog_define FTLPU_DISABLE_BLOCK8 [current_fileset]
+#   }
+#   default {error "Unknown case: $case_name"}
+# }
+# puts "EXPERIMENT case=$case_name top=$top part=$part generics=$generics"
+EXPERIMENT case=mem_slice_bram top=mem_slice part=xcvu9p-flga2104-2L-e generics=P_TILE_ROWS=2 P_MEM_BANK_DEPTH_ROWS=1024 P_MEM_ACTIVE_ROWS=1024
+# read_verilog -sv $rtl
+# set args [list -top $top -part $part -mode out_of_context -flatten_hierarchy rebuilt]
+# if {[llength $generics]} {lappend args -generic $generics}
+# synth_design {*}$args
+Command: synth_design -top mem_slice -part xcvu9p-flga2104-2L-e -mode out_of_context -flatten_hierarchy rebuilt -generic {P_TILE_ROWS=2 P_MEM_BANK_DEPTH_ROWS=1024 P_MEM_ACTIVE_ROWS=1024}
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xcvu9p'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xcvu9p'
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 4 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 25284
+---------------------------------------------------------------------------------
+Starting Synthesize : Time (s): cpu = 00:00:08 ; elapsed = 00:00:16 . Memory (MB): peak = 1014.926 ; gain = 444.500
+---------------------------------------------------------------------------------
+INFO: [Synth 8-6157] synthesizing module 'mem_slice' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run007/src/rtl/mem_native/mem_slice.sv:6]
+	Parameter P_TILE_ROWS bound to: 2 - type: integer 
+	Parameter P_MEM_BANK_DEPTH_ROWS bound to: 1024 - type: integer 
+	Parameter P_MEM_ACTIVE_ROWS bound to: 1024 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'mem_logical_bank_column' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run007/src/rtl/mem_native/mem_logical_bank_column.sv:7]
+	Parameter P_TILE_ROWS bound to: 2 - type: integer 
+	Parameter P_LANES_PER_TILE bound to: 8 - type: integer 
+	Parameter P_MEM_ELEMENT_BITS bound to: 8 - type: integer 
+	Parameter P_MEM_BANK_DEPTH_ROWS bound to: 1024 - type: integer 
+	Parameter P_MEM_CONTROL_HOP_CYCLES bound to: 1 - type: integer 
+	Parameter P_MEM_READ_TO_SR_CYCLES bound to: 1 - type: integer 
+	Parameter P_MEM_FAULT_BITS bound to: 2 - type: integer 
+	Parameter P_MEM_ACTIVE_ROWS bound to: 1024 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'mem_bank_superlane_leaf' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run007/src/fpga_experiment/rtl/mem_leaf_bram.sv:9]
+	Parameter P_MEM_BANK_DEPTH_ROWS bound to: 1024 - type: integer 
+	Parameter P_LANES_PER_TILE bound to: 8 - type: integer 
+	Parameter P_MEM_ELEMENT_BITS bound to: 8 - type: integer 
+	Parameter P_MEM_READ_TO_SR_CYCLES bound to: 1 - type: integer 
+	Parameter P_MEM_FAULT_BITS bound to: 2 - type: integer 
+	Parameter P_MEM_ACTIVE_ROWS bound to: 1024 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'mem_bank_superlane_leaf' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run007/src/fpga_experiment/rtl/mem_leaf_bram.sv:9]
+INFO: [Synth 8-6157] synthesizing module 'mem_bank_control_column' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run007/src/rtl/mem_native/mem_bank_control_column.sv:6]
+	Parameter P_TILE_ROWS bound to: 2 - type: integer 
+	Parameter P_MEM_CONTROL_HOP_CYCLES bound to: 1 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'mem_bank_control_column' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run007/src/rtl/mem_native/mem_bank_control_column.sv:6]
+INFO: [Synth 8-6155] done synthesizing module 'mem_logical_bank_column' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run007/src/rtl/mem_native/mem_logical_bank_column.sv:7]
+INFO: [Synth 8-6155] done synthesizing module 'mem_slice' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run007/src/rtl/mem_native/mem_slice.sv:6]
+WARNING: [Synth 8-6014] Unused sequential element response_stream_dir_q_reg was removed.  [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run007/src/rtl/mem_native/mem_slice.sv:199]
+WARNING: [Synth 8-6014] Unused sequential element response_stream_idx_q_reg was removed.  [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run007/src/rtl/mem_native/mem_slice.sv:200]
+WARNING: [Synth 8-3917] design mem_slice has port mem_fault_bank_id_o[1] driven by constant 1
+WARNING: [Synth 8-3917] design mem_slice has port mem_fault_bank_id_o[0] driven by constant 0
+---------------------------------------------------------------------------------
+Finished Synthesize : Time (s): cpu = 00:00:10 ; elapsed = 00:00:21 . Memory (MB): peak = 1135.051 ; gain = 564.625
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:11 ; elapsed = 00:00:24 . Memory (MB): peak = 1135.051 ; gain = 564.625
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xcvu9p-flga2104-2L-e
+INFO: [Synth 8-6742] Reading net delay rules and data
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:11 ; elapsed = 00:00:24 . Memory (MB): peak = 1135.051 ; gain = 564.625
+---------------------------------------------------------------------------------
+INFO: [Device 21-403] Loading part xcvu9p-flga2104-2L-e
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:15 ; elapsed = 00:00:27 . Memory (MB): peak = 1160.742 ; gain = 590.316
+---------------------------------------------------------------------------------
+No constraint files found.
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Registers : 
+	               64 Bit    Registers := 4     
+	               60 Bit    Registers := 1     
+	               32 Bit    Registers := 4     
+	                5 Bit    Registers := 4     
+	                2 Bit    Registers := 4     
+	                1 Bit    Registers := 24    
++---RAMs : 
+	              64K Bit	(1024 X 64 bit)          RAMs := 4     
++---Muxes : 
+	   2 Input  256 Bit        Muxes := 4     
+	   2 Input   64 Bit        Muxes := 4     
+	 128 Input    6 Bit        Muxes := 1     
+	   2 Input    6 Bit        Muxes := 1     
+	   6 Input    3 Bit        Muxes := 1     
+	   2 Input    3 Bit        Muxes := 3     
+	   2 Input    2 Bit        Muxes := 7     
+	   7 Input    2 Bit        Muxes := 4     
+	   2 Input    1 Bit        Muxes := 39    
+	  64 Input    1 Bit        Muxes := 1     
+	   5 Input    1 Bit        Muxes := 1     
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 6840 (col length:120)
+BRAMs: 4320 (col length: RAMB18 360 RAMB36 180)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+No constraint files found.
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-7080] Parallel synthesis criteria is not met
+WARNING: [Synth 8-3917] design mem_slice has port mem_fault_bank_id_o[1] driven by constant 1
+WARNING: [Synth 8-3917] design mem_slice has port mem_fault_bank_id_o[0] driven by constant 0
+INFO: [Synth 8-7030] Implemented Non-Cascaded Block Ram (cascade_height = 1) of width 36 for RAM "mem_logical_bank_column:/gen_leaf[0].u_leaf/mem_array_reg"
+INFO: [Synth 8-7030] Implemented Non-Cascaded Block Ram (cascade_height = 1) of width 28 for RAM "mem_logical_bank_column:/gen_leaf[0].u_leaf/mem_array_reg"
+INFO: [Synth 8-7030] Implemented Non-Cascaded Block Ram (cascade_height = 1) of width 36 for RAM "mem_logical_bank_column:/gen_leaf[1].u_leaf/mem_array_reg"
+INFO: [Synth 8-7030] Implemented Non-Cascaded Block Ram (cascade_height = 1) of width 28 for RAM "mem_logical_bank_column:/gen_leaf[1].u_leaf/mem_array_reg"
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:53 ; elapsed = 00:01:25 . Memory (MB): peak = 2380.809 ; gain = 1810.383
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+
+Block RAM: Preliminary Mapping Report (see note below)
++-------------------------+----------------------------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+-----------------+
+|Module Name              | RTL Object                       | PORT A (Depth x Width) | W | R | PORT B (Depth x Width) | W | R | Ports driving FF | RAMB18 | RAMB36 | Cascade Heights | 
++-------------------------+----------------------------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+-----------------+
+|mem_logical_bank_column: | gen_leaf[0].u_leaf/mem_array_reg | 1 K x 64(READ_FIRST)   | W |   | 1 K x 64(WRITE_FIRST)  |   | R | Port A and B     | 0      | 2      | 1,1             | 
+|mem_logical_bank_column: | gen_leaf[1].u_leaf/mem_array_reg | 1 K x 64(READ_FIRST)   | W |   | 1 K x 64(WRITE_FIRST)  |   | R | Port A and B     | 0      | 2      | 1,1             | 
+|mem_logical_bank_column: | gen_leaf[0].u_leaf/mem_array_reg | 1 K x 64(READ_FIRST)   | W |   | 1 K x 64(WRITE_FIRST)  |   | R | Port A and B     | 0      | 2      | 1,1             | 
+|mem_logical_bank_column: | gen_leaf[1].u_leaf/mem_array_reg | 1 K x 64(READ_FIRST)   | W |   | 1 K x 64(WRITE_FIRST)  |   | R | Port A and B     | 0      | 2      | 1,1             | 
++-------------------------+----------------------------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+-----------------+
+
+Note: The table above is a preliminary report that shows the Block RAMs at the current stage of the synthesis flow. Some Block RAMs may be reimplemented as non Block RAM primitives later in the synthesis flow. Multiple instantiated Block RAMs are reported only once. 
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+No constraint files found.
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:00:54 ; elapsed = 00:01:26 . Memory (MB): peak = 2380.809 ; gain = 1810.383
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+
+Block RAM: Final Mapping Report
++-------------------------+----------------------------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+-----------------+
+|Module Name              | RTL Object                       | PORT A (Depth x Width) | W | R | PORT B (Depth x Width) | W | R | Ports driving FF | RAMB18 | RAMB36 | Cascade Heights | 
++-------------------------+----------------------------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+-----------------+
+|mem_logical_bank_column: | gen_leaf[0].u_leaf/mem_array_reg | 1 K x 64(READ_FIRST)   | W |   | 1 K x 64(WRITE_FIRST)  |   | R | Port A and B     | 0      | 2      | 1,1             | 
+|mem_logical_bank_column: | gen_leaf[1].u_leaf/mem_array_reg | 1 K x 64(READ_FIRST)   | W |   | 1 K x 64(WRITE_FIRST)  |   | R | Port A and B     | 0      | 2      | 1,1             | 
+|mem_logical_bank_column: | gen_leaf[0].u_leaf/mem_array_reg | 1 K x 64(READ_FIRST)   | W |   | 1 K x 64(WRITE_FIRST)  |   | R | Port A and B     | 0      | 2      | 1,1             | 
+|mem_logical_bank_column: | gen_leaf[1].u_leaf/mem_array_reg | 1 K x 64(READ_FIRST)   | W |   | 1 K x 64(WRITE_FIRST)  |   | R | Port A and B     | 0      | 2      | 1,1             | 
++-------------------------+----------------------------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+-----------------+
+
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+INFO: [Synth 8-7052] The timing for the instance gen_bank[0].u_logical_bank/gen_leaf[0].u_leaf/mem_array_reg_bram_0 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+INFO: [Synth 8-7052] The timing for the instance gen_bank[0].u_logical_bank/gen_leaf[0].u_leaf/mem_array_reg_bram_1 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+INFO: [Synth 8-7052] The timing for the instance gen_bank[0].u_logical_bank/gen_leaf[1].u_leaf/mem_array_reg_bram_0 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+INFO: [Synth 8-7052] The timing for the instance gen_bank[0].u_logical_bank/gen_leaf[1].u_leaf/mem_array_reg_bram_1 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+INFO: [Synth 8-7052] The timing for the instance gen_bank[1].u_logical_bank/gen_leaf[0].u_leaf/mem_array_reg_bram_0 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+INFO: [Synth 8-7052] The timing for the instance gen_bank[1].u_logical_bank/gen_leaf[0].u_leaf/mem_array_reg_bram_1 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+INFO: [Synth 8-7052] The timing for the instance gen_bank[1].u_logical_bank/gen_leaf[1].u_leaf/mem_array_reg_bram_0 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+INFO: [Synth 8-7052] The timing for the instance gen_bank[1].u_logical_bank/gen_leaf[1].u_leaf/mem_array_reg_bram_1 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:00:56 ; elapsed = 00:01:31 . Memory (MB): peak = 2380.809 ; gain = 1810.383
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:01:06 ; elapsed = 00:01:44 . Memory (MB): peak = 2380.809 ; gain = 1810.383
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:01:06 ; elapsed = 00:01:44 . Memory (MB): peak = 2380.809 ; gain = 1810.383
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:01:07 ; elapsed = 00:01:45 . Memory (MB): peak = 2380.809 ; gain = 1810.383
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:01:07 ; elapsed = 00:01:45 . Memory (MB): peak = 2380.809 ; gain = 1810.383
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:01:07 ; elapsed = 00:01:45 . Memory (MB): peak = 2380.809 ; gain = 1810.383
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:01:07 ; elapsed = 00:01:45 . Memory (MB): peak = 2380.809 ; gain = 1810.383
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++-+--------------+----------+
+| |BlackBox name |Instances |
++-+--------------+----------+
++-+--------------+----------+
+
+Report Cell Usage: 
++------+---------+------+
+|      |Cell     |Count |
++------+---------+------+
+|1     |LUT1     |     1|
+|2     |LUT2     |   275|
+|3     |LUT3     |    13|
+|4     |LUT4     |    48|
+|5     |LUT5     |    34|
+|6     |LUT6     |  4744|
+|7     |MUXF7    |  2074|
+|8     |MUXF8    |  1037|
+|9     |RAMB36E2 |     8|
+|10    |FDCE     |   284|
++------+---------+------+
+
+Report Instance Areas: 
++------+-------------------------------+--------------------------+------+
+|      |Instance                       |Module                    |Cells |
++------+-------------------------------+--------------------------+------+
+|1     |top                            |                          |  8518|
+|2     |  \gen_bank[0].u_logical_bank  |mem_logical_bank_column   |  4151|
+|3     |    \gen_leaf[0].u_leaf        |mem_bank_superlane_leaf_2 |  1942|
+|4     |    \gen_leaf[1].u_leaf        |mem_bank_superlane_leaf_3 |    19|
+|5     |    u_control_column           |mem_bank_control_column_4 |  2062|
+|6     |  \gen_bank[1].u_logical_bank  |mem_logical_bank_column_0 |  4151|
+|7     |    \gen_leaf[0].u_leaf        |mem_bank_superlane_leaf   |  1935|
+|8     |    \gen_leaf[1].u_leaf        |mem_bank_superlane_leaf_1 |    26|
+|9     |    u_control_column           |mem_bank_control_column   |  2062|
++------+-------------------------------+--------------------------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:01:07 ; elapsed = 00:01:45 . Memory (MB): peak = 2380.809 ; gain = 1810.383
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 7 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:01:07 ; elapsed = 00:01:46 . Memory (MB): peak = 2380.809 ; gain = 1810.383
+Synthesis Optimization Complete : Time (s): cpu = 00:01:07 ; elapsed = 00:01:46 . Memory (MB): peak = 2380.809 ; gain = 1810.383
+INFO: [Project 1-571] Translating synthesized netlist
+Netlist sorting complete. Time (s): cpu = 00:00:01 ; elapsed = 00:00:00.941 . Memory (MB): peak = 2380.809 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 3111 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.007 . Memory (MB): peak = 2380.809 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+Synth Design complete | Checksum: f1b0de17
+INFO: [Common 17-83] Releasing license: Synthesis
+33 Infos, 7 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:01:20 ; elapsed = 00:02:03 . Memory (MB): peak = 2380.809 ; gain = 1813.344
+# if {[llength [get_ports -quiet clk_i]]} {
+#   create_clock -period 10.000 -name clk [get_ports clk_i]
+#   set data_inputs [get_ports -filter {DIRECTION == IN && NAME != clk_i && NAME != rst_ni}]
+#   set_input_delay 1.0 -clock clk $data_inputs
+#   set_output_delay 1.0 -clock clk [all_outputs]
+#   if {[llength [get_ports -quiet rst_ni]]} {set_false_path -from [get_ports rst_ni]}
+# } else {
+#   create_clock -period 10.000 -name virtual_clk
+#   set_input_delay 1.0 -clock virtual_clk [all_inputs]
+#   set_output_delay 1.0 -clock virtual_clk [all_outputs]
+# }
+create_clock: Time (s): cpu = 00:00:12 ; elapsed = 00:00:13 . Memory (MB): peak = 2380.809 ; gain = 0.000
+# report_utilization -file [file join $out utilization.rpt]
+# report_utilization -hierarchical -file [file join $out utilization_hier.rpt]
+# report_timing_summary -max_paths 10 -report_unconstrained -file [file join $out timing_summary.rpt]
+INFO: [Timing 38-35] Done setting XDC timing constraints.
+INFO: [Timing 38-91] UpdateTimingParams: Speed grade: -2L, Temperature grade: E, Delay Type: min_max.
+INFO: [Timing 38-191] Multithreading enabled for timing update using a maximum of 4 CPUs
+WARNING: [Timing 38-242] The property HD.CLK_SRC of clock port "clk_i" is not set. In out-of-context mode, this prevents timing estimation for clock delay/skew
+Resolution: Set the HD.CLK_SRC property of the out-of-context port to the location of the clock buffer instance in the top-level design
+report_timing_summary: Time (s): cpu = 00:01:39 ; elapsed = 00:01:56 . Memory (MB): peak = 3919.125 ; gain = 1538.316
+# report_drc -file [file join $out drc.rpt]
+Command: report_drc -file C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_initial_synth/results/run007/mem_slice_bram/drc.rpt
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1704] No user IP repositories specified
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Users/huazh/Desktop/Vivado2023/Vivado/2023.2/data/ip'.
+INFO: [DRC 23-27] Running DRC with 4 threads
+INFO: [Vivado_Tcl 2-168] The results of DRC are in file C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_initial_synth/results/run007/mem_slice_bram/drc.rpt.
+report_drc completed successfully
+report_drc: Time (s): cpu = 00:00:24 ; elapsed = 00:00:17 . Memory (MB): peak = 3919.125 ; gain = 0.000
+# set blackboxes [get_cells -quiet -hier -filter {IS_BLACKBOX == 1}]
+# set fd [open [file join $out checks.txt] w]
+# puts $fd "blackbox_count=[llength $blackboxes]"
+# puts $fd "latch_count=[llength [get_cells -hier -quiet -filter {REF_NAME =~ LD*}]]"
+# close $fd
+# write_checkpoint -force [file join $out synthesized.dcp]
+INFO: [Timing 38-480] Writing timing data to binary archive.
+Write ShapeDB Complete: Time (s): cpu = 00:00:01 ; elapsed = 00:00:00.097 . Memory (MB): peak = 3919.125 ; gain = 0.000
+INFO: [Common 17-1381] The checkpoint 'C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_initial_synth/results/run007/mem_slice_bram/synthesized.dcp' has been generated.
+# write_verilog -force -mode funcsim [file join $out netlist.v]
+# puts "SYNTHESIS_COMPLETED case=$case_name"
+SYNTHESIS_COMPLETED case=mem_slice_bram
+# exit
+INFO: [Common 17-206] Exiting Vivado at Mon Nov  2 15:43:48 2026...

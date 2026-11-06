@@ -1,0 +1,113 @@
+{
+  "status": "PASS",
+  "selected_synthesis": [
+    {
+      "run": "run007",
+      "case": "mem_leaf_bram",
+      "passed": true
+    },
+    {
+      "run": "run007",
+      "case": "mem_slice_bram",
+      "passed": true
+    },
+    {
+      "run": "run007",
+      "case": "srf_leaf",
+      "passed": true
+    },
+    {
+      "run": "run010",
+      "case": "alu_basic_pruned",
+      "passed": true
+    },
+    {
+      "run": "run012",
+      "case": "alu_basic_bf16",
+      "passed": true
+    }
+  ],
+  "simulation": [
+    {
+      "run": "sim001",
+      "case": "mem_leaf",
+      "mode": "rtl",
+      "passed": true,
+      "known_initial_failure": false
+    },
+    {
+      "run": "sim001",
+      "case": "mem_leaf_bram",
+      "mode": "rtl",
+      "passed": true,
+      "known_initial_failure": false
+    },
+    {
+      "run": "sim001",
+      "case": "srf_leaf",
+      "mode": "rtl",
+      "passed": true,
+      "known_initial_failure": false
+    },
+    {
+      "run": "sim001",
+      "case": "alu_basic",
+      "mode": "rtl",
+      "passed": false,
+      "known_initial_failure": true
+    },
+    {
+      "run": "sim002",
+      "case": "mem_leaf_bram",
+      "mode": "gate",
+      "passed": true,
+      "known_initial_failure": false
+    },
+    {
+      "run": "sim003",
+      "case": "alu_basic",
+      "mode": "rtl",
+      "passed": true,
+      "known_initial_failure": false
+    },
+    {
+      "run": "sim004",
+      "case": "srf_leaf",
+      "mode": "gate",
+      "passed": true,
+      "known_initial_failure": false
+    },
+    {
+      "run": "sim005",
+      "case": "alu_basic_pruned",
+      "mode": "rtl",
+      "passed": true,
+      "known_initial_failure": false
+    },
+    {
+      "run": "sim005",
+      "case": "alu_basic_pruned",
+      "mode": "gate",
+      "passed": true,
+      "known_initial_failure": false
+    },
+    {
+      "run": "sim006",
+      "case": "alu_basic_bf16",
+      "mode": "rtl",
+      "passed": true,
+      "known_initial_failure": false
+    },
+    {
+      "run": "sim006",
+      "case": "alu_basic_bf16",
+      "mode": "gate",
+      "passed": true,
+      "known_initial_failure": false
+    }
+  ],
+  "local_links_checked": 20,
+  "original_files_compared_to_run012": 106,
+  "original_files_changed_since_run012": [],
+  "scope": "artifact consistency, selected local results and Python syntax; not new hardware verification"
+}

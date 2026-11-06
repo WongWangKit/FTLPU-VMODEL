@@ -1,0 +1,442 @@
+[
+  {
+    "command": [
+      "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\vivado.bat",
+      "-mode",
+      "batch",
+      "-source",
+      "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/memory_recover001/mem_bram/recover.tcl",
+      "-log",
+      "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/memory_recover001/mem_bram/vivado.log",
+      "-journal",
+      "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_memory_recover001/mem_bram/vivado.jou"
+    ],
+    "returncode": 0,
+    "status": "completed",
+    "elapsed_s": 112.3,
+    "case": "mem_bram",
+    "complete": true,
+    "simulation": [
+      {
+        "mode": "rtl",
+        "passed": true,
+        "steps": [
+          {
+            "command": [
+              "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xvlog.bat",
+              "--sv",
+              "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_memory001/src/experiment/rtl/mem_leaf_bram.sv",
+              "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_memory001/src/experiment/tb/mem_leaf_tb.sv"
+            ],
+            "returncode": 0,
+            "status": "completed",
+            "elapsed_s": 4.5
+          },
+          {
+            "command": [
+              "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xelab.bat",
+              "mem_leaf_tb",
+              "-s",
+              "snapshot",
+              "--timescale",
+              "1ns/1ps",
+              "--mt",
+              "2"
+            ],
+            "returncode": 0,
+            "status": "completed",
+            "elapsed_s": 5.2
+          },
+          {
+            "command": [
+              "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xsim.bat",
+              "snapshot",
+              "-runall"
+            ],
+            "returncode": 0,
+            "status": "completed",
+            "elapsed_s": 6.6
+          }
+        ]
+      },
+      {
+        "mode": "gate",
+        "passed": true,
+        "steps": [
+          {
+            "command": [
+              "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xvlog.bat",
+              "--sv",
+              "-d",
+              "GATE",
+              "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/memory_recover001/mem_bram/netlist.v",
+              "C:/Users/huazh/Desktop/Vivado2023/Vivado/2023.2/data/verilog/src/glbl.v",
+              "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_memory001/src/experiment/tb/mem_leaf_tb.sv"
+            ],
+            "returncode": 0,
+            "status": "completed",
+            "elapsed_s": 4.1
+          },
+          {
+            "command": [
+              "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xelab.bat",
+              "mem_leaf_tb",
+              "glbl",
+              "-L",
+              "unisims_ver",
+              "-s",
+              "snapshot",
+              "--timescale",
+              "1ns/1ps",
+              "--mt",
+              "2"
+            ],
+            "returncode": 0,
+            "status": "completed",
+            "elapsed_s": 10.1
+          },
+          {
+            "command": [
+              "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xsim.bat",
+              "snapshot",
+              "-runall"
+            ],
+            "returncode": 0,
+            "status": "completed",
+            "elapsed_s": 6.3
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "command": [
+      "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\vivado.bat",
+      "-mode",
+      "batch",
+      "-source",
+      "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/memory_recover001/mem_uram/recover.tcl",
+      "-log",
+      "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/memory_recover001/mem_uram/vivado.log",
+      "-journal",
+      "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_memory_recover001/mem_uram/vivado.jou"
+    ],
+    "returncode": 0,
+    "status": "completed",
+    "elapsed_s": 108.8,
+    "case": "mem_uram",
+    "complete": true,
+    "simulation": [
+      {
+        "mode": "rtl",
+        "passed": true,
+        "steps": [
+          {
+            "command": [
+              "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xvlog.bat",
+              "--sv",
+              "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_memory001/src/experiment/rtl/mem_leaf_uram.sv",
+              "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_memory001/src/experiment/tb/mem_leaf_tb.sv"
+            ],
+            "returncode": 0,
+            "status": "completed",
+            "elapsed_s": 3.4
+          },
+          {
+            "command": [
+              "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xelab.bat",
+              "mem_leaf_tb",
+              "-s",
+              "snapshot",
+              "--timescale",
+              "1ns/1ps",
+              "--mt",
+              "2"
+            ],
+            "returncode": 0,
+            "status": "completed",
+            "elapsed_s": 4.1
+          },
+          {
+            "command": [
+              "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xsim.bat",
+              "snapshot",
+              "-runall"
+            ],
+            "returncode": 0,
+            "status": "completed",
+            "elapsed_s": 5.3
+          }
+        ]
+      },
+      {
+        "mode": "gate",
+        "passed": true,
+        "steps": [
+          {
+            "command": [
+              "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xvlog.bat",
+              "--sv",
+              "-d",
+              "GATE",
+              "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/memory_recover001/mem_uram/netlist.v",
+              "C:/Users/huazh/Desktop/Vivado2023/Vivado/2023.2/data/verilog/src/glbl.v",
+              "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_memory001/src/experiment/tb/mem_leaf_tb.sv"
+            ],
+            "returncode": 0,
+            "status": "completed",
+            "elapsed_s": 3.0
+          },
+          {
+            "command": [
+              "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xelab.bat",
+              "mem_leaf_tb",
+              "glbl",
+              "-L",
+              "unisims_ver",
+              "-s",
+              "snapshot",
+              "--timescale",
+              "1ns/1ps",
+              "--mt",
+              "2"
+            ],
+            "returncode": 0,
+            "status": "completed",
+            "elapsed_s": 7.5
+          },
+          {
+            "command": [
+              "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xsim.bat",
+              "snapshot",
+              "-runall"
+            ],
+            "returncode": 0,
+            "status": "completed",
+            "elapsed_s": 4.8
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "command": [
+      "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\vivado.bat",
+      "-mode",
+      "batch",
+      "-source",
+      "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/memory_recover001/srf_default/recover.tcl",
+      "-log",
+      "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/memory_recover001/srf_default/vivado.log",
+      "-journal",
+      "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_memory_recover001/srf_default/vivado.jou"
+    ],
+    "returncode": 0,
+    "status": "completed",
+    "elapsed_s": 78.4,
+    "case": "srf_default",
+    "complete": true,
+    "simulation": [
+      {
+        "mode": "rtl",
+        "passed": false,
+        "steps": [
+          {
+            "command": [
+              "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xvlog.bat",
+              "--sv",
+              "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_memory001/src/rtl/srf/ftlpu_sr_superlane_col_dir.sv",
+              "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_memory001/src/experiment/tb/srf_leaf_tb.sv"
+            ],
+            "returncode": 0,
+            "status": "completed",
+            "elapsed_s": 2.6
+          },
+          {
+            "command": [
+              "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xelab.bat",
+              "srf_leaf_tb",
+              "-s",
+              "snapshot",
+              "--timescale",
+              "1ns/1ps",
+              "--mt",
+              "2"
+            ],
+            "returncode": 0,
+            "status": "completed",
+            "elapsed_s": 3.3
+          },
+          {
+            "command": [
+              "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xsim.bat",
+              "snapshot",
+              "-runall"
+            ],
+            "returncode": 0,
+            "status": "completed",
+            "elapsed_s": 4.7
+          }
+        ]
+      },
+      {
+        "mode": "gate",
+        "passed": false,
+        "steps": [
+          {
+            "command": [
+              "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xvlog.bat",
+              "--sv",
+              "-d",
+              "GATE",
+              "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/memory_recover001/srf_default/netlist.v",
+              "C:/Users/huazh/Desktop/Vivado2023/Vivado/2023.2/data/verilog/src/glbl.v",
+              "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_memory001/src/experiment/tb/srf_leaf_tb.sv"
+            ],
+            "returncode": 0,
+            "status": "completed",
+            "elapsed_s": 2.7
+          },
+          {
+            "command": [
+              "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xelab.bat",
+              "srf_leaf_tb",
+              "glbl",
+              "-L",
+              "unisims_ver",
+              "-s",
+              "snapshot",
+              "--timescale",
+              "1ns/1ps",
+              "--mt",
+              "2"
+            ],
+            "returncode": 0,
+            "status": "completed",
+            "elapsed_s": 12.5
+          },
+          {
+            "command": [
+              "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xsim.bat",
+              "snapshot",
+              "-runall"
+            ],
+            "returncode": 0,
+            "status": "completed",
+            "elapsed_s": 7.2
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "command": [
+      "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\vivado.bat",
+      "-mode",
+      "batch",
+      "-source",
+      "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/memory_recover001/srf_onehot/recover.tcl",
+      "-log",
+      "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/memory_recover001/srf_onehot/vivado.log",
+      "-journal",
+      "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_memory_recover001/srf_onehot/vivado.jou"
+    ],
+    "returncode": 0,
+    "status": "completed",
+    "elapsed_s": 81.4,
+    "case": "srf_onehot",
+    "complete": true,
+    "simulation": [
+      {
+        "mode": "rtl",
+        "passed": false,
+        "steps": [
+          {
+            "command": [
+              "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xvlog.bat",
+              "--sv",
+              "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_memory001/src/experiment/rtl/srf_onehot.sv",
+              "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_memory001/src/experiment/tb/srf_leaf_tb.sv"
+            ],
+            "returncode": 0,
+            "status": "completed",
+            "elapsed_s": 2.9
+          },
+          {
+            "command": [
+              "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xelab.bat",
+              "srf_leaf_tb",
+              "-s",
+              "snapshot",
+              "--timescale",
+              "1ns/1ps",
+              "--mt",
+              "2"
+            ],
+            "returncode": 0,
+            "status": "completed",
+            "elapsed_s": 15.6
+          },
+          {
+            "command": [
+              "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xsim.bat",
+              "snapshot",
+              "-runall"
+            ],
+            "returncode": 0,
+            "status": "completed",
+            "elapsed_s": 5.4
+          }
+        ]
+      },
+      {
+        "mode": "gate",
+        "passed": false,
+        "steps": [
+          {
+            "command": [
+              "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xvlog.bat",
+              "--sv",
+              "-d",
+              "GATE",
+              "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/memory_recover001/srf_onehot/netlist.v",
+              "C:/Users/huazh/Desktop/Vivado2023/Vivado/2023.2/data/verilog/src/glbl.v",
+              "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_memory001/src/experiment/tb/srf_leaf_tb.sv"
+            ],
+            "returncode": 0,
+            "status": "completed",
+            "elapsed_s": 3.0
+          },
+          {
+            "command": [
+              "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xelab.bat",
+              "srf_leaf_tb",
+              "glbl",
+              "-L",
+              "unisims_ver",
+              "-s",
+              "snapshot",
+              "--timescale",
+              "1ns/1ps",
+              "--mt",
+              "2"
+            ],
+            "returncode": 0,
+            "status": "completed",
+            "elapsed_s": 14.2
+          },
+          {
+            "command": [
+              "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xsim.bat",
+              "snapshot",
+              "-runall"
+            ],
+            "returncode": 0,
+            "status": "completed",
+            "elapsed_s": 7.0
+          }
+        ]
+      }
+    ]
+  }
+]

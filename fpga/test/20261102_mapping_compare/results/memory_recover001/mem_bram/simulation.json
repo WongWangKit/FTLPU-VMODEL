@@ -1,0 +1,92 @@
+[
+  {
+    "mode": "rtl",
+    "passed": true,
+    "steps": [
+      {
+        "command": [
+          "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xvlog.bat",
+          "--sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_memory001/src/experiment/rtl/mem_leaf_bram.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_memory001/src/experiment/tb/mem_leaf_tb.sv"
+        ],
+        "returncode": 0,
+        "status": "completed",
+        "elapsed_s": 4.5
+      },
+      {
+        "command": [
+          "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xelab.bat",
+          "mem_leaf_tb",
+          "-s",
+          "snapshot",
+          "--timescale",
+          "1ns/1ps",
+          "--mt",
+          "2"
+        ],
+        "returncode": 0,
+        "status": "completed",
+        "elapsed_s": 5.2
+      },
+      {
+        "command": [
+          "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xsim.bat",
+          "snapshot",
+          "-runall"
+        ],
+        "returncode": 0,
+        "status": "completed",
+        "elapsed_s": 6.6
+      }
+    ]
+  },
+  {
+    "mode": "gate",
+    "passed": true,
+    "steps": [
+      {
+        "command": [
+          "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xvlog.bat",
+          "--sv",
+          "-d",
+          "GATE",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/memory_recover001/mem_bram/netlist.v",
+          "C:/Users/huazh/Desktop/Vivado2023/Vivado/2023.2/data/verilog/src/glbl.v",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_memory001/src/experiment/tb/mem_leaf_tb.sv"
+        ],
+        "returncode": 0,
+        "status": "completed",
+        "elapsed_s": 4.1
+      },
+      {
+        "command": [
+          "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xelab.bat",
+          "mem_leaf_tb",
+          "glbl",
+          "-L",
+          "unisims_ver",
+          "-s",
+          "snapshot",
+          "--timescale",
+          "1ns/1ps",
+          "--mt",
+          "2"
+        ],
+        "returncode": 0,
+        "status": "completed",
+        "elapsed_s": 10.1
+      },
+      {
+        "command": [
+          "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xsim.bat",
+          "snapshot",
+          "-runall"
+        ],
+        "returncode": 0,
+        "status": "completed",
+        "elapsed_s": 6.3
+      }
+    ]
+  }
+]

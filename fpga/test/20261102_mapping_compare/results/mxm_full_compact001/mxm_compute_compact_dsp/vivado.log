@@ -1,0 +1,318 @@
+#-----------------------------------------------------------
+# Vivado v2023.2 (64-bit)
+# SW Build 4029153 on Fri Oct 13 20:14:34 MDT 2023
+# IP Build 4028589 on Sat Oct 14 00:45:43 MDT 2023
+# SharedData Build 4025554 on Tue Oct 10 17:18:54 MDT 2023
+# Start of session at: Mon Nov  2 17:23:45 2026
+# Process ID: 25388
+# Current directory: C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_full_compact001/mxm_compute_compact_dsp
+# Command line: vivado.exe -mode batch -source C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_full_compact001/mxm_compute_compact_dsp/synth.tcl -log C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_full_compact001/mxm_compute_compact_dsp/vivado.log -journal C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_full_compact001/mxm_compute_compact_dsp/vivado.jou
+# Log file: C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_full_compact001/mxm_compute_compact_dsp/vivado.log
+# Journal file: C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_full_compact001/mxm_compute_compact_dsp/vivado.jou
+# Running On: huazhe, OS: Windows, CPU Frequency: 2918 MHz, CPU Physical cores: 14, Host memory: 42660 MB
+#-----------------------------------------------------------
+source C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_full_compact001/mxm_compute_compact_dsp/synth.tcl
+# set_param general.maxThreads 1
+# create_project -in_memory -part xcvu9p-flga2104-2L-e
+create_project: Time (s): cpu = 00:00:03 ; elapsed = 00:00:07 . Memory (MB): peak = 567.543 ; gain = 178.484
+# set_property verilog_define {FTLPU_DISABLE_BLOCK8} [current_fileset]
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_full_compact001/src/rtl/core/lpu_pkg.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_full_compact001/src/experiment/rtl/math_mxm_compact_pkg.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_full_compact001/src/experiment/rtl/mxm_mul_narrow.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_full_compact001/src/experiment/rtl/mxm_column_narrow.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_full_compact001/src/experiment/rtl/mxm_dot_narrow.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_full_compact001/src/rtl/mxm/lpu_mxm_compute.sv}
+# read_xdc {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_full_compact001/mxm_compute_compact_dsp/timing.xdc}
+# synth_design -top lpu_mxm_compute -part xcvu9p-flga2104-2L-e -mode out_of_context -flatten_hierarchy rebuilt -generic {ACCUMULATOR_BLOCK_COUNT=1} -no_timing_driven
+Command: synth_design -top lpu_mxm_compute -part xcvu9p-flga2104-2L-e -mode out_of_context -flatten_hierarchy rebuilt -generic ACCUMULATOR_BLOCK_COUNT=1 -no_timing_driven
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xcvu9p'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xcvu9p'
+INFO: [Device 21-403] Loading part xcvu9p-flga2104-2L-e
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 1 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 41652
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:03 ; elapsed = 00:00:05 . Memory (MB): peak = 2175.918 ; gain = 432.988
+---------------------------------------------------------------------------------
+INFO: [Synth 8-6157] synthesizing module 'lpu_mxm_compute' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_full_compact001/src/rtl/mxm/lpu_mxm_compute.sv:1]
+	Parameter ACCUMULATOR_BLOCK_COUNT bound to: 1 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'lpu_mxm_dot_bank' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_full_compact001/src/experiment/rtl/mxm_dot_narrow.sv:1]
+INFO: [Synth 8-6157] synthesizing module 'fpga_mxm_column' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_full_compact001/src/experiment/rtl/mxm_column_narrow.sv:1]
+INFO: [Synth 8-6157] synthesizing module 'fpga_mxm_mul' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_full_compact001/src/experiment/rtl/mxm_mul_narrow.sv:3]
+INFO: [Synth 8-6155] done synthesizing module 'fpga_mxm_mul' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_full_compact001/src/experiment/rtl/mxm_mul_narrow.sv:3]
+INFO: [Synth 8-6155] done synthesizing module 'fpga_mxm_column' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_full_compact001/src/experiment/rtl/mxm_column_narrow.sv:1]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_mxm_dot_bank' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_full_compact001/src/experiment/rtl/mxm_dot_narrow.sv:1]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_mxm_compute' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_full_compact001/src/rtl/mxm/lpu_mxm_compute.sv:1]
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8191] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8190] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8189] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8188] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8187] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8186] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8185] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8184] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8183] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8182] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8181] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8180] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8179] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8178] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8177] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8176] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8175] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8174] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8173] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8172] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8171] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8170] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8169] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8168] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8167] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8166] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8165] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8164] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8163] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8162] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8161] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8160] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8159] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8158] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8157] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8156] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8155] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8154] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8153] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8152] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8151] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8150] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8149] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8148] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8147] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8146] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8145] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8144] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8143] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8142] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8141] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8140] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8139] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8138] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8137] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8136] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8135] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8134] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8133] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8132] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8131] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8130] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8129] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8128] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8127] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8126] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8125] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8124] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8123] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8122] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8121] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8120] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8119] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8118] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8117] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8116] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8115] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8114] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8113] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8112] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8111] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8110] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8109] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8108] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8107] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8106] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8105] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8104] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8103] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8102] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8101] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8100] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8099] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8098] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8097] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8096] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8095] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8094] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8093] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8092] driven by constant 0
+INFO: [Common 17-14] Message 'Synth 8-3917' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:19 ; elapsed = 00:00:50 . Memory (MB): peak = 7277.531 ; gain = 5534.602
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:22 ; elapsed = 00:01:04 . Memory (MB): peak = 7277.531 ; gain = 5534.602
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:22 ; elapsed = 00:01:04 . Memory (MB): peak = 7277.531 ; gain = 5534.602
+---------------------------------------------------------------------------------
+Netlist sorting complete. Time (s): cpu = 00:00:14 ; elapsed = 00:01:00 . Memory (MB): peak = 7494.531 ; gain = 15.852
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Parsing XDC File [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_full_compact001/mxm_compute_compact_dsp/timing.xdc]
+Finished Parsing XDC File [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_full_compact001/mxm_compute_compact_dsp/timing.xdc]
+Completed Processing XDC Constraints
+
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.026 . Memory (MB): peak = 13718.527 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+WARNING: [Constraints 18-929] The number of objects selected for the constraint defined at line 2 of constraint file 'C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_full_compact001/mxm_compute_compact_dsp/timing.xdc' exceeds the default limit of 10000, this constraint will be excluded from synthesis.
+write_xdc: Time (s): cpu = 00:00:07 ; elapsed = 00:00:15 . Memory (MB): peak = 13751.250 ; gain = 29.691
+Constraint Validation Runtime : Time (s): cpu = 00:00:07 ; elapsed = 00:00:15 . Memory (MB): peak = 13751.250 ; gain = 29.691
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:02:54 ; elapsed = 00:09:18 . Memory (MB): peak = 13751.250 ; gain = 12008.320
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xcvu9p-flga2104-2L-e
+INFO: [Synth 8-6742] Reading net delay rules and data
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:02:54 ; elapsed = 00:09:18 . Memory (MB): peak = 13751.250 ; gain = 12008.320
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying 'set_property' XDC Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:02:54 ; elapsed = 00:09:18 . Memory (MB): peak = 13751.250 ; gain = 12008.320
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:03:10 ; elapsed = 00:10:22 . Memory (MB): peak = 13751.250 ; gain = 12008.320
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input   32 Bit       Adders := 1281  
+	   3 Input   32 Bit       Adders := 256   
+	   2 Input   28 Bit       Adders := 256   
+	   3 Input   27 Bit       Adders := 256   
+	   2 Input   25 Bit       Adders := 512   
+	   2 Input   10 Bit       Adders := 512   
+	   3 Input   10 Bit       Adders := 270   
+	   2 Input    9 Bit       Adders := 512   
+	   2 Input    8 Bit       Adders := 512   
+	   2 Input    6 Bit       Adders := 4096  
+	   2 Input    5 Bit       Adders := 1     
++---XORs : 
+	   2 Input      1 Bit         XORs := 256   
++---Registers : 
+	             1024 Bit    Registers := 1     
+	                5 Bit    Registers := 8     
+	                2 Bit    Registers := 1     
+	                1 Bit    Registers := 1     
++---Muxes : 
+	   2 Input 1024 Bit        Muxes := 1     
+	   2 Input  128 Bit        Muxes := 22    
+	   2 Input   32 Bit        Muxes := 4736  
+	  28 Input   32 Bit        Muxes := 256   
+	   2 Input   27 Bit        Muxes := 1280  
+	   2 Input   25 Bit        Muxes := 256   
+	   2 Input   24 Bit        Muxes := 1024  
+	   2 Input   23 Bit        Muxes := 512   
+	   4 Input   16 Bit        Muxes := 1024  
+	   2 Input   13 Bit        Muxes := 512   
+	   2 Input   12 Bit        Muxes := 512   
+	   2 Input   11 Bit        Muxes := 5120  
+	   2 Input   10 Bit        Muxes := 512   
+	   2 Input    9 Bit        Muxes := 512   
+	   2 Input    8 Bit        Muxes := 1024  
+	   2 Input    7 Bit        Muxes := 512   
+	   2 Input    5 Bit        Muxes := 34    
+	   4 Input    5 Bit        Muxes := 1     
+	   2 Input    4 Bit        Muxes := 1     
+	   2 Input    2 Bit        Muxes := 4     
+	   2 Input    1 Bit        Muxes := 12471 
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 6840 (col length:120)
+BRAMs: 4320 (col length: RAMB18 360 RAMB36 180)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+DSP Report: Generating DSP significand_product, operation Mode is: A*B.
+DSP Report: operator significand_product is absorbed into DSP significand_product.
+DSP Report: Generating DSP significand_product, operation Mode is: A*B.
+DSP Report: operator significand_product is absorbed into DSP significand_product.
+DSP Report: Generating DSP significand_product, operation Mode is: A*B.
+DSP Report: operator significand_product is absorbed into DSP significand_product.
+DSP Report: Generating DSP significand_product, operation Mode is: A*B.
+DSP Report: operator significand_product is absorbed into DSP significand_product.
+DSP Report: Generating DSP significand_product, operation Mode is: A*B.
+DSP Report: operator significand_product is absorbed into DSP significand_product.
+DSP Report: Generating DSP significand_product, operation Mode is: A*B.
+DSP Report: operator significand_product is absorbed into DSP significand_product.
+DSP Report: Generating DSP significand_product, operation Mode is: A*B.
+DSP Report: operator significand_product is absorbed into DSP significand_product.
+DSP Report: Generating DSP significand_product, operation Mode is: A*B.
+DSP Report: operator significand_product is absorbed into DSP significand_product.
+DSP Report: Generating DSP sum_q6, operation Mode is: C+A*B.
+DSP Report: operator sum_q6 is absorbed into DSP sum_q6.
+DSP Report: operator sum_q7 is absorbed into DSP sum_q6.
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:05:04 ; elapsed = 00:19:15 . Memory (MB): peak = 13751.250 ; gain = 12008.320
+---------------------------------------------------------------------------------
+ Sort Area is fpga_mxm_column__GBM3 significand_product_0 : 0 0 : 863 863 : Used 32 time 100
+ Sort Area is fpga_mxm_column__GBM0 significand_product_0 : 0 0 : 863 863 : Used 32 time 100
+ Sort Area is fpga_mxm_column__GBM3 significand_product_2 : 0 0 : 863 863 : Used 32 time 100
+ Sort Area is fpga_mxm_column__GBM0 significand_product_2 : 0 0 : 863 863 : Used 32 time 100
+ Sort Area is fpga_mxm_column__GBM3 significand_product_3 : 0 0 : 863 863 : Used 32 time 100
+ Sort Area is fpga_mxm_column__GBM0 significand_product_3 : 0 0 : 863 863 : Used 32 time 100
+ Sort Area is fpga_mxm_column__GBM3 significand_product_4 : 0 0 : 863 863 : Used 32 time 100
+ Sort Area is fpga_mxm_column__GBM3 significand_product_5 : 0 0 : 863 863 : Used 32 time 100
+ Sort Area is lpu_mxm_compute__GCB20 sum_q6_0 : 0 0 : 515 515 : Used 1 time 0
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+
+DSP: Preliminary Mapping Report (see note below. The ' indicates corresponding REG is set)
++----------------+-------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+|Module Name     | DSP Mapping | A Size | B Size | C Size | D Size | P Size | AREG | BREG | CREG | DREG | ADREG | MREG | PREG | 
++----------------+-------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+|fpga_mxm_mul    | A*B         | 11     | 11     | -      | -      | 22     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|fpga_mxm_mul    | A*B         | 11     | 11     | -      | -      | 22     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|fpga_mxm_mul    | A*B         | 11     | 11     | -      | -      | 22     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|fpga_mxm_mul    | A*B         | 11     | 11     | -      | -      | 22     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|fpga_mxm_mul    | A*B         | 11     | 11     | -      | -      | 22     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|fpga_mxm_mul    | A*B         | 11     | 11     | -      | -      | 22     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|fpga_mxm_mul    | A*B         | 11     | 11     | -      | -      | 22     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|fpga_mxm_mul    | A*B         | 11     | 11     | -      | -      | 22     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|lpu_mxm_compute | C+A*B       | 16     | 5      | 13     | -      | 21     | 0    | 0    | 0    | -    | -     | 0    | 0    | 
++----------------+-------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+
+Note: The table above is a preliminary report that shows the DSPs inferred at the current stage of the synthesis flow. Some DSP may be reimplemented as non DSP primitives later in the synthesis flow. Multiple instantiated DSPs are reported only once.
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:05:05 ; elapsed = 00:19:20 . Memory (MB): peak = 13751.250 ; gain = 12008.320
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------

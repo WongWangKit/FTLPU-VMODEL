@@ -1,0 +1,250 @@
+#-----------------------------------------------------------
+# Vivado v2023.2 (64-bit)
+# SW Build 4029153 on Fri Oct 13 20:14:34 MDT 2023
+# IP Build 4028589 on Sat Oct 14 00:45:43 MDT 2023
+# SharedData Build 4025554 on Tue Oct 10 17:18:54 MDT 2023
+# Start of session at: Mon Nov  2 15:27:35 2026
+# Process ID: 32688
+# Current directory: C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run004/mem_leaf
+# Command line: vivado.exe -mode batch -source C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_initial_synth/scripts/synth.tcl -log C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_initial_synth/results/run004/mem_leaf/vivado.log -journal C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run004/mem_leaf/vivado.jou -tclargs C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run004/src C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_initial_synth/results/run004/mem_leaf mem_leaf xcvu9p-flga2104-2L-e
+# Log file: C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_initial_synth/results/run004/mem_leaf/vivado.log
+# Journal file: C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run004/mem_leaf/vivado.jou
+# Running On: huazhe, OS: Windows, CPU Frequency: 2918 MHz, CPU Physical cores: 14, Host memory: 42660 MB
+#-----------------------------------------------------------
+CRITICAL WARNING: [Common 17-741] No write access right to the local Tcl store at 'C'. XilinxTclStore is reverted to the installation area. If you want to use local Tcl Store, please change the access right and relaunch Vivado.
+source C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_initial_synth/scripts/synth.tcl
+# puts "RAW_ARGV=$argv"
+RAW_ARGV=C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run004/src C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_initial_synth/results/run004/mem_leaf mem_leaf xcvu9p-flga2104-2L-e
+# set src [lindex $argv 0]
+# set out [lindex $argv 1]
+# set case_name [lindex $argv 2]
+# set part [lindex $argv 3]
+# set_param general.maxThreads 4
+# file mkdir $out
+# create_project -in_memory -part $part
+create_project: Time (s): cpu = 00:00:03 ; elapsed = 00:00:09 . Memory (MB): peak = 566.305 ; gain = 179.309
+# set rtl {}
+# set fd [open [file join $src sim filelist.f] r]
+# foreach line [split [read $fd] "\n"] {
+#   set line [string trim $line]
+#   if {[string match "rtl/*" $line]} {lappend rtl [file join $src $line]}
+# }
+# close $fd
+# set generics {}
+# switch $case_name {
+#   mem_leaf {
+#     set rtl [list [file join $src rtl/mem_native/mem_bank_superlane_leaf.sv]]
+#     set top mem_bank_superlane_leaf
+#     set generics {P_MEM_BANK_DEPTH_ROWS=1024 P_MEM_ACTIVE_ROWS=1024}
+#   }
+#   mem_slice {
+#     set rtl {}
+#     foreach f {mem_bank_superlane_leaf mem_bank_control_column mem_logical_bank_column mem_slice} {
+#       lappend rtl [file join $src rtl/mem_native/$f.sv]
+#     }
+#     set top mem_slice
+#     set generics {P_TILE_ROWS=2 P_MEM_BANK_DEPTH_ROWS=1024 P_MEM_ACTIVE_ROWS=1024}
+#   }
+#   srf_leaf {
+#     set rtl [list [file join $src rtl/srf/ftlpu_sr_superlane_col_dir.sv]]
+#     set top ftlpu_sr_superlane_col_dir_lane
+#   }
+#   old_mem {
+#     set rtl [list [file join $src rtl/core/lpu_pkg.sv] [file join $src rtl/core/lpu_isa_decode.sv] [file join $src rtl/mem/lpu_mem_tile_slice.sv]]
+#     set top lpu_mem_tile_slice_behavior
+#     set generics {DEPTH_ROWS=1024}
+#   }
+#   old_dot {
+#     set rtl [list [file join $src rtl/vxm/lpu_vxm_math_pkg.sv] [file join $src rtl/mxm/lpu_mxm_dot_bank.sv]]
+#     set top lpu_mxm_dot_bank
+#   }
+#   alu_basic {set top lpu_vxm_alu; set generics {SPECIAL_KIND=0}}
+#   alu_exp {set top lpu_vxm_alu; set generics {SPECIAL_KIND=1}}
+#   alu_recip {set top lpu_vxm_alu; set generics {SPECIAL_KIND=2}}
+#   old_top {
+#     set top lpu_top
+#     set generics {ICU_QUEUE_DEPTH=4 MEM_DEPTH_ROWS=64 ACTIVE_MEM_COLUMNS=4 MXM_ACCUMULATOR_BLOCK_COUNT=1}
+#     set_property verilog_define FTLPU_DISABLE_BLOCK8 [current_fileset]
+#   }
+#   default {error "Unknown case: $case_name"}
+# }
+# puts "EXPERIMENT case=$case_name top=$top part=$part generics=$generics"
+EXPERIMENT case=mem_leaf top=mem_bank_superlane_leaf part=xcvu9p-flga2104-2L-e generics=P_MEM_BANK_DEPTH_ROWS=1024 P_MEM_ACTIVE_ROWS=1024
+# read_verilog -sv $rtl
+# set args [list -top $top -part $part -mode out_of_context -flatten_hierarchy rebuilt]
+# if {[llength $generics]} {lappend args -generic $generics}
+# synth_design {*}$args
+Command: synth_design -top mem_bank_superlane_leaf -part xcvu9p-flga2104-2L-e -mode out_of_context -flatten_hierarchy rebuilt -generic {P_MEM_BANK_DEPTH_ROWS=1024 P_MEM_ACTIVE_ROWS=1024}
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xcvu9p'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xcvu9p'
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 4 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 41552
+---------------------------------------------------------------------------------
+Starting Synthesize : Time (s): cpu = 00:00:02 ; elapsed = 00:00:06 . Memory (MB): peak = 1015.758 ; gain = 444.473
+---------------------------------------------------------------------------------
+INFO: [Synth 8-6157] synthesizing module 'mem_bank_superlane_leaf' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run004/src/rtl/mem_native/mem_bank_superlane_leaf.sv:9]
+	Parameter P_MEM_BANK_DEPTH_ROWS bound to: 1024 - type: integer 
+	Parameter P_MEM_ACTIVE_ROWS bound to: 1024 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'mem_bank_superlane_leaf' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run004/src/rtl/mem_native/mem_bank_superlane_leaf.sv:9]
+WARNING: [Synth 8-7137] Register mem_array_reg in module mem_bank_superlane_leaf has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code 
+WARNING: [Synth 8-4767] Trying to implement RAM 'mem_array_reg' in registers. Block RAM or DRAM implementation is not possible; see log for reasons.
+Reason is one or more of the following :
+	1: RAM is sensitive to asynchronous reset signal. this RTL style is not supported. 
+RAM "mem_array_reg" dissolved into registers
+---------------------------------------------------------------------------------
+Finished Synthesize : Time (s): cpu = 00:00:04 ; elapsed = 00:00:09 . Memory (MB): peak = 1257.512 ; gain = 686.227
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:04 ; elapsed = 00:00:10 . Memory (MB): peak = 1257.512 ; gain = 686.227
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xcvu9p-flga2104-2L-e
+INFO: [Synth 8-6742] Reading net delay rules and data
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:04 ; elapsed = 00:00:10 . Memory (MB): peak = 1257.512 ; gain = 686.227
+---------------------------------------------------------------------------------
+INFO: [Device 21-403] Loading part xcvu9p-flga2104-2L-e
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:13 ; elapsed = 00:00:22 . Memory (MB): peak = 2022.547 ; gain = 1451.262
+---------------------------------------------------------------------------------
+No constraint files found.
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Registers : 
+	               64 Bit    Registers := 1025  
+	                5 Bit    Registers := 1     
+	                2 Bit    Registers := 1     
+	                1 Bit    Registers := 4     
++---Muxes : 
+	   2 Input    2 Bit        Muxes := 1     
+	   7 Input    2 Bit        Muxes := 1     
+	   2 Input    1 Bit        Muxes := 21    
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 6840 (col length:120)
+BRAMs: 4320 (col length: RAMB18 360 RAMB36 180)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+No constraint files found.
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:24 ; elapsed = 00:01:38 . Memory (MB): peak = 2230.215 ; gain = 1658.930
+---------------------------------------------------------------------------------
+No constraint files found.
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:00:25 ; elapsed = 00:01:39 . Memory (MB): peak = 2240.793 ; gain = 1669.508
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:00:27 ; elapsed = 00:01:45 . Memory (MB): peak = 2254.574 ; gain = 1683.289
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:00:32 ; elapsed = 00:01:55 . Memory (MB): peak = 2341.871 ; gain = 1770.586
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:32 ; elapsed = 00:01:56 . Memory (MB): peak = 2341.871 ; gain = 1770.586
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:33 ; elapsed = 00:01:57 . Memory (MB): peak = 2341.871 ; gain = 1770.586
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:00:33 ; elapsed = 00:01:57 . Memory (MB): peak = 2341.871 ; gain = 1770.586
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:34 ; elapsed = 00:01:58 . Memory (MB): peak = 2341.871 ; gain = 1770.586
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:00:34 ; elapsed = 00:01:58 . Memory (MB): peak = 2341.871 ; gain = 1770.586
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++-+--------------+----------+
+| |BlackBox name |Instances |
++-+--------------+----------+
++-+--------------+----------+
+
+Report Cell Usage: 
++------+------+------+
+|      |Cell  |Count |
++------+------+------+
+|1     |LUT1  |     1|
+|2     |LUT2  |    30|
+|3     |LUT3  |    19|
+|4     |LUT4  |     3|
+|5     |LUT5  |   289|
+|6     |LUT6  | 18300|
+|7     |MUXF7 |  8704|
+|8     |MUXF8 |  4352|
+|9     |FDCE  |    75|
+|10    |FDRE  | 65536|
++------+------+------+
+
+Report Instance Areas: 
++------+---------+-------+------+
+|      |Instance |Module |Cells |
++------+---------+-------+------+
+|1     |top      |       | 97309|
++------+---------+-------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:34 ; elapsed = 00:01:58 . Memory (MB): peak = 2341.871 ; gain = 1770.586
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 2 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:34 ; elapsed = 00:02:00 . Memory (MB): peak = 2341.871 ; gain = 1770.586
+error deleting "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run004/mem_leaf/.Xil/Vivado-32688-huazhe/realtime/tmp": no such file or directory
+INFO: [Common 17-83] Releasing license: Synthesis
+9 Infos, 2 Warnings, 0 Critical Warnings and 1 Errors encountered.
+synth_design failed
+ERROR: [Common 17-69] Command failed: Vivado Synthesis failed
+INFO: [Common 17-206] Exiting Vivado at Mon Nov  2 15:29:50 2026...

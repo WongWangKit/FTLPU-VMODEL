@@ -1,0 +1,21 @@
+
+****** Vivado v2023.2 (64-bit)
+  **** SW Build 4029153 on Fri Oct 13 20:14:34 MDT 2023
+  **** IP Build 4028589 on Sat Oct 14 00:45:43 MDT 2023
+  **** SharedData Build 4025554 on Tue Oct 10 17:18:54 MDT 2023
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+
+CRITICAL WARNING: [Common 17-741] No write access right to the local Tcl store at 'C'. XilinxTclStore is reverted to the installation area. If you want to use local Tcl Store, please change the access right and relaunch Vivado.
+source C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_initial_synth/scripts/synth.tcl
+# set src [file normalize [lindex $argv 0]]
+# set out [file normalize [lindex $argv 1]]
+# set case_name [lindex $argv 2]
+# set part [lindex $argv 3]
+# set_param general.maxThreads 4
+# file mkdir $out
+can't create directory "C:/Users/huazh/LPU": permission denied
+    while executing
+"file mkdir $out"
+    (file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_initial_synth/scripts/synth.tcl" line 6)
+INFO: [Common 17-206] Exiting Vivado at Mon Nov  2 15:27:03 2026...

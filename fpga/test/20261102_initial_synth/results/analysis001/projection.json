@@ -1,0 +1,37 @@
+{
+  "status": "linear_OOC_projection_not_integrated_synthesis",
+  "profile": "LPU16: H=2,T=2,L=8,52 slices per hemisphere,2 banks,1024 rows",
+  "MEM_bytes": 3407872,
+  "MEM_leaf_count": 416,
+  "MEM_slice_count": 104,
+  "SRF_leaf_count": 128,
+  "SRF_data_bits": 262144,
+  "SRF_valid_bits": 32768,
+  "VXM_basic_instance_count": 256,
+  "exclusions": [
+    "native MXM",
+    "special ALU increments",
+    "VXM operand/control/LUT plumbing",
+    "MEM hemisphere/group glue",
+    "SXM",
+    "ICU",
+    "DMA/DDR/PCIe/ILA",
+    "placement/routing effects"
+  ],
+  "MEM_LUT": 515112.0,
+  "SRF_LUT": 377216.0,
+  "VXM_basic_LUT": 612608.0,
+  "VXM_bf16_basic_LUT": 150528.0,
+  "subtotal_full_basic_LUT": 1504936.0,
+  "subtotal_bf16_basic_LUT": 1042856.0,
+  "MEM_BRAM36": 832.0,
+  "compact16_slices_per_hemi_subtotal_bf16_LUT": 474056.0,
+  "demo_model": {
+    "SmolLM2_135M_FFN_W8_bytes": 2654208,
+    "FFN_per_output_scale_BF16_bytes": 7296,
+    "FFN_input_BF16_bytes_batch1": 1152,
+    "KV_cache_128_tokens_BF16_bytes": 2949120,
+    "weights_135M_INT8_approx_bytes": 135000000,
+    "KV_and_FFN_formulas": "config h=576, intermediate=1536, layers=30, KV heads=3, head dim=64; K and V BF16"
+  }
+}

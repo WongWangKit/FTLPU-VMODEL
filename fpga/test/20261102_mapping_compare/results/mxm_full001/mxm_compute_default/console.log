@@ -1,0 +1,153 @@
+
+****** Vivado v2023.2 (64-bit)
+  **** SW Build 4029153 on Fri Oct 13 20:14:34 MDT 2023
+  **** IP Build 4028589 on Sat Oct 14 00:45:43 MDT 2023
+  **** SharedData Build 4025554 on Tue Oct 10 17:18:54 MDT 2023
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+
+source C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_full001/mxm_compute_default/synth.tcl
+# set_param general.maxThreads 1
+# create_project -in_memory -part xcvu9p-flga2104-2L-e
+create_project: Time (s): cpu = 00:00:05 ; elapsed = 00:00:09 . Memory (MB): peak = 568.230 ; gain = 182.129
+# set_property verilog_define {FTLPU_DISABLE_BLOCK8} [current_fileset]
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_full001/src/rtl/core/lpu_pkg.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_full001/src/rtl/vxm/lpu_vxm_math_pkg.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_full001/src/rtl/mxm/lpu_mxm_dot_bank.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_full001/src/rtl/mxm/lpu_mxm_compute.sv}
+# read_xdc {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_full001/mxm_compute_default/timing.xdc}
+# synth_design -top lpu_mxm_compute -part xcvu9p-flga2104-2L-e -mode out_of_context -flatten_hierarchy rebuilt -generic {ACCUMULATOR_BLOCK_COUNT=1}
+Command: synth_design -top lpu_mxm_compute -part xcvu9p-flga2104-2L-e -mode out_of_context -flatten_hierarchy rebuilt -generic ACCUMULATOR_BLOCK_COUNT=1
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xcvu9p'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xcvu9p'
+INFO: [Device 21-403] Loading part xcvu9p-flga2104-2L-e
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 1 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 36212
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:04 ; elapsed = 00:00:08 . Memory (MB): peak = 2176.168 ; gain = 433.785
+---------------------------------------------------------------------------------
+INFO: [Synth 8-6157] synthesizing module 'lpu_mxm_compute' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_full001/src/rtl/mxm/lpu_mxm_compute.sv:1]
+	Parameter ACCUMULATOR_BLOCK_COUNT bound to: 1 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'lpu_mxm_dot_bank' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_full001/src/rtl/mxm/lpu_mxm_dot_bank.sv:1]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_mxm_dot_bank' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_full001/src/rtl/mxm/lpu_mxm_dot_bank.sv:1]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_mxm_compute' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_full001/src/rtl/mxm/lpu_mxm_compute.sv:1]
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8191] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8190] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8189] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8188] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8187] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8186] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8185] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8184] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8183] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8182] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8181] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8180] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8179] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8178] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8177] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8176] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8175] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8174] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8173] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8172] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8171] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8170] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8169] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8168] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8167] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8166] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8165] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8164] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8163] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8162] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8161] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8160] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8159] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8158] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8157] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8156] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8155] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8154] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8153] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8152] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8151] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8150] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8149] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8148] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8147] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8146] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8145] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8144] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8143] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8142] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8141] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8140] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8139] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8138] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8137] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8136] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8135] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8134] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8133] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8132] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8131] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8130] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8129] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8128] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8127] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8126] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8125] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8124] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8123] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8122] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8121] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8120] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8119] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8118] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8117] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8116] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8115] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8114] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8113] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8112] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8111] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8110] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8109] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8108] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8107] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8106] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8105] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8104] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8103] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8102] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8101] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8100] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8099] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8098] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8097] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8096] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8095] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8094] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8093] driven by constant 0
+WARNING: [Synth 8-3917] design lpu_mxm_compute has port result_values_o[8092] driven by constant 0
+INFO: [Common 17-14] Message 'Synth 8-3917' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:52 ; elapsed = 00:02:30 . Memory (MB): peak = 9587.082 ; gain = 7844.699
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:57 ; elapsed = 00:02:58 . Memory (MB): peak = 9587.082 ; gain = 7844.699
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:57 ; elapsed = 00:02:58 . Memory (MB): peak = 9587.082 ; gain = 7844.699
+---------------------------------------------------------------------------------
+Netlist sorting complete. Time (s): cpu = 00:00:31 ; elapsed = 00:01:08 . Memory (MB): peak = 9816.203 ; gain = 0.000
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine

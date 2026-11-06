@@ -1,0 +1,125 @@
+{
+  "passed": true,
+  "date": "2026-11-04",
+  "checks": [
+    {
+      "name": "remote_heads_recheck",
+      "passed": true,
+      "heads": {
+        "develop": "a8fb96a377a3d7b8269b8ea86d28019559cd2127",
+        "main": "9e03241f7574a03a2788d1bb64af650e18df8e3a"
+      }
+    },
+    {
+      "name": "archive_hash_main",
+      "passed": true
+    },
+    {
+      "name": "remote_source_hashes_main",
+      "passed": true,
+      "records": 12
+    },
+    {
+      "name": "archive_hash_develop",
+      "passed": true
+    },
+    {
+      "name": "remote_source_hashes_develop",
+      "passed": true,
+      "records": 12
+    },
+    {
+      "name": "historical_develop_key_sources",
+      "passed": true,
+      "scope": "12 file/run records, not complete dependency closure"
+    },
+    {
+      "name": "model_revision",
+      "passed": true
+    },
+    {
+      "name": "model_dimensions",
+      "passed": true
+    },
+    {
+      "name": "brain_tests",
+      "passed": true,
+      "test_count": 10
+    },
+    {
+      "name": "brain_script_snapshot",
+      "passed": true
+    },
+    {
+      "name": "independent_weight_arithmetic",
+      "passed": true
+    },
+    {
+      "name": "capacity_and_context",
+      "passed": true
+    },
+    {
+      "name": "logical_group_budget",
+      "passed": true,
+      "scope": "Bytes only; no physical placement/ports/cycle proof"
+    },
+    {
+      "name": "known_partial_resource_sum",
+      "passed": true
+    },
+    {
+      "name": "integer_budget_math",
+      "passed": true
+    },
+    {
+      "name": "projection_script_snapshot",
+      "passed": true
+    },
+    {
+      "name": "vivado_part_probe_complete",
+      "passed": true
+    },
+    {
+      "name": "historical_selected_13",
+      "passed": true
+    },
+    {
+      "name": "historical_artifact_hashes",
+      "passed": true,
+      "verified": 184,
+      "excluded": [
+        {
+          "path": "README.md",
+          "reason": "Intentional root index update for 2026-11-04"
+        }
+      ],
+      "mismatches": []
+    },
+    {
+      "name": "local_markdown_links",
+      "passed": true,
+      "broken": []
+    },
+    {
+      "name": "python_syntax",
+      "passed": true,
+      "scripts": [
+        "audit.py",
+        "baseline.py",
+        "braincheck.py",
+        "project_resources.py"
+      ]
+    },
+    {
+      "name": "source_archive_failure_explicit",
+      "passed": true
+    }
+  ],
+  "limitations": [
+    "No new whole-system synthesis, place/route, bitstream or board run",
+    "Independent synthetic model, not real trained-weight inference",
+    "Not a complete RTL dependency audit",
+    "No DDR/DMA/SRF cycle-level scheduling proof",
+    "Public source archival HTTP failure is explicitly recorded; browser-readable primary pages support board facts"
+  ]
+}

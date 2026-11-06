@@ -1,0 +1,18 @@
+
+****** xsim v2023.2 (64-bit)
+  **** SW Build 4029153 on Fri Oct 13 20:14:34 MDT 2023
+  **** IP Build 4028589 on Sat Oct 14 00:45:43 MDT 2023
+  **** SharedData Build 4025554 on Tue Oct 10 17:18:54 MDT 2023
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+
+source xsim.dir/snapshot/xsim_script.tcl
+# xsim {snapshot} -autoloadwcfg -runall
+Time resolution is 1 ps
+run -all
+PASS mxm_column checks=512 legacy_bit_equivalence_plus_known_vectors
+$finish called at time : 10440 ns : File "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_area001/src/experiment/tb/mxm_column_tb.sv" Line 53
+run: Time (s): cpu = 00:00:00 ; elapsed = 00:01:17 . Memory (MB): peak = 219.562 ; gain = 0.000
+exit
+INFO: xsimkernel Simulation Memory Usage: 157652 KB (Peak: 157652 KB), Simulation CPU Usage: 17796 ms
+INFO: [Common 17-206] Exiting xsim at Mon Nov  2 17:25:58 2026...

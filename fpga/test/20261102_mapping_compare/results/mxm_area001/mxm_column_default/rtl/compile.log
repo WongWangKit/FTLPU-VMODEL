@@ -1,0 +1,6 @@
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_area001/src/rtl/vxm/lpu_vxm_math_pkg.sv" into library work
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_area001/src/experiment/rtl/mxm_column.sv" into library work
+INFO: [VRFC 10-311] analyzing module fpga_mxm_column
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_area001/src/experiment/rtl/math_reference_pkg.sv" into library work
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_area001/src/experiment/tb/mxm_column_tb.sv" into library work
+INFO: [VRFC 10-311] analyzing module mxm_column_tb

@@ -1,0 +1,4 @@
+{
+  "reason": "Stop redundant attribute-only column retry; scalar default/DSP comparison is complete. Continue paired column/full experiments with non-timing-driven synthesis to avoid failed 10 ns optimization loop.",
+  "runner_pid": 41208
+}

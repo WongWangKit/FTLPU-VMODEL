@@ -1,0 +1,4 @@
+{
+  "reason": "WNS parser matched separator after invalid inf WNS; fixed parser accepts only the summary row and maps inf to null.",
+  "status": "failed_before_summary_export"
+}

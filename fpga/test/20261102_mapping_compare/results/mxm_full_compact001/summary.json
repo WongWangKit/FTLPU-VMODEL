@@ -1,0 +1,20 @@
+[
+  {
+    "command": [
+      "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\vivado.bat",
+      "-mode",
+      "batch",
+      "-source",
+      "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_full_compact001/mxm_compute_compact_dsp/synth.tcl",
+      "-log",
+      "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_full_compact001/mxm_compute_compact_dsp/vivado.log",
+      "-journal",
+      "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_full_compact001/mxm_compute_compact_dsp/vivado.jou"
+    ],
+    "returncode": null,
+    "status": "timeout",
+    "elapsed_s": 1200.4,
+    "case": "mxm_compute_compact_dsp",
+    "complete": false
+  }
+]

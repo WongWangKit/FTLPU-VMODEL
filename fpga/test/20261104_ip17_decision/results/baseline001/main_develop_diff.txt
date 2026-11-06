@@ -1,0 +1,36 @@
+config/native_profiles.json                        |  11 ++
+ config/native_profiles.manifest.json               |  69 ++++++++
+ docs/architecture.md                               |  85 ++-------
+ rtl/core/lpu_native_config_pkg.sv                  |  22 +++
+ rtl/core/lpu_pkg.sv                                |  29 ++--
+ rtl/icu/lpu_icu.sv                                 |   1 -
+ rtl/integration/lpu_mem_srf_command_integration.sv |  65 ++++---
+ .../lpu_mem_srf_dma_store_vector_sink.sv           | 116 +++++++------
+ rtl/integration/lpu_mem_srf_integration.sv         | 119 +++++++------
+ .../lpu_mem_srf_sxm_roundtrip_integration.sv       |  45 ++---
+ .../lpu_mem_srf_sxm_turnaround_integration.sv      | 126 ++++++++------
+ rtl/lpu_top.sv                                     |   1 -
+ rtl/mem_native/mem_bank_control_column.sv          |  61 +++----
+ rtl/mem_native/mem_bank_superlane_leaf.sv          |  39 ++++-
+ rtl/mem_native/mem_c7_primitive_adapter.sv         |  47 +++++
+ rtl/mem_native/mem_group.sv                        |  89 ++++++----
+ rtl/mem_native/mem_hemisphere.sv                   |  96 ++++++-----
+ rtl/mem_native/mem_logical_bank_column.sv          |   4 +-
+ rtl/mem_native/mem_slice.sv                        |  42 ++---
+ rtl/srf/ftlpu_sr_column_dir.sv                     | 101 +++++++++--
+ rtl/srf/ftlpu_sr_direction_fabric.sv               | 138 ++++++++++++---
+ rtl/srf/ftlpu_sr_fabric.sv                         | 111 ++++++++++--
+ rtl/srf/ftlpu_sr_hemisphere_fabric.sv              | 105 ++++++++++--
+ rtl/srf/ftlpu_sr_superlane_col_dir.sv              | 163 ++++++++++++------
+ rtl/vxm/lpu_vxm_alu.sv                             |  11 +-
+ rtl/vxm/lpu_vxm_datapath_mux.sv                    |   2 +-
+ rtl/vxm/lpu_vxm_datapath_stage.sv                  |   8 +-
+ rtl/vxm/lpu_vxm_execution_stage.sv                 |   4 +-
+ rtl/vxm/lpu_vxm_local_decoder.sv                   |  15 +-
+ rtl/vxm/lpu_vxm_log.sv                             | 190 ---------------------
+ rtl/vxm/lpu_vxm_log_math_pkg.sv                    | 149 ----------------
+ rtl/vxm/lpu_vxm_slice.sv                           |  93 +++++-----
+ rtl/vxm/lpu_vxm_special_alu.sv                     |  70 ++------
+ rtl/vxm/lpu_vxm_tile_execution.sv                  |  93 +++++-----
+ ...pu_vxm_tile_lut.sv => lpu_vxm_tile_pair_lut.sv} | 115 ++++++++-----
+ 35 files changed, 1324 insertions(+), 1111 deletions(-)

@@ -1,0 +1,101 @@
+{
+  "passed": true,
+  "tests": [
+    {
+      "name": "bf16_known",
+      "passed": true
+    },
+    {
+      "name": "zero_weight_block",
+      "passed": true
+    },
+    {
+      "name": "int8_range_and_block_shape",
+      "passed": true
+    },
+    {
+      "name": "gemm16_capacity_tiling_vs_quantized_dense",
+      "passed": true,
+      "max_abs_error": 4.76837158203125e-07
+    },
+    {
+      "name": "stable_tie_and_dropless_worst_bucket",
+      "passed": true
+    },
+    {
+      "name": "two_layer_prefill16_decode8_vs_causal_full",
+      "passed": true,
+      "max_abs_error": 0.0
+    },
+    {
+      "name": "decode_routes_agree",
+      "passed": true
+    },
+    {
+      "name": "kv_cache_lengths",
+      "passed": true
+    },
+    {
+      "name": "finite_outputs",
+      "passed": true
+    },
+    {
+      "name": "greedy_smoke_eight_tokens",
+      "passed": true
+    }
+  ],
+  "numpy_version": "2.3.5",
+  "seed": 20261104,
+  "model": {
+    "layers": 2,
+    "hidden": 128,
+    "intermediate": 256,
+    "experts": 4,
+    "top_k": 2,
+    "heads": 4,
+    "kv_heads": 2,
+    "vocab": 512
+  },
+  "generated_token_ids": [
+    465,
+    465,
+    465,
+    465,
+    465,
+    465,
+    465,
+    465
+  ],
+  "teacher_forced_tokens": [
+    237,
+    367,
+    276,
+    22,
+    76,
+    378,
+    145,
+    59,
+    392,
+    415,
+    44,
+    105,
+    268,
+    411,
+    112,
+    465,
+    139,
+    504,
+    177,
+    424,
+    426,
+    136,
+    302,
+    194
+  ],
+  "limitations": [
+    "Independent NumPy brain model, not RTL or CModel",
+    "Deterministic synthetic weights, no downloaded trained weights or language-quality validation",
+    "Not bit-exact legacy floating point; GEMM comparison uses tolerances",
+    "No cycle/port/conflict schedule proof"
+  ]
+}

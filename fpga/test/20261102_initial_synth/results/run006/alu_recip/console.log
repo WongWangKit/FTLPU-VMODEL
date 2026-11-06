@@ -1,0 +1,18 @@
+
+****** Vivado v2023.2 (64-bit)
+  **** SW Build 4029153 on Fri Oct 13 20:14:34 MDT 2023
+  **** IP Build 4028589 on Sat Oct 14 00:45:43 MDT 2023
+  **** SharedData Build 4025554 on Tue Oct 10 17:18:54 MDT 2023
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+
+source C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/fpga_experiment/scripts/synth.tcl
+# puts "RAW_ARGV=$argv"
+RAW_ARGV=C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_initial_synth/results/run006/alu_recip alu_recip xcvu9p-flga2104-2L-e
+# set src [lindex $argv 0]
+# set out [lindex $argv 1]
+# set case_name [lindex $argv 2]
+# set part [lindex $argv 3]
+# set_param general.maxThreads 4
+# file mkdir $out
+# create_project -in_memory -part $part

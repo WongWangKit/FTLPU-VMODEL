@@ -1,0 +1,7 @@
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm001/mxm_mul_default/netlist.v" into library work
+INFO: [VRFC 10-311] analyzing module fpga_mxm_mul
+INFO: [VRFC 10-311] analyzing module glbl
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/Vivado2023/Vivado/2023.2/data/verilog/src/glbl.v" into library work
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm001/src/experiment/rtl/math_reference_pkg.sv" into library work
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm001/src/experiment/tb/mxm_mul_tb.sv" into library work
+INFO: [VRFC 10-311] analyzing module mxm_mul_tb

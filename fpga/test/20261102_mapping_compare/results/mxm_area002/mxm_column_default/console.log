@@ -1,0 +1,30 @@
+
+****** Vivado v2023.2 (64-bit)
+  **** SW Build 4029153 on Fri Oct 13 20:14:34 MDT 2023
+  **** IP Build 4028589 on Sat Oct 14 00:45:43 MDT 2023
+  **** SharedData Build 4025554 on Tue Oct 10 17:18:54 MDT 2023
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+
+source C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_area002/mxm_column_default/synth.tcl
+# set_param general.maxThreads 1
+# create_project -in_memory -part xcvu9p-flga2104-2L-e
+create_project: Time (s): cpu = 00:00:03 ; elapsed = 00:00:07 . Memory (MB): peak = 568.754 ; gain = 180.188
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_area002/src/rtl/vxm/lpu_vxm_math_pkg.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_area002/src/experiment/rtl/mxm_column.sv}
+# read_xdc {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_area002/mxm_column_default/timing.xdc}
+# synth_design -top fpga_mxm_column -part xcvu9p-flga2104-2L-e -mode out_of_context -flatten_hierarchy rebuilt -no_timing_driven
+Command: synth_design -top fpga_mxm_column -part xcvu9p-flga2104-2L-e -mode out_of_context -flatten_hierarchy rebuilt -no_timing_driven
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xcvu9p'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xcvu9p'
+INFO: [Device 21-403] Loading part xcvu9p-flga2104-2L-e
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 1 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 36548
+couldn't read file "C:/Users/huazh/Desktop/Vivado2023/Vivado/2023.2/scripts/rt/data/lib_core.tcl": no such file or directory
+INFO: [Common 17-83] Releasing license: Synthesis
+6 Infos, 0 Warnings, 0 Critical Warnings and 1 Errors encountered.
+synth_design failed
+ERROR: [Common 17-69] Command failed: Synthesis failed - please see the console or run log file for details
+INFO: [Common 17-206] Exiting Vivado at Mon Nov  2 17:30:08 2026...

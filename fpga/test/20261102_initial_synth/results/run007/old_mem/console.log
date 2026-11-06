@@ -1,0 +1,182 @@
+
+****** Vivado v2023.2 (64-bit)
+  **** SW Build 4029153 on Fri Oct 13 20:14:34 MDT 2023
+  **** IP Build 4028589 on Sat Oct 14 00:45:43 MDT 2023
+  **** SharedData Build 4025554 on Tue Oct 10 17:18:54 MDT 2023
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+
+source C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run007/src/fpga_experiment/scripts/synth.tcl
+# puts "RAW_ARGV=$argv"
+RAW_ARGV=C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run007/src C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_initial_synth/results/run007/old_mem old_mem xcvu9p-flga2104-2L-e
+# set src [lindex $argv 0]
+# set out [lindex $argv 1]
+# set case_name [lindex $argv 2]
+# set part [lindex $argv 3]
+# set_param general.maxThreads 4
+# file mkdir $out
+# create_project -in_memory -part $part
+create_project: Time (s): cpu = 00:00:02 ; elapsed = 00:00:07 . Memory (MB): peak = 568.309 ; gain = 180.605
+# set rtl {}
+# set fd [open [file join $src sim filelist.f] r]
+# foreach line [split [read $fd] "\n"] {
+#   set line [string trim $line]
+#   if {[string match "rtl/*" $line]} {lappend rtl [file join $src $line]}
+# }
+# close $fd
+# set generics {}
+# switch $case_name {
+#   mem_leaf {
+#     set rtl [list [file join $src rtl/mem_native/mem_bank_superlane_leaf.sv]]
+#     set top mem_bank_superlane_leaf
+#     set generics {P_MEM_BANK_DEPTH_ROWS=1024 P_MEM_ACTIVE_ROWS=1024}
+#   }
+#   mem_leaf_bram {
+#     set rtl [list [file join $src fpga_experiment/rtl/mem_leaf_bram.sv]]
+#     set top mem_bank_superlane_leaf
+#     set generics {P_MEM_BANK_DEPTH_ROWS=1024 P_MEM_ACTIVE_ROWS=1024}
+#   }
+#   mem_slice {
+#     set rtl {}
+#     foreach f {mem_bank_superlane_leaf mem_bank_control_column mem_logical_bank_column mem_slice} {
+#       lappend rtl [file join $src rtl/mem_native/$f.sv]
+#     }
+#     set top mem_slice
+#     set generics {P_TILE_ROWS=2 P_MEM_BANK_DEPTH_ROWS=1024 P_MEM_ACTIVE_ROWS=1024}
+#   }
+#   mem_slice_bram {
+#     set rtl [list [file join $src fpga_experiment/rtl/mem_leaf_bram.sv]]
+#     foreach f {mem_bank_control_column mem_logical_bank_column mem_slice} {
+#       lappend rtl [file join $src rtl/mem_native/$f.sv]
+#     }
+#     set top mem_slice
+#     set generics {P_TILE_ROWS=2 P_MEM_BANK_DEPTH_ROWS=1024 P_MEM_ACTIVE_ROWS=1024}
+#   }
+#   srf_leaf {
+#     set rtl [list [file join $src rtl/srf/ftlpu_sr_superlane_col_dir.sv]]
+#     set top ftlpu_sr_superlane_col_dir_lane
+#   }
+#   old_mem {
+#     set rtl [list [file join $src rtl/core/lpu_pkg.sv] [file join $src rtl/core/lpu_isa_decode.sv] [file join $src rtl/mem/lpu_mem_tile_slice.sv]]
+#     set top lpu_mem_tile_slice_behavior
+#     set generics {DEPTH_ROWS=1024}
+#   }
+#   old_dot {
+#     set rtl [list [file join $src rtl/vxm/lpu_vxm_math_pkg.sv] [file join $src rtl/mxm/lpu_mxm_dot_bank.sv]]
+#     set top lpu_mxm_dot_bank
+#   }
+#   alu_basic {set top lpu_vxm_alu; set generics {SPECIAL_KIND=0}}
+#   alu_exp {set top lpu_vxm_alu; set generics {SPECIAL_KIND=1}}
+#   alu_recip {set top lpu_vxm_alu; set generics {SPECIAL_KIND=2}}
+#   old_top {
+#     set top lpu_top
+#     set generics {ICU_QUEUE_DEPTH=4 MEM_DEPTH_ROWS=64 ACTIVE_MEM_COLUMNS=4 MXM_ACCUMULATOR_BLOCK_COUNT=1}
+#     set_property verilog_define FTLPU_DISABLE_BLOCK8 [current_fileset]
+#   }
+#   default {error "Unknown case: $case_name"}
+# }
+# puts "EXPERIMENT case=$case_name top=$top part=$part generics=$generics"
+EXPERIMENT case=old_mem top=lpu_mem_tile_slice_behavior part=xcvu9p-flga2104-2L-e generics=DEPTH_ROWS=1024
+# read_verilog -sv $rtl
+# set args [list -top $top -part $part -mode out_of_context -flatten_hierarchy rebuilt]
+# if {[llength $generics]} {lappend args -generic $generics}
+# synth_design {*}$args
+Command: synth_design -top lpu_mem_tile_slice_behavior -part xcvu9p-flga2104-2L-e -mode out_of_context -flatten_hierarchy rebuilt -generic DEPTH_ROWS=1024
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xcvu9p'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xcvu9p'
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 4 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 41080
+---------------------------------------------------------------------------------
+Starting Synthesize : Time (s): cpu = 00:00:02 ; elapsed = 00:00:08 . Memory (MB): peak = 1015.246 ; gain = 442.949
+---------------------------------------------------------------------------------
+INFO: [Synth 8-6157] synthesizing module 'lpu_mem_tile_slice_behavior' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run007/src/rtl/mem/lpu_mem_tile_slice.sv:1]
+	Parameter DEPTH_ROWS bound to: 1024 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'lpu_mem_instruction_decode' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run007/src/rtl/core/lpu_isa_decode.sv:1]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_mem_instruction_decode' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run007/src/rtl/core/lpu_isa_decode.sv:1]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_mem_tile_slice_behavior' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run007/src/rtl/mem/lpu_mem_tile_slice.sv:1]
+WARNING: [Synth 8-7137] Register sram_reg in module lpu_mem_tile_slice_behavior has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code 
+WARNING: [Synth 8-4767] Trying to implement RAM 'sram_reg' in registers. Block RAM or DRAM implementation is not possible; see log for reasons.
+Reason is one or more of the following :
+	1: RAM has multiple writes via different ports in same process. If RAM inferencing intended, write to one port per process. 
+	2: Unable to determine number of words or word size in RAM. 
+	3: No valid read/write found for RAM. 
+RAM "sram_reg" dissolved into registers
+---------------------------------------------------------------------------------
+Finished Synthesize : Time (s): cpu = 00:00:05 ; elapsed = 00:00:24 . Memory (MB): peak = 1545.227 ; gain = 972.930
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:05 ; elapsed = 00:00:28 . Memory (MB): peak = 1545.227 ; gain = 972.930
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xcvu9p-flga2104-2L-e
+INFO: [Synth 8-6742] Reading net delay rules and data
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:05 ; elapsed = 00:00:28 . Memory (MB): peak = 1545.227 ; gain = 972.930
+---------------------------------------------------------------------------------
+INFO: [Device 21-403] Loading part xcvu9p-flga2104-2L-e
+WARNING: [Synth 8-5402] Detected an instance with large pin count 262146
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:17 ; elapsed = 00:02:24 . Memory (MB): peak = 3079.223 ; gain = 2506.926
+---------------------------------------------------------------------------------
+No constraint files found.
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Registers : 
+	               64 Bit    Registers := 1024  
+	                1 Bit    Registers := 1     
++---Muxes : 
+	   4 Input 65536 Bit        Muxes := 1     
+	   2 Input 65536 Bit        Muxes := 5     
+	   2 Input   64 Bit        Muxes := 3080  
+	   3 Input   64 Bit        Muxes := 1     
+	   2 Input    1 Bit        Muxes := 11    
+	   3 Input    1 Bit        Muxes := 1     
+	   4 Input    1 Bit        Muxes := 2     
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 6840 (col length:120)
+BRAMs: 4320 (col length: RAMB18 360 RAMB36 180)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+No constraint files found.
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-5402] Detected an instance with large pin count 262146
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:01:07 ; elapsed = 00:09:03 . Memory (MB): peak = 3553.578 ; gain = 2981.281
+---------------------------------------------------------------------------------
+No constraint files found.
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:01:10 ; elapsed = 00:09:17 . Memory (MB): peak = 3553.578 ; gain = 2981.281
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+SUCCESS: The process with PID 39484 (child process of PID 25020) has been terminated.
+SUCCESS: The process with PID 30348 (child process of PID 37436) has been terminated.
+SUCCESS: The process with PID 36680 (child process of PID 21080) has been terminated.
+SUCCESS: The process with PID 34240 (child process of PID 38608) has been terminated.
+SUCCESS: The process with PID 25020 (child process of PID 16924) has been terminated.
+SUCCESS: The process with PID 37436 (child process of PID 16924) has been terminated.
+SUCCESS: The process with PID 21080 (child process of PID 16924) has been terminated.
+SUCCESS: The process with PID 38608 (child process of PID 16924) has been terminated.
+SUCCESS: The process with PID 16924 (child process of PID 41080) has been terminated.
+SUCCESS: The process with PID 41080 (child process of PID 14212) has been terminated.
+SUCCESS: The process with PID 14212 (child process of PID 37124) has been terminated.
+SUCCESS: The process with PID 37124 (child process of PID 31360) has been terminated.

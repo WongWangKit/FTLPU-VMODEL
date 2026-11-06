@@ -1,0 +1,1 @@
+INVALID for BF16-only projection: experiment fixed unpack format but left arithmetic data_format_i dynamic. Corrected in run012 and covered by an unused-format-pin sweep. Kept for audit; do not use its area/timing as BF16-only evidence.

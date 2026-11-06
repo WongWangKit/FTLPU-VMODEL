@@ -1,0 +1,116 @@
+[
+  {
+    "command": [
+      "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\vivado.bat",
+      "-mode",
+      "batch",
+      "-source",
+      "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_compact001/mxm_column_compact_dsp/synth.tcl",
+      "-log",
+      "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_compact001/mxm_column_compact_dsp/vivado.log",
+      "-journal",
+      "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_compact001/mxm_column_compact_dsp/vivado.jou"
+    ],
+    "returncode": 0,
+    "status": "completed",
+    "elapsed_s": 280.4,
+    "case": "mxm_column_compact_dsp",
+    "complete": true,
+    "simulation": [
+      {
+        "mode": "rtl",
+        "passed": true,
+        "steps": [
+          {
+            "command": [
+              "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xvlog.bat",
+              "--sv",
+              "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_compact001/src/experiment/rtl/math_mxm_compact_pkg.sv",
+              "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_compact001/src/experiment/rtl/mxm_mul_narrow.sv",
+              "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_compact001/src/experiment/rtl/mxm_column_narrow.sv",
+              "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_compact001/src/experiment/rtl/math_reference_pkg.sv",
+              "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_compact001/src/experiment/tb/mxm_column_tb.sv"
+            ],
+            "returncode": 0,
+            "status": "completed",
+            "elapsed_s": 2.9
+          },
+          {
+            "command": [
+              "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xelab.bat",
+              "mxm_column_tb",
+              "-s",
+              "snapshot",
+              "--timescale",
+              "1ns/1ps",
+              "--mt",
+              "2"
+            ],
+            "returncode": 0,
+            "status": "completed",
+            "elapsed_s": 3.7
+          },
+          {
+            "command": [
+              "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xsim.bat",
+              "snapshot",
+              "-runall"
+            ],
+            "returncode": 0,
+            "status": "completed",
+            "elapsed_s": 4.8
+          }
+        ]
+      },
+      {
+        "mode": "gate",
+        "passed": true,
+        "steps": [
+          {
+            "command": [
+              "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xvlog.bat",
+              "--sv",
+              "-d",
+              "GATE",
+              "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_compact001/mxm_column_compact_dsp/netlist.v",
+              "C:/Users/huazh/Desktop/Vivado2023/Vivado/2023.2/data/verilog/src/glbl.v",
+              "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_compact001/src/experiment/rtl/math_reference_pkg.sv",
+              "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_compact001/src/experiment/tb/mxm_column_tb.sv"
+            ],
+            "returncode": 0,
+            "status": "completed",
+            "elapsed_s": 3.4
+          },
+          {
+            "command": [
+              "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xelab.bat",
+              "mxm_column_tb",
+              "glbl",
+              "-L",
+              "unisims_ver",
+              "-s",
+              "snapshot",
+              "--timescale",
+              "1ns/1ps",
+              "--mt",
+              "2"
+            ],
+            "returncode": 0,
+            "status": "completed",
+            "elapsed_s": 26.4
+          },
+          {
+            "command": [
+              "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xsim.bat",
+              "snapshot",
+              "-runall"
+            ],
+            "returncode": 0,
+            "status": "completed",
+            "elapsed_s": 55.8
+          }
+        ]
+      }
+    ]
+  }
+]

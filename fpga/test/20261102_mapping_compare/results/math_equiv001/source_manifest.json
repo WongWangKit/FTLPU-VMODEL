@@ -1,0 +1,14 @@
+[
+  {
+    "path": "math_reference_pkg.sv",
+    "sha256": "29d5b9fb66240e84c10f81cb7a536c9edcde128fd99a4d6876c18a962c01cc3d"
+  },
+  {
+    "path": "math_mxm_compact_pkg.sv",
+    "sha256": "53269b08bef2dafa6d04291603443801c9a25dd1316454395ef411757c4aa347"
+  },
+  {
+    "path": "mxm_add_equiv_tb.sv",
+    "sha256": "57cb698615a437b96dc5d14ca00b8656d0074f8c03f97864d43dd5224ff1da82"
+  }
+]

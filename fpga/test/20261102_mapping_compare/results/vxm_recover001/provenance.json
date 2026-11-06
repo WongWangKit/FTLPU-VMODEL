@@ -1,0 +1,5 @@
+{
+  "source_run": "vxm001",
+  "source_manifest_sha256": "e1e9a96c1b01c21ac397c6ed3a22a98de45fa9d0724293a05a88d4073f7c6ef3",
+  "reason": "Original synthesis/checkpoint/netlist succeeded; post-export primitive-report Tcl quoting failed."
+}

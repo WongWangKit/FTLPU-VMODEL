@@ -1,0 +1,1 @@
+Stopped after Vivado sandbox path-normalization/temporary-directory cleanup failure; rerun outside sandbox as run005. Partial results are not accepted synthesis results.

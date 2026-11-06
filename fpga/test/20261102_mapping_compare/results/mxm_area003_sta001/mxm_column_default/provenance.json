@@ -1,0 +1,6 @@
+{
+  "source_run": "mxm_area003",
+  "reason": "Managed XDC rejected for loops; original WNS=inf invalid. Restore 1 ns I/O delays for STA only. No RTL or netlist change.",
+  "dcp_sha256": "eb22f782496d1bf52c19645d893ecef2f3838c95c71673ab4c93ff2ec4758b27",
+  "netlist_sha256": "87d8ab300d3622b2070d9d1a90ff5888729168b789985a7028a7c985ff3cfe74"
+}

@@ -1,0 +1,115 @@
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/core/lpu_pkg.sv" into library work
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/core/lpu_isa_decode.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_mem_instruction_decode
+INFO: [VRFC 10-311] analyzing module lpu_mxm_instruction_decode
+INFO: [VRFC 10-311] analyzing module lpu_vxm_instruction_decode
+INFO: [VRFC 10-311] analyzing module lpu_sxm_instruction_header_decode
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/core/lpu_stream_stage.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_stream_stage
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/core/lpu_control_pipeline.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_control_pipeline
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/icu/lpu_icu_queue.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_icu_queue
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/icu/lpu_icu.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_icu
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/mem/lpu_sram_1rw_banked.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_sram_1rw_banked
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/mem/lpu_mem_tile_slice.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_mem_tile_slice_behavior
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/mem/lpu_mem_tile_slice_sram.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_mem_tile_slice_sram
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/mem/lpu_mem_tile_slice_select.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_mem_tile_slice
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/mem/lpu_mem_column.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_mem_column
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/mem/lpu_mem_hemisphere.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_mem_hemisphere
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_math_pkg.sv" into library work
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_fp16_pkg.sv" into library work
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_input_converter.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_vxm_input_converter
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_fp16_stream_groups.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_vxm_fp16_stream_groups
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_local_decoder.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_vxm_local_decoder
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_datapath_mux.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_vxm_datapath_mux
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_datapath_stage.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_vxm_datapath_stage
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_global_config.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_vxm_global_config
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_instruction_controller.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_vxm_instruction_controller
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/mxm/lpu_mxm_control.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_mxm_control
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/mxm/lpu_mxm_dequantizer.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_mxm_dequantizer
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/mxm/lpu_mxm_weight_buffer.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_mxm_weight_buffer
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/mxm/lpu_mxm_dot_bank.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_mxm_dot_bank
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/mxm/lpu_mxm_compute.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_mxm_compute
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/mxm/lpu_mxm_accumulator_sram.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_mxm_accumulator_sram
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/mxm/lpu_mxm_shared_accumulator.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_mxm_shared_accumulator
+INFO: [VRFC 10-311] analyzing module lpu_mxm_shared_accumulator_macro
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/mxm/lpu_mxm_accumulator.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_mxm_accumulator
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/mxm/lpu_mxm_block_accumulator.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_mxm_block_accumulator
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/mxm/lpu_mxm_slice.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_mxm_slice
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/sxm/lpu_sxm_control.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_sxm_control
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/sxm/lpu_sxm_slice.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_sxm_slice
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_control.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_vxm_control
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_mul8x8.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_vxm_mul8x8
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_csa3_2.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_vxm_csa3_2
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_significand_multiplier.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_vxm_significand_multiplier
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_shared_float_multiplier.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_vxm_shared_float_multiplier
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_special_coefficient_multiplier.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_vxm_special_coefficient_multiplier
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_recip_linear_fixed.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_vxm_recip_linear_fixed
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_fp32_newton_multiplier.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_vxm_fp32_newton_multiplier
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_rsqrt_linear_fixed.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_vxm_rsqrt_linear_fixed
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_fp32_rsqrt_correction.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_vxm_fp32_rsqrt_correction
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_float_unpack.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_vxm_float_unpack
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_basic_opcode_decode.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_vxm_basic_opcode_decode
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_shared_float_compare.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_vxm_shared_float_compare
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_segmented_addsub.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_vxm_segmented_addsub
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_grouped_lzc.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_vxm_grouped_lzc
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_shared_left_shift.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_vxm_shared_left_shift
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_shared_float_adder.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_vxm_shared_float_adder
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_basic_alu.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_vxm_basic_alu
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_lut_storage.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_vxm_lut_storage
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_lut_sram.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_vxm_lut_sram
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_tile_pair_lut.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_vxm_tile_pair_lut
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_special_alu.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_vxm_special_alu
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_alu.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_vxm_alu
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_initial_synth/tb/alu_basic_tb.sv" into library work
+INFO: [VRFC 10-311] analyzing module alu_basic_tb

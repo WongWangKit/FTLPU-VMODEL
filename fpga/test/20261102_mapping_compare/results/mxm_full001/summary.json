@@ -1,0 +1,16 @@
+[
+  {
+    "case": "mxm_compute_default",
+    "status": "manual_host_memory_abort",
+    "returncode": null,
+    "complete": false,
+    "reason": "See HOST_MEMORY_ABORT.json; Vivado process tree terminated before host memory exhaustion."
+  },
+  {
+    "case": "mxm_compute_narrow_dsp",
+    "status": "not_started",
+    "returncode": null,
+    "complete": false,
+    "reason": "Do not start a second large synthesis automatically after memory guard."
+  }
+]

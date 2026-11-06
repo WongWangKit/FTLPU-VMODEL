@@ -1,0 +1,11 @@
+LUT*=346
+FD*=0
+RAMB18*=0
+RAMB36*=0
+URAM*=0
+DSP*=18
+SRL*=0
+MUXF*=0
+CARRY*=11
+LD*=0
+blackbox_count=0

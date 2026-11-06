@@ -1,0 +1,43 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2023.2 (win64) Build 4029153 Fri Oct 13 20:14:34 MDT 2023
+| Date         : Mon Nov  2 16:53:10 2026
+| Host         : huazhe running 64-bit major release  (build 9200)
+| Command      : report_utilization -hierarchical -file C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/vxm001/alu_default/utilization_hier.rpt
+| Design       : fpga_basic_alu_probe
+| Device       : xcvu9p-flga2104-2L-e
+| Speed File   : -2L
+| Design State : Synthesized
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Utilization Design Information
+
+Table of Contents
+-----------------
+1. Utilization by Hierarchy
+
+1. Utilization by Hierarchy
+---------------------------
+
++------------------------------------+---------------------------------+------------+------------+---------+------+-----+--------+--------+------+------------+
+|              Instance              |              Module             | Total LUTs | Logic LUTs | LUTRAMs | SRLs | FFs | RAMB36 | RAMB18 | URAM | DSP Blocks |
++------------------------------------+---------------------------------+------------+------------+---------+------+-----+--------+--------+------+------------+
+| fpga_basic_alu_probe               |                           (top) |       2538 |       2538 |       0 |    0 | 109 |      0 |      0 |    0 |          0 |
+|   (fpga_basic_alu_probe)           |                           (top) |          2 |          2 |       0 |    0 |   0 |      0 |      0 |    0 |          0 |
+|   u_basic                          |               lpu_vxm_basic_alu |       2536 |       2536 |       0 |    0 | 109 |      0 |      0 |    0 |          0 |
+|     (u_basic)                      |               lpu_vxm_basic_alu |       1153 |       1153 |       0 |    0 |  34 |      0 |      0 |    0 |          0 |
+|     u_shared_multiplier            | lpu_vxm_shared_float_multiplier |       1383 |       1383 |       0 |    0 |  75 |      0 |      0 |    0 |          0 |
+|       (u_shared_multiplier)        | lpu_vxm_shared_float_multiplier |        289 |        289 |       0 |    0 |  75 |      0 |      0 |    0 |          0 |
+|       u_significand_multiplier     |  lpu_vxm_significand_multiplier |       1094 |       1094 |       0 |    0 |   0 |      0 |      0 |    0 |          0 |
+|         g_lhs[0].g_rhs[0].u_mul8x8 |                  lpu_vxm_mul8x8 |        151 |        151 |       0 |    0 |   0 |      0 |      0 |    0 |          0 |
+|         g_lhs[0].g_rhs[1].u_mul8x8 |                lpu_vxm_mul8x8_0 |        105 |        105 |       0 |    0 |   0 |      0 |      0 |    0 |          0 |
+|         g_lhs[0].g_rhs[2].u_mul8x8 |                lpu_vxm_mul8x8_1 |        120 |        120 |       0 |    0 |   0 |      0 |      0 |    0 |          0 |
+|         g_lhs[1].g_rhs[0].u_mul8x8 |                lpu_vxm_mul8x8_2 |         98 |         98 |       0 |    0 |   0 |      0 |      0 |    0 |          0 |
+|         g_lhs[1].g_rhs[1].u_mul8x8 |                lpu_vxm_mul8x8_3 |        126 |        126 |       0 |    0 |   0 |      0 |      0 |    0 |          0 |
+|         g_lhs[1].g_rhs[2].u_mul8x8 |                lpu_vxm_mul8x8_4 |        139 |        139 |       0 |    0 |   0 |      0 |      0 |    0 |          0 |
+|         g_lhs[2].g_rhs[0].u_mul8x8 |                lpu_vxm_mul8x8_5 |         78 |         78 |       0 |    0 |   0 |      0 |      0 |    0 |          0 |
+|         g_lhs[2].g_rhs[1].u_mul8x8 |                lpu_vxm_mul8x8_6 |        124 |        124 |       0 |    0 |   0 |      0 |      0 |    0 |          0 |
+|         g_lhs[2].g_rhs[2].u_mul8x8 |                lpu_vxm_mul8x8_7 |        153 |        153 |       0 |    0 |   0 |      0 |      0 |    0 |          0 |
++------------------------------------+---------------------------------+------------+------------+---------+------+-----+--------+--------+------+------------+
+
+

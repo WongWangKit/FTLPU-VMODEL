@@ -1,0 +1,17 @@
+
+****** xsim v2023.2 (64-bit)
+  **** SW Build 4029153 on Fri Oct 13 20:14:34 MDT 2023
+  **** IP Build 4028589 on Sat Oct 14 00:45:43 MDT 2023
+  **** SharedData Build 4025554 on Tue Oct 10 17:18:54 MDT 2023
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+
+source xsim.dir/snapshot/xsim_script.tcl
+# xsim {snapshot} -autoloadwcfg -runall
+Time resolution is 1 ps
+run -all
+Fatal: SRF timeout
+Time: 10 us  Iteration: 0  Process: /srf_leaf_tb/Initial63_12408  Scope: srf_leaf_tb  File: C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_memory001/src/experiment/tb/srf_leaf_tb.sv Line: 63
+$finish called at time : 10 us
+exit
+INFO: [Common 17-206] Exiting xsim at Mon Nov  2 17:16:56 2026...

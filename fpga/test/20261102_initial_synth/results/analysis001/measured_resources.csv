@@ -1,0 +1,9 @@
+﻿run,case,evidence_status,LUT,FF,BRAM36_tiles,URAM,DSP,WNS_10ns,netlist_file_exists,netlist_valid_for_simulation,checkpoint_available,report_path,report_sha256
+recover001,mem_leaf,checkpoint_recovery_area_only,18631.0,65611.0,0.0,0.0,0.0,,False,False,False,test/20261102_initial_synth/results/recover001/utilization.rpt,a0149e7a97c9006e0284dae4afa2468f750d1ba8bce5670c180f141daab90b4d
+run007,mem_leaf_bram,complete_OOC,74.0,12.0,2.0,0.0,0.0,7.701,True,True,True,test/20261102_initial_synth/results/run007/mem_leaf_bram/utilization.rpt,387059ccc0bf60ec7f78135becaed55350a6ccb704521d6ec38bcd5c3b672f25
+run007,mem_slice_bram,complete_OOC,4953.0,284.0,8.0,0.0,0.0,6.932,True,True,True,test/20261102_initial_synth/results/run007/mem_slice_bram/utilization.rpt,cf120fd75eedb295cc41fa41ef91af2d12a46648cb4efabcc9508d2261ab789d
+run007,srf_leaf,complete_OOC,2947.0,2304.0,0.0,0.0,0.0,6.819,True,True,True,test/20261102_initial_synth/results/run007/srf_leaf/utilization.rpt,74d92a600543658eb84e0cd229e25d604e918e50c905437c4bd850145a0d9bc6
+run009,alu_basic,partial_area_report_only,2393.0,109.0,0.0,0.0,0.0,,False,False,False,test/20261102_initial_synth/results/run009/alu_basic/utilization.rpt,838ffcff405cc183a24d5afe02279ab77873a2bc83c9b691db439162dc6bbf6f
+run010,alu_basic_bf16,invalid_configuration,1789.0,109.0,0.0,0.0,0.0,-1.022,True,False,True,test/20261102_initial_synth/results/run010/alu_basic_bf16/utilization.rpt,174e4d3fb11983ab36a02bd7aa9c08bc3b7e6d7d3faaaf244ed03b51709b187c
+run010,alu_basic_pruned,complete_OOC,2393.0,109.0,0.0,0.0,0.0,-3.474,True,True,True,test/20261102_initial_synth/results/run010/alu_basic_pruned/utilization.rpt,1b56510b2713538d29a51a430a57ae77cfd8065c4585317105bce6ed35f7a7e7
+run012,alu_basic_bf16,complete_OOC,588.0,60.0,0.0,0.0,0.0,1.663,True,True,True,test/20261102_initial_synth/results/run012/alu_basic_bf16/utilization.rpt,b4235e90b37113c7fa3108ee3fc1d75acf6d9ef8b186751db2113351816dc766

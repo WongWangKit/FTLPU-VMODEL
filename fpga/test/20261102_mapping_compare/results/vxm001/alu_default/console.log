@@ -1,0 +1,491 @@
+
+****** Vivado v2023.2 (64-bit)
+  **** SW Build 4029153 on Fri Oct 13 20:14:34 MDT 2023
+  **** IP Build 4028589 on Sat Oct 14 00:45:43 MDT 2023
+  **** SharedData Build 4025554 on Tue Oct 10 17:18:54 MDT 2023
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+
+source C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/vxm001/alu_default/synth.tcl
+# set_param general.maxThreads 1
+# create_project -in_memory -part xcvu9p-flga2104-2L-e
+create_project: Time (s): cpu = 00:00:01 ; elapsed = 00:00:08 . Memory (MB): peak = 567.848 ; gain = 179.590
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/core/lpu_pkg.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/core/lpu_isa_decode.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/core/lpu_stream_stage.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/core/lpu_control_pipeline.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/icu/lpu_icu_queue.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/icu/lpu_icu.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/mem/lpu_sram_1rw_banked.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/mem/lpu_mem_tile_slice.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/mem/lpu_mem_tile_slice_sram.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/mem/lpu_mem_tile_slice_select.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/mem/lpu_mem_column.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/mem/lpu_mem_hemisphere.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_math_pkg.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_fp16_pkg.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_input_converter.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_fp16_stream_groups.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_local_decoder.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_datapath_mux.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_datapath_stage.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_global_config.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_instruction_controller.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/mxm/lpu_mxm_control.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/mxm/lpu_mxm_dequantizer.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/mxm/lpu_mxm_weight_buffer.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/mxm/lpu_mxm_dot_bank.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/mxm/lpu_mxm_compute.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/mxm/lpu_mxm_accumulator_sram.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/mxm/lpu_mxm_shared_accumulator.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/mxm/lpu_mxm_accumulator.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/mxm/lpu_mxm_block_accumulator.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/mxm/lpu_mxm_slice.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/sxm/lpu_sxm_control.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/sxm/lpu_sxm_slice.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_control.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_mul8x8.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_csa3_2.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_significand_multiplier.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_shared_float_multiplier.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_special_coefficient_multiplier.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_recip_linear_fixed.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_fp32_newton_multiplier.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_rsqrt_linear_fixed.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_fp32_rsqrt_correction.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_float_unpack.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_basic_opcode_decode.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_shared_float_compare.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_segmented_addsub.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_grouped_lzc.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_shared_left_shift.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_shared_float_adder.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_basic_alu.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_lut_storage.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_lut_sram.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_tile_pair_lut.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_special_alu.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_alu.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/experiment/rtl/basic_alu_probe.sv}
+# read_xdc {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/vxm001/alu_default/timing.xdc}
+# synth_design -top fpga_basic_alu_probe -part xcvu9p-flga2104-2L-e -mode out_of_context -flatten_hierarchy rebuilt -generic {FIXED_BF16=0}
+Command: synth_design -top fpga_basic_alu_probe -part xcvu9p-flga2104-2L-e -mode out_of_context -flatten_hierarchy rebuilt -generic FIXED_BF16=0
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xcvu9p'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xcvu9p'
+INFO: [Device 21-403] Loading part xcvu9p-flga2104-2L-e
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 1 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 29880
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:03 ; elapsed = 00:00:05 . Memory (MB): peak = 2177.449 ; gain = 433.012
+---------------------------------------------------------------------------------
+INFO: [Synth 8-6157] synthesizing module 'fpga_basic_alu_probe' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/experiment/rtl/basic_alu_probe.sv:1]
+	Parameter FIXED_BF16 bound to: 0 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_float_unpack' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_float_unpack.sv:6]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_float_unpack' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_float_unpack.sv:6]
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_basic_alu' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_basic_alu.sv:1]
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_basic_opcode_decode' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_basic_opcode_decode.sv:2]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_basic_opcode_decode' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_basic_opcode_decode.sv:2]
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_shared_float_compare' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_shared_float_compare.sv:8]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_shared_float_compare' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_shared_float_compare.sv:8]
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_shared_float_adder' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_shared_float_adder.sv:6]
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_segmented_addsub' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_segmented_addsub.sv:4]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_segmented_addsub' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_segmented_addsub.sv:4]
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_grouped_lzc' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_grouped_lzc.sv:3]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_grouped_lzc' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_grouped_lzc.sv:3]
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_shared_left_shift' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_shared_left_shift.sv:3]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_shared_left_shift' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_shared_left_shift.sv:3]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_shared_float_adder' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_shared_float_adder.sv:6]
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_shared_float_multiplier' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_shared_float_multiplier.sv:1]
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_significand_multiplier' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_significand_multiplier.sv:1]
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_mul8x8' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_mul8x8.sv:1]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_mul8x8' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_mul8x8.sv:1]
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_csa3_2' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_csa3_2.sv:4]
+	Parameter WIDTH bound to: 48 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_csa3_2' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_csa3_2.sv:4]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_significand_multiplier' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_significand_multiplier.sv:1]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_shared_float_multiplier' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_shared_float_multiplier.sv:1]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_basic_alu' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_basic_alu.sv:1]
+INFO: [Synth 8-6155] done synthesizing module 'fpga_basic_alu_probe' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/experiment/rtl/basic_alu_probe.sv:1]
+WARNING: [Synth 8-3917] design fpga_basic_alu_probe has port lut_read_valid_o driven by constant 0
+WARNING: [Synth 8-3917] design fpga_basic_alu_probe has port lut_read_bank_o[1] driven by constant 0
+WARNING: [Synth 8-3917] design fpga_basic_alu_probe has port lut_read_bank_o[0] driven by constant 0
+WARNING: [Synth 8-3917] design fpga_basic_alu_probe has port lut_read_address_o[5] driven by constant 0
+WARNING: [Synth 8-3917] design fpga_basic_alu_probe has port lut_read_address_o[4] driven by constant 0
+WARNING: [Synth 8-3917] design fpga_basic_alu_probe has port lut_read_address_o[3] driven by constant 0
+WARNING: [Synth 8-3917] design fpga_basic_alu_probe has port lut_read_address_o[2] driven by constant 0
+WARNING: [Synth 8-3917] design fpga_basic_alu_probe has port lut_read_address_o[1] driven by constant 0
+WARNING: [Synth 8-3917] design fpga_basic_alu_probe has port lut_read_address_o[0] driven by constant 0
+WARNING: [Synth 8-3917] design fpga_basic_alu_probe has port lut_fault_o driven by constant 0
+WARNING: [Synth 8-7129] Port rhs_i[31] in module lpu_vxm_basic_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rhs_i[30] in module lpu_vxm_basic_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rhs_i[29] in module lpu_vxm_basic_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rhs_i[28] in module lpu_vxm_basic_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rhs_i[27] in module lpu_vxm_basic_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rhs_i[26] in module lpu_vxm_basic_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rhs_i[25] in module lpu_vxm_basic_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rhs_i[24] in module lpu_vxm_basic_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rhs_i[23] in module lpu_vxm_basic_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rhs_i[22] in module lpu_vxm_basic_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rhs_i[21] in module lpu_vxm_basic_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rhs_i[20] in module lpu_vxm_basic_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rhs_i[19] in module lpu_vxm_basic_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rhs_i[18] in module lpu_vxm_basic_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rhs_i[17] in module lpu_vxm_basic_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rhs_i[16] in module lpu_vxm_basic_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rhs_i[15] in module lpu_vxm_basic_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rhs_i[14] in module lpu_vxm_basic_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rhs_i[13] in module lpu_vxm_basic_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rhs_i[12] in module lpu_vxm_basic_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rhs_i[11] in module lpu_vxm_basic_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rhs_i[10] in module lpu_vxm_basic_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rhs_i[9] in module lpu_vxm_basic_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rhs_i[8] in module lpu_vxm_basic_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rhs_i[7] in module lpu_vxm_basic_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rhs_i[6] in module lpu_vxm_basic_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rhs_i[5] in module lpu_vxm_basic_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rhs_i[4] in module lpu_vxm_basic_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rhs_i[3] in module lpu_vxm_basic_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rhs_i[2] in module lpu_vxm_basic_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rhs_i[1] in module lpu_vxm_basic_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rhs_i[0] in module lpu_vxm_basic_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_configured_i[2] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_configured_i[1] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_configured_i[0] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[47] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[46] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[45] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[44] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[43] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[42] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[41] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[40] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[39] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[38] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[37] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[36] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[35] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[34] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[33] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[32] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[31] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[30] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[29] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[28] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[27] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[26] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[25] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[24] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[23] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[22] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[21] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[20] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[19] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[18] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[17] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[16] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[15] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[14] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[13] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[12] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[11] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[10] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[9] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[8] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[7] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[6] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[5] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[4] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[3] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[2] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[1] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[0] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_segment_width_i[47] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_segment_width_i[46] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_segment_width_i[45] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_segment_width_i[44] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_segment_width_i[43] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_segment_width_i[42] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_segment_width_i[41] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_segment_width_i[40] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_segment_width_i[39] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_segment_width_i[38] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_segment_width_i[37] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_segment_width_i[36] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_segment_width_i[35] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_segment_width_i[34] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_segment_width_i[33] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_segment_width_i[32] in module fpga_basic_alu_probe is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_segment_width_i[31] in module fpga_basic_alu_probe is either unconnected or has no load
+INFO: [Common 17-14] Message 'Synth 8-7129' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:04 ; elapsed = 00:00:08 . Memory (MB): peak = 2302.117 ; gain = 557.680
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:04 ; elapsed = 00:00:08 . Memory (MB): peak = 2302.117 ; gain = 557.680
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:04 ; elapsed = 00:00:08 . Memory (MB): peak = 2302.117 ; gain = 557.680
+---------------------------------------------------------------------------------
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.075 . Memory (MB): peak = 2302.117 ; gain = 0.000
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Parsing XDC File [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/vxm001/alu_default/timing.xdc]
+Finished Parsing XDC File [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/vxm001/alu_default/timing.xdc]
+Completed Processing XDC Constraints
+
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2419.664 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+The system cannot find the path specified.
+Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.013 . Memory (MB): peak = 2419.664 ; gain = 0.000
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:09 ; elapsed = 00:00:22 . Memory (MB): peak = 2419.664 ; gain = 675.227
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xcvu9p-flga2104-2L-e
+INFO: [Synth 8-6742] Reading net delay rules and data
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:09 ; elapsed = 00:00:23 . Memory (MB): peak = 2419.664 ; gain = 675.227
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying 'set_property' XDC Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:09 ; elapsed = 00:00:23 . Memory (MB): peak = 2419.664 ; gain = 675.227
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:10 ; elapsed = 00:00:23 . Memory (MB): peak = 2419.664 ; gain = 675.227
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input   48 Bit       Adders := 1     
+	   2 Input   25 Bit       Adders := 2     
+	   3 Input   15 Bit       Adders := 1     
+	   3 Input   14 Bit       Adders := 1     
+	   2 Input   12 Bit       Adders := 1     
+	   2 Input   10 Bit       Adders := 3     
+	   4 Input   10 Bit       Adders := 2     
+	   3 Input    9 Bit       Adders := 1     
+	   2 Input    9 Bit       Adders := 1     
+	   3 Input    8 Bit       Adders := 1     
+	   2 Input    7 Bit       Adders := 2     
+	   3 Input    6 Bit       Adders := 1     
+	   2 Input    5 Bit       Adders := 2     
+	   3 Input    5 Bit       Adders := 1     
+	   2 Input    4 Bit       Adders := 1     
++---XORs : 
+	   3 Input     48 Bit         XORs := 7     
+	   2 Input     27 Bit         XORs := 1     
+	   2 Input      1 Bit         XORs := 2     
++---Registers : 
+	               48 Bit    Registers := 1     
+	               32 Bit    Registers := 1     
+	               10 Bit    Registers := 2     
+	                2 Bit    Registers := 1     
+	                1 Bit    Registers := 7     
++---Muxes : 
+	   3 Input   48 Bit        Muxes := 2     
+	   4 Input   48 Bit        Muxes := 1     
+	   2 Input   48 Bit        Muxes := 6     
+	   2 Input   32 Bit        Muxes := 16    
+	   4 Input   32 Bit        Muxes := 7     
+	   3 Input   32 Bit        Muxes := 3     
+	   2 Input   31 Bit        Muxes := 2     
+	   4 Input   31 Bit        Muxes := 2     
+	   2 Input   28 Bit        Muxes := 2     
+	   2 Input   27 Bit        Muxes := 7     
+	   4 Input   27 Bit        Muxes := 4     
+	   2 Input   25 Bit        Muxes := 1     
+	   4 Input   24 Bit        Muxes := 3     
+	   2 Input   24 Bit        Muxes := 1     
+	   4 Input   23 Bit        Muxes := 2     
+	   2 Input   23 Bit        Muxes := 3     
+	   4 Input   16 Bit        Muxes := 2     
+	   2 Input   16 Bit        Muxes := 4     
+	   4 Input   15 Bit        Muxes := 2     
+	   2 Input   14 Bit        Muxes := 2     
+	   2 Input   12 Bit        Muxes := 1     
+	   2 Input   11 Bit        Muxes := 3     
+	   2 Input   10 Bit        Muxes := 10    
+	   4 Input   10 Bit        Muxes := 4     
+	   2 Input    9 Bit        Muxes := 1     
+	   4 Input    9 Bit        Muxes := 1     
+	   4 Input    8 Bit        Muxes := 5     
+	   2 Input    8 Bit        Muxes := 23    
+	   2 Input    7 Bit        Muxes := 7     
+	   4 Input    7 Bit        Muxes := 2     
+	   2 Input    5 Bit        Muxes := 4     
+	   4 Input    5 Bit        Muxes := 2     
+	   8 Input    3 Bit        Muxes := 4     
+	   4 Input    1 Bit        Muxes := 20    
+	   7 Input    1 Bit        Muxes := 8     
+	   2 Input    1 Bit        Muxes := 49    
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 6840 (col length:120)
+BRAMs: 4320 (col length: RAMB18 360 RAMB36 180)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-7080] Parallel synthesis criteria is not met
+WARNING: [Synth 8-3917] design fpga_basic_alu_probe has port lut_read_valid_o driven by constant 0
+WARNING: [Synth 8-3917] design fpga_basic_alu_probe has port lut_read_bank_o[1] driven by constant 0
+WARNING: [Synth 8-3917] design fpga_basic_alu_probe has port lut_read_bank_o[0] driven by constant 0
+WARNING: [Synth 8-3917] design fpga_basic_alu_probe has port lut_read_address_o[5] driven by constant 0
+WARNING: [Synth 8-3917] design fpga_basic_alu_probe has port lut_read_address_o[4] driven by constant 0
+WARNING: [Synth 8-3917] design fpga_basic_alu_probe has port lut_read_address_o[3] driven by constant 0
+WARNING: [Synth 8-3917] design fpga_basic_alu_probe has port lut_read_address_o[2] driven by constant 0
+WARNING: [Synth 8-3917] design fpga_basic_alu_probe has port lut_read_address_o[1] driven by constant 0
+WARNING: [Synth 8-3917] design fpga_basic_alu_probe has port lut_read_address_o[0] driven by constant 0
+WARNING: [Synth 8-3917] design fpga_basic_alu_probe has port lut_fault_o driven by constant 0
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:32 ; elapsed = 00:01:09 . Memory (MB): peak = 2467.516 ; gain = 723.078
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying XDC Timing Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:38 ; elapsed = 00:01:21 . Memory (MB): peak = 2712.062 ; gain = 967.625
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:00:50 ; elapsed = 00:01:45 . Memory (MB): peak = 3028.293 ; gain = 1283.855
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:00:51 ; elapsed = 00:01:47 . Memory (MB): peak = 3081.656 ; gain = 1337.219
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:00:54 ; elapsed = 00:01:52 . Memory (MB): peak = 3096.477 ; gain = 1352.039
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:54 ; elapsed = 00:01:52 . Memory (MB): peak = 3096.477 ; gain = 1352.039
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:54 ; elapsed = 00:01:52 . Memory (MB): peak = 3096.477 ; gain = 1352.039
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:00:54 ; elapsed = 00:01:52 . Memory (MB): peak = 3096.477 ; gain = 1352.039
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:54 ; elapsed = 00:01:53 . Memory (MB): peak = 3096.477 ; gain = 1352.039
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:00:54 ; elapsed = 00:01:53 . Memory (MB): peak = 3096.477 ; gain = 1352.039
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++-+--------------+----------+
+| |BlackBox name |Instances |
++-+--------------+----------+
++-+--------------+----------+
+
+Report Cell Usage: 
++------+-------+------+
+|      |Cell   |Count |
++------+-------+------+
+|1     |CARRY8 |    78|
+|2     |LUT1   |     2|
+|3     |LUT2   |   447|
+|4     |LUT3   |   199|
+|5     |LUT4   |   350|
+|6     |LUT5   |   506|
+|7     |LUT6   |  1385|
+|8     |FDCE   |   109|
++------+-------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:54 ; elapsed = 00:01:53 . Memory (MB): peak = 3096.477 ; gain = 1352.039
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 175 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:47 ; elapsed = 00:01:44 . Memory (MB): peak = 3096.477 ; gain = 1234.492
+Synthesis Optimization Complete : Time (s): cpu = 00:00:54 ; elapsed = 00:01:53 . Memory (MB): peak = 3096.477 ; gain = 1352.039
+INFO: [Project 1-571] Translating synthesized netlist
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.047 . Memory (MB): peak = 3108.516 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 78 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+Parsing XDC File [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/vxm001/alu_default/timing.xdc]
+Finished Parsing XDC File [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/vxm001/alu_default/timing.xdc]
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 3172.023 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+The system cannot find the path specified.
+Synth Design complete | Checksum: 9c85a05a
+INFO: [Common 17-83] Releasing license: Synthesis
+42 Infos, 121 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:01:02 ; elapsed = 00:02:13 . Memory (MB): peak = 3172.023 ; gain = 2604.176
+# report_utilization -file {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/vxm001/alu_default/utilization.rpt}
+# report_utilization -hierarchical -file {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/vxm001/alu_default/utilization_hier.rpt}
+# write_checkpoint -force [file join {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/vxm001/alu_default} synthesized.dcp]
+INFO: [Timing 38-35] Done setting XDC timing constraints.
+INFO: [Timing 38-480] Writing timing data to binary archive.
+Write ShapeDB Complete: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.005 . Memory (MB): peak = 3172.023 ; gain = 0.000
+INFO: [Common 17-1381] The checkpoint 'C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/vxm001/alu_default/synthesized.dcp' has been generated.
+# write_verilog -force -mode funcsim [file join {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/vxm001/alu_default} netlist.v]
+# set fd [open {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/vxm001/alu_default/primitives.txt} w]
+# foreach pattern {LUT* FD* RAMB18* RAMB36* URAM* DSP* SRL* MUXF* CARRY* LD*} {
+#   puts $fd "$pattern=[llength [get_cells -hier -quiet -filter \"REF_NAME =~ $pattern\"]]"
+# }
+ERROR: [Common 17-165] Too many positional options when parsing 'LUT*"', please type 'get_cells -help' for usage info.
+INFO: [Common 17-206] Exiting Vivado at Mon Nov  2 16:53:11 2026...

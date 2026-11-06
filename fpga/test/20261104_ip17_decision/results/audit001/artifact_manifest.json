@@ -1,0 +1,172 @@
+[
+  {
+    "path": "docs/IP17_FPGA平台与MoE演示范围_20261104.md",
+    "bytes": 29237,
+    "sha256": "79c44742ae77a456a19aac8a2561018265be2d5b8baa79a1259e6d56ed5b97f1"
+  },
+  {
+    "path": "README.md",
+    "bytes": 1820,
+    "sha256": "0dbf1a9c06faef3f1ffccafd371a1b0a7eca0e0824e34873843f04c5cb6625e6"
+  },
+  {
+    "path": "test/20261104_ip17_decision/cases/board_candidates.json",
+    "bytes": 3009,
+    "sha256": "6343534302cc410166cbd952ddd92f3c262dbac2b5bf32b7092019bb42059fed"
+  },
+  {
+    "path": "test/20261104_ip17_decision/cases/demo_spec.json",
+    "bytes": 4842,
+    "sha256": "bf9d1fe6026a3362e584076e8e3ecc87b27beb50dfe04ae69304fa495bcd569c"
+  },
+  {
+    "path": "test/20261104_ip17_decision/cases/public_sources.json",
+    "bytes": 729,
+    "sha256": "df557d4d9cc8b1ac6e8e536f12679866f9a1cbebb8c488682f4063e6f74d80de"
+  },
+  {
+    "path": "test/20261104_ip17_decision/README.md",
+    "bytes": 5718,
+    "sha256": "135fcd37fac193a1621fb8060b82943e4778df3d32d322d3e5e5a9fab064b3cd"
+  },
+  {
+    "path": "test/20261104_ip17_decision/results/audit001/audit.json",
+    "bytes": 2885,
+    "sha256": "1ba4374deac2cd0d940180eb215569aa9cee8ba5e4271c50b770f5f7063e372a"
+  },
+  {
+    "path": "test/20261104_ip17_decision/results/audit001/audit.py",
+    "bytes": 6931,
+    "sha256": "796cca466958e855c1c9a98588febcdf4954c91cf4aa03784812646efb0cb675"
+  },
+  {
+    "path": "test/20261104_ip17_decision/results/audit001/baseline_generator.py",
+    "bytes": 2375,
+    "sha256": "ee94068c3899785012217d561be257ad962d3b69ebc2f7e4eb9693aca2064efd"
+  },
+  {
+    "path": "test/20261104_ip17_decision/results/audit001/parts.tcl",
+    "bytes": 458,
+    "sha256": "f827758d106466e0dd27fb5b25c7bc38d398fabac0390bfc7893075cc5486519"
+  },
+  {
+    "path": "test/20261104_ip17_decision/results/baseline001/baseline_audit.json",
+    "bytes": 9612,
+    "sha256": "327f0c37758b2f6625228aa9913504b44e5b6b64a070a0f9ad03069402211494"
+  },
+  {
+    "path": "test/20261104_ip17_decision/results/baseline001/develop.zip",
+    "bytes": 588459,
+    "sha256": "2c09f85d900a35ef6a94384fba02b27fdf804bf7dfb3ec884eaeec9b7c9c6536"
+  },
+  {
+    "path": "test/20261104_ip17_decision/results/baseline001/granite_config.json",
+    "bytes": 891,
+    "sha256": "25af0a4e4e85b781fa22c7cab240cda31714254a9d3d0f2f67e079693e1dd614"
+  },
+  {
+    "path": "test/20261104_ip17_decision/results/baseline001/granite_model_api.json",
+    "bytes": 1800,
+    "sha256": "a6dde89135e0222e92eb0b8453602eec4f724de4c03741a83c6c46b3f694bba4"
+  },
+  {
+    "path": "test/20261104_ip17_decision/results/baseline001/main.zip",
+    "bytes": 490690,
+    "sha256": "25898d2f36a655a96767428111136317448e0bdfc0154fe308ad050b8a55c512"
+  },
+  {
+    "path": "test/20261104_ip17_decision/results/baseline001/main_develop_diff.txt",
+    "bytes": 2436,
+    "sha256": "6dd47253e7a8536f8627956e66f93955b9abc645e52133a8a827f853f9f60d64"
+  },
+  {
+    "path": "test/20261104_ip17_decision/results/baseline001/modeling_granitemoe_v4_46_0.py",
+    "bytes": 65246,
+    "sha256": "db878cb98edffa7aee02cfa350d5dbe9d621b944a2bf48f3be7d1ac9d02e8755"
+  },
+  {
+    "path": "test/20261104_ip17_decision/results/baseline001/remote_heads.txt",
+    "bytes": 119,
+    "sha256": "685f174a0fbd5b0ba14e930f7d606b1e19b96d0de2bb48826bd81a99ff1b10bb"
+  },
+  {
+    "path": "test/20261104_ip17_decision/results/baseline001/remote_heads_recheck.txt",
+    "bytes": 119,
+    "sha256": "685f174a0fbd5b0ba14e930f7d606b1e19b96d0de2bb48826bd81a99ff1b10bb"
+  },
+  {
+    "path": "test/20261104_ip17_decision/results/brain001/brain_results.json",
+    "bytes": 1838,
+    "sha256": "475c3c295206cabc6f7773a0d28756e89b2fd913160a354f69e0ce65174f4aed"
+  },
+  {
+    "path": "test/20261104_ip17_decision/results/brain001/braincheck.py",
+    "bytes": 9523,
+    "sha256": "f2cbf874deaf45869985ea95631932e9261f0a300c08fddb634983359652ff5f"
+  },
+  {
+    "path": "test/20261104_ip17_decision/results/brain001/capacity.json",
+    "bytes": 1413,
+    "sha256": "84263ea5c5af4aad4fbc038432d5092652d58861f8dafd5e6aa0d715958ce7e1"
+  },
+  {
+    "path": "test/20261104_ip17_decision/results/brain001/tiny_evidence.npz",
+    "bytes": 91687,
+    "sha256": "48dbdbea11789734d8168f96d41a2bcbfdb07769017fb80e073af623f2b1f140"
+  },
+  {
+    "path": "test/20261104_ip17_decision/results/parts001/vivado.log",
+    "bytes": 2324,
+    "sha256": "2cf3bbd617def14fd2616bac028d9d289b5f654956381fe04158b40f7a7ed8bb"
+  },
+  {
+    "path": "test/20261104_ip17_decision/results/projection001/resource_projection.json",
+    "bytes": 3533,
+    "sha256": "41f5bf8cea7645cffd4efe1d87ae07a1c7710272a82757ce2d157064235efeab"
+  },
+  {
+    "path": "test/20261104_ip17_decision/results/projection002/project_resources.py",
+    "bytes": 2544,
+    "sha256": "bcba6f1331352a362b13f9fc63544cc93b7bd6d63560198cbf3d685dc9e446d5"
+  },
+  {
+    "path": "test/20261104_ip17_decision/results/projection002/resource_projection.json",
+    "bytes": 3533,
+    "sha256": "734bc773e2b120d1d327e1984706bae029a6a4efe0179caaa9ed93ff043183f7"
+  },
+  {
+    "path": "test/20261104_ip17_decision/results/sources001/archive_status.json",
+    "bytes": 485,
+    "sha256": "8d983fa09cc4dcda17c499a0e0ca54d3ebe2dc3c2fc4a8e8a4d1adcd599268ef"
+  },
+  {
+    "path": "test/20261104_ip17_decision/scripts/audit.py",
+    "bytes": 6931,
+    "sha256": "796cca466958e855c1c9a98588febcdf4954c91cf4aa03784812646efb0cb675"
+  },
+  {
+    "path": "test/20261104_ip17_decision/scripts/baseline.py",
+    "bytes": 2375,
+    "sha256": "ee94068c3899785012217d561be257ad962d3b69ebc2f7e4eb9693aca2064efd"
+  },
+  {
+    "path": "test/20261104_ip17_decision/scripts/braincheck.py",
+    "bytes": 9523,
+    "sha256": "f2cbf874deaf45869985ea95631932e9261f0a300c08fddb634983359652ff5f"
+  },
+  {
+    "path": "test/20261104_ip17_decision/scripts/download_sources.ps1",
+    "bytes": 1018,
+    "sha256": "bf2c315024d1d0e53dcb1e2dd32bbacc409e5748a4966400420aa442ef242fd5"
+  },
+  {
+    "path": "test/20261104_ip17_decision/scripts/parts.tcl",
+    "bytes": 458,
+    "sha256": "f827758d106466e0dd27fb5b25c7bc38d398fabac0390bfc7893075cc5486519"
+  },
+  {
+    "path": "test/20261104_ip17_decision/scripts/project_resources.py",
+    "bytes": 2544,
+    "sha256": "bcba6f1331352a362b13f9fc63544cc93b7bd6d63560198cbf3d685dc9e446d5"
+  }
+]

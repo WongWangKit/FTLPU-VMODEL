@@ -1,0 +1,5 @@
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run007/src/rtl/srf/ftlpu_sr_superlane_col_dir.sv" into library work
+INFO: [VRFC 10-311] analyzing module ftlpu_sr_superlane_col_dir_lane
+INFO: [VRFC 10-311] analyzing module ftlpu_sr_superlane_col_dir
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_initial_synth/tb/srf_leaf_tb.sv" into library work
+INFO: [VRFC 10-311] analyzing module srf_leaf_tb

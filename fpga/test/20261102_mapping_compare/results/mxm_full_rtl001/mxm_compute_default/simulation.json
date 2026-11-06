@@ -1,0 +1,49 @@
+[
+  {
+    "mode": "rtl",
+    "passed": true,
+    "steps": [
+      {
+        "command": [
+          "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xvlog.bat",
+          "--sv",
+          "-d",
+          "FTLPU_DISABLE_BLOCK8",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_full001/src/rtl/core/lpu_pkg.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_full001/src/rtl/vxm/lpu_vxm_math_pkg.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_full001/src/rtl/mxm/lpu_mxm_dot_bank.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_full001/src/rtl/mxm/lpu_mxm_compute.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_full_rtl001/mxm_compute_default/mxm_compute_tb.sv"
+        ],
+        "returncode": 0,
+        "status": "completed",
+        "elapsed_s": 4.7
+      },
+      {
+        "command": [
+          "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xelab.bat",
+          "mxm_compute_tb",
+          "-s",
+          "snapshot",
+          "--timescale",
+          "1ns/1ps",
+          "--mt",
+          "2"
+        ],
+        "returncode": 0,
+        "status": "completed",
+        "elapsed_s": 8.2
+      },
+      {
+        "command": [
+          "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xsim.bat",
+          "snapshot",
+          "-runall"
+        ],
+        "returncode": 0,
+        "status": "completed",
+        "elapsed_s": 6.1
+      }
+    ]
+  }
+]

@@ -1,0 +1,189 @@
+
+****** Vivado v2023.2 (64-bit)
+  **** SW Build 4029153 on Fri Oct 13 20:14:34 MDT 2023
+  **** IP Build 4028589 on Sat Oct 14 00:45:43 MDT 2023
+  **** SharedData Build 4025554 on Tue Oct 10 17:18:54 MDT 2023
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+
+source C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_narrow001/mxm_column_narrow_dsp/synth.tcl
+# set_param general.maxThreads 1
+# create_project -in_memory -part xcvu9p-flga2104-2L-e
+create_project: Time (s): cpu = 00:00:03 ; elapsed = 00:00:09 . Memory (MB): peak = 567.250 ; gain = 180.441
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_narrow001/src/rtl/vxm/lpu_vxm_math_pkg.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_narrow001/src/experiment/rtl/mxm_mul_narrow.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_narrow001/src/experiment/rtl/mxm_column_narrow.sv}
+# read_xdc {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_narrow001/mxm_column_narrow_dsp/timing.xdc}
+# synth_design -top fpga_mxm_column -part xcvu9p-flga2104-2L-e -mode out_of_context -flatten_hierarchy rebuilt
+Command: synth_design -top fpga_mxm_column -part xcvu9p-flga2104-2L-e -mode out_of_context -flatten_hierarchy rebuilt
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xcvu9p'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xcvu9p'
+INFO: [Device 21-403] Loading part xcvu9p-flga2104-2L-e
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 1 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 36888
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:04 ; elapsed = 00:00:09 . Memory (MB): peak = 2176.074 ; gain = 432.512
+---------------------------------------------------------------------------------
+INFO: [Synth 8-6157] synthesizing module 'fpga_mxm_column' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_narrow001/src/experiment/rtl/mxm_column_narrow.sv:1]
+INFO: [Synth 8-6157] synthesizing module 'fpga_mxm_mul' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_narrow001/src/experiment/rtl/mxm_mul_narrow.sv:3]
+INFO: [Synth 8-6155] done synthesizing module 'fpga_mxm_mul' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_narrow001/src/experiment/rtl/mxm_mul_narrow.sv:3]
+INFO: [Synth 8-6155] done synthesizing module 'fpga_mxm_column' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_narrow001/src/experiment/rtl/mxm_column_narrow.sv:1]
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:11 ; elapsed = 00:00:22 . Memory (MB): peak = 2382.152 ; gain = 638.590
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:11 ; elapsed = 00:00:22 . Memory (MB): peak = 2382.152 ; gain = 638.590
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:11 ; elapsed = 00:00:22 . Memory (MB): peak = 2382.152 ; gain = 638.590
+---------------------------------------------------------------------------------
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.277 . Memory (MB): peak = 2382.152 ; gain = 0.000
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Parsing XDC File [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_narrow001/mxm_column_narrow_dsp/timing.xdc]
+INFO: [Constraints 18-483] create_clock: no pin(s)/port(s)/net(s) specified as objects, only virtual clock 'clk' will be created. If you don't want this, please specify pin(s)/ports(s)/net(s) as objects to the command. [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_narrow001/mxm_column_narrow_dsp/timing.xdc:1]
+create_clock: Time (s): cpu = 00:00:03 ; elapsed = 00:00:06 . Memory (MB): peak = 2501.137 ; gain = 0.039
+Finished Parsing XDC File [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_narrow001/mxm_column_narrow_dsp/timing.xdc]
+Completed Processing XDC Constraints
+
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.002 . Memory (MB): peak = 2501.137 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+The system cannot find the path specified.
+Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.030 . Memory (MB): peak = 2501.137 ; gain = 0.000
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:23 ; elapsed = 00:00:44 . Memory (MB): peak = 2501.137 ; gain = 757.574
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xcvu9p-flga2104-2L-e
+INFO: [Synth 8-6742] Reading net delay rules and data
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:23 ; elapsed = 00:00:44 . Memory (MB): peak = 2501.137 ; gain = 757.574
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying 'set_property' XDC Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:23 ; elapsed = 00:00:44 . Memory (MB): peak = 2501.137 ; gain = 757.574
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:30 ; elapsed = 00:00:59 . Memory (MB): peak = 2501.137 ; gain = 757.574
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input   32 Bit       Adders := 40    
+	   3 Input   32 Bit       Adders := 7     
+	   2 Input   28 Bit       Adders := 7     
+	   3 Input   27 Bit       Adders := 7     
+	   2 Input   25 Bit       Adders := 15    
+	   2 Input   10 Bit       Adders := 14    
+	   2 Input    9 Bit       Adders := 190   
+	   2 Input    8 Bit       Adders := 16    
+	   2 Input    6 Bit       Adders := 128   
++---XORs : 
+	   2 Input      1 Bit         XORs := 8     
++---Muxes : 
+	   2 Input   32 Bit        Muxes := 311   
+	   2 Input   27 Bit        Muxes := 217   
+	   2 Input   25 Bit        Muxes := 7     
+	   2 Input   24 Bit        Muxes := 32    
+	   2 Input   23 Bit        Muxes := 15    
+	   2 Input   13 Bit        Muxes := 16    
+	   2 Input   12 Bit        Muxes := 16    
+	   2 Input   11 Bit        Muxes := 160   
+	   2 Input   10 Bit        Muxes := 16    
+	   2 Input    9 Bit        Muxes := 16    
+	   2 Input    8 Bit        Muxes := 30    
+	   2 Input    7 Bit        Muxes := 16    
+	   2 Input    1 Bit        Muxes := 186   
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 6840 (col length:120)
+BRAMs: 4320 (col length: RAMB18 360 RAMB36 180)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-7080] Parallel synthesis criteria is not met
+DSP Report: Generating DSP significand_product, operation Mode is: A*B.
+DSP Report: operator significand_product is absorbed into DSP significand_product.
+DSP Report: Generating DSP significand_product, operation Mode is: A*B.
+DSP Report: operator significand_product is absorbed into DSP significand_product.
+DSP Report: Generating DSP significand_product, operation Mode is: A*B.
+DSP Report: operator significand_product is absorbed into DSP significand_product.
+DSP Report: Generating DSP significand_product, operation Mode is: A*B.
+DSP Report: operator significand_product is absorbed into DSP significand_product.
+DSP Report: Generating DSP significand_product, operation Mode is: A*B.
+DSP Report: operator significand_product is absorbed into DSP significand_product.
+DSP Report: Generating DSP significand_product, operation Mode is: A*B.
+DSP Report: operator significand_product is absorbed into DSP significand_product.
+DSP Report: Generating DSP significand_product, operation Mode is: A*B.
+DSP Report: operator significand_product is absorbed into DSP significand_product.
+DSP Report: Generating DSP significand_product, operation Mode is: A*B.
+DSP Report: operator significand_product is absorbed into DSP significand_product.
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:01:27 ; elapsed = 00:04:00 . Memory (MB): peak = 3053.086 ; gain = 1309.523
+---------------------------------------------------------------------------------
+ Sort Area is fpga_mxm_column__GB0 significand_product_0 : 0 0 : 863 863 : Used 1 time 100
+ Sort Area is fpga_mxm_column__GB0 significand_product_2 : 0 0 : 863 863 : Used 1 time 100
+ Sort Area is fpga_mxm_column__GB2 significand_product_3 : 0 0 : 863 863 : Used 1 time 100
+ Sort Area is fpga_mxm_column__GB2 significand_product_4 : 0 0 : 863 863 : Used 1 time 100
+ Sort Area is fpga_mxm_column__GB2 significand_product_5 : 0 0 : 863 863 : Used 1 time 100
+ Sort Area is fpga_mxm_column__GB3 significand_product_6 : 0 0 : 863 863 : Used 1 time 100
+ Sort Area is fpga_mxm_column__GB3 significand_product_7 : 0 0 : 863 863 : Used 1 time 100
+ Sort Area is fpga_mxm_column__GB3 significand_product_8 : 0 0 : 863 863 : Used 1 time 100
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+
+DSP: Preliminary Mapping Report (see note below. The ' indicates corresponding REG is set)
++-------------+-------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+|Module Name  | DSP Mapping | A Size | B Size | C Size | D Size | P Size | AREG | BREG | CREG | DREG | ADREG | MREG | PREG | 
++-------------+-------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+|fpga_mxm_mul | A*B         | 11     | 11     | -      | -      | 22     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|fpga_mxm_mul | A*B         | 11     | 11     | -      | -      | 22     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|fpga_mxm_mul | A*B         | 11     | 11     | -      | -      | 22     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|fpga_mxm_mul | A*B         | 11     | 11     | -      | -      | 22     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|fpga_mxm_mul | A*B         | 11     | 11     | -      | -      | 22     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|fpga_mxm_mul | A*B         | 11     | 11     | -      | -      | 22     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|fpga_mxm_mul | A*B         | 11     | 11     | -      | -      | 22     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|fpga_mxm_mul | A*B         | 11     | 11     | -      | -      | 22     | 0    | 0    | -    | -    | -     | 0    | 0    | 
++-------------+-------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+
+Note: The table above is a preliminary report that shows the DSPs inferred at the current stage of the synthesis flow. Some DSP may be reimplemented as non DSP primitives later in the synthesis flow. Multiple instantiated DSPs are reported only once.
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying XDC Timing Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:01:36 ; elapsed = 00:04:21 . Memory (MB): peak = 3053.086 ; gain = 1309.523
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+SUCCESS: The process with PID 30608 (child process of PID 36888) has been terminated.
+SUCCESS: The process with PID 36888 (child process of PID 37088) has been terminated.
+SUCCESS: The process with PID 37088 (child process of PID 37292) has been terminated.
+SUCCESS: The process with PID 37292 (child process of PID 40068) has been terminated.

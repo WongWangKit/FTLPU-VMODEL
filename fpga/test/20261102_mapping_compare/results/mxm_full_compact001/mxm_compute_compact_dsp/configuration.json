@@ -1,0 +1,27 @@
+{
+  "case": "mxm_compute_compact_dsp",
+  "generics": [
+    "ACCUMULATOR_BLOCK_COUNT=1"
+  ],
+  "defines": [
+    "FTLPU_DISABLE_BLOCK8"
+  ],
+  "clocked": true,
+  "top": "lpu_mxm_compute",
+  "files": [
+    "C:\\Users\\huazh\\Desktop\\LPU\\lpu_src\\FTLPU-VMODEL\\fpga\\tmp\\mapping_mxm_full_compact001\\src\\rtl\\core\\lpu_pkg.sv",
+    "C:\\Users\\huazh\\Desktop\\LPU\\lpu_src\\FTLPU-VMODEL\\fpga\\tmp\\mapping_mxm_full_compact001\\src\\experiment\\rtl\\math_mxm_compact_pkg.sv",
+    "C:\\Users\\huazh\\Desktop\\LPU\\lpu_src\\FTLPU-VMODEL\\fpga\\tmp\\mapping_mxm_full_compact001\\src\\experiment\\rtl\\mxm_mul_narrow.sv",
+    "C:\\Users\\huazh\\Desktop\\LPU\\lpu_src\\FTLPU-VMODEL\\fpga\\tmp\\mapping_mxm_full_compact001\\src\\experiment\\rtl\\mxm_column_narrow.sv",
+    "C:\\Users\\huazh\\Desktop\\LPU\\lpu_src\\FTLPU-VMODEL\\fpga\\tmp\\mapping_mxm_full_compact001\\src\\experiment\\rtl\\mxm_dot_narrow.sv",
+    "C:\\Users\\huazh\\Desktop\\LPU\\lpu_src\\FTLPU-VMODEL\\fpga\\tmp\\mapping_mxm_full_compact001\\src\\rtl\\mxm\\lpu_mxm_compute.sv"
+  ],
+  "tb": "mxm_compute",
+  "tb_defines": [],
+  "sim_files": [
+    "C:\\Users\\huazh\\Desktop\\LPU\\lpu_src\\FTLPU-VMODEL\\fpga\\tmp\\mapping_mxm_full_compact001\\src\\experiment\\rtl\\math_reference_pkg.sv"
+  ],
+  "no_timing_driven": true,
+  "part": "xcvu9p-flga2104-2L-e",
+  "period_ns": 10.0
+}

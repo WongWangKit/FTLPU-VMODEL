@@ -1,0 +1,49 @@
+[
+  {
+    "case": "mem_leaf_bram",
+    "mode": "gate",
+    "passed": true,
+    "steps": [
+      {
+        "command": [
+          "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xvlog.bat",
+          "--sv",
+          "-d",
+          "GATE",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_initial_synth/results/run007/mem_leaf_bram/netlist.v",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_initial_synth/tb/mem_leaf_tb.sv",
+          "C:/Users/huazh/Desktop/Vivado2023/Vivado/2023.2/data/verilog/src/glbl.v"
+        ],
+        "returncode": 0,
+        "status": "completed",
+        "elapsed_s": 3.1
+      },
+      {
+        "command": [
+          "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xelab.bat",
+          "mem_leaf_tb",
+          "glbl",
+          "-L",
+          "unisims_ver",
+          "-s",
+          "snapshot",
+          "--debug",
+          "typical"
+        ],
+        "returncode": 0,
+        "status": "completed",
+        "elapsed_s": 7.1
+      },
+      {
+        "command": [
+          "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xsim.bat",
+          "snapshot",
+          "-runall"
+        ],
+        "returncode": 0,
+        "status": "completed",
+        "elapsed_s": 5.2
+      }
+    ]
+  }
+]

@@ -1,0 +1,36 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2023.2 (win64) Build 4029153 Fri Oct 13 20:14:34 MDT 2023
+| Date         : Mon Nov  2 17:29:49 2026
+| Host         : huazhe running 64-bit major release  (build 9200)
+| Command      : report_utilization -hierarchical -file C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_area001/mxm_column_narrow_dsp/utilization_hier.rpt
+| Design       : fpga_mxm_column
+| Device       : xcvu9p-flga2104-2L-e
+| Speed File   : -2L
+| Design State : Synthesized
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Utilization Design Information
+
+Table of Contents
+-----------------
+1. Utilization by Hierarchy
+
+1. Utilization by Hierarchy
+---------------------------
+
++------------------+----------------+------------+------------+---------+------+-----+--------+--------+------+------------+
+|     Instance     |     Module     | Total LUTs | Logic LUTs | LUTRAMs | SRLs | FFs | RAMB36 | RAMB18 | URAM | DSP Blocks |
++------------------+----------------+------------+------------+---------+------+-----+--------+--------+------+------------+
+| fpga_mxm_column  |          (top) |      14999 |      14999 |       0 |    0 |   0 |      0 |      0 |    0 |          8 |
+|   g_mul[0].u_mul |   fpga_mxm_mul |        209 |        209 |       0 |    0 |   0 |      0 |      0 |    0 |          1 |
+|   g_mul[1].u_mul | fpga_mxm_mul_0 |       2428 |       2428 |       0 |    0 |   0 |      0 |      0 |    0 |          1 |
+|   g_mul[2].u_mul | fpga_mxm_mul_1 |       2000 |       2000 |       0 |    0 |   0 |      0 |      0 |    0 |          1 |
+|   g_mul[3].u_mul | fpga_mxm_mul_2 |       9632 |       9632 |       0 |    0 |   0 |      0 |      0 |    0 |          1 |
+|   g_mul[4].u_mul | fpga_mxm_mul_3 |        186 |        186 |       0 |    0 |   0 |      0 |      0 |    0 |          1 |
+|   g_mul[5].u_mul | fpga_mxm_mul_4 |        195 |        195 |       0 |    0 |   0 |      0 |      0 |    0 |          1 |
+|   g_mul[6].u_mul | fpga_mxm_mul_5 |        212 |        212 |       0 |    0 |   0 |      0 |      0 |    0 |          1 |
+|   g_mul[7].u_mul | fpga_mxm_mul_6 |        207 |        207 |       0 |    0 |   0 |      0 |      0 |    0 |          1 |
++------------------+----------------+------------+------------+---------+------+-----+--------+--------+------+------------+
+
+

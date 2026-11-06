@@ -1,0 +1,212 @@
+{
+  "passed": true,
+  "selected_count": 13,
+  "selected": [
+    {
+      "run": "vxm_recover001",
+      "case": "alu_default",
+      "passed": true,
+      "simulation": "test/20261102_mapping_compare/results/vxm_recover001/alu_default/simulation.json",
+      "LUT": 2538.0,
+      "DSP": 0.0,
+      "WNS_ns": -2.543,
+      "DRC_warnings": 0
+    },
+    {
+      "run": "vxm_recover001",
+      "case": "alu_dsp",
+      "passed": true,
+      "simulation": "test/20261102_mapping_compare/results/vxm_recover001/alu_dsp/simulation.json",
+      "LUT": 1868.0,
+      "DSP": 9.0,
+      "WNS_ns": -2.545,
+      "DRC_warnings": 36
+    },
+    {
+      "run": "vxm_recover001",
+      "case": "alu_wide_dsp",
+      "passed": true,
+      "simulation": "test/20261102_mapping_compare/results/vxm_recover001/alu_wide_dsp/simulation.json",
+      "LUT": 1513.0,
+      "DSP": 2.0,
+      "WNS_ns": -2.493,
+      "DRC_warnings": 8
+    },
+    {
+      "run": "memory_recover001",
+      "case": "mem_bram",
+      "passed": true,
+      "simulation": "test/20261102_mapping_compare/results/memory_recover001/mem_bram/simulation.json",
+      "LUT": 74.0,
+      "DSP": 0.0,
+      "WNS_ns": 7.701,
+      "DRC_warnings": 0
+    },
+    {
+      "run": "memory_recover001",
+      "case": "mem_uram",
+      "passed": true,
+      "simulation": "test/20261102_mapping_compare/results/memory_recover001/mem_uram/simulation.json",
+      "LUT": 74.0,
+      "DSP": 0.0,
+      "WNS_ns": 7.256,
+      "DRC_warnings": 0
+    },
+    {
+      "run": "memory_recover001",
+      "case": "srf_default",
+      "passed": true,
+      "simulation": "test/20261102_mapping_compare/results/srf_sim002/srf_default/simulation.json",
+      "LUT": 2934.0,
+      "DSP": 0.0,
+      "WNS_ns": 6.819,
+      "DRC_warnings": 0
+    },
+    {
+      "run": "memory_recover001",
+      "case": "srf_onehot",
+      "passed": true,
+      "simulation": "test/20261102_mapping_compare/results/srf_sim002/srf_onehot/simulation.json",
+      "LUT": 2888.0,
+      "DSP": 0.0,
+      "WNS_ns": 6.819,
+      "DRC_warnings": 0
+    },
+    {
+      "run": "mxm001",
+      "case": "mxm_mul_default",
+      "passed": true,
+      "simulation": "test/20261102_mapping_compare/results/mxm001/mxm_mul_default/simulation.json",
+      "LUT": 310.0,
+      "DSP": 2.0,
+      "WNS_ns": 1.949,
+      "DRC_warnings": 7
+    },
+    {
+      "run": "mxm001",
+      "case": "mxm_mul_dsp",
+      "passed": true,
+      "simulation": "test/20261102_mapping_compare/results/mxm001/mxm_mul_dsp/simulation.json",
+      "LUT": 310.0,
+      "DSP": 2.0,
+      "WNS_ns": 1.949,
+      "DRC_warnings": 7
+    },
+    {
+      "run": "mxm_narrow001",
+      "case": "mxm_mul_narrow_dsp",
+      "passed": true,
+      "simulation": "test/20261102_mapping_compare/results/mxm_narrow001/mxm_mul_narrow_dsp/simulation.json",
+      "LUT": 195.0,
+      "DSP": 1.0,
+      "WNS_ns": 2.766,
+      "DRC_warnings": 4
+    },
+    {
+      "run": "mxm_area003_sta001",
+      "case": "mxm_column_default",
+      "passed": true,
+      "simulation": "test/20261102_mapping_compare/results/mxm_area003/mxm_column_default/simulation.json",
+      "LUT": 16182.0,
+      "DSP": 16.0,
+      "WNS_ns": -308.303,
+      "DRC_warnings": 59
+    },
+    {
+      "run": "mxm_area001",
+      "case": "mxm_column_narrow_dsp",
+      "passed": true,
+      "simulation": "test/20261102_mapping_compare/results/mxm_area001/mxm_column_narrow_dsp/simulation.json",
+      "LUT": 14999.0,
+      "DSP": 8.0,
+      "WNS_ns": -304.803,
+      "DRC_warnings": 32
+    },
+    {
+      "run": "mxm_compact001",
+      "case": "mxm_column_compact_dsp",
+      "passed": true,
+      "simulation": "test/20261102_mapping_compare/results/mxm_compact001/mxm_column_compact_dsp/simulation.json",
+      "LUT": 8313.0,
+      "DSP": 8.0,
+      "WNS_ns": -69.796,
+      "DRC_warnings": 32
+    }
+  ],
+  "failures": [],
+  "frozen_source_archive": {
+    "file": "frozen_sources.zip",
+    "sha256": "93df20fa4e78232f537aca0ce8635379bfb9d10fc2f61d210c949906321d2eb6",
+    "runs": [
+      {
+        "run": "math_equiv001",
+        "files": 3,
+        "manifest_sha256": "6d90719711e4edc6488ecb5a8fae9685058962a7e6da0b4e92b0d5b15423aa50"
+      },
+      {
+        "run": "memory001",
+        "files": 120,
+        "manifest_sha256": "e1e9a96c1b01c21ac397c6ed3a22a98de45fa9d0724293a05a88d4073f7c6ef3"
+      },
+      {
+        "run": "mxm001",
+        "files": 124,
+        "manifest_sha256": "0322cc0673740fd42d5075929fde48cd0d0133ca75f55902d1074fbcf3e8b820"
+      },
+      {
+        "run": "mxm_area001",
+        "files": 132,
+        "manifest_sha256": "4052ef921e6c30ed13ca3bea6803f95c5e302e392579f53c55d4b34498e3bba3"
+      },
+      {
+        "run": "mxm_area002",
+        "files": 136,
+        "manifest_sha256": "de3683b7d0e8b54ed5d6e12b4d035dac8ed31113f46c494bc52859c927c7c997"
+      },
+      {
+        "run": "mxm_area003",
+        "files": 136,
+        "manifest_sha256": "4234eccacdb9a5620dec98137aa890bbc5d6e1e1eac5cd54cafc43eef9b6abcf"
+      },
+      {
+        "run": "mxm_column_rtl003",
+        "files": 136,
+        "manifest_sha256": "58a046f7541e00b4cf684c0c37eba16dbe297de8e5dea42d6339e001594fb13d"
+      },
+      {
+        "run": "mxm_compact001",
+        "files": 134,
+        "manifest_sha256": "9c23c84dea6f01a4e32b6fab428bcf5752a209c99828c93424959b921319febc"
+      },
+      {
+        "run": "mxm_full001",
+        "files": 129,
+        "manifest_sha256": "3dec4270d06b046c796977a92410729d6b98010079f403568d4d95c2868a8d68"
+      },
+      {
+        "run": "mxm_full_compact001",
+        "files": 134,
+        "manifest_sha256": "dc924707dd5d33174d5c486acbaef4e04f4bd1c0ef67218d455bc23eb4f04637"
+      },
+      {
+        "run": "mxm_narrow001",
+        "files": 129,
+        "manifest_sha256": "c07aca6f6a5704c48464dfe2e283624b94862ec15ac499b410e966373f7d2964"
+      },
+      {
+        "run": "vxm001",
+        "files": 120,
+        "manifest_sha256": "e1e9a96c1b01c21ac397c6ed3a22a98de45fa9d0724293a05a88d4073f7c6ef3"
+      }
+    ]
+  },
+  "current_product_sources_compared": 105,
+  "current_product_changes_since_area003": [],
+  "local_document_links_valid": true,
+  "python_compile_passed": true,
+  "limitations": [
+    "Functional post-synthesis simulation, no SDF or P&R",
+    "Full compute synthesis timed out; RTL only",
+    "Not formal equivalence or full IEEE conformance"
+  ]
+}

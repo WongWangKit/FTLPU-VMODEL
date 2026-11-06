@@ -1,0 +1,95 @@
+{
+  "as_of": "2026-11-04",
+  "status": "recommended_candidates_not_confirmed_whole_LPU16_fit",
+  "resource_input": "results/projection002/resource_projection.json",
+  "candidates": [
+    {
+      "rank": 1,
+      "name": "HTG-960",
+      "fpga": "VU19P-2",
+      "role": "primary",
+      "memory": {
+        "ddr4_shipped_GB": 8,
+        "ddr4_max_total_GB": 64,
+        "slots": 2,
+        "ecc_interface_bits": 72,
+        "qspi_flash_Gbit": [
+          2,
+          2
+        ]
+      },
+      "host": [
+        "1GbE",
+        "USB-UART",
+        "JTAG",
+        "PCIe via external HTG-FMC-LVDS + HTG-X8-PCIE-EP + SMA cabling"
+      ],
+      "proposal": "Preload weights once to board DDR via Ethernet; execution reads DDR locally",
+      "open": [
+        "Supply/lead time",
+        "PCIe accessory actual supported generation, clocks and drivers if purchased",
+        "2023.2 board reference design/IP license compatibility"
+      ],
+      "source": "https://www.hitechglobal.com/Boards/VirtexUltraScale%2B_VU19P_Board.htm"
+    },
+    {
+      "rank": 2,
+      "name": "Alveo V80",
+      "fpga": "XCV80",
+      "role": "HBM_DSP_alternative",
+      "memory": {
+        "HBM2e_GB": 32,
+        "HBM_peak_approx_GBps": 810,
+        "DDR4_expansion_GB": 32,
+        "expansion_BOM": "confirm installed/options",
+        "management_DDR": "excluded from user memory budget"
+      },
+      "host": [
+        "PCIe Gen4 x16 OR dual Gen5 x8",
+        "4 x QSFP56"
+      ],
+      "toolflow": "Current AVED Vivado 2025.1; Ubuntu24.04 kernel6.8 or RHEL9.4 kernel5.14",
+      "open": [
+        "Actual production part/BOM and toolflow",
+        "Re-synthesis for DSP58/Versal",
+        "Server power and airflow",
+        "Application LUT after shell"
+      ],
+      "sources": [
+        "https://docs.amd.com/r/en-US/ds1013-v80/Adaptive-SoC-Resources",
+        "https://www.amd.com/content/dam/amd/en/documents/products/accelerators/alveo/v80/alveo-v80-product-brief.pdf",
+        "https://xilinx.github.io/AVED/latest/index.html"
+      ]
+    },
+    {
+      "rank": 3,
+      "name": "HTG-840-2",
+      "fpga": "VU440-2",
+      "role": "PCIe_mature_flow_alternative",
+      "memory": {
+        "ddr4_shipped_GB": 16,
+        "ddr4_max_total_GB": 32,
+        "slots": 2,
+        "ecc_interface_bits": 72,
+        "configuration_flash_Gbit": 1
+      },
+      "host": [
+        "PCIe Gen3 x8 onboard",
+        "USB-UART",
+        "JTAG"
+      ],
+      "open": [
+        "Supply/lead time",
+        "Tool/IP/reference design compatibility",
+        "Full design LUT and DSP budget; no URAM"
+      ],
+      "source": "https://www.hitechglobal.com/Boards/Virtex-UltraScale-SOC.htm"
+    }
+  ],
+  "notes": [
+    "These are silicon totals, not application-available resources after board shell",
+    "70 percent policy is a planning gate, not a routing guarantee",
+    "V80 resource arithmetic uses the exact locally found part; official data sheet rounds LUT to 2.6M",
+    "Not a purchase order or stock confirmation"
+  ]
+}

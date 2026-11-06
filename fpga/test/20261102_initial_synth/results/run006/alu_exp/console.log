@@ -1,0 +1,167 @@
+
+****** Vivado v2023.2 (64-bit)
+  **** SW Build 4029153 on Fri Oct 13 20:14:34 MDT 2023
+  **** IP Build 4028589 on Sat Oct 14 00:45:43 MDT 2023
+  **** SharedData Build 4025554 on Tue Oct 10 17:18:54 MDT 2023
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+
+source C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/fpga_experiment/scripts/synth.tcl
+# puts "RAW_ARGV=$argv"
+RAW_ARGV=C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_initial_synth/results/run006/alu_exp alu_exp xcvu9p-flga2104-2L-e
+# set src [lindex $argv 0]
+# set out [lindex $argv 1]
+# set case_name [lindex $argv 2]
+# set part [lindex $argv 3]
+# set_param general.maxThreads 4
+# file mkdir $out
+# create_project -in_memory -part $part
+create_project: Time (s): cpu = 00:00:04 ; elapsed = 00:00:07 . Memory (MB): peak = 567.840 ; gain = 180.887
+# set rtl {}
+# set fd [open [file join $src sim filelist.f] r]
+# foreach line [split [read $fd] "\n"] {
+#   set line [string trim $line]
+#   if {[string match "rtl/*" $line]} {lappend rtl [file join $src $line]}
+# }
+# close $fd
+# set generics {}
+# switch $case_name {
+#   mem_leaf {
+#     set rtl [list [file join $src rtl/mem_native/mem_bank_superlane_leaf.sv]]
+#     set top mem_bank_superlane_leaf
+#     set generics {P_MEM_BANK_DEPTH_ROWS=1024 P_MEM_ACTIVE_ROWS=1024}
+#   }
+#   mem_leaf_bram {
+#     set rtl [list [file join $src fpga_experiment/rtl/mem_leaf_bram.sv]]
+#     set top mem_bank_superlane_leaf
+#     set generics {P_MEM_BANK_DEPTH_ROWS=1024 P_MEM_ACTIVE_ROWS=1024}
+#   }
+#   mem_slice {
+#     set rtl {}
+#     foreach f {mem_bank_superlane_leaf mem_bank_control_column mem_logical_bank_column mem_slice} {
+#       lappend rtl [file join $src rtl/mem_native/$f.sv]
+#     }
+#     set top mem_slice
+#     set generics {P_TILE_ROWS=2 P_MEM_BANK_DEPTH_ROWS=1024 P_MEM_ACTIVE_ROWS=1024}
+#   }
+#   mem_slice_bram {
+#     set rtl [list [file join $src fpga_experiment/rtl/mem_leaf_bram.sv]]
+#     foreach f {mem_bank_control_column mem_logical_bank_column mem_slice} {
+#       lappend rtl [file join $src rtl/mem_native/$f.sv]
+#     }
+#     set top mem_slice
+#     set generics {P_TILE_ROWS=2 P_MEM_BANK_DEPTH_ROWS=1024 P_MEM_ACTIVE_ROWS=1024}
+#   }
+#   srf_leaf {
+#     set rtl [list [file join $src rtl/srf/ftlpu_sr_superlane_col_dir.sv]]
+#     set top ftlpu_sr_superlane_col_dir_lane
+#   }
+#   old_mem {
+#     set rtl [list [file join $src rtl/core/lpu_pkg.sv] [file join $src rtl/core/lpu_isa_decode.sv] [file join $src rtl/mem/lpu_mem_tile_slice.sv]]
+#     set top lpu_mem_tile_slice_behavior
+#     set generics {DEPTH_ROWS=1024}
+#   }
+#   old_dot {
+#     set rtl [list [file join $src rtl/vxm/lpu_vxm_math_pkg.sv] [file join $src rtl/mxm/lpu_mxm_dot_bank.sv]]
+#     set top lpu_mxm_dot_bank
+#   }
+#   alu_basic {set top lpu_vxm_alu; set generics {SPECIAL_KIND=0}}
+#   alu_exp {set top lpu_vxm_alu; set generics {SPECIAL_KIND=1}}
+#   alu_recip {set top lpu_vxm_alu; set generics {SPECIAL_KIND=2}}
+#   old_top {
+#     set top lpu_top
+#     set generics {ICU_QUEUE_DEPTH=4 MEM_DEPTH_ROWS=64 ACTIVE_MEM_COLUMNS=4 MXM_ACCUMULATOR_BLOCK_COUNT=1}
+#     set_property verilog_define FTLPU_DISABLE_BLOCK8 [current_fileset]
+#   }
+#   default {error "Unknown case: $case_name"}
+# }
+# puts "EXPERIMENT case=$case_name top=$top part=$part generics=$generics"
+EXPERIMENT case=alu_exp top=lpu_vxm_alu part=xcvu9p-flga2104-2L-e generics=SPECIAL_KIND=1
+# read_verilog -sv $rtl
+# set args [list -top $top -part $part -mode out_of_context -flatten_hierarchy rebuilt]
+# if {[llength $generics]} {lappend args -generic $generics}
+# synth_design {*}$args
+Command: synth_design -top lpu_vxm_alu -part xcvu9p-flga2104-2L-e -mode out_of_context -flatten_hierarchy rebuilt -generic SPECIAL_KIND=1
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xcvu9p'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xcvu9p'
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 4 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 40996
+---------------------------------------------------------------------------------
+Starting Synthesize : Time (s): cpu = 00:00:03 ; elapsed = 00:00:05 . Memory (MB): peak = 1020.770 ; gain = 437.914
+---------------------------------------------------------------------------------
+ERROR: [Synth 8-2716] syntax error near 'config' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_tile_execution.sv:100]
+ERROR: [Synth 8-10307] SystemVerilog keyword 'config' used in incorrect context [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_tile_execution.sv:100]
+ERROR: [Synth 8-2716] syntax error near 'config' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_tile_execution.sv:257]
+ERROR: [Synth 8-10307] SystemVerilog keyword 'config' used in incorrect context [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_tile_execution.sv:257]
+ERROR: [Synth 8-2716] syntax error near ';' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_tile_execution.sv:257]
+ERROR: [Synth 8-2716] syntax error near 'config' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_tile_execution.sv:262]
+ERROR: [Synth 8-10307] SystemVerilog keyword 'config' used in incorrect context [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_tile_execution.sv:262]
+ERROR: [Synth 8-2716] syntax error near 'config' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_tile_execution.sv:266]
+ERROR: [Synth 8-10307] SystemVerilog keyword 'config' used in incorrect context [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_tile_execution.sv:266]
+ERROR: [Synth 8-2716] syntax error near 'default' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_tile_execution.sv:273]
+ERROR: [Synth 8-10307] SystemVerilog keyword 'default' used in incorrect context [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_tile_execution.sv:273]
+ERROR: [Synth 8-2716] syntax error near 'endcase' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_tile_execution.sv:274]
+ERROR: [Synth 8-10307] SystemVerilog keyword 'endcase' used in incorrect context [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_tile_execution.sv:274]
+ERROR: [Synth 8-2716] syntax error near 'config' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_tile_execution.sv:325]
+ERROR: [Synth 8-10307] SystemVerilog keyword 'config' used in incorrect context [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_tile_execution.sv:325]
+ERROR: [Synth 8-2716] syntax error near 'config' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_tile_execution.sv:326]
+ERROR: [Synth 8-10307] SystemVerilog keyword 'config' used in incorrect context [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_tile_execution.sv:326]
+ERROR: [Synth 8-2716] syntax error near 'config' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_tile_execution.sv:365]
+ERROR: [Synth 8-10307] SystemVerilog keyword 'config' used in incorrect context [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_tile_execution.sv:365]
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_alu' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_alu.sv:1]
+	Parameter SPECIAL_KIND bound to: 1 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_float_unpack' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_float_unpack.sv:6]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_float_unpack' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_float_unpack.sv:6]
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_basic_alu' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_basic_alu.sv:1]
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_basic_opcode_decode' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_basic_opcode_decode.sv:2]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_basic_opcode_decode' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_basic_opcode_decode.sv:2]
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_shared_float_compare' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_shared_float_compare.sv:8]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_shared_float_compare' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_shared_float_compare.sv:8]
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_shared_float_adder' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_shared_float_adder.sv:6]
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_segmented_addsub' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_segmented_addsub.sv:4]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_segmented_addsub' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_segmented_addsub.sv:4]
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_grouped_lzc' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_grouped_lzc.sv:3]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_grouped_lzc' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_grouped_lzc.sv:3]
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_shared_left_shift' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_shared_left_shift.sv:3]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_shared_left_shift' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_shared_left_shift.sv:3]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_shared_float_adder' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_shared_float_adder.sv:6]
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_shared_float_multiplier' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_shared_float_multiplier.sv:1]
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_significand_multiplier' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_significand_multiplier.sv:1]
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_mul8x8' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_mul8x8.sv:1]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_mul8x8' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_mul8x8.sv:1]
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_csa3_2' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_csa3_2.sv:4]
+	Parameter WIDTH bound to: 48 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_csa3_2' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_csa3_2.sv:4]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_significand_multiplier' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_significand_multiplier.sv:1]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_shared_float_multiplier' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_shared_float_multiplier.sv:1]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_basic_alu' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_basic_alu.sv:1]
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_special_alu' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_special_alu.sv:1]
+	Parameter SPECIAL_KIND bound to: 1 - type: integer 
+	Parameter LUT_BANK_COUNT bound to: 3 - type: integer 
+	Parameter LUT_ENTRY_COUNT bound to: 64 - type: integer 
+	Parameter LUT_BANK_WIDTH bound to: 2 - type: integer 
+	Parameter LUT_ADDRESS_WIDTH bound to: 6 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_special_coefficient_multiplier' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_special_coefficient_multiplier.sv:12]
+WARNING: [Synth 8-693] zero replication count - replication ignored [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_special_coefficient_multiplier.sv:194]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_special_coefficient_multiplier' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_special_coefficient_multiplier.sv:12]
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_recip_linear_fixed' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_recip_linear_fixed.sv:8]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_recip_linear_fixed' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_recip_linear_fixed.sv:8]
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_rsqrt_linear_fixed' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_rsqrt_linear_fixed.sv:8]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_rsqrt_linear_fixed' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_rsqrt_linear_fixed.sv:8]
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_fp32_newton_multiplier' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_fp32_newton_multiplier.sv:10]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_fp32_newton_multiplier' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_fp32_newton_multiplier.sv:10]
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_fp32_rsqrt_correction' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_fp32_rsqrt_correction.sv:6]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_fp32_rsqrt_correction' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_fp32_rsqrt_correction.sv:6]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_special_alu' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_special_alu.sv:1]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_alu' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run006/src/rtl/vxm/lpu_vxm_alu.sv:1]
+---------------------------------------------------------------------------------
+Finished Synthesize : Time (s): cpu = 00:00:04 ; elapsed = 00:00:07 . Memory (MB): peak = 1140.699 ; gain = 557.844
+---------------------------------------------------------------------------------
+synthesize failed
+INFO: [Common 17-83] Releasing license: Synthesis
+43 Infos, 1 Warnings, 0 Critical Warnings and 20 Errors encountered.
+synth_design failed
+ERROR: [Common 17-69] Command failed: Vivado Synthesis failed
+INFO: [Common 17-206] Exiting Vivado at Mon Nov  2 15:34:22 2026...

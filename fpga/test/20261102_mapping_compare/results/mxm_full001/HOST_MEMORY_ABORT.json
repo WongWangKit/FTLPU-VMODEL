@@ -1,0 +1,23 @@
+{
+  "reason": "Stopped to prevent host memory exhaustion; available RAM below 0.5 GB while full MXM timing initialization ran. Not an RTL failure.",
+  "runner_pid": 36980,
+  "available_bytes": 1492942848,
+  "children": [
+    {
+      "pid": 16032,
+      "name": "cmd.exe"
+    },
+    {
+      "pid": 25388,
+      "name": "vivado.exe"
+    },
+    {
+      "pid": 36212,
+      "name": "cmd.exe"
+    },
+    {
+      "pid": 37316,
+      "name": "parallel_synth_helper.exe"
+    }
+  ]
+}

@@ -1,0 +1,213 @@
+
+****** Vivado v2023.2 (64-bit)
+  **** SW Build 4029153 on Fri Oct 13 20:14:34 MDT 2023
+  **** IP Build 4028589 on Sat Oct 14 00:45:43 MDT 2023
+  **** SharedData Build 4025554 on Tue Oct 10 17:18:54 MDT 2023
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+
+CRITICAL WARNING: [Common 17-741] No write access right to the local Tcl store at 'C'. XilinxTclStore is reverted to the installation area. If you want to use local Tcl Store, please change the access right and relaunch Vivado.
+source C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_initial_synth/scripts/synth.tcl
+# puts "RAW_ARGV=$argv"
+RAW_ARGV=C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run004/src C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_initial_synth/results/run004/mem_slice mem_slice xcvu9p-flga2104-2L-e
+# set src [lindex $argv 0]
+# set out [lindex $argv 1]
+# set case_name [lindex $argv 2]
+# set part [lindex $argv 3]
+# set_param general.maxThreads 4
+# file mkdir $out
+# create_project -in_memory -part $part
+create_project: Time (s): cpu = 00:00:04 ; elapsed = 00:00:10 . Memory (MB): peak = 567.238 ; gain = 180.047
+# set rtl {}
+# set fd [open [file join $src sim filelist.f] r]
+# foreach line [split [read $fd] "\n"] {
+#   set line [string trim $line]
+#   if {[string match "rtl/*" $line]} {lappend rtl [file join $src $line]}
+# }
+# close $fd
+# set generics {}
+# switch $case_name {
+#   mem_leaf {
+#     set rtl [list [file join $src rtl/mem_native/mem_bank_superlane_leaf.sv]]
+#     set top mem_bank_superlane_leaf
+#     set generics {P_MEM_BANK_DEPTH_ROWS=1024 P_MEM_ACTIVE_ROWS=1024}
+#   }
+#   mem_slice {
+#     set rtl {}
+#     foreach f {mem_bank_superlane_leaf mem_bank_control_column mem_logical_bank_column mem_slice} {
+#       lappend rtl [file join $src rtl/mem_native/$f.sv]
+#     }
+#     set top mem_slice
+#     set generics {P_TILE_ROWS=2 P_MEM_BANK_DEPTH_ROWS=1024 P_MEM_ACTIVE_ROWS=1024}
+#   }
+#   srf_leaf {
+#     set rtl [list [file join $src rtl/srf/ftlpu_sr_superlane_col_dir.sv]]
+#     set top ftlpu_sr_superlane_col_dir_lane
+#   }
+#   old_mem {
+#     set rtl [list [file join $src rtl/core/lpu_pkg.sv] [file join $src rtl/core/lpu_isa_decode.sv] [file join $src rtl/mem/lpu_mem_tile_slice.sv]]
+#     set top lpu_mem_tile_slice_behavior
+#     set generics {DEPTH_ROWS=1024}
+#   }
+#   old_dot {
+#     set rtl [list [file join $src rtl/vxm/lpu_vxm_math_pkg.sv] [file join $src rtl/mxm/lpu_mxm_dot_bank.sv]]
+#     set top lpu_mxm_dot_bank
+#   }
+#   alu_basic {set top lpu_vxm_alu; set generics {SPECIAL_KIND=0}}
+#   alu_exp {set top lpu_vxm_alu; set generics {SPECIAL_KIND=1}}
+#   alu_recip {set top lpu_vxm_alu; set generics {SPECIAL_KIND=2}}
+#   old_top {
+#     set top lpu_top
+#     set generics {ICU_QUEUE_DEPTH=4 MEM_DEPTH_ROWS=64 ACTIVE_MEM_COLUMNS=4 MXM_ACCUMULATOR_BLOCK_COUNT=1}
+#     set_property verilog_define FTLPU_DISABLE_BLOCK8 [current_fileset]
+#   }
+#   default {error "Unknown case: $case_name"}
+# }
+# puts "EXPERIMENT case=$case_name top=$top part=$part generics=$generics"
+EXPERIMENT case=mem_slice top=mem_slice part=xcvu9p-flga2104-2L-e generics=P_TILE_ROWS=2 P_MEM_BANK_DEPTH_ROWS=1024 P_MEM_ACTIVE_ROWS=1024
+# read_verilog -sv $rtl
+# set args [list -top $top -part $part -mode out_of_context -flatten_hierarchy rebuilt]
+# if {[llength $generics]} {lappend args -generic $generics}
+# synth_design {*}$args
+Command: synth_design -top mem_slice -part xcvu9p-flga2104-2L-e -mode out_of_context -flatten_hierarchy rebuilt -generic {P_TILE_ROWS=2 P_MEM_BANK_DEPTH_ROWS=1024 P_MEM_ACTIVE_ROWS=1024}
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xcvu9p'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xcvu9p'
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 4 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 38196
+---------------------------------------------------------------------------------
+Starting Synthesize : Time (s): cpu = 00:00:02 ; elapsed = 00:00:05 . Memory (MB): peak = 1016.391 ; gain = 444.207
+---------------------------------------------------------------------------------
+INFO: [Synth 8-6157] synthesizing module 'mem_slice' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run004/src/rtl/mem_native/mem_slice.sv:6]
+	Parameter P_TILE_ROWS bound to: 2 - type: integer 
+	Parameter P_MEM_BANK_DEPTH_ROWS bound to: 1024 - type: integer 
+	Parameter P_MEM_ACTIVE_ROWS bound to: 1024 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'mem_logical_bank_column' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run004/src/rtl/mem_native/mem_logical_bank_column.sv:7]
+	Parameter P_TILE_ROWS bound to: 2 - type: integer 
+	Parameter P_LANES_PER_TILE bound to: 8 - type: integer 
+	Parameter P_MEM_ELEMENT_BITS bound to: 8 - type: integer 
+	Parameter P_MEM_BANK_DEPTH_ROWS bound to: 1024 - type: integer 
+	Parameter P_MEM_CONTROL_HOP_CYCLES bound to: 1 - type: integer 
+	Parameter P_MEM_READ_TO_SR_CYCLES bound to: 1 - type: integer 
+	Parameter P_MEM_FAULT_BITS bound to: 2 - type: integer 
+	Parameter P_MEM_ACTIVE_ROWS bound to: 1024 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'mem_bank_superlane_leaf' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run004/src/rtl/mem_native/mem_bank_superlane_leaf.sv:9]
+	Parameter P_MEM_BANK_DEPTH_ROWS bound to: 1024 - type: integer 
+	Parameter P_LANES_PER_TILE bound to: 8 - type: integer 
+	Parameter P_MEM_ELEMENT_BITS bound to: 8 - type: integer 
+	Parameter P_MEM_READ_TO_SR_CYCLES bound to: 1 - type: integer 
+	Parameter P_MEM_FAULT_BITS bound to: 2 - type: integer 
+	Parameter P_MEM_ACTIVE_ROWS bound to: 1024 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'mem_bank_superlane_leaf' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run004/src/rtl/mem_native/mem_bank_superlane_leaf.sv:9]
+INFO: [Synth 8-6157] synthesizing module 'mem_bank_control_column' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run004/src/rtl/mem_native/mem_bank_control_column.sv:6]
+	Parameter P_TILE_ROWS bound to: 2 - type: integer 
+	Parameter P_MEM_CONTROL_HOP_CYCLES bound to: 1 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'mem_bank_control_column' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run004/src/rtl/mem_native/mem_bank_control_column.sv:6]
+INFO: [Synth 8-6155] done synthesizing module 'mem_logical_bank_column' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run004/src/rtl/mem_native/mem_logical_bank_column.sv:7]
+INFO: [Synth 8-6155] done synthesizing module 'mem_slice' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run004/src/rtl/mem_native/mem_slice.sv:6]
+WARNING: [Synth 8-7137] Register mem_array_reg in module mem_bank_superlane_leaf has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code 
+WARNING: [Synth 8-4767] Trying to implement RAM 'mem_array_reg' in registers. Block RAM or DRAM implementation is not possible; see log for reasons.
+Reason is one or more of the following :
+	1: RAM is sensitive to asynchronous reset signal. this RTL style is not supported. 
+RAM "mem_array_reg" dissolved into registers
+WARNING: [Synth 8-6014] Unused sequential element response_stream_dir_q_reg was removed.  [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run004/src/rtl/mem_native/mem_slice.sv:199]
+WARNING: [Synth 8-6014] Unused sequential element response_stream_idx_q_reg was removed.  [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run004/src/rtl/mem_native/mem_slice.sv:200]
+WARNING: [Synth 8-3917] design mem_slice has port mem_fault_bank_id_o[1] driven by constant 1
+WARNING: [Synth 8-3917] design mem_slice has port mem_fault_bank_id_o[0] driven by constant 0
+---------------------------------------------------------------------------------
+Finished Synthesize : Time (s): cpu = 00:00:04 ; elapsed = 00:00:09 . Memory (MB): peak = 1260.898 ; gain = 688.715
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:05 ; elapsed = 00:00:10 . Memory (MB): peak = 1260.898 ; gain = 688.715
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xcvu9p-flga2104-2L-e
+INFO: [Synth 8-6742] Reading net delay rules and data
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:05 ; elapsed = 00:00:10 . Memory (MB): peak = 1260.898 ; gain = 688.715
+---------------------------------------------------------------------------------
+INFO: [Device 21-403] Loading part xcvu9p-flga2104-2L-e
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:17 ; elapsed = 00:00:23 . Memory (MB): peak = 2339.324 ; gain = 1767.141
+---------------------------------------------------------------------------------
+No constraint files found.
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Registers : 
+	               64 Bit    Registers := 4100  
+	               60 Bit    Registers := 1     
+	               32 Bit    Registers := 4     
+	                5 Bit    Registers := 4     
+	                2 Bit    Registers := 4     
+	                1 Bit    Registers := 20    
++---Muxes : 
+	   2 Input  256 Bit        Muxes := 4     
+	 128 Input    6 Bit        Muxes := 1     
+	   2 Input    6 Bit        Muxes := 1     
+	   6 Input    3 Bit        Muxes := 1     
+	   2 Input    3 Bit        Muxes := 3     
+	   2 Input    2 Bit        Muxes := 7     
+	   7 Input    2 Bit        Muxes := 4     
+	   2 Input    1 Bit        Muxes := 95    
+	  64 Input    1 Bit        Muxes := 1     
+	   5 Input    1 Bit        Muxes := 1     
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 6840 (col length:120)
+BRAMs: 4320 (col length: RAMB18 360 RAMB36 180)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+No constraint files found.
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-3917] design mem_slice has port mem_fault_bank_id_o[1] driven by constant 1
+WARNING: [Synth 8-3917] design mem_slice has port mem_fault_bank_id_o[0] driven by constant 0
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:26 ; elapsed = 00:01:23 . Memory (MB): peak = 2380.582 ; gain = 1808.398
+---------------------------------------------------------------------------------
+No constraint files found.
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:00:28 ; elapsed = 00:01:26 . Memory (MB): peak = 2396.934 ; gain = 1824.750
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:00:32 ; elapsed = 00:01:33 . Memory (MB): peak = 2548.121 ; gain = 1975.938
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:00:54 ; elapsed = 00:02:17 . Memory (MB): peak = 3184.223 ; gain = 2612.039
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------

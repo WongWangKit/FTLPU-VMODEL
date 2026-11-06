@@ -1,0 +1,12 @@
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_full001/src/rtl/core/lpu_pkg.sv" into library work
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_full001/src/rtl/vxm/lpu_vxm_math_pkg.sv" into library work
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_full001/src/experiment/rtl/mxm_mul_narrow.sv" into library work
+INFO: [VRFC 10-311] analyzing module fpga_mxm_mul
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_full001/src/experiment/rtl/mxm_column_narrow.sv" into library work
+INFO: [VRFC 10-311] analyzing module fpga_mxm_column
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_full001/src/experiment/rtl/mxm_dot_narrow.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_mxm_dot_bank
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_full001/src/rtl/mxm/lpu_mxm_compute.sv" into library work
+INFO: [VRFC 10-311] analyzing module lpu_mxm_compute
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_full_rtl001/mxm_compute_narrow_dsp/mxm_compute_tb.sv" into library work
+INFO: [VRFC 10-311] analyzing module mxm_compute_tb

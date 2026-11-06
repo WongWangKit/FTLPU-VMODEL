@@ -1,0 +1,14 @@
+Vivado Simulator v2023.2
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+Running: C:/Users/huazh/Desktop/Vivado2023/Vivado/2023.2/bin/unwrapped/win64.o/xelab.exe srf_leaf_tb -s snapshot --timescale 1ns/1ps --mt 2 
+Using 2 slave threads.
+Starting static elaboration
+Pass Through NonSizing Optimizer
+Completed static elaboration
+Starting simulation data flow analysis
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling module work.ftlpu_sr_superlane_col_dir_lane_...
+Compiling module work.srf_leaf_tb
+Built simulation snapshot snapshot

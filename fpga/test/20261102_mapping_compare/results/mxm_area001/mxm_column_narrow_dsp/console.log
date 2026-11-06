@@ -1,0 +1,331 @@
+
+****** Vivado v2023.2 (64-bit)
+  **** SW Build 4029153 on Fri Oct 13 20:14:34 MDT 2023
+  **** IP Build 4028589 on Sat Oct 14 00:45:43 MDT 2023
+  **** SharedData Build 4025554 on Tue Oct 10 17:18:54 MDT 2023
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+
+source C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_area001/mxm_column_narrow_dsp/synth.tcl
+# set_param general.maxThreads 1
+# create_project -in_memory -part xcvu9p-flga2104-2L-e
+create_project: Time (s): cpu = 00:00:02 ; elapsed = 00:00:07 . Memory (MB): peak = 568.906 ; gain = 181.023
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_area001/src/rtl/vxm/lpu_vxm_math_pkg.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_area001/src/experiment/rtl/mxm_mul_narrow.sv}
+# read_verilog -sv {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_area001/src/experiment/rtl/mxm_column_narrow.sv}
+# read_xdc {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_area001/mxm_column_narrow_dsp/timing.xdc}
+# synth_design -top fpga_mxm_column -part xcvu9p-flga2104-2L-e -mode out_of_context -flatten_hierarchy rebuilt -no_timing_driven
+Command: synth_design -top fpga_mxm_column -part xcvu9p-flga2104-2L-e -mode out_of_context -flatten_hierarchy rebuilt -no_timing_driven
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xcvu9p'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xcvu9p'
+INFO: [Device 21-403] Loading part xcvu9p-flga2104-2L-e
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 1 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 30692
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:01 ; elapsed = 00:00:06 . Memory (MB): peak = 2176.520 ; gain = 431.934
+---------------------------------------------------------------------------------
+INFO: [Synth 8-6157] synthesizing module 'fpga_mxm_column' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_area001/src/experiment/rtl/mxm_column_narrow.sv:1]
+INFO: [Synth 8-6157] synthesizing module 'fpga_mxm_mul' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_area001/src/experiment/rtl/mxm_mul_narrow.sv:3]
+INFO: [Synth 8-6155] done synthesizing module 'fpga_mxm_mul' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_area001/src/experiment/rtl/mxm_mul_narrow.sv:3]
+INFO: [Synth 8-6155] done synthesizing module 'fpga_mxm_column' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_mxm_area001/src/experiment/rtl/mxm_column_narrow.sv:1]
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:03 ; elapsed = 00:00:17 . Memory (MB): peak = 2382.840 ; gain = 638.254
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:03 ; elapsed = 00:00:18 . Memory (MB): peak = 2382.840 ; gain = 638.254
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:03 ; elapsed = 00:00:18 . Memory (MB): peak = 2382.840 ; gain = 638.254
+---------------------------------------------------------------------------------
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.198 . Memory (MB): peak = 2382.840 ; gain = 0.000
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Parsing XDC File [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_area001/mxm_column_narrow_dsp/timing.xdc]
+INFO: [Constraints 18-483] create_clock: no pin(s)/port(s)/net(s) specified as objects, only virtual clock 'clk' will be created. If you don't want this, please specify pin(s)/ports(s)/net(s) as objects to the command. [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_area001/mxm_column_narrow_dsp/timing.xdc:1]
+Finished Parsing XDC File [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_area001/mxm_column_narrow_dsp/timing.xdc]
+Completed Processing XDC Constraints
+
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.001 . Memory (MB): peak = 2501.566 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+The system cannot find the path specified.
+Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.013 . Memory (MB): peak = 2501.566 ; gain = 0.000
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:08 ; elapsed = 00:00:36 . Memory (MB): peak = 2501.566 ; gain = 756.980
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xcvu9p-flga2104-2L-e
+INFO: [Synth 8-6742] Reading net delay rules and data
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:08 ; elapsed = 00:00:36 . Memory (MB): peak = 2501.566 ; gain = 756.980
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying 'set_property' XDC Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:08 ; elapsed = 00:00:36 . Memory (MB): peak = 2501.566 ; gain = 756.980
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:11 ; elapsed = 00:00:50 . Memory (MB): peak = 2501.566 ; gain = 756.980
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input   32 Bit       Adders := 40    
+	   3 Input   32 Bit       Adders := 7     
+	   2 Input   28 Bit       Adders := 7     
+	   3 Input   27 Bit       Adders := 7     
+	   2 Input   25 Bit       Adders := 15    
+	   2 Input   10 Bit       Adders := 14    
+	   2 Input    9 Bit       Adders := 190   
+	   2 Input    8 Bit       Adders := 16    
+	   2 Input    6 Bit       Adders := 128   
++---XORs : 
+	   2 Input      1 Bit         XORs := 8     
++---Muxes : 
+	   2 Input   32 Bit        Muxes := 311   
+	   2 Input   27 Bit        Muxes := 217   
+	   2 Input   25 Bit        Muxes := 7     
+	   2 Input   24 Bit        Muxes := 32    
+	   2 Input   23 Bit        Muxes := 15    
+	   2 Input   13 Bit        Muxes := 16    
+	   2 Input   12 Bit        Muxes := 16    
+	   2 Input   11 Bit        Muxes := 160   
+	   2 Input   10 Bit        Muxes := 16    
+	   2 Input    9 Bit        Muxes := 16    
+	   2 Input    8 Bit        Muxes := 30    
+	   2 Input    7 Bit        Muxes := 16    
+	   2 Input    1 Bit        Muxes := 186   
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 6840 (col length:120)
+BRAMs: 4320 (col length: RAMB18 360 RAMB36 180)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-7080] Parallel synthesis criteria is not met
+DSP Report: Generating DSP significand_product, operation Mode is: A*B.
+DSP Report: operator significand_product is absorbed into DSP significand_product.
+DSP Report: Generating DSP significand_product, operation Mode is: A*B.
+DSP Report: operator significand_product is absorbed into DSP significand_product.
+DSP Report: Generating DSP significand_product, operation Mode is: A*B.
+DSP Report: operator significand_product is absorbed into DSP significand_product.
+DSP Report: Generating DSP significand_product, operation Mode is: A*B.
+DSP Report: operator significand_product is absorbed into DSP significand_product.
+DSP Report: Generating DSP significand_product, operation Mode is: A*B.
+DSP Report: operator significand_product is absorbed into DSP significand_product.
+DSP Report: Generating DSP significand_product, operation Mode is: A*B.
+DSP Report: operator significand_product is absorbed into DSP significand_product.
+DSP Report: Generating DSP significand_product, operation Mode is: A*B.
+DSP Report: operator significand_product is absorbed into DSP significand_product.
+DSP Report: Generating DSP significand_product, operation Mode is: A*B.
+DSP Report: operator significand_product is absorbed into DSP significand_product.
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:38 ; elapsed = 00:03:00 . Memory (MB): peak = 3055.582 ; gain = 1310.996
+---------------------------------------------------------------------------------
+ Sort Area is fpga_mxm_column__GB0 significand_product_0 : 0 0 : 863 863 : Used 1 time 100
+ Sort Area is fpga_mxm_column__GB0 significand_product_2 : 0 0 : 863 863 : Used 1 time 100
+ Sort Area is fpga_mxm_column__GB2 significand_product_3 : 0 0 : 863 863 : Used 1 time 100
+ Sort Area is fpga_mxm_column__GB2 significand_product_4 : 0 0 : 863 863 : Used 1 time 100
+ Sort Area is fpga_mxm_column__GB2 significand_product_5 : 0 0 : 863 863 : Used 1 time 100
+ Sort Area is fpga_mxm_column__GB3 significand_product_6 : 0 0 : 863 863 : Used 1 time 100
+ Sort Area is fpga_mxm_column__GB3 significand_product_7 : 0 0 : 863 863 : Used 1 time 100
+ Sort Area is fpga_mxm_column__GB3 significand_product_8 : 0 0 : 863 863 : Used 1 time 100
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+
+DSP: Preliminary Mapping Report (see note below. The ' indicates corresponding REG is set)
++-------------+-------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+|Module Name  | DSP Mapping | A Size | B Size | C Size | D Size | P Size | AREG | BREG | CREG | DREG | ADREG | MREG | PREG | 
++-------------+-------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+|fpga_mxm_mul | A*B         | 11     | 11     | -      | -      | 22     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|fpga_mxm_mul | A*B         | 11     | 11     | -      | -      | 22     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|fpga_mxm_mul | A*B         | 11     | 11     | -      | -      | 22     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|fpga_mxm_mul | A*B         | 11     | 11     | -      | -      | 22     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|fpga_mxm_mul | A*B         | 11     | 11     | -      | -      | 22     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|fpga_mxm_mul | A*B         | 11     | 11     | -      | -      | 22     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|fpga_mxm_mul | A*B         | 11     | 11     | -      | -      | 22     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|fpga_mxm_mul | A*B         | 11     | 11     | -      | -      | 22     | 0    | 0    | -    | -    | -     | 0    | 0    | 
++-------------+-------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+
+Note: The table above is a preliminary report that shows the DSPs inferred at the current stage of the synthesis flow. Some DSP may be reimplemented as non DSP primitives later in the synthesis flow. Multiple instantiated DSPs are reported only once.
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:00:38 ; elapsed = 00:03:00 . Memory (MB): peak = 3055.582 ; gain = 1310.996
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:00:41 ; elapsed = 00:03:06 . Memory (MB): peak = 3055.582 ; gain = 1310.996
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:00:44 ; elapsed = 00:03:11 . Memory (MB): peak = 3055.582 ; gain = 1310.996
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:44 ; elapsed = 00:03:11 . Memory (MB): peak = 3055.582 ; gain = 1310.996
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:44 ; elapsed = 00:03:12 . Memory (MB): peak = 3055.582 ; gain = 1310.996
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:00:44 ; elapsed = 00:03:12 . Memory (MB): peak = 3055.582 ; gain = 1310.996
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:44 ; elapsed = 00:03:12 . Memory (MB): peak = 3055.582 ; gain = 1310.996
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:00:44 ; elapsed = 00:03:12 . Memory (MB): peak = 3055.582 ; gain = 1310.996
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+DSP Final Report (the ' indicates corresponding REG is set)
++-------------+-------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+|Module Name  | DSP Mapping | A Size | B Size | C Size | D Size | P Size | AREG | BREG | CREG | DREG | ADREG | MREG | PREG | 
++-------------+-------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+|fpga_mxm_mul | A*B         | 11     | 11     | -      | -      | 22     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|fpga_mxm_mul | A*B         | 11     | 11     | -      | -      | 22     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|fpga_mxm_mul | A*B         | 11     | 11     | -      | -      | 22     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|fpga_mxm_mul | A*B         | 11     | 11     | -      | -      | 22     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|fpga_mxm_mul | A*B         | 11     | 11     | -      | -      | 22     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|fpga_mxm_mul | A*B         | 11     | 11     | -      | -      | 22     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|fpga_mxm_mul | A*B         | 11     | 11     | -      | -      | 22     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|fpga_mxm_mul | A*B         | 11     | 11     | -      | -      | 22     | 0    | 0    | -    | -    | -     | 0    | 0    | 
++-------------+-------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+
+
+Report BlackBoxes: 
++-+--------------+----------+
+| |BlackBox name |Instances |
++-+--------------+----------+
++-+--------------+----------+
+
+Report Cell Usage: 
++------+--------+------+
+|      |Cell    |Count |
++------+--------+------+
+|1     |CARRY8  |   835|
+|2     |DSP48E2 |     8|
+|3     |LUT1    |  1126|
+|4     |LUT2    |  1770|
+|5     |LUT3    |  2619|
+|6     |LUT4    |  2356|
+|7     |LUT5    |  5185|
+|8     |LUT6    |  5389|
+|9     |MUXF7   |     4|
++------+--------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:44 ; elapsed = 00:03:12 . Memory (MB): peak = 3055.582 ; gain = 1310.996
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 1 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:39 ; elapsed = 00:03:02 . Memory (MB): peak = 3055.582 ; gain = 1192.270
+Synthesis Optimization Complete : Time (s): cpu = 00:00:44 ; elapsed = 00:03:12 . Memory (MB): peak = 3055.582 ; gain = 1310.996
+INFO: [Project 1-571] Translating synthesized netlist
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.318 . Memory (MB): peak = 3055.582 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 847 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+Parsing XDC File [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_area001/mxm_column_narrow_dsp/timing.xdc]
+INFO: [Constraints 18-483] create_clock: no pin(s)/port(s)/net(s) specified as objects, only virtual clock 'clk' will be created. If you don't want this, please specify pin(s)/ports(s)/net(s) as objects to the command. [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_area001/mxm_column_narrow_dsp/timing.xdc:1]
+Finished Parsing XDC File [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_area001/mxm_column_narrow_dsp/timing.xdc]
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.006 . Memory (MB): peak = 3055.582 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 8 instances were transformed.
+  DSP48E2 => DSP48E2 (DSP_ALU, DSP_A_B_DATA, DSP_C_DATA, DSP_MULTIPLIER, DSP_M_DATA, DSP_OUTPUT, DSP_PREADD, DSP_PREADD_DATA): 8 instances
+
+The system cannot find the path specified.
+Synth Design complete | Checksum: 2b9dab54
+INFO: [Common 17-83] Releasing license: Synthesis
+21 Infos, 1 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:00:51 ; elapsed = 00:03:34 . Memory (MB): peak = 3055.582 ; gain = 2486.676
+# report_utilization -file {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_area001/mxm_column_narrow_dsp/utilization.rpt}
+# report_utilization -hierarchical -file {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_area001/mxm_column_narrow_dsp/utilization_hier.rpt}
+# write_checkpoint -force [file join {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_area001/mxm_column_narrow_dsp} synthesized.dcp]
+INFO: [Constraints 18-483] create_clock: no pin(s)/port(s)/net(s) specified as objects, only virtual clock 'clk' will be created. If you don't want this, please specify pin(s)/ports(s)/net(s) as objects to the command. [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_area001/mxm_column_narrow_dsp/timing.xdc:1]
+INFO: [Timing 38-35] Done setting XDC timing constraints.
+INFO: [Timing 38-480] Writing timing data to binary archive.
+Write ShapeDB Complete: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.040 . Memory (MB): peak = 3055.582 ; gain = 0.000
+INFO: [Common 17-1381] The checkpoint 'C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_area001/mxm_column_narrow_dsp/synthesized.dcp' has been generated.
+write_checkpoint: Time (s): cpu = 00:00:02 ; elapsed = 00:00:07 . Memory (MB): peak = 3055.582 ; gain = 0.000
+# write_verilog -force -mode funcsim [file join {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_area001/mxm_column_narrow_dsp} netlist.v]
+# set fd [open {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_area001/mxm_column_narrow_dsp/primitives.txt} w]
+# foreach pattern {LUT* FD* RAMB18E2 RAMB36E2 URAM288 DSP48E2 SRL* MUXF* CARRY* LD*} {
+#   set selector [format {REF_NAME =~ %s} $pattern]
+#   puts $fd "$pattern=[llength [get_cells -hier -quiet -filter $selector]]"
+# }
+# puts $fd "blackbox_count=[llength [get_cells -hier -quiet -filter {IS_BLACKBOX == 1}]]"
+# close $fd
+# report_timing_summary -max_paths 3 -report_unconstrained -file {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_area001/mxm_column_narrow_dsp/timing_summary.rpt}
+INFO: [Timing 38-91] UpdateTimingParams: Speed grade: -2L, Temperature grade: E, Delay Type: min_max.
+report_timing_summary: Time (s): cpu = 00:00:29 ; elapsed = 00:01:02 . Memory (MB): peak = 3960.094 ; gain = 904.512
+# report_drc -file {C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_area001/mxm_column_narrow_dsp/drc.rpt}
+Command: report_drc -file C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_area001/mxm_column_narrow_dsp/drc.rpt
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1704] No user IP repositories specified
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Users/huazh/Desktop/Vivado2023/Vivado/2023.2/data/ip'.
+INFO: [Vivado_Tcl 2-168] The results of DRC are in file C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_area001/mxm_column_narrow_dsp/drc.rpt.
+report_drc completed successfully
+# puts "MAPPING_COMPLETED mxm_column_narrow_dsp"
+MAPPING_COMPLETED mxm_column_narrow_dsp
+# exit
+INFO: [Common 17-206] Exiting Vivado at Mon Nov  2 17:31:03 2026...

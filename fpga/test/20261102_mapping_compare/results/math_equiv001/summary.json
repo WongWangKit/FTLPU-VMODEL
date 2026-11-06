@@ -1,0 +1,42 @@
+{
+  "passed": true,
+  "steps": [
+    {
+      "command": [
+        "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xvlog.bat",
+        "--sv",
+        "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/math_equiv001/src/math_reference_pkg.sv",
+        "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/math_equiv001/src/math_mxm_compact_pkg.sv",
+        "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/math_equiv001/src/mxm_add_equiv_tb.sv"
+      ],
+      "returncode": 0,
+      "status": "completed",
+      "elapsed_s": 3.4
+    },
+    {
+      "command": [
+        "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xelab.bat",
+        "mxm_add_equiv_tb",
+        "-s",
+        "snapshot",
+        "--timescale",
+        "1ns/1ps",
+        "--mt",
+        "2"
+      ],
+      "returncode": 0,
+      "status": "completed",
+      "elapsed_s": 3.5
+    },
+    {
+      "command": [
+        "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xsim.bat",
+        "snapshot",
+        "-runall"
+      ],
+      "returncode": 0,
+      "status": "completed",
+      "elapsed_s": 4.7
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "case": "mxm_column_compact_dsp",
+  "generics": [],
+  "defines": [],
+  "clocked": false,
+  "top": "fpga_mxm_column",
+  "files": [
+    "C:\\Users\\huazh\\Desktop\\LPU\\lpu_src\\FTLPU-VMODEL\\fpga\\tmp\\mapping_mxm_compact001\\src\\experiment\\rtl\\math_mxm_compact_pkg.sv",
+    "C:\\Users\\huazh\\Desktop\\LPU\\lpu_src\\FTLPU-VMODEL\\fpga\\tmp\\mapping_mxm_compact001\\src\\experiment\\rtl\\mxm_mul_narrow.sv",
+    "C:\\Users\\huazh\\Desktop\\LPU\\lpu_src\\FTLPU-VMODEL\\fpga\\tmp\\mapping_mxm_compact001\\src\\experiment\\rtl\\mxm_column_narrow.sv"
+  ],
+  "tb": "mxm_column",
+  "tb_defines": [],
+  "sim_files": [
+    "C:\\Users\\huazh\\Desktop\\LPU\\lpu_src\\FTLPU-VMODEL\\fpga\\tmp\\mapping_mxm_compact001\\src\\experiment\\rtl\\math_reference_pkg.sv"
+  ],
+  "no_timing_driven": true,
+  "part": "xcvu9p-flga2104-2L-e",
+  "period_ns": 10.0
+}

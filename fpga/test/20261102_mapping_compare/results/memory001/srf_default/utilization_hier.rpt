@@ -1,0 +1,28 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2023.2 (win64) Build 4029153 Fri Oct 13 20:14:34 MDT 2023
+| Date         : Mon Nov  2 16:56:10 2026
+| Host         : huazhe running 64-bit major release  (build 9200)
+| Command      : report_utilization -hierarchical -file C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/memory001/srf_default/utilization_hier.rpt
+| Design       : ftlpu_sr_superlane_col_dir_lane
+| Device       : xcvu9p-flga2104-2L-e
+| Speed File   : -2L
+| Design State : Synthesized
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Utilization Design Information
+
+Table of Contents
+-----------------
+1. Utilization by Hierarchy
+
+1. Utilization by Hierarchy
+---------------------------
+
++---------------------------------+--------+------------+------------+---------+------+------+--------+--------+------+------------+
+|             Instance            | Module | Total LUTs | Logic LUTs | LUTRAMs | SRLs |  FFs | RAMB36 | RAMB18 | URAM | DSP Blocks |
++---------------------------------+--------+------------+------------+---------+------+------+--------+--------+------+------------+
+| ftlpu_sr_superlane_col_dir_lane |  (top) |       2934 |       2934 |       0 |    0 | 2304 |      0 |      0 |    0 |          0 |
++---------------------------------+--------+------------+------------+---------+------+------+--------+--------+------+------------+
+
+

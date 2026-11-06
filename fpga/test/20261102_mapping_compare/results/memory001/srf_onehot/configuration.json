@@ -1,0 +1,15 @@
+{
+  "case": "srf_onehot",
+  "generics": [],
+  "defines": [],
+  "clocked": true,
+  "top": "ftlpu_sr_superlane_col_dir_lane",
+  "files": [
+    "C:\\Users\\huazh\\Desktop\\LPU\\lpu_src\\FTLPU-VMODEL\\fpga\\tmp\\mapping_memory001\\src\\experiment\\rtl\\srf_onehot.sv"
+  ],
+  "tb": "srf_leaf",
+  "tb_defines": [],
+  "sim_files": [],
+  "part": "xcvu9p-flga2104-2L-e",
+  "period_ns": 10.0
+}

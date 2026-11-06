@@ -1,0 +1,233 @@
+{
+  "as_of": "2026-11-04 Asia/Shanghai",
+  "remote_url": "https://github.com/WongWangKit/FTLPU-VMODEL.git",
+  "branches": [
+    {
+      "branch": "main",
+      "commit": "9e03241f7574a03a2788d1bb64af650e18df8e3a",
+      "date": "2026-10-26T14:42:27+08:00",
+      "subject": "log函数更新",
+      "archive_sha256": "25898d2f36a655a96767428111136317448e0bdfc0154fe308ad050b8a55c512"
+    },
+    {
+      "branch": "develop",
+      "commit": "a8fb96a377a3d7b8269b8ea86d28019559cd2127",
+      "date": "2026-11-03T11:58:44+08:00",
+      "subject": "feat: add lane-aware SRF, parameterized MEM and integration tests",
+      "archive_sha256": "2c09f85d900a35ef6a94384fba02b27fdf804bf7dfb3ec884eaeec9b7c9c6536"
+    }
+  ],
+  "source_comparisons": [
+    {
+      "previous_run": "vxm001",
+      "path": "rtl/vxm/lpu_vxm_alu.sv",
+      "branch": "main",
+      "old_sha256": "2998c548f0fb81a887e023260c68265575b5f65f021a5a1333319da09fe88689",
+      "remote_sha256": "daf3cc40b8f44aaaf7c8f31ae1d195c786565ba897b0f2cab1b823dcce6c63ad",
+      "byte_identical": false
+    },
+    {
+      "previous_run": "vxm001",
+      "path": "rtl/vxm/lpu_vxm_alu.sv",
+      "branch": "develop",
+      "old_sha256": "2998c548f0fb81a887e023260c68265575b5f65f021a5a1333319da09fe88689",
+      "remote_sha256": "2998c548f0fb81a887e023260c68265575b5f65f021a5a1333319da09fe88689",
+      "byte_identical": true
+    },
+    {
+      "previous_run": "vxm001",
+      "path": "rtl/vxm/lpu_vxm_significand_multiplier.sv",
+      "branch": "main",
+      "old_sha256": "e66ee0500a005031ba5fce30f05ad6e568c009adb8bc761c4cfc85678d025bd1",
+      "remote_sha256": "e66ee0500a005031ba5fce30f05ad6e568c009adb8bc761c4cfc85678d025bd1",
+      "byte_identical": true
+    },
+    {
+      "previous_run": "vxm001",
+      "path": "rtl/vxm/lpu_vxm_significand_multiplier.sv",
+      "branch": "develop",
+      "old_sha256": "e66ee0500a005031ba5fce30f05ad6e568c009adb8bc761c4cfc85678d025bd1",
+      "remote_sha256": "e66ee0500a005031ba5fce30f05ad6e568c009adb8bc761c4cfc85678d025bd1",
+      "byte_identical": true
+    },
+    {
+      "previous_run": "vxm001",
+      "path": "rtl/vxm/lpu_vxm_mul8x8.sv",
+      "branch": "main",
+      "old_sha256": "b713a8891b8376ce0f697dfa6c75aa43dbd3eefb43972209df2b8149e24fd25c",
+      "remote_sha256": "b713a8891b8376ce0f697dfa6c75aa43dbd3eefb43972209df2b8149e24fd25c",
+      "byte_identical": true
+    },
+    {
+      "previous_run": "vxm001",
+      "path": "rtl/vxm/lpu_vxm_mul8x8.sv",
+      "branch": "develop",
+      "old_sha256": "b713a8891b8376ce0f697dfa6c75aa43dbd3eefb43972209df2b8149e24fd25c",
+      "remote_sha256": "b713a8891b8376ce0f697dfa6c75aa43dbd3eefb43972209df2b8149e24fd25c",
+      "byte_identical": true
+    },
+    {
+      "previous_run": "vxm001",
+      "path": "rtl/vxm/lpu_vxm_math_pkg.sv",
+      "branch": "main",
+      "old_sha256": "11cd922c52f09ba5265692fea9fe57339b4cc947a0f557100e3f5faedc3c3051",
+      "remote_sha256": "11cd922c52f09ba5265692fea9fe57339b4cc947a0f557100e3f5faedc3c3051",
+      "byte_identical": true
+    },
+    {
+      "previous_run": "vxm001",
+      "path": "rtl/vxm/lpu_vxm_math_pkg.sv",
+      "branch": "develop",
+      "old_sha256": "11cd922c52f09ba5265692fea9fe57339b4cc947a0f557100e3f5faedc3c3051",
+      "remote_sha256": "11cd922c52f09ba5265692fea9fe57339b4cc947a0f557100e3f5faedc3c3051",
+      "byte_identical": true
+    },
+    {
+      "previous_run": "memory001",
+      "path": "rtl/mem_native/mem_bank_superlane_leaf.sv",
+      "branch": "main",
+      "old_sha256": "eed4e2bc69f8810a9daa809e554fa4edc5d41adfcc81779ff3b36f5af60ae039",
+      "remote_sha256": "d7e961af3c2c33f5fa8656f8c405d23a821aebfaa8939d9c8001c298f0b31c44",
+      "byte_identical": false
+    },
+    {
+      "previous_run": "memory001",
+      "path": "rtl/mem_native/mem_bank_superlane_leaf.sv",
+      "branch": "develop",
+      "old_sha256": "eed4e2bc69f8810a9daa809e554fa4edc5d41adfcc81779ff3b36f5af60ae039",
+      "remote_sha256": "eed4e2bc69f8810a9daa809e554fa4edc5d41adfcc81779ff3b36f5af60ae039",
+      "byte_identical": true
+    },
+    {
+      "previous_run": "memory001",
+      "path": "rtl/mem_native/mem_slice.sv",
+      "branch": "main",
+      "old_sha256": "c6945136030c0fb0cbbdee40384ff566e50ea28d9e2725a3661f192f5a9bd988",
+      "remote_sha256": "6453157c9722f0d6bf71c3b3dcb1f08ebf5fdddfd3ca5180eda2a45cd62e4884",
+      "byte_identical": false
+    },
+    {
+      "previous_run": "memory001",
+      "path": "rtl/mem_native/mem_slice.sv",
+      "branch": "develop",
+      "old_sha256": "c6945136030c0fb0cbbdee40384ff566e50ea28d9e2725a3661f192f5a9bd988",
+      "remote_sha256": "c6945136030c0fb0cbbdee40384ff566e50ea28d9e2725a3661f192f5a9bd988",
+      "byte_identical": true
+    },
+    {
+      "previous_run": "memory001",
+      "path": "rtl/srf/ftlpu_sr_superlane_col_dir.sv",
+      "branch": "main",
+      "old_sha256": "bd3eee09abfb939209385611a04fd085481983a7a93ef015864ab1157aeb1405",
+      "remote_sha256": "6e4608815e3aec6a2d97633be2fe1a6694a55b804c7717fb8399b9000c13f000",
+      "byte_identical": false
+    },
+    {
+      "previous_run": "memory001",
+      "path": "rtl/srf/ftlpu_sr_superlane_col_dir.sv",
+      "branch": "develop",
+      "old_sha256": "bd3eee09abfb939209385611a04fd085481983a7a93ef015864ab1157aeb1405",
+      "remote_sha256": "bd3eee09abfb939209385611a04fd085481983a7a93ef015864ab1157aeb1405",
+      "byte_identical": true
+    },
+    {
+      "previous_run": "mxm_area003",
+      "path": "rtl/mxm/lpu_mxm_compute.sv",
+      "branch": "main",
+      "old_sha256": "e1834b0f15ac635ec79f1e435368f61cf175a9f96edcdf5d0fea9668c2098c1c",
+      "remote_sha256": "e1834b0f15ac635ec79f1e435368f61cf175a9f96edcdf5d0fea9668c2098c1c",
+      "byte_identical": true
+    },
+    {
+      "previous_run": "mxm_area003",
+      "path": "rtl/mxm/lpu_mxm_compute.sv",
+      "branch": "develop",
+      "old_sha256": "e1834b0f15ac635ec79f1e435368f61cf175a9f96edcdf5d0fea9668c2098c1c",
+      "remote_sha256": "e1834b0f15ac635ec79f1e435368f61cf175a9f96edcdf5d0fea9668c2098c1c",
+      "byte_identical": true
+    },
+    {
+      "previous_run": "mxm_area003",
+      "path": "rtl/mxm/lpu_mxm_dot_bank.sv",
+      "branch": "main",
+      "old_sha256": "4b0e10dbec7aeb97ddb190727b2bfa2d64147ff6f9b8ae7a805d3c0c3ac0be52",
+      "remote_sha256": "4b0e10dbec7aeb97ddb190727b2bfa2d64147ff6f9b8ae7a805d3c0c3ac0be52",
+      "byte_identical": true
+    },
+    {
+      "previous_run": "mxm_area003",
+      "path": "rtl/mxm/lpu_mxm_dot_bank.sv",
+      "branch": "develop",
+      "old_sha256": "4b0e10dbec7aeb97ddb190727b2bfa2d64147ff6f9b8ae7a805d3c0c3ac0be52",
+      "remote_sha256": "4b0e10dbec7aeb97ddb190727b2bfa2d64147ff6f9b8ae7a805d3c0c3ac0be52",
+      "byte_identical": true
+    },
+    {
+      "previous_run": "mxm_area003",
+      "path": "rtl/mxm/lpu_mxm_dequantizer.sv",
+      "branch": "main",
+      "old_sha256": "fc4ad177017206389e43102d3c0854210b2d0b7872de9ec477eeb23f0b7ffda4",
+      "remote_sha256": "fc4ad177017206389e43102d3c0854210b2d0b7872de9ec477eeb23f0b7ffda4",
+      "byte_identical": true
+    },
+    {
+      "previous_run": "mxm_area003",
+      "path": "rtl/mxm/lpu_mxm_dequantizer.sv",
+      "branch": "develop",
+      "old_sha256": "fc4ad177017206389e43102d3c0854210b2d0b7872de9ec477eeb23f0b7ffda4",
+      "remote_sha256": "fc4ad177017206389e43102d3c0854210b2d0b7872de9ec477eeb23f0b7ffda4",
+      "byte_identical": true
+    },
+    {
+      "previous_run": "mxm_area003",
+      "path": "rtl/mxm/lpu_mxm_weight_buffer.sv",
+      "branch": "main",
+      "old_sha256": "406e03ce8a1ea091c96f2ad767b9fc7d6bf21627ea218d542b19901ed02837e2",
+      "remote_sha256": "406e03ce8a1ea091c96f2ad767b9fc7d6bf21627ea218d542b19901ed02837e2",
+      "byte_identical": true
+    },
+    {
+      "previous_run": "mxm_area003",
+      "path": "rtl/mxm/lpu_mxm_weight_buffer.sv",
+      "branch": "develop",
+      "old_sha256": "406e03ce8a1ea091c96f2ad767b9fc7d6bf21627ea218d542b19901ed02837e2",
+      "remote_sha256": "406e03ce8a1ea091c96f2ad767b9fc7d6bf21627ea218d542b19901ed02837e2",
+      "byte_identical": true
+    },
+    {
+      "previous_run": "mxm_area003",
+      "path": "rtl/vxm/lpu_vxm_math_pkg.sv",
+      "branch": "main",
+      "old_sha256": "11cd922c52f09ba5265692fea9fe57339b4cc947a0f557100e3f5faedc3c3051",
+      "remote_sha256": "11cd922c52f09ba5265692fea9fe57339b4cc947a0f557100e3f5faedc3c3051",
+      "byte_identical": true
+    },
+    {
+      "previous_run": "mxm_area003",
+      "path": "rtl/vxm/lpu_vxm_math_pkg.sv",
+      "branch": "develop",
+      "old_sha256": "11cd922c52f09ba5265692fea9fe57339b4cc947a0f557100e3f5faedc3c3051",
+      "remote_sha256": "11cd922c52f09ba5265692fea9fe57339b4cc947a0f557100e3f5faedc3c3051",
+      "byte_identical": true
+    }
+  ],
+  "lpu16_mem_profile": {
+    "profile": 16,
+    "tiles": 2,
+    "physical_rows": 1024,
+    "active_rows": 1024,
+    "hemispheres": 2,
+    "slices_per_hemisphere": 52,
+    "banks_per_slice": 2,
+    "slices_per_group": 4,
+    "lanes_per_tile": 8,
+    "streams_per_direction": 32,
+    "columns": 16,
+    "mem_boundaries": 14,
+    "leaf_count": 416,
+    "capacity_bytes": 3407872,
+    "cmodel_target": "config/mem-profiles/ftlpu-lpu16.json",
+    "target_sha256": "43a0221ebec7b48672643ad7ff7a35967db0d96e97f5df5b0ea29ccfbc804d1e"
+  },
+  "scope_warning": "native_profiles.json explicitly limits scope to MEM verification; lpu_top/lpu_pkg/MXM remain fixed 4-tile 32-lane. No whole-system LPU16 ABI is frozen in these branches."
+}

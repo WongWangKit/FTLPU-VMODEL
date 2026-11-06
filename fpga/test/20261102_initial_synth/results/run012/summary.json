@@ -1,0 +1,26 @@
+[
+  {
+    "command": [
+      "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\vivado.bat",
+      "-mode",
+      "batch",
+      "-source",
+      "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run012/src/fpga_experiment/scripts/synth.tcl",
+      "-log",
+      "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_initial_synth/results/run012/alu_basic_bf16/vivado.log",
+      "-journal",
+      "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run012/alu_basic_bf16/vivado.jou",
+      "-tclargs",
+      "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run012/src",
+      "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_initial_synth/results/run012/alu_basic_bf16",
+      "alu_basic_bf16",
+      "xcvu9p-flga2104-2L-e"
+    ],
+    "returncode": 0,
+    "status": "completed",
+    "elapsed_s": 139.5,
+    "case": "alu_basic_bf16",
+    "part": "xcvu9p-flga2104-2L-e",
+    "synthesis_completed": true
+  }
+]

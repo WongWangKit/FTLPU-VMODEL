@@ -1,0 +1,55 @@
+#-----------------------------------------------------------
+# Vivado v2023.2 (64-bit)
+# SW Build 4029153 on Fri Oct 13 20:14:34 MDT 2023
+# IP Build 4028589 on Sat Oct 14 00:45:43 MDT 2023
+# SharedData Build 4025554 on Tue Oct 10 17:18:54 MDT 2023
+# Start of session at: Wed Nov  4 16:34:20 2026
+# Process ID: 32464
+# Current directory: C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/ip17_20261104
+# Command line: vivado.exe -mode batch -source C:\Users\huazh\Desktop\LPU\lpu_src\FTLPU-VMODEL\fpga\test\20261104_ip17_decision\scripts\parts.tcl -log C:\Users\huazh\Desktop\LPU\lpu_src\FTLPU-VMODEL\fpga\test\20261104_ip17_decision\results\parts001\vivado.log -journal C:\Users\huazh\Desktop\LPU\lpu_src\FTLPU-VMODEL\fpga\tmp\ip17_20261104\part_probe\vivado.jou
+# Log file: C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261104_ip17_decision/results/parts001/vivado.log
+# Journal file: C:\Users\huazh\Desktop\LPU\lpu_src\FTLPU-VMODEL\fpga\tmp\ip17_20261104\part_probe\vivado.jou
+# Running On: huazhe, OS: Windows, CPU Frequency: 2918 MHz, CPU Physical cores: 14, Host memory: 42660 MB
+#-----------------------------------------------------------
+source {C:\Users\huazh\Desktop\LPU\lpu_src\FTLPU-VMODEL\fpga\test\20261104_ip17_decision\scripts\parts.tcl}
+# puts "VIVADO_VERSION=[version -short]"
+VIVADO_VERSION=2023.2
+# foreach pattern {xcvu19p-fsvb3824-2-e xcvu440-flgb2377-2-e xcv80*} {
+#     set parts [get_parts -quiet $pattern]
+#     puts "PATTERN=$pattern MATCH_COUNT=[llength $parts]"
+#     foreach part $parts {
+#         puts "PART=$part"
+#         foreach key {LUT_ELEMENTS FLIPFLOPS BLOCK_RAMS ULTRA_RAMS DSP SLRS} {
+#             puts "$key=[get_property -quiet $key $part]"
+#         }
+#         break
+#     }
+# }
+PATTERN=xcvu19p-fsvb3824-2-e MATCH_COUNT=1
+PART=xcvu19p-fsvb3824-2-e
+LUT_ELEMENTS=4085760
+FLIPFLOPS=8171520
+BLOCK_RAMS=2160
+ULTRA_RAMS=320
+DSP=3840
+SLRS=4
+PATTERN=xcvu440-flgb2377-2-e MATCH_COUNT=1
+PART=xcvu440-flgb2377-2-e
+LUT_ELEMENTS=2532960
+FLIPFLOPS=5065920
+BLOCK_RAMS=2520
+ULTRA_RAMS=
+DSP=2880
+SLRS=3
+PATTERN=xcv80* MATCH_COUNT=1
+PART=xcv80-lsva4737-2MHP-e-S
+LUT_ELEMENTS=2574208
+FLIPFLOPS=5148416
+BLOCK_RAMS=3741
+ULTRA_RAMS=1925
+DSP=10848
+SLRS=3
+# puts "PART_AUDIT_COMPLETE"
+PART_AUDIT_COMPLETE
+# exit
+INFO: [Common 17-206] Exiting Vivado at Wed Nov  4 16:34:56 2026...

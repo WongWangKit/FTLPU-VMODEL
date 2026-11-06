@@ -1,0 +1,3 @@
+# Preserve exact bytes for historical SHA256 evidence and frozen test inputs.
+# Do not normalize CRLF/LF in this research archive, even with core.autocrlf=true.
+* -text

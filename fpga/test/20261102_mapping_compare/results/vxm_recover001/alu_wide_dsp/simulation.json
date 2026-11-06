@@ -1,0 +1,152 @@
+[
+  {
+    "mode": "rtl",
+    "passed": true,
+    "steps": [
+      {
+        "command": [
+          "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xvlog.bat",
+          "--sv",
+          "-d",
+          "PRUNED",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/core/lpu_pkg.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/core/lpu_isa_decode.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/core/lpu_stream_stage.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/core/lpu_control_pipeline.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/icu/lpu_icu_queue.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/icu/lpu_icu.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/mem/lpu_sram_1rw_banked.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/mem/lpu_mem_tile_slice.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/mem/lpu_mem_tile_slice_sram.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/mem/lpu_mem_tile_slice_select.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/mem/lpu_mem_column.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/mem/lpu_mem_hemisphere.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_math_pkg.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_fp16_pkg.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_input_converter.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_fp16_stream_groups.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_local_decoder.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_datapath_mux.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_datapath_stage.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_global_config.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_instruction_controller.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/mxm/lpu_mxm_control.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/mxm/lpu_mxm_dequantizer.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/mxm/lpu_mxm_weight_buffer.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/mxm/lpu_mxm_dot_bank.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/mxm/lpu_mxm_compute.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/mxm/lpu_mxm_accumulator_sram.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/mxm/lpu_mxm_shared_accumulator.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/mxm/lpu_mxm_accumulator.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/mxm/lpu_mxm_block_accumulator.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/mxm/lpu_mxm_slice.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/sxm/lpu_sxm_control.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/sxm/lpu_sxm_slice.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_control.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_mul8x8.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_csa3_2.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/experiment/rtl/significand_wide_dsp.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_shared_float_multiplier.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_special_coefficient_multiplier.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_recip_linear_fixed.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_fp32_newton_multiplier.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_rsqrt_linear_fixed.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_fp32_rsqrt_correction.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_float_unpack.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_basic_opcode_decode.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_shared_float_compare.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_segmented_addsub.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_grouped_lzc.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_shared_left_shift.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_shared_float_adder.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_basic_alu.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_lut_storage.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_lut_sram.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_tile_pair_lut.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_special_alu.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/rtl/vxm/lpu_vxm_alu.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/experiment/rtl/basic_alu_probe.sv",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/experiment/tb/alu_basic_tb.sv"
+        ],
+        "returncode": 0,
+        "status": "completed",
+        "elapsed_s": 3.7
+      },
+      {
+        "command": [
+          "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xelab.bat",
+          "alu_basic_tb",
+          "-s",
+          "snapshot",
+          "--timescale",
+          "1ns/1ps",
+          "--mt",
+          "2"
+        ],
+        "returncode": 0,
+        "status": "completed",
+        "elapsed_s": 7.0
+      },
+      {
+        "command": [
+          "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xsim.bat",
+          "snapshot",
+          "-runall"
+        ],
+        "returncode": 0,
+        "status": "completed",
+        "elapsed_s": 5.4
+      }
+    ]
+  },
+  {
+    "mode": "gate",
+    "passed": true,
+    "steps": [
+      {
+        "command": [
+          "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xvlog.bat",
+          "--sv",
+          "-d",
+          "PRUNED",
+          "-d",
+          "GATE",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/vxm_recover001/alu_wide_dsp/netlist.v",
+          "C:/Users/huazh/Desktop/Vivado2023/Vivado/2023.2/data/verilog/src/glbl.v",
+          "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_vxm001/src/experiment/tb/alu_basic_tb.sv"
+        ],
+        "returncode": 0,
+        "status": "completed",
+        "elapsed_s": 2.9
+      },
+      {
+        "command": [
+          "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xelab.bat",
+          "alu_basic_tb",
+          "glbl",
+          "-L",
+          "unisims_ver",
+          "-s",
+          "snapshot",
+          "--timescale",
+          "1ns/1ps",
+          "--mt",
+          "2"
+        ],
+        "returncode": 0,
+        "status": "completed",
+        "elapsed_s": 10.7
+      },
+      {
+        "command": [
+          "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\xsim.bat",
+          "snapshot",
+          "-runall"
+        ],
+        "returncode": 0,
+        "status": "completed",
+        "elapsed_s": 5.1
+      }
+    ]
+  }
+]

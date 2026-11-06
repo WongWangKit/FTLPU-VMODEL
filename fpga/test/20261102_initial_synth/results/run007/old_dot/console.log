@@ -1,0 +1,168 @@
+
+****** Vivado v2023.2 (64-bit)
+  **** SW Build 4029153 on Fri Oct 13 20:14:34 MDT 2023
+  **** IP Build 4028589 on Sat Oct 14 00:45:43 MDT 2023
+  **** SharedData Build 4025554 on Tue Oct 10 17:18:54 MDT 2023
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+
+source C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run007/src/fpga_experiment/scripts/synth.tcl
+# puts "RAW_ARGV=$argv"
+RAW_ARGV=C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run007/src C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_initial_synth/results/run007/old_dot old_dot xcvu9p-flga2104-2L-e
+# set src [lindex $argv 0]
+# set out [lindex $argv 1]
+# set case_name [lindex $argv 2]
+# set part [lindex $argv 3]
+# set_param general.maxThreads 4
+# file mkdir $out
+# create_project -in_memory -part $part
+create_project: Time (s): cpu = 00:00:00 ; elapsed = 00:00:09 . Memory (MB): peak = 568.633 ; gain = 180.898
+# set rtl {}
+# set fd [open [file join $src sim filelist.f] r]
+# foreach line [split [read $fd] "\n"] {
+#   set line [string trim $line]
+#   if {[string match "rtl/*" $line]} {lappend rtl [file join $src $line]}
+# }
+# close $fd
+# set generics {}
+# switch $case_name {
+#   mem_leaf {
+#     set rtl [list [file join $src rtl/mem_native/mem_bank_superlane_leaf.sv]]
+#     set top mem_bank_superlane_leaf
+#     set generics {P_MEM_BANK_DEPTH_ROWS=1024 P_MEM_ACTIVE_ROWS=1024}
+#   }
+#   mem_leaf_bram {
+#     set rtl [list [file join $src fpga_experiment/rtl/mem_leaf_bram.sv]]
+#     set top mem_bank_superlane_leaf
+#     set generics {P_MEM_BANK_DEPTH_ROWS=1024 P_MEM_ACTIVE_ROWS=1024}
+#   }
+#   mem_slice {
+#     set rtl {}
+#     foreach f {mem_bank_superlane_leaf mem_bank_control_column mem_logical_bank_column mem_slice} {
+#       lappend rtl [file join $src rtl/mem_native/$f.sv]
+#     }
+#     set top mem_slice
+#     set generics {P_TILE_ROWS=2 P_MEM_BANK_DEPTH_ROWS=1024 P_MEM_ACTIVE_ROWS=1024}
+#   }
+#   mem_slice_bram {
+#     set rtl [list [file join $src fpga_experiment/rtl/mem_leaf_bram.sv]]
+#     foreach f {mem_bank_control_column mem_logical_bank_column mem_slice} {
+#       lappend rtl [file join $src rtl/mem_native/$f.sv]
+#     }
+#     set top mem_slice
+#     set generics {P_TILE_ROWS=2 P_MEM_BANK_DEPTH_ROWS=1024 P_MEM_ACTIVE_ROWS=1024}
+#   }
+#   srf_leaf {
+#     set rtl [list [file join $src rtl/srf/ftlpu_sr_superlane_col_dir.sv]]
+#     set top ftlpu_sr_superlane_col_dir_lane
+#   }
+#   old_mem {
+#     set rtl [list [file join $src rtl/core/lpu_pkg.sv] [file join $src rtl/core/lpu_isa_decode.sv] [file join $src rtl/mem/lpu_mem_tile_slice.sv]]
+#     set top lpu_mem_tile_slice_behavior
+#     set generics {DEPTH_ROWS=1024}
+#   }
+#   old_dot {
+#     set rtl [list [file join $src rtl/vxm/lpu_vxm_math_pkg.sv] [file join $src rtl/mxm/lpu_mxm_dot_bank.sv]]
+#     set top lpu_mxm_dot_bank
+#   }
+#   alu_basic {set top lpu_vxm_alu; set generics {SPECIAL_KIND=0}}
+#   alu_exp {set top lpu_vxm_alu; set generics {SPECIAL_KIND=1}}
+#   alu_recip {set top lpu_vxm_alu; set generics {SPECIAL_KIND=2}}
+#   old_top {
+#     set top lpu_top
+#     set generics {ICU_QUEUE_DEPTH=4 MEM_DEPTH_ROWS=64 ACTIVE_MEM_COLUMNS=4 MXM_ACCUMULATOR_BLOCK_COUNT=1}
+#     set_property verilog_define FTLPU_DISABLE_BLOCK8 [current_fileset]
+#   }
+#   default {error "Unknown case: $case_name"}
+# }
+# puts "EXPERIMENT case=$case_name top=$top part=$part generics=$generics"
+EXPERIMENT case=old_dot top=lpu_mxm_dot_bank part=xcvu9p-flga2104-2L-e generics=
+# read_verilog -sv $rtl
+# set args [list -top $top -part $part -mode out_of_context -flatten_hierarchy rebuilt]
+# if {[llength $generics]} {lappend args -generic $generics}
+# synth_design {*}$args
+Command: synth_design -top lpu_mxm_dot_bank -part xcvu9p-flga2104-2L-e -mode out_of_context -flatten_hierarchy rebuilt
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xcvu9p'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xcvu9p'
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 4 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 32084
+---------------------------------------------------------------------------------
+Starting Synthesize : Time (s): cpu = 00:00:01 ; elapsed = 00:00:08 . Memory (MB): peak = 1016.184 ; gain = 442.582
+---------------------------------------------------------------------------------
+INFO: [Synth 8-6157] synthesizing module 'lpu_mxm_dot_bank' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run007/src/rtl/mxm/lpu_mxm_dot_bank.sv:1]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_mxm_dot_bank' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run007/src/rtl/mxm/lpu_mxm_dot_bank.sv:1]
+---------------------------------------------------------------------------------
+Finished Synthesize : Time (s): cpu = 00:00:05 ; elapsed = 00:01:19 . Memory (MB): peak = 3694.352 ; gain = 3120.750
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:06 ; elapsed = 00:01:39 . Memory (MB): peak = 3694.352 ; gain = 3120.750
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xcvu9p-flga2104-2L-e
+INFO: [Synth 8-6742] Reading net delay rules and data
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:44 ; elapsed = 00:05:26 . Memory (MB): peak = 4876.902 ; gain = 4303.301
+---------------------------------------------------------------------------------
+No constraint files found.
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	   3 Input   32 Bit       Adders := 224   
+	   2 Input   32 Bit       Adders := 1032  
+	   2 Input   28 Bit       Adders := 224   
+	   3 Input   27 Bit       Adders := 224   
+	   2 Input   25 Bit       Adders := 480   
+	   2 Input   10 Bit       Adders := 448   
+	   2 Input    9 Bit       Adders := 6080  
+	   2 Input    8 Bit       Adders := 264   
+	   2 Input    6 Bit       Adders := 2112  
++---XORs : 
+	   2 Input      1 Bit         XORs := 256   
++---Muxes : 
+	   2 Input   32 Bit        Muxes := 9464  
+	   2 Input   27 Bit        Muxes := 6944  
+	   2 Input   25 Bit        Muxes := 480   
+	   2 Input   24 Bit        Muxes := 776   
+	   2 Input   23 Bit        Muxes := 480   
+	   2 Input   13 Bit        Muxes := 264   
+	   2 Input   12 Bit        Muxes := 264   
+	   2 Input   11 Bit        Muxes := 2640  
+	   2 Input   10 Bit        Muxes := 264   
+	   2 Input    9 Bit        Muxes := 264   
+	   2 Input    8 Bit        Muxes := 712   
+	   2 Input    7 Bit        Muxes := 264   
+	   2 Input    1 Bit        Muxes := 7040  
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 6840 (col length:120)
+BRAMs: 4320 (col length: RAMB18 360 RAMB36 180)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+No constraint files found.
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+SUCCESS: The process with PID 37376 (child process of PID 38856) has been terminated.
+SUCCESS: The process with PID 28372 (child process of PID 40300) has been terminated.
+SUCCESS: The process with PID 10708 (child process of PID 11588) has been terminated.
+SUCCESS: The process with PID 34556 (child process of PID 38736) has been terminated.
+SUCCESS: The process with PID 38856 (child process of PID 40084) has been terminated.
+SUCCESS: The process with PID 40300 (child process of PID 40084) has been terminated.
+SUCCESS: The process with PID 11588 (child process of PID 40084) has been terminated.
+SUCCESS: The process with PID 38736 (child process of PID 40084) has been terminated.
+SUCCESS: The process with PID 40084 (child process of PID 32084) has been terminated.
+SUCCESS: The process with PID 32084 (child process of PID 37776) has been terminated.
+SUCCESS: The process with PID 37776 (child process of PID 39752) has been terminated.
+SUCCESS: The process with PID 39752 (child process of PID 31360) has been terminated.

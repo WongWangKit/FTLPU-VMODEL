@@ -1,0 +1,4 @@
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_memory001/src/experiment/rtl/mem_leaf_uram.sv" into library work
+INFO: [VRFC 10-311] analyzing module mem_bank_superlane_leaf
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/mapping_memory001/src/experiment/tb/mem_leaf_tb.sv" into library work
+INFO: [VRFC 10-311] analyzing module mem_leaf_tb

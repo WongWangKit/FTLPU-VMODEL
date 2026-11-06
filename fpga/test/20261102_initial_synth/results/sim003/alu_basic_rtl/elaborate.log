@@ -1,0 +1,35 @@
+Vivado Simulator v2023.2
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+Running: C:/Users/huazh/Desktop/Vivado2023/Vivado/2023.2/bin/unwrapped/win64.o/xelab.exe alu_basic_tb -s snapshot --debug typical --timescale 1ns/1ps --mt 4 
+Using 4 slave threads.
+Starting static elaboration
+Pass Through NonSizing Optimizer
+Completed static elaboration
+Starting simulation data flow analysis
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling package work.lpu_pkg
+Compiling package work.lpu_vxm_fp16_pkg
+Compiling package work.lpu_vxm_math_pkg
+Compiling module work.lpu_vxm_float_unpack
+Compiling module work.lpu_vxm_basic_opcode_decode
+Compiling module work.lpu_vxm_shared_float_compare
+Compiling module work.lpu_vxm_segmented_addsub
+Compiling module work.lpu_vxm_grouped_lzc
+Compiling module work.lpu_vxm_shared_left_shift
+Compiling module work.lpu_vxm_shared_float_adder
+Compiling module work.lpu_vxm_mul8x8
+Compiling module work.lpu_vxm_csa3_2
+Compiling module work.lpu_vxm_significand_multiplier_d...
+Compiling module work.lpu_vxm_shared_float_multiplier
+Compiling module work.lpu_vxm_basic_alu
+Compiling module work.lpu_vxm_special_coefficient_mult...
+Compiling module work.lpu_vxm_recip_linear_fixed
+Compiling module work.lpu_vxm_rsqrt_linear_fixed
+Compiling module work.lpu_vxm_fp32_newton_multiplier
+Compiling module work.lpu_vxm_fp32_rsqrt_correction
+Compiling module work.lpu_vxm_special_alu(SPECIAL_KIND...
+Compiling module work.lpu_vxm_alu_default
+Compiling module work.alu_basic_tb
+Built simulation snapshot snapshot

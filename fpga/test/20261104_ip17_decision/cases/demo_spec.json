@@ -1,0 +1,155 @@
+{
+  "status": "proposed_demo_contract_not_product_configuration",
+  "date": "2026-11-04",
+  "branch_baselines": {
+    "main": "9e03241f7574a03a2788d1bb64af650e18df8e3a",
+    "develop": "a8fb96a377a3d7b8269b8ea86d28019559cd2127"
+  },
+  "lpu": {
+    "profile": 16,
+    "tiles": 2,
+    "lanes_per_tile": 8,
+    "hemispheres": 2,
+    "mem_slices_per_hemisphere": 52,
+    "banks_per_slice": 2,
+    "leaf_depth": 1024,
+    "leaf_bits": 64,
+    "leaf_count": 416,
+    "mem_bytes": 3407872,
+    "srf_columns": 16,
+    "streams_per_direction": 32,
+    "constraint": "No pruning of capacity, lanes, precision support or Block8 to claim whole-LPU16 fit",
+    "open": "Remote profile is MEM verification scoped; native whole-system MXM count/shape and top integration remain unresolved. Do not treat old 4-tile/4-MXM top as profile16."
+  },
+  "model": {
+    "id": "ibm-granite/granite-3.1-1b-a400m-base",
+    "revision": "408b6e90baab8cf24f4aa9f8e19703ffa0a53b29",
+    "layers": 24,
+    "hidden_size": 1024,
+    "intermediate_size": 512,
+    "experts": 32,
+    "top_k": 8,
+    "attention_heads": 16,
+    "kv_heads": 8,
+    "head_dim": 64,
+    "vocab": 49152,
+    "tied_embeddings": true,
+    "attention_multiplier": 0.015625,
+    "embedding_multiplier": 12,
+    "residual_multiplier": 0.22,
+    "logits_scaling": 6,
+    "rope_theta": 1500000,
+    "rms_norm_eps": 0.000001
+  },
+  "milestones": [
+    {
+      "id": "R0",
+      "scope": "Independent reduced engineering model; synthetic weights",
+      "layers": 2,
+      "hidden": 128,
+      "intermediate": 256,
+      "experts": 4,
+      "top_k": 2,
+      "heads": 4,
+      "kv_heads": 2,
+      "vocab": 512,
+      "status": "brain001: 10/10 PASS, no RTL or trained-weight accuracy"
+    },
+    {
+      "id": "R1",
+      "scope": "One full original-width decoder block, all 32 experts/top8; CPU reference supplies block inputs",
+      "status": "planned, not run on FPGA"
+    },
+    {
+      "id": "R2",
+      "scope": "Full 24-layer autoregressive hybrid host+LPU demo",
+      "status": "planned, gated by native integration, DMA and timing"
+    }
+  ],
+  "inputs": {
+    "batch": 1,
+    "prefill_tokens": 16,
+    "decode_steps": 8,
+    "max_context": 32,
+    "decode_policy": "greedy; tokenizer and argmax on host",
+    "training": false
+  },
+  "quantization": {
+    "target": "mixed W8A16",
+    "quantized_matrices": [
+      "Q",
+      "K",
+      "V",
+      "O",
+      "expert_gate",
+      "expert_up",
+      "expert_down"
+    ],
+    "int8_range": [
+      -127,
+      127
+    ],
+    "scheme": "symmetric per physical 8x8 weight cell",
+    "zero_point": 0,
+    "scale_dtype": "BF16",
+    "scale_rule": "round_BF16(max(abs(W_cell))/127); all-zero cell scale=1",
+    "q_rule": "clip(round_to_nearest_even(W/rounded_scale),-127,127)",
+    "dequant": "BF16(INT8*BF16_scale), then BF16 multiplication with FP32 accumulation",
+    "bf16_unquantized": [
+      "router",
+      "norm_weights",
+      "tied_embedding_lm_head"
+    ],
+    "activation": "BF16",
+    "kv_cache": "BF16",
+    "accumulation": "FP32",
+    "notes": [
+      "Not an INT8 MAC speedup claim",
+      "No AWQ/GPTQ/INT4/FP8 accuracy claims",
+      "Direct16 BF16 is bring-up fallback",
+      "Real-weight quantization accuracy remains untested"
+    ]
+  },
+  "host_roles": [
+    "tokenizer",
+    "embedding gather",
+    "TopK/bucketing and phase scheduling",
+    "RoPE sin/cos table generation",
+    "greedy argmax",
+    "DDR preload and completion fencing"
+  ],
+  "lpu_target_operators": [
+    "QKV/O GEMM",
+    "attention QK/AV",
+    "expert gate/up/down GEMM",
+    "router linear",
+    "RMSNorm",
+    "RoPE rotation",
+    "stable softmax",
+    "SwiGLU",
+    "residual add/scale",
+    "weighted expert merge",
+    "LM head GEMM"
+  ],
+  "schedule": {
+    "strategy": "Host-supervised, completion-fenced phases; prefetch into MEM before launching readyless compute",
+    "routing": "dropless; prefill worst-case 16 tokens per expert, 128 token-expert assignments total",
+    "ties": "Engineering model smaller expert ID first; reference tie policy must be aligned before real-model validation",
+    "scope": "No bank/port/cycle correctness proof yet"
+  },
+  "acceptance": {
+    "R0": "Independent model only; passed",
+    "R1": [
+      "exact transport/layout/route IDs against agreed reference",
+      "arithmetic against agreed BF16/FP32 rounding contract",
+      "no dropped token, overflow, unexpected fault",
+      "post-route timing with complete clocks/IO/CDC constraints"
+    ],
+    "R2": [
+      "teacher-forced logits and routing comparisons against quantized CPU reference",
+      "greedy output comparison with tie/near-tie reporting",
+      "measured end-to-end latency and DDR traffic"
+    ],
+    "numeric_thresholds": "Real-model quantization quality thresholds to be calibrated before R1; not inferred from random tiny model"
+  }
+}

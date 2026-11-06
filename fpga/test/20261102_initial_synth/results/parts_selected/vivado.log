@@ -1,0 +1,82 @@
+#-----------------------------------------------------------
+# Vivado v2023.2 (64-bit)
+# SW Build 4029153 on Fri Oct 13 20:14:34 MDT 2023
+# IP Build 4028589 on Sat Oct 14 00:45:43 MDT 2023
+# SharedData Build 4025554 on Tue Oct 10 17:18:54 MDT 2023
+# Start of session at: Mon Nov  2 15:52:48 2026
+# Process ID: 19536
+# Current directory: C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/parts_selected
+# Command line: vivado.exe -mode batch -source C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_initial_synth/scripts/parts_selected.tcl -log C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_initial_synth/results/parts_selected/vivado.log -journal C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/parts_selected/vivado.jou
+# Log file: C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_initial_synth/results/parts_selected/vivado.log
+# Journal file: C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/parts_selected/vivado.jou
+# Running On: huazhe, OS: Windows, CPU Frequency: 2918 MHz, CPU Physical cores: 14, Host memory: 42660 MB
+#-----------------------------------------------------------
+source C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_initial_synth/scripts/parts_selected.tcl
+# puts "VIVADO_VERSION=[version -short]"
+VIVADO_VERSION=2023.2
+# foreach pattern {xcvu9p-flga2104-2L-e xcku115-flvb2104-2-e xczu9eg-ffvb1156-2-e xcu250* xcvu19p*fsvb3824*} {
+#   set parts [get_parts -quiet $pattern]
+#   puts "PATTERN=$pattern MATCHES=$parts"
+#   foreach part $parts {
+#     puts "PART=$part"
+#     foreach key {LUT_ELEMENTS FLIPFLOPS BLOCK_RAMS ULTRA_RAMS DSP AVAILABLE_IOBS GB_TRANSCEIVERS SLRS} {
+#       puts "$key=[get_property $key $part]"
+#     }
+#     # Resource counts identical across grades; one match suffices per pattern.
+#     break
+#   }
+# }
+PATTERN=xcvu9p-flga2104-2L-e MATCHES=xcvu9p-flga2104-2L-e
+PART=xcvu9p-flga2104-2L-e
+LUT_ELEMENTS=1182240
+FLIPFLOPS=2364480
+BLOCK_RAMS=2160
+ULTRA_RAMS=960
+DSP=6840
+AVAILABLE_IOBS=832
+GB_TRANSCEIVERS=52
+SLRS=3
+PATTERN=xcku115-flvb2104-2-e MATCHES=xcku115-flvb2104-2-e
+PART=xcku115-flvb2104-2-e
+LUT_ELEMENTS=663360
+FLIPFLOPS=1326720
+BLOCK_RAMS=2160
+WARNING: [Common 17-673] Cannot get value of property 'ULTRA_RAMS' because this property is not valid in conjunction with other property setting on this object.
+ULTRA_RAMS=
+DSP=5520
+AVAILABLE_IOBS=702
+GB_TRANSCEIVERS=64
+SLRS=2
+PATTERN=xczu9eg-ffvb1156-2-e MATCHES=xczu9eg-ffvb1156-2-e
+PART=xczu9eg-ffvb1156-2-e
+LUT_ELEMENTS=274080
+FLIPFLOPS=548160
+BLOCK_RAMS=912
+WARNING: [Common 17-673] Cannot get value of property 'ULTRA_RAMS' because this property is not valid in conjunction with other property setting on this object.
+ULTRA_RAMS=
+DSP=2520
+AVAILABLE_IOBS=328
+GB_TRANSCEIVERS=24
+SLRS=1
+PATTERN=xcu250* MATCHES=xcu250-figd2104-2-e xcu250-figd2104-2L-e xcu250-figd2104-2LV-e
+PART=xcu250-figd2104-2-e
+LUT_ELEMENTS=1728000
+FLIPFLOPS=3456000
+BLOCK_RAMS=2688
+ULTRA_RAMS=1280
+DSP=12288
+AVAILABLE_IOBS=676
+GB_TRANSCEIVERS=24
+SLRS=4
+PATTERN=xcvu19p*fsvb3824* MATCHES=xcvu19p-fsvb3824-1-e xcvu19p-fsvb3824-2-e xcvu19p_CIV-fsvb3824-1-e xcvu19p_CIV-fsvb3824-2-e
+PART=xcvu19p-fsvb3824-1-e
+LUT_ELEMENTS=4085760
+FLIPFLOPS=8171520
+BLOCK_RAMS=2160
+ULTRA_RAMS=320
+DSP=3840
+AVAILABLE_IOBS=1760
+GB_TRANSCEIVERS=80
+SLRS=4
+# exit
+INFO: [Common 17-206] Exiting Vivado at Mon Nov  2 15:52:56 2026...

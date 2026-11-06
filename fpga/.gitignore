@@ -1,0 +1,47 @@
+# Local workspaces, tools and reconstructible scratch files.
+/tmp/
+**/__pycache__/
+**/.pytest_cache/
+**/.Xil/
+**/xsim.dir/
+**/node_modules/
+*.py[cod]
+*.jou
+*.wdb
+*.vcd
+*.fst
+*.fsdb
+*.dcp
+*.bit
+*.bin
+*.exe
+*.dll
+
+# Results are allowlisted. Traverse directories, but ignore unlisted files.
+# This intentionally overrides repository-wide *.log and *.rpt exclusions.
+/test/*/results/**
+!/test/*/results/**/
+!/test/*/results/**/*.json
+!/test/*/results/**/*.csv
+!/test/*/results/**/*.rpt
+!/test/*/results/**/*.log
+!/test/*/results/**/*.txt
+!/test/*/results/**/*.md
+!/test/*/results/**/*.tcl
+!/test/*/results/**/*.xdc
+!/test/*/results/**/*.sv
+!/test/*/results/**/*.py
+!/test/*/results/**/*.ps1
+
+# Exact reproducibility inputs and small numeric evidence, not arbitrary archives.
+!/test/20261102_mapping_compare/results/analysis003/frozen_sources.zip
+!/test/20261104_ip17_decision/results/baseline001/main.zip
+!/test/20261104_ip17_decision/results/baseline001/develop.zip
+!/test/20261104_ip17_decision/results/brain001/tiny_evidence.npz
+
+# Never publish generated netlists/checkpoints/waves through the whitelist.
+/test/*/results/**/netlist.v
+/test/*/results/**/*.dcp
+/test/*/results/**/*.wdb
+/test/*/results/**/*.pyc
+/test/*/results/**/__pycache__/

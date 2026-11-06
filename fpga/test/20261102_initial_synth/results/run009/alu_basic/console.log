@@ -1,0 +1,836 @@
+
+****** Vivado v2023.2 (64-bit)
+  **** SW Build 4029153 on Fri Oct 13 20:14:34 MDT 2023
+  **** IP Build 4028589 on Sat Oct 14 00:45:43 MDT 2023
+  **** SharedData Build 4025554 on Tue Oct 10 17:18:54 MDT 2023
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+
+source C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/fpga_experiment/scripts/synth.tcl
+# puts "RAW_ARGV=$argv"
+RAW_ARGV=C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_initial_synth/results/run009/alu_basic alu_basic xcvu9p-flga2104-2L-e
+# set src [lindex $argv 0]
+# set out [lindex $argv 1]
+# set case_name [lindex $argv 2]
+# set part [lindex $argv 3]
+# set_param general.maxThreads 4
+# file mkdir $out
+# create_project -in_memory -part $part
+create_project: Time (s): cpu = 00:00:06 ; elapsed = 00:00:19 . Memory (MB): peak = 567.863 ; gain = 179.793
+# set rtl {}
+# set fd [open [file join $src sim filelist.f] r]
+# foreach line [split [read $fd] "\n"] {
+#   set line [string trim $line]
+#   if {[string match "rtl/*" $line]} {lappend rtl [file join $src $line]}
+# }
+# close $fd
+# set generics {}
+# switch $case_name {
+#   mem_leaf {
+#     set rtl [list [file join $src rtl/mem_native/mem_bank_superlane_leaf.sv]]
+#     set top mem_bank_superlane_leaf
+#     set generics {P_MEM_BANK_DEPTH_ROWS=1024 P_MEM_ACTIVE_ROWS=1024}
+#   }
+#   mem_leaf_bram {
+#     set rtl [list [file join $src fpga_experiment/rtl/mem_leaf_bram.sv]]
+#     set top mem_bank_superlane_leaf
+#     set generics {P_MEM_BANK_DEPTH_ROWS=1024 P_MEM_ACTIVE_ROWS=1024}
+#   }
+#   mem_slice {
+#     set rtl {}
+#     foreach f {mem_bank_superlane_leaf mem_bank_control_column mem_logical_bank_column mem_slice} {
+#       lappend rtl [file join $src rtl/mem_native/$f.sv]
+#     }
+#     set top mem_slice
+#     set generics {P_TILE_ROWS=2 P_MEM_BANK_DEPTH_ROWS=1024 P_MEM_ACTIVE_ROWS=1024}
+#   }
+#   mem_slice_bram {
+#     set rtl [list [file join $src fpga_experiment/rtl/mem_leaf_bram.sv]]
+#     foreach f {mem_bank_control_column mem_logical_bank_column mem_slice} {
+#       lappend rtl [file join $src rtl/mem_native/$f.sv]
+#     }
+#     set top mem_slice
+#     set generics {P_TILE_ROWS=2 P_MEM_BANK_DEPTH_ROWS=1024 P_MEM_ACTIVE_ROWS=1024}
+#   }
+#   srf_leaf {
+#     set rtl [list [file join $src rtl/srf/ftlpu_sr_superlane_col_dir.sv]]
+#     set top ftlpu_sr_superlane_col_dir_lane
+#   }
+#   old_mem {
+#     set rtl [list [file join $src rtl/core/lpu_pkg.sv] [file join $src rtl/core/lpu_isa_decode.sv] [file join $src rtl/mem/lpu_mem_tile_slice.sv]]
+#     set top lpu_mem_tile_slice_behavior
+#     set generics {DEPTH_ROWS=1024}
+#   }
+#   old_dot {
+#     set rtl [list [file join $src rtl/vxm/lpu_vxm_math_pkg.sv] [file join $src rtl/mxm/lpu_mxm_dot_bank.sv]]
+#     set top lpu_mxm_dot_bank
+#   }
+#   alu_basic {set top lpu_vxm_alu; set generics {SPECIAL_KIND=0}}
+#   alu_exp {set top lpu_vxm_alu; set generics {SPECIAL_KIND=1}}
+#   alu_recip {set top lpu_vxm_alu; set generics {SPECIAL_KIND=2}}
+#   old_top {
+#     set top lpu_top
+#     set generics {ICU_QUEUE_DEPTH=4 MEM_DEPTH_ROWS=64 ACTIVE_MEM_COLUMNS=4 MXM_ACCUMULATOR_BLOCK_COUNT=1}
+#     set_property verilog_define FTLPU_DISABLE_BLOCK8 [current_fileset]
+#   }
+#   default {error "Unknown case: $case_name"}
+# }
+# puts "EXPERIMENT case=$case_name top=$top part=$part generics=$generics"
+EXPERIMENT case=alu_basic top=lpu_vxm_alu part=xcvu9p-flga2104-2L-e generics=SPECIAL_KIND=0
+# if {[string match "alu_*" $case_name]} {
+#   # Compile only this leaf's dependency closure, not unrelated tile/top code.
+#   set index [lsearch -exact $rtl [file join $src rtl/vxm/lpu_vxm_alu.sv]]
+#   set rtl [lrange $rtl 0 $index]
+# }
+# read_verilog -sv $rtl
+# set args [list -top $top -part $part -mode out_of_context -flatten_hierarchy rebuilt]
+# if {[llength $generics]} {lappend args -generic $generics}
+# synth_design {*}$args
+Command: synth_design -top lpu_vxm_alu -part xcvu9p-flga2104-2L-e -mode out_of_context -flatten_hierarchy rebuilt -generic SPECIAL_KIND=0
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xcvu9p'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xcvu9p'
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 4 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 41592
+---------------------------------------------------------------------------------
+Starting Synthesize : Time (s): cpu = 00:00:07 ; elapsed = 00:00:17 . Memory (MB): peak = 1014.977 ; gain = 443.102
+---------------------------------------------------------------------------------
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_alu' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_alu.sv:1]
+	Parameter SPECIAL_KIND bound to: 0 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_float_unpack' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_float_unpack.sv:6]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_float_unpack' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_float_unpack.sv:6]
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_basic_alu' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_basic_alu.sv:1]
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_basic_opcode_decode' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_basic_opcode_decode.sv:2]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_basic_opcode_decode' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_basic_opcode_decode.sv:2]
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_shared_float_compare' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_shared_float_compare.sv:8]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_shared_float_compare' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_shared_float_compare.sv:8]
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_shared_float_adder' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_shared_float_adder.sv:6]
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_segmented_addsub' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_segmented_addsub.sv:4]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_segmented_addsub' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_segmented_addsub.sv:4]
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_grouped_lzc' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_grouped_lzc.sv:3]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_grouped_lzc' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_grouped_lzc.sv:3]
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_shared_left_shift' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_shared_left_shift.sv:3]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_shared_left_shift' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_shared_left_shift.sv:3]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_shared_float_adder' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_shared_float_adder.sv:6]
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_shared_float_multiplier' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_shared_float_multiplier.sv:1]
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_significand_multiplier' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_significand_multiplier.sv:1]
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_mul8x8' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_mul8x8.sv:1]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_mul8x8' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_mul8x8.sv:1]
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_csa3_2' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_csa3_2.sv:4]
+	Parameter WIDTH bound to: 48 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_csa3_2' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_csa3_2.sv:4]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_significand_multiplier' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_significand_multiplier.sv:1]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_shared_float_multiplier' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_shared_float_multiplier.sv:1]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_basic_alu' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_basic_alu.sv:1]
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_special_alu' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_special_alu.sv:1]
+	Parameter SPECIAL_KIND bound to: 0 - type: integer 
+	Parameter LUT_BANK_COUNT bound to: 3 - type: integer 
+	Parameter LUT_ENTRY_COUNT bound to: 64 - type: integer 
+	Parameter LUT_BANK_WIDTH bound to: 2 - type: integer 
+	Parameter LUT_ADDRESS_WIDTH bound to: 6 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_special_coefficient_multiplier' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_special_coefficient_multiplier.sv:12]
+WARNING: [Synth 8-693] zero replication count - replication ignored [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_special_coefficient_multiplier.sv:194]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_special_coefficient_multiplier' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_special_coefficient_multiplier.sv:12]
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_recip_linear_fixed' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_recip_linear_fixed.sv:8]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_recip_linear_fixed' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_recip_linear_fixed.sv:8]
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_rsqrt_linear_fixed' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_rsqrt_linear_fixed.sv:8]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_rsqrt_linear_fixed' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_rsqrt_linear_fixed.sv:8]
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_fp32_newton_multiplier' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_fp32_newton_multiplier.sv:10]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_fp32_newton_multiplier' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_fp32_newton_multiplier.sv:10]
+INFO: [Synth 8-6157] synthesizing module 'lpu_vxm_fp32_rsqrt_correction' [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_fp32_rsqrt_correction.sv:6]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_fp32_rsqrt_correction' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_fp32_rsqrt_correction.sv:6]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_special_alu' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_special_alu.sv:1]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_vxm_alu' (0#1) [C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run009/src/rtl/vxm/lpu_vxm_alu.sv:1]
+WARNING: [Synth 8-7129] Port m_i[31] in module lpu_vxm_fp32_rsqrt_correction is either unconnected or has no load
+WARNING: [Synth 8-7129] Port y_squared_i[31] in module lpu_vxm_fp32_rsqrt_correction is either unconnected or has no load
+WARNING: [Synth 8-7129] Port data_format_i[1] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port data_format_i[0] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port opcode_i[2] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port opcode_i[1] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port opcode_i[0] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port operand_format_valid_i in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port operand_sign_i in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port operand_exponent_i[7] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port operand_exponent_i[6] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port operand_exponent_i[5] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port operand_exponent_i[4] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port operand_exponent_i[3] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port operand_exponent_i[2] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port operand_exponent_i[1] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port operand_exponent_i[0] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port operand_fraction_i[22] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port operand_fraction_i[21] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port operand_fraction_i[20] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port operand_fraction_i[19] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port operand_fraction_i[18] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port operand_fraction_i[17] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port operand_fraction_i[16] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port operand_fraction_i[15] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port operand_fraction_i[14] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port operand_fraction_i[13] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port operand_fraction_i[12] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port operand_fraction_i[11] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port operand_fraction_i[10] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port operand_fraction_i[9] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port operand_fraction_i[8] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port operand_fraction_i[7] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port operand_fraction_i[6] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port operand_fraction_i[5] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port operand_fraction_i[4] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port operand_fraction_i[3] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port operand_fraction_i[2] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port operand_fraction_i[1] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port operand_fraction_i[0] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port operand_zero_i in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port operand_inf_i in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port operand_nan_i in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_configured_i[2] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_configured_i[1] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_configured_i[0] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[47] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[46] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[45] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[44] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[43] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[42] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[41] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[40] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[39] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[38] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[37] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[36] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[35] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[34] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[33] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[32] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[31] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[30] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[29] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[28] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[27] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[26] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[25] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[24] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[23] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[22] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[21] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[20] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[19] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[18] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[17] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[16] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[15] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[14] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[13] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[12] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[11] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[10] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[9] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[8] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[7] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[6] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[5] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[4] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[3] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[2] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[1] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_input_min_i[0] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_segment_width_i[47] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_segment_width_i[46] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_segment_width_i[45] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_segment_width_i[44] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_segment_width_i[43] in module lpu_vxm_special_alu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lut_segment_width_i[42] in module lpu_vxm_special_alu is either unconnected or has no load
+INFO: [Common 17-14] Message 'Synth 8-7129' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+---------------------------------------------------------------------------------
+Finished Synthesize : Time (s): cpu = 00:00:16 ; elapsed = 00:00:39 . Memory (MB): peak = 1283.660 ; gain = 711.785
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:17 ; elapsed = 00:00:43 . Memory (MB): peak = 1283.660 ; gain = 711.785
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xcvu9p-flga2104-2L-e
+INFO: [Synth 8-6742] Reading net delay rules and data
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:17 ; elapsed = 00:00:43 . Memory (MB): peak = 1283.660 ; gain = 711.785
+---------------------------------------------------------------------------------
+INFO: [Device 21-403] Loading part xcvu9p-flga2104-2L-e
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:44 ; elapsed = 00:01:12 . Memory (MB): peak = 2167.891 ; gain = 1596.016
+---------------------------------------------------------------------------------
+No constraint files found.
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input   65 Bit       Adders := 1     
+	   2 Input   64 Bit       Adders := 2     
+	   2 Input   50 Bit       Adders := 4     
+	   2 Input   48 Bit       Adders := 1     
+	   3 Input   40 Bit       Adders := 2     
+	   2 Input   40 Bit       Adders := 4     
+	   3 Input   32 Bit       Adders := 19    
+	   2 Input   32 Bit       Adders := 83    
+	   5 Input   32 Bit       Adders := 2     
+	   2 Input   28 Bit       Adders := 8     
+	   3 Input   27 Bit       Adders := 8     
+	   2 Input   27 Bit       Adders := 3     
+	   2 Input   26 Bit       Adders := 1     
+	   2 Input   25 Bit       Adders := 20    
+	   2 Input   16 Bit       Adders := 12    
+	   2 Input   15 Bit       Adders := 5     
+	   3 Input   15 Bit       Adders := 1     
+	   3 Input   14 Bit       Adders := 6     
+	   2 Input   14 Bit       Adders := 2     
+	   2 Input   12 Bit       Adders := 10    
+	   2 Input   11 Bit       Adders := 2     
+	   2 Input   10 Bit       Adders := 28    
+	   4 Input   10 Bit       Adders := 2     
+	   2 Input    9 Bit       Adders := 219   
+	   3 Input    9 Bit       Adders := 1     
+	   2 Input    8 Bit       Adders := 8     
+	   3 Input    8 Bit       Adders := 5     
+	   2 Input    7 Bit       Adders := 20    
+	   2 Input    6 Bit       Adders := 90    
+	   3 Input    6 Bit       Adders := 1     
+	   2 Input    5 Bit       Adders := 2     
+	   3 Input    5 Bit       Adders := 1     
+	   2 Input    4 Bit       Adders := 3     
++---XORs : 
+	   3 Input     48 Bit         XORs := 7     
+	   2 Input     27 Bit         XORs := 1     
+	   2 Input      1 Bit         XORs := 12    
++---Registers : 
+	               48 Bit    Registers := 1     
+	               32 Bit    Registers := 29    
+	               26 Bit    Registers := 4     
+	               18 Bit    Registers := 1     
+	               17 Bit    Registers := 1     
+	               10 Bit    Registers := 9     
+	                8 Bit    Registers := 7     
+	                2 Bit    Registers := 5     
+	                1 Bit    Registers := 26    
++---Muxes : 
+	   2 Input   64 Bit        Muxes := 2     
+	   2 Input   51 Bit        Muxes := 1     
+	   2 Input   50 Bit        Muxes := 1     
+	   2 Input   48 Bit        Muxes := 7     
+	   3 Input   48 Bit        Muxes := 2     
+	   4 Input   48 Bit        Muxes := 1     
+	   2 Input   40 Bit        Muxes := 4     
+	   2 Input   32 Bit        Muxes := 476   
+	   4 Input   32 Bit        Muxes := 15    
+	   3 Input   32 Bit        Muxes := 5     
+	  31 Input   31 Bit        Muxes := 1     
+	   2 Input   31 Bit        Muxes := 2     
+	   4 Input   31 Bit        Muxes := 2     
+	   2 Input   28 Bit        Muxes := 2     
+	   2 Input   27 Bit        Muxes := 256   
+	   4 Input   27 Bit        Muxes := 4     
+	   2 Input   26 Bit        Muxes := 7     
+	   4 Input   26 Bit        Muxes := 2     
+	   2 Input   25 Bit        Muxes := 13    
+	   2 Input   24 Bit        Muxes := 25    
+	   4 Input   24 Bit        Muxes := 4     
+	   2 Input   23 Bit        Muxes := 34    
+	   4 Input   23 Bit        Muxes := 2     
+	   2 Input   18 Bit        Muxes := 6     
+	   4 Input   18 Bit        Muxes := 1     
+	   2 Input   17 Bit        Muxes := 4     
+	   4 Input   17 Bit        Muxes := 1     
+	   2 Input   16 Bit        Muxes := 113   
+	   3 Input   16 Bit        Muxes := 4     
+	   4 Input   16 Bit        Muxes := 2     
+	   4 Input   15 Bit        Muxes := 2     
+	   2 Input   14 Bit        Muxes := 90    
+	   2 Input   13 Bit        Muxes := 2     
+	   2 Input   12 Bit        Muxes := 12    
+	   2 Input   11 Bit        Muxes := 23    
+	   2 Input   10 Bit        Muxes := 33    
+	   4 Input   10 Bit        Muxes := 4     
+	   2 Input    9 Bit        Muxes := 3     
+	   4 Input    9 Bit        Muxes := 1     
+	   2 Input    8 Bit        Muxes := 48    
+	   4 Input    8 Bit        Muxes := 5     
+	   2 Input    7 Bit        Muxes := 9     
+	   4 Input    7 Bit        Muxes := 2     
+	   2 Input    6 Bit        Muxes := 1     
+	   4 Input    6 Bit        Muxes := 4     
+	   2 Input    5 Bit        Muxes := 15    
+	   4 Input    5 Bit        Muxes := 4     
+	   4 Input    4 Bit        Muxes := 2     
+	   8 Input    3 Bit        Muxes := 4     
+	   2 Input    2 Bit        Muxes := 1     
+	   2 Input    1 Bit        Muxes := 293   
+	   4 Input    1 Bit        Muxes := 24    
+	   7 Input    1 Bit        Muxes := 8     
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 6840 (col length:120)
+BRAMs: 4320 (col length: RAMB18 360 RAMB36 180)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+No constraint files found.
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+DSP Report: Generating DSP product_q551, operation Mode is: A*B.
+DSP Report: operator product_q551 is absorbed into DSP product_q551.
+DSP Report: operator product_q551 is absorbed into DSP product_q551.
+DSP Report: Generating DSP product_q551, operation Mode is: (PCIN>>17)+A*B.
+DSP Report: operator product_q551 is absorbed into DSP product_q551.
+DSP Report: operator product_q551 is absorbed into DSP product_q551.
+DSP Report: Generating DSP u_recip_newton_multiply_stage1/guard_bit1, operation Mode is: A*B.
+DSP Report: operator u_recip_newton_multiply_stage1/guard_bit1 is absorbed into DSP u_recip_newton_multiply_stage1/guard_bit1.
+DSP Report: operator u_recip_newton_multiply_stage1/guard_bit1 is absorbed into DSP u_recip_newton_multiply_stage1/guard_bit1.
+DSP Report: Generating DSP u_recip_newton_multiply_stage1/guard_bit1, operation Mode is: (PCIN>>17)+A*B.
+DSP Report: operator u_recip_newton_multiply_stage1/guard_bit1 is absorbed into DSP u_recip_newton_multiply_stage1/guard_bit1.
+DSP Report: operator u_recip_newton_multiply_stage1/guard_bit1 is absorbed into DSP u_recip_newton_multiply_stage1/guard_bit1.
+DSP Report: Generating DSP u_rsqrt_newton_square/guard_bit1, operation Mode is: A*B.
+DSP Report: operator u_rsqrt_newton_square/guard_bit1 is absorbed into DSP u_rsqrt_newton_square/guard_bit1.
+DSP Report: operator u_rsqrt_newton_square/guard_bit1 is absorbed into DSP u_rsqrt_newton_square/guard_bit1.
+DSP Report: Generating DSP u_rsqrt_newton_square/guard_bit1, operation Mode is: (PCIN>>17)+A*B.
+DSP Report: operator u_rsqrt_newton_square/guard_bit1 is absorbed into DSP u_rsqrt_newton_square/guard_bit1.
+DSP Report: operator u_rsqrt_newton_square/guard_bit1 is absorbed into DSP u_rsqrt_newton_square/guard_bit1.
+DSP Report: Generating DSP guard_bit1, operation Mode is: A*B.
+DSP Report: operator guard_bit1 is absorbed into DSP guard_bit1.
+DSP Report: operator guard_bit1 is absorbed into DSP guard_bit1.
+DSP Report: Generating DSP guard_bit1, operation Mode is: (PCIN>>17)+A*B.
+DSP Report: operator guard_bit1 is absorbed into DSP guard_bit1.
+DSP Report: operator guard_bit1 is absorbed into DSP guard_bit1.
+DSP Report: Generating DSP guard_bit1, operation Mode is: A*(B:0xaaab).
+DSP Report: operator guard_bit1 is absorbed into DSP guard_bit1.
+DSP Report: operator guard_bit1 is absorbed into DSP guard_bit1.
+DSP Report: Generating DSP guard_bit1, operation Mode is: (PCIN>>17)+A*(B:0x55).
+DSP Report: operator guard_bit1 is absorbed into DSP guard_bit1.
+DSP Report: operator guard_bit1 is absorbed into DSP guard_bit1.
+INFO: [Synth 8-3886] merging instance 'stage0_segment_width_q_reg[31]' (FDCE) to 'stage0_segment_width_q_reg[0]'
+INFO: [Synth 8-3886] merging instance 'stage0_segment_width_q_reg[28]' (FDCE) to 'stage0_segment_width_q_reg[0]'
+INFO: [Synth 8-3886] merging instance 'stage0_segment_width_q_reg[30]' (FDCE) to 'stage0_segment_width_q_reg[0]'
+INFO: [Synth 8-3886] merging instance 'stage0_segment_width_q_reg[29]' (FDCE) to 'stage0_segment_width_q_reg[0]'
+INFO: [Synth 8-3886] merging instance 'stage0_segment_width_q_reg[24]' (FDCE) to 'stage0_segment_width_q_reg[0]'
+INFO: [Synth 8-3886] merging instance 'stage0_segment_width_q_reg[25]' (FDCE) to 'stage0_segment_width_q_reg[0]'
+INFO: [Synth 8-3886] merging instance 'stage0_segment_width_q_reg[26]' (FDCE) to 'stage0_segment_width_q_reg[0]'
+INFO: [Synth 8-3886] merging instance 'stage0_segment_width_q_reg[27]' (FDCE) to 'stage0_segment_width_q_reg[0]'
+INFO: [Synth 8-3886] merging instance 'stage0_segment_width_q_reg[18]' (FDCE) to 'stage0_segment_width_q_reg[0]'
+INFO: [Synth 8-3886] merging instance 'stage0_segment_width_q_reg[19]' (FDCE) to 'stage0_segment_width_q_reg[0]'
+INFO: [Synth 8-3886] merging instance 'stage0_segment_width_q_reg[16]' (FDCE) to 'stage0_segment_width_q_reg[0]'
+INFO: [Synth 8-3886] merging instance 'stage0_segment_width_q_reg[17]' (FDCE) to 'stage0_segment_width_q_reg[0]'
+INFO: [Synth 8-3886] merging instance 'stage0_segment_width_q_reg[22]' (FDCE) to 'stage0_segment_width_q_reg[0]'
+INFO: [Synth 8-3886] merging instance 'stage0_segment_width_q_reg[23]' (FDCE) to 'stage0_segment_width_q_reg[0]'
+INFO: [Synth 8-3886] merging instance 'stage0_segment_width_q_reg[20]' (FDCE) to 'stage0_segment_width_q_reg[0]'
+INFO: [Synth 8-3886] merging instance 'stage0_segment_width_q_reg[21]' (FDCE) to 'stage0_segment_width_q_reg[0]'
+INFO: [Synth 8-3886] merging instance 'stage0_segment_width_q_reg[6]' (FDCE) to 'stage0_segment_width_q_reg[0]'
+INFO: [Synth 8-3886] merging instance 'stage0_segment_width_q_reg[7]' (FDCE) to 'stage0_segment_width_q_reg[0]'
+INFO: [Synth 8-3886] merging instance 'stage0_segment_width_q_reg[4]' (FDCE) to 'stage0_segment_width_q_reg[0]'
+INFO: [Synth 8-3886] merging instance 'stage0_segment_width_q_reg[5]' (FDCE) to 'stage0_segment_width_q_reg[0]'
+INFO: [Synth 8-3886] merging instance 'stage0_segment_width_q_reg[0]' (FDCE) to 'stage0_segment_width_q_reg[1]'
+INFO: [Synth 8-3886] merging instance 'stage0_segment_width_q_reg[1]' (FDCE) to 'stage0_segment_width_q_reg[2]'
+INFO: [Synth 8-3886] merging instance 'stage0_segment_width_q_reg[2]' (FDCE) to 'stage0_segment_width_q_reg[3]'
+INFO: [Synth 8-3886] merging instance 'stage0_segment_width_q_reg[3]' (FDCE) to 'stage0_segment_width_q_reg[8]'
+INFO: [Synth 8-3886] merging instance 'stage0_segment_width_q_reg[14]' (FDCE) to 'stage0_segment_width_q_reg[8]'
+INFO: [Synth 8-3886] merging instance 'stage0_segment_width_q_reg[15]' (FDCE) to 'stage0_segment_width_q_reg[8]'
+INFO: [Synth 8-3886] merging instance 'stage0_segment_width_q_reg[12]' (FDPE) to 'stage0_segment_width_q_reg[10]'
+INFO: [Synth 8-3886] merging instance 'stage0_segment_width_q_reg[13]' (FDPE) to 'stage0_segment_width_q_reg[10]'
+INFO: [Synth 8-3886] merging instance 'stage0_segment_width_q_reg[8]' (FDCE) to 'stage0_segment_width_q_reg[9]'
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\stage0_segment_width_q_reg[9] )
+INFO: [Synth 8-3886] merging instance 'stage0_segment_width_q_reg[10]' (FDPE) to 'stage0_segment_width_q_reg[11]'
+INFO: [Synth 8-3333] propagating constant 1 across sequential element (\stage0_segment_width_q_reg[11] )
+DSP Report: Generating DSP guard_bit1, operation Mode is: A*B.
+DSP Report: operator guard_bit1 is absorbed into DSP guard_bit1.
+DSP Report: operator guard_bit1 is absorbed into DSP guard_bit1.
+DSP Report: Generating DSP guard_bit1, operation Mode is: (PCIN>>17)+A*B.
+DSP Report: operator guard_bit1 is absorbed into DSP guard_bit1.
+DSP Report: operator guard_bit1 is absorbed into DSP guard_bit1.
+DSP Report: Generating DSP extended1, operation Mode is: A*B.
+DSP Report: operator extended1 is absorbed into DSP extended1.
+DSP Report: Generating DSP guard_bit1, operation Mode is: A*B.
+DSP Report: operator guard_bit1 is absorbed into DSP guard_bit1.
+DSP Report: operator guard_bit1 is absorbed into DSP guard_bit1.
+DSP Report: Generating DSP guard_bit1, operation Mode is: (PCIN>>17)+A*B.
+DSP Report: operator guard_bit1 is absorbed into DSP guard_bit1.
+DSP Report: operator guard_bit1 is absorbed into DSP guard_bit1.
+DSP Report: Generating DSP guard_bit1, operation Mode is: A*B.
+DSP Report: operator guard_bit1 is absorbed into DSP guard_bit1.
+DSP Report: operator guard_bit1 is absorbed into DSP guard_bit1.
+DSP Report: Generating DSP guard_bit1, operation Mode is: (PCIN>>17)+A*B.
+DSP Report: operator guard_bit1 is absorbed into DSP guard_bit1.
+DSP Report: operator guard_bit1 is absorbed into DSP guard_bit1.
+DSP Report: Generating DSP extended1, operation Mode is: A*B.
+DSP Report: operator extended1 is absorbed into DSP extended1.
+DSP Report: Generating DSP guard_bit1, operation Mode is: A*B.
+DSP Report: operator guard_bit1 is absorbed into DSP guard_bit1.
+DSP Report: operator guard_bit1 is absorbed into DSP guard_bit1.
+DSP Report: Generating DSP guard_bit1, operation Mode is: (PCIN>>17)+A*B.
+DSP Report: operator guard_bit1 is absorbed into DSP guard_bit1.
+DSP Report: operator guard_bit1 is absorbed into DSP guard_bit1.
+INFO: [Synth 8-3886] merging instance 'stage0_reciprocal_unity_exponent_q_reg[0]' (FDCE) to 'stage0_reciprocal_unity_exponent_q_reg[9]'
+INFO: [Synth 8-3886] merging instance 'stage0_reciprocal_unity_exponent_q_reg[1]' (FDCE) to 'stage0_reciprocal_unity_exponent_q_reg[9]'
+INFO: [Synth 8-3886] merging instance 'stage0_reciprocal_unity_exponent_q_reg[2]' (FDCE) to 'stage0_reciprocal_unity_exponent_q_reg[9]'
+INFO: [Synth 8-3886] merging instance 'stage0_reciprocal_unity_exponent_q_reg[3]' (FDCE) to 'stage0_reciprocal_unity_exponent_q_reg[9]'
+INFO: [Synth 8-3886] merging instance 'stage0_reciprocal_unity_exponent_q_reg[4]' (FDCE) to 'stage0_reciprocal_unity_exponent_q_reg[9]'
+INFO: [Synth 8-3886] merging instance 'stage0_reciprocal_unity_exponent_q_reg[5]' (FDCE) to 'stage0_reciprocal_unity_exponent_q_reg[9]'
+INFO: [Synth 8-3886] merging instance 'stage0_reciprocal_unity_exponent_q_reg[6]' (FDCE) to 'stage0_reciprocal_unity_exponent_q_reg[9]'
+INFO: [Synth 8-3886] merging instance 'stage0_reciprocal_unity_exponent_q_reg[7]' (FDCE) to 'stage0_reciprocal_unity_exponent_q_reg[9]'
+INFO: [Synth 8-3886] merging instance 'stage0_reciprocal_unity_exponent_q_reg[8]' (FDCE) to 'stage0_reciprocal_unity_exponent_q_reg[9]'
+INFO: [Synth 8-3886] merging instance 'stage0_reciprocal_unity_exponent_q_reg[9]' (FDCE) to 'stage0_result_exponent_q_reg[0]'
+INFO: [Synth 8-3886] merging instance 'stage0_result_exponent_q_reg[0]' (FDCE) to 'stage0_result_exponent_q_reg[1]'
+INFO: [Synth 8-3886] merging instance 'stage0_result_exponent_q_reg[1]' (FDCE) to 'stage0_result_exponent_q_reg[2]'
+INFO: [Synth 8-3886] merging instance 'stage0_result_exponent_q_reg[2]' (FDCE) to 'stage0_result_exponent_q_reg[3]'
+INFO: [Synth 8-3886] merging instance 'stage0_result_exponent_q_reg[3]' (FDCE) to 'stage0_result_exponent_q_reg[4]'
+INFO: [Synth 8-3886] merging instance 'stage0_result_exponent_q_reg[4]' (FDCE) to 'stage0_result_exponent_q_reg[5]'
+INFO: [Synth 8-3886] merging instance 'stage0_result_exponent_q_reg[5]' (FDCE) to 'stage0_result_exponent_q_reg[6]'
+INFO: [Synth 8-3886] merging instance 'stage0_result_exponent_q_reg[6]' (FDCE) to 'stage0_result_exponent_q_reg[7]'
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\stage0_result_exponent_q_reg[7] )
+INFO: [Synth 8-3886] merging instance 'read_meta_reciprocal_unity_exponent_q_reg[0]' (FDCE) to 'read_meta_result_exponent_q_reg[0]'
+INFO: [Synth 8-3886] merging instance 'read_meta_reciprocal_unity_exponent_q_reg[1]' (FDCE) to 'read_meta_result_exponent_q_reg[0]'
+INFO: [Synth 8-3886] merging instance 'read_meta_reciprocal_unity_exponent_q_reg[2]' (FDCE) to 'read_meta_result_exponent_q_reg[0]'
+INFO: [Synth 8-3886] merging instance 'read_meta_reciprocal_unity_exponent_q_reg[3]' (FDCE) to 'read_meta_result_exponent_q_reg[0]'
+INFO: [Synth 8-3886] merging instance 'read_meta_reciprocal_unity_exponent_q_reg[4]' (FDCE) to 'read_meta_result_exponent_q_reg[0]'
+INFO: [Synth 8-3886] merging instance 'read_meta_reciprocal_unity_exponent_q_reg[5]' (FDCE) to 'read_meta_result_exponent_q_reg[0]'
+INFO: [Synth 8-3886] merging instance 'read_meta_reciprocal_unity_exponent_q_reg[6]' (FDCE) to 'read_meta_result_exponent_q_reg[0]'
+INFO: [Synth 8-3886] merging instance 'read_meta_reciprocal_unity_exponent_q_reg[7]' (FDCE) to 'read_meta_result_exponent_q_reg[0]'
+INFO: [Synth 8-3886] merging instance 'read_meta_reciprocal_unity_exponent_q_reg[8]' (FDCE) to 'read_meta_result_exponent_q_reg[0]'
+INFO: [Synth 8-3886] merging instance 'read_meta_reciprocal_unity_exponent_q_reg[9]' (FDCE) to 'read_meta_result_exponent_q_reg[0]'
+INFO: [Synth 8-3886] merging instance 'read_meta_result_exponent_q_reg[0]' (FDCE) to 'read_meta_result_exponent_q_reg[1]'
+INFO: [Synth 8-3886] merging instance 'read_meta_result_exponent_q_reg[1]' (FDCE) to 'read_meta_result_exponent_q_reg[2]'
+INFO: [Synth 8-3886] merging instance 'read_meta_result_exponent_q_reg[2]' (FDCE) to 'read_meta_result_exponent_q_reg[3]'
+INFO: [Synth 8-3886] merging instance 'read_meta_result_exponent_q_reg[3]' (FDCE) to 'read_meta_result_exponent_q_reg[4]'
+INFO: [Synth 8-3886] merging instance 'read_meta_result_exponent_q_reg[4]' (FDCE) to 'read_meta_result_exponent_q_reg[5]'
+INFO: [Synth 8-3886] merging instance 'read_meta_result_exponent_q_reg[5]' (FDCE) to 'read_meta_result_exponent_q_reg[6]'
+INFO: [Synth 8-3886] merging instance 'read_meta_result_exponent_q_reg[6]' (FDCE) to 'read_meta_result_exponent_q_reg[7]'
+INFO: [Synth 8-3886] merging instance 'multiply_reciprocal_unity_exponent_q_reg[0]' (FDC) to 'multiply_result_exponent_q_reg[6]'
+INFO: [Synth 8-3886] merging instance 'multiply_reciprocal_unity_exponent_q_reg[1]' (FDC) to 'multiply_result_exponent_q_reg[6]'
+INFO: [Synth 8-3886] merging instance 'multiply_reciprocal_unity_exponent_q_reg[2]' (FDC) to 'multiply_result_exponent_q_reg[6]'
+INFO: [Synth 8-3886] merging instance 'multiply_reciprocal_unity_exponent_q_reg[3]' (FDC) to 'multiply_result_exponent_q_reg[6]'
+INFO: [Synth 8-3886] merging instance 'multiply_reciprocal_unity_exponent_q_reg[4]' (FDC) to 'multiply_result_exponent_q_reg[6]'
+INFO: [Synth 8-3886] merging instance 'multiply_reciprocal_unity_exponent_q_reg[5]' (FDC) to 'multiply_result_exponent_q_reg[6]'
+INFO: [Synth 8-3886] merging instance 'multiply_reciprocal_unity_exponent_q_reg[6]' (FDC) to 'multiply_result_exponent_q_reg[6]'
+INFO: [Synth 8-3886] merging instance 'multiply_reciprocal_unity_exponent_q_reg[7]' (FDC) to 'multiply_result_exponent_q_reg[6]'
+INFO: [Synth 8-3886] merging instance 'multiply_reciprocal_unity_exponent_q_reg[8]' (FDC) to 'multiply_result_exponent_q_reg[6]'
+INFO: [Synth 8-3886] merging instance 'multiply_reciprocal_unity_exponent_q_reg[9]' (FDC) to 'multiply_result_exponent_q_reg[6]'
+INFO: [Synth 8-3886] merging instance 'multiply_result_exponent_q_reg[0]' (FDC) to 'multiply_result_exponent_q_reg[6]'
+INFO: [Synth 8-3886] merging instance 'multiply_result_exponent_q_reg[1]' (FDC) to 'multiply_result_exponent_q_reg[6]'
+INFO: [Synth 8-3886] merging instance 'multiply_result_exponent_q_reg[2]' (FDC) to 'multiply_result_exponent_q_reg[6]'
+INFO: [Synth 8-3886] merging instance 'multiply_result_exponent_q_reg[3]' (FDC) to 'multiply_result_exponent_q_reg[6]'
+INFO: [Synth 8-3886] merging instance 'multiply_result_exponent_q_reg[4]' (FDC) to 'multiply_result_exponent_q_reg[6]'
+INFO: [Synth 8-3886] merging instance 'multiply_result_exponent_q_reg[5]' (FDC) to 'multiply_result_exponent_q_reg[6]'
+INFO: [Synth 8-3886] merging instance 'multiply_result_exponent_q_reg[6]' (FDC) to 'multiply_result_exponent_q_reg[7]'
+INFO: [Synth 8-3886] merging instance 'add_reciprocal_unity_exponent_q_reg[0]' (FDC) to 'add_result_exponent_q_reg[6]'
+INFO: [Synth 8-3886] merging instance 'add_reciprocal_unity_exponent_q_reg[1]' (FDC) to 'add_result_exponent_q_reg[6]'
+INFO: [Synth 8-3886] merging instance 'add_reciprocal_unity_exponent_q_reg[2]' (FDC) to 'add_result_exponent_q_reg[6]'
+INFO: [Synth 8-3886] merging instance 'add_reciprocal_unity_exponent_q_reg[3]' (FDC) to 'add_result_exponent_q_reg[6]'
+INFO: [Synth 8-3886] merging instance 'add_reciprocal_unity_exponent_q_reg[4]' (FDC) to 'add_result_exponent_q_reg[6]'
+INFO: [Synth 8-3886] merging instance 'add_reciprocal_unity_exponent_q_reg[5]' (FDC) to 'add_result_exponent_q_reg[6]'
+INFO: [Synth 8-3886] merging instance 'add_reciprocal_unity_exponent_q_reg[6]' (FDC) to 'add_result_exponent_q_reg[6]'
+INFO: [Synth 8-3886] merging instance 'add_reciprocal_unity_exponent_q_reg[7]' (FDC) to 'add_result_exponent_q_reg[6]'
+INFO: [Synth 8-3886] merging instance 'add_reciprocal_unity_exponent_q_reg[8]' (FDC) to 'add_result_exponent_q_reg[6]'
+INFO: [Synth 8-3886] merging instance 'add_reciprocal_unity_exponent_q_reg[9]' (FDC) to 'add_result_exponent_q_reg[6]'
+INFO: [Synth 8-3886] merging instance 'add_result_exponent_q_reg[0]' (FDC) to 'add_result_exponent_q_reg[6]'
+INFO: [Synth 8-3886] merging instance 'add_result_exponent_q_reg[1]' (FDC) to 'add_result_exponent_q_reg[6]'
+INFO: [Synth 8-3886] merging instance 'add_result_exponent_q_reg[2]' (FDC) to 'add_result_exponent_q_reg[6]'
+INFO: [Synth 8-3886] merging instance 'add_result_exponent_q_reg[3]' (FDC) to 'add_result_exponent_q_reg[6]'
+INFO: [Synth 8-3886] merging instance 'add_result_exponent_q_reg[4]' (FDC) to 'add_result_exponent_q_reg[6]'
+INFO: [Synth 8-3886] merging instance 'add_result_exponent_q_reg[5]' (FDC) to 'add_result_exponent_q_reg[6]'
+INFO: [Synth 8-3886] merging instance 'add_result_exponent_q_reg[6]' (FDC) to 'add_result_exponent_q_reg[7]'
+INFO: [Synth 8-3886] merging instance 'exp_horner1_exponent_q_reg[0]' (FDCE) to 'exp_horner1_exponent_q_reg[1]'
+INFO: [Synth 8-3886] merging instance 'reciprocal_multiply_unity_exponent_q_reg[9]' (FDCE) to 'exp_horner1_exponent_q_reg[1]'
+INFO: [Common 17-14] Message 'Synth 8-3886' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+INFO: [Common 17-14] Message 'Synth 8-3886' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\read_meta_result_exponent_q_reg[7] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\multiply_result_exponent_q_reg[7] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\multiply_result_exponent_q_reg[7] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\exp_horner1_exponent_q_reg[7] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\exp_horner2_exponent_q_reg[7] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\exp_base_exponent_q_reg[7] )
+DSP Report: Generating DSP leading_bit1, operation Mode is: A*B.
+DSP Report: operator leading_bit1 is absorbed into DSP leading_bit1.
+DSP Report: operator leading_bit1 is absorbed into DSP leading_bit1.
+DSP Report: Generating DSP leading_bit1, operation Mode is: (PCIN>>17)+A*B.
+DSP Report: operator leading_bit1 is absorbed into DSP leading_bit1.
+DSP Report: operator leading_bit1 is absorbed into DSP leading_bit1.
+INFO: [Synth 8-5544] ROM "coefficient_shift" won't be mapped to Block RAM because address size (2) smaller than threshold (5)
+INFO: [Synth 8-5544] ROM "input_fraction_bits" won't be mapped to Block RAM because address size (2) smaller than threshold (5)
+DSP Report: Generating DSP range_fault_o3, operation Mode is: A*B.
+DSP Report: operator range_fault_o3 is absorbed into DSP range_fault_o3.
+INFO: [Synth 8-5544] ROM "coefficient_shift" won't be mapped to Block RAM because address size (2) smaller than threshold (5)
+INFO: [Synth 8-5544] ROM "input_fraction_bits" won't be mapped to Block RAM because address size (2) smaller than threshold (5)
+DSP Report: Generating DSP range_fault_o3, operation Mode is: A*B.
+DSP Report: operator range_fault_o3 is absorbed into DSP range_fault_o3.
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (stage0_valid_q_reg)
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\read_meta_reciprocal_residual_q_reg[0] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\read_meta_reciprocal_residual_q_reg[1] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\read_meta_reciprocal_residual_q_reg[2] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\read_meta_reciprocal_residual_q_reg[3] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\read_meta_reciprocal_residual_q_reg[4] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\read_meta_reciprocal_residual_q_reg[5] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\read_meta_reciprocal_residual_q_reg[6] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\read_meta_reciprocal_residual_q_reg[7] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\read_meta_reciprocal_residual_q_reg[8] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\read_meta_reciprocal_residual_q_reg[9] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\read_meta_reciprocal_residual_q_reg[10] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\read_meta_reciprocal_residual_q_reg[11] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\read_meta_reciprocal_residual_q_reg[12] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\read_meta_reciprocal_residual_q_reg[13] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\read_meta_reciprocal_residual_q_reg[14] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\read_meta_reciprocal_residual_q_reg[15] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\read_meta_reciprocal_residual_q_reg[16] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\read_meta_rsqrt_residual_q_reg[0] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\read_meta_rsqrt_residual_q_reg[1] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\read_meta_rsqrt_residual_q_reg[2] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\read_meta_rsqrt_residual_q_reg[3] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\read_meta_rsqrt_residual_q_reg[4] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\read_meta_rsqrt_residual_q_reg[5] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\read_meta_rsqrt_residual_q_reg[6] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\read_meta_rsqrt_residual_q_reg[7] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\read_meta_rsqrt_residual_q_reg[8] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\read_meta_rsqrt_residual_q_reg[9] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\read_meta_rsqrt_residual_q_reg[10] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\read_meta_rsqrt_residual_q_reg[11] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\read_meta_rsqrt_residual_q_reg[12] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\read_meta_rsqrt_residual_q_reg[13] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\read_meta_rsqrt_residual_q_reg[14] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\read_meta_rsqrt_residual_q_reg[15] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\read_meta_rsqrt_residual_q_reg[16] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\read_meta_rsqrt_residual_q_reg[17] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\read_meta_format_q_reg[1] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (stage0_valid_q_reg)
+DSP Report: Generating DSP guard_bit1, operation Mode is: A*B.
+DSP Report: operator guard_bit1 is absorbed into DSP guard_bit1.
+DSP Report: operator guard_bit1 is absorbed into DSP guard_bit1.
+DSP Report: Generating DSP guard_bit1, operation Mode is: (PCIN>>17)+A*B.
+DSP Report: operator guard_bit1 is absorbed into DSP guard_bit1.
+DSP Report: operator guard_bit1 is absorbed into DSP guard_bit1.
+INFO: [Synth 8-5546] ROM "active_mask" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "active_mask" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5544] ROM "active_mask" won't be mapped to Block RAM because address size (2) smaller than threshold (5)
+INFO: [Synth 8-5544] ROM "result_o" won't be mapped to Block RAM because address size (2) smaller than threshold (5)
+INFO: [Synth 8-5544] ROM "stage_exponent_bias" won't be mapped to Block RAM because address size (2) smaller than threshold (5)
+INFO: [Synth 8-5544] ROM "exponent_limit" won't be mapped to Block RAM because address size (2) smaller than threshold (5)
+INFO: [Synth 8-5544] ROM "max_result" won't be mapped to Block RAM because address size (2) smaller than threshold (5)
+INFO: [Synth 8-5544] ROM "max_result" won't be mapped to Block RAM because address size (2) smaller than threshold (5)
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:05:12 ; elapsed = 00:08:11 . Memory (MB): peak = 2416.289 ; gain = 1844.414
+---------------------------------------------------------------------------------
+ Sort Area is lpu_vxm_special_alu__GB8 leading_bit1_0 : 0 0 : 3658 5072 : Used 1 time 0
+ Sort Area is lpu_vxm_special_alu__GB8 leading_bit1_0 : 0 1 : 1414 5072 : Used 1 time 0
+ Sort Area is lpu_vxm_special_alu__GB2 guard_bit1_0 : 0 0 : 3446 4760 : Used 1 time 0
+ Sort Area is lpu_vxm_special_alu__GB3 guard_bit1_0 : 0 0 : 3446 4760 : Used 1 time 0
+ Sort Area is lpu_vxm_special_alu__GB11 guard_bit1_0 : 0 0 : 3446 4760 : Used 1 time 0
+ Sort Area is lpu_vxm_special_alu__GB7 guard_bit1_0 : 0 0 : 3446 4760 : Used 1 time 0
+ Sort Area is lpu_vxm_special_alu__GB2 guard_bit1_0 : 0 1 : 1314 4760 : Used 1 time 0
+ Sort Area is lpu_vxm_special_alu__GB3 guard_bit1_0 : 0 1 : 1314 4760 : Used 1 time 0
+ Sort Area is lpu_vxm_special_alu__GB11 guard_bit1_0 : 0 1 : 1314 4760 : Used 1 time 0
+ Sort Area is lpu_vxm_special_alu__GB7 guard_bit1_0 : 0 1 : 1314 4760 : Used 1 time 0
+ Sort Area is lpu_vxm_special_alu__GB7 guard_bit1_3 : 0 0 : 3446 4760 : Used 1 time 0
+ Sort Area is lpu_vxm_special_alu__GB7 guard_bit1_3 : 0 1 : 1314 4760 : Used 1 time 0
+ Sort Area is lpu_vxm_special_alu__GB7 guard_bit1_6 : 0 0 : 3446 4760 : Used 1 time 0
+ Sort Area is lpu_vxm_special_alu__GB7 guard_bit1_6 : 0 1 : 1314 4760 : Used 1 time 0
+ Sort Area is lpu_vxm_special_alu__GB9 product_q551_0 : 0 0 : 3446 4760 : Used 1 time 0
+ Sort Area is lpu_vxm_special_alu__GB9 product_q551_0 : 0 1 : 1314 4760 : Used 1 time 0
+ Sort Area is lpu_vxm_special_alu__GB9 u_recip_newton_multiply_stage1/guard_bit1_3 : 0 0 : 3446 4760 : Used 1 time 0
+ Sort Area is lpu_vxm_special_alu__GB9 u_recip_newton_multiply_stage1/guard_bit1_3 : 0 1 : 1314 4760 : Used 1 time 0
+ Sort Area is lpu_vxm_special_alu__GB9 u_rsqrt_newton_square/guard_bit1_4 : 0 0 : 3446 4760 : Used 1 time 0
+ Sort Area is lpu_vxm_special_alu__GB9 u_rsqrt_newton_square/guard_bit1_4 : 0 1 : 1314 4760 : Used 1 time 0
+ Sort Area is lpu_vxm_special_alu__GB2 guard_bit1_3 : 0 0 : 1859 3173 : Used 1 time 0
+ Sort Area is lpu_vxm_special_alu__GB2 guard_bit1_3 : 0 1 : 1314 3173 : Used 1 time 0
+ Sort Area is lpu_vxm_special_alu__GB10 range_fault_o3_2 : 0 0 : 2140 2140 : Used 1 time 0
+ Sort Area is lpu_vxm_special_alu__GB10 range_fault_o3_0 : 0 0 : 2043 2043 : Used 1 time 0
+ Sort Area is lpu_vxm_special_alu__GB6 extended1_0 : 0 0 : 863 863 : Used 1 time 0
+ Sort Area is lpu_vxm_special_alu__GB7 extended1_4 : 0 0 : 863 863 : Used 1 time 0
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+
+DSP: Preliminary Mapping Report (see note below. The ' indicates corresponding REG is set)
++---------------------------------------+-----------------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+|Module Name                            | DSP Mapping           | A Size | B Size | C Size | D Size | P Size | AREG | BREG | CREG | DREG | ADREG | MREG | PREG | 
++---------------------------------------+-----------------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+|lpu_vxm_fp32_rsqrt_correction          | A*B                   | 25     | 18     | -      | -      | 48     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|lpu_vxm_fp32_rsqrt_correction          | (PCIN>>17)+A*B        | 25     | 8      | -      | -      | 31     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|lpu_vxm_fp32_newton_multiplier         | A*B                   | 25     | 18     | -      | -      | 48     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|lpu_vxm_fp32_newton_multiplier         | (PCIN>>17)+A*B        | 25     | 8      | -      | -      | 31     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|lpu_vxm_fp32_newton_multiplier         | A*B                   | 25     | 18     | -      | -      | 48     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|lpu_vxm_fp32_newton_multiplier         | (PCIN>>17)+A*B        | 25     | 8      | -      | -      | 31     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|lpu_vxm_special_alu                    | A*B                   | 25     | 18     | -      | -      | 48     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|lpu_vxm_special_alu                    | (PCIN>>17)+A*B        | 25     | 8      | -      | -      | 31     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|lpu_vxm_special_alu                    | A*(B:0xaaab)          | 25     | 17     | -      | -      | 48     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|lpu_vxm_special_alu                    | (PCIN>>17)+A*(B:0x55) | 25     | 8      | -      | -      | 31     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|lpu_vxm_special_alu                    | A*B                   | 25     | 18     | -      | -      | 48     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|lpu_vxm_special_alu                    | (PCIN>>17)+A*B        | 25     | 8      | -      | -      | 31     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|lpu_vxm_special_alu                    | A*B                   | 11     | 11     | -      | -      | 22     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|lpu_vxm_fp32_newton_multiplier         | A*B                   | 25     | 18     | -      | -      | 48     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|lpu_vxm_fp32_newton_multiplier         | (PCIN>>17)+A*B        | 25     | 8      | -      | -      | 31     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|lpu_vxm_fp32_newton_multiplier         | A*B                   | 25     | 18     | -      | -      | 48     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|lpu_vxm_fp32_newton_multiplier         | (PCIN>>17)+A*B        | 25     | 8      | -      | -      | 31     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|lpu_vxm_special_alu                    | A*B                   | 11     | 11     | -      | -      | 22     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|lpu_vxm_special_alu                    | A*B                   | 25     | 18     | -      | -      | 48     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|lpu_vxm_special_alu                    | (PCIN>>17)+A*B        | 25     | 8      | -      | -      | 31     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|lpu_vxm_special_coefficient_multiplier | A*B                   | 27     | 18     | -      | -      | 48     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|lpu_vxm_special_coefficient_multiplier | (PCIN>>17)+A*B        | 27     | 8      | -      | -      | 33     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|lpu_vxm_recip_linear_fixed             | A*B                   | 17     | 16     | -      | -      | 33     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|lpu_vxm_rsqrt_linear_fixed             | A*B                   | 18     | 16     | -      | -      | 34     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|lpu_vxm_special_alu                    | A*B                   | 25     | 18     | -      | -      | 48     | 0    | 0    | -    | -    | -     | 0    | 0    | 
+|lpu_vxm_special_alu                    | (PCIN>>17)+A*B        | 25     | 8      | -      | -      | 31     | 0    | 0    | -    | -    | -     | 0    | 0    | 
++---------------------------------------+-----------------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+
+Note: The table above is a preliminary report that shows the DSPs inferred at the current stage of the synthesis flow. Some DSP may be reimplemented as non DSP primitives later in the synthesis flow. Multiple instantiated DSPs are reported only once.
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+No constraint files found.
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:05:15 ; elapsed = 00:08:18 . Memory (MB): peak = 2425.148 ; gain = 1853.273
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-7080] Parallel synthesis criteria is not met
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:05:19 ; elapsed = 00:08:24 . Memory (MB): peak = 2425.148 ; gain = 1853.273
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:05:26 ; elapsed = 00:08:37 . Memory (MB): peak = 2425.164 ; gain = 1853.289
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:05:26 ; elapsed = 00:08:37 . Memory (MB): peak = 2425.164 ; gain = 1853.289
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:05:26 ; elapsed = 00:08:37 . Memory (MB): peak = 2425.164 ; gain = 1853.289
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:05:26 ; elapsed = 00:08:37 . Memory (MB): peak = 2425.164 ; gain = 1853.289
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:05:26 ; elapsed = 00:08:37 . Memory (MB): peak = 2425.164 ; gain = 1853.289
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:05:26 ; elapsed = 00:08:37 . Memory (MB): peak = 2425.164 ; gain = 1853.289
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++-+--------------+----------+
+| |BlackBox name |Instances |
++-+--------------+----------+
++-+--------------+----------+
+
+Report Cell Usage: 
++------+-------+------+
+|      |Cell   |Count |
++------+-------+------+
+|1     |CARRY8 |    80|
+|2     |LUT1   |     3|
+|3     |LUT2   |   455|
+|4     |LUT3   |   235|
+|5     |LUT4   |   370|
+|6     |LUT5   |   506|
+|7     |LUT6   |  1267|
+|8     |FDCE   |   109|
++------+-------+------+
+
+Report Instance Areas: 
++------+-------------------------------------+--------------------------------+------+
+|      |Instance                             |Module                          |Cells |
++------+-------------------------------------+--------------------------------+------+
+|1     |top                                  |                                |  3025|
+|2     |  u_basic                            |lpu_vxm_basic_alu               |  3021|
+|3     |    u_shared_multiplier              |lpu_vxm_shared_float_multiplier |  1748|
+|4     |      u_significand_multiplier       |lpu_vxm_significand_multiplier  |  1339|
+|5     |        \g_lhs[0].g_rhs[0].u_mul8x8  |lpu_vxm_mul8x8                  |   189|
+|6     |        \g_lhs[0].g_rhs[1].u_mul8x8  |lpu_vxm_mul8x8_0                |   126|
+|7     |        \g_lhs[0].g_rhs[2].u_mul8x8  |lpu_vxm_mul8x8_1                |   146|
+|8     |        \g_lhs[1].g_rhs[0].u_mul8x8  |lpu_vxm_mul8x8_2                |   120|
+|9     |        \g_lhs[1].g_rhs[1].u_mul8x8  |lpu_vxm_mul8x8_3                |   150|
+|10    |        \g_lhs[1].g_rhs[2].u_mul8x8  |lpu_vxm_mul8x8_4                |   171|
+|11    |        \g_lhs[2].g_rhs[0].u_mul8x8  |lpu_vxm_mul8x8_5                |    94|
+|12    |        \g_lhs[2].g_rhs[1].u_mul8x8  |lpu_vxm_mul8x8_6                |   147|
+|13    |        \g_lhs[2].g_rhs[2].u_mul8x8  |lpu_vxm_mul8x8_7                |   196|
++------+-------------------------------------+--------------------------------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:05:26 ; elapsed = 00:08:37 . Memory (MB): peak = 2425.164 ; gain = 1853.289
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 307 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:05:26 ; elapsed = 00:08:42 . Memory (MB): peak = 2425.164 ; gain = 1853.289
+Synthesis Optimization Complete : Time (s): cpu = 00:05:26 ; elapsed = 00:08:42 . Memory (MB): peak = 2425.164 ; gain = 1853.289
+INFO: [Project 1-571] Translating synthesized netlist
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.113 . Memory (MB): peak = 2437.168 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 80 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.002 . Memory (MB): peak = 2493.145 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+The system cannot find the path specified.
+Synth Design complete | Checksum: 615a248b
+INFO: [Common 17-83] Releasing license: Synthesis
+213 Infos, 102 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:05:31 ; elapsed = 00:08:53 . Memory (MB): peak = 2493.145 ; gain = 1925.281
+# if {[llength [get_ports -quiet clk_i]]} {
+#   create_clock -period 10.000 -name clk [get_ports clk_i]
+#   set data_inputs [get_ports -filter {DIRECTION == IN && NAME != clk_i && NAME != rst_ni}]
+#   set_input_delay 1.0 -clock clk $data_inputs
+#   set_output_delay 1.0 -clock clk [all_outputs]
+#   if {[llength [get_ports -quiet rst_ni]]} {set_false_path -from [get_ports rst_ni]}
+# } else {
+#   create_clock -period 10.000 -name virtual_clk
+#   set_input_delay 1.0 -clock virtual_clk [all_inputs]
+#   set_output_delay 1.0 -clock virtual_clk [all_outputs]
+# }
+create_clock: Time (s): cpu = 00:00:07 ; elapsed = 00:00:13 . Memory (MB): peak = 2493.145 ; gain = 0.000
+# report_utilization -file [file join $out utilization.rpt]
+# report_utilization -hierarchical -file [file join $out utilization_hier.rpt]
+# report_timing_summary -max_paths 10 -report_unconstrained -file [file join $out timing_summary.rpt]
+INFO: [Timing 38-35] Done setting XDC timing constraints.
+INFO: [Timing 38-91] UpdateTimingParams: Speed grade: -2L, Temperature grade: E, Delay Type: min_max.
+INFO: [Timing 38-191] Multithreading enabled for timing update using a maximum of 4 CPUs
+SUCCESS: The process with PID 39856 (child process of PID 39352) has been terminated.
+SUCCESS: The process with PID 39352 (child process of PID 12152) has been terminated.

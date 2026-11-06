@@ -1,0 +1,50 @@
+7366a2b9eeaf65f1866ba603158b405c112bc2e9
+ M rtl/integration/lpu_mem_srf_command_integration.sv
+ M rtl/integration/lpu_mem_srf_dma_store_vector_sink.sv
+ M rtl/integration/lpu_mem_srf_integration.sv
+ M rtl/integration/lpu_mem_srf_sxm_roundtrip_integration.sv
+ M rtl/integration/lpu_mem_srf_sxm_turnaround_integration.sv
+ M rtl/mem_native/mem_bank_control_column.sv
+ M rtl/mem_native/mem_bank_superlane_leaf.sv
+ M rtl/mem_native/mem_group.sv
+ M rtl/mem_native/mem_hemisphere.sv
+ M rtl/mem_native/mem_logical_bank_column.sv
+ M rtl/mem_native/mem_slice.sv
+ M rtl/srf/ftlpu_sr_column_dir.sv
+ M rtl/srf/ftlpu_sr_direction_fabric.sv
+ M rtl/srf/ftlpu_sr_fabric.sv
+ M rtl/srf/ftlpu_sr_hemisphere_fabric.sv
+ M rtl/srf/ftlpu_sr_superlane_col_dir.sv
+ M sim/filelist_c2c_rx_srf_integration.f
+ M sim/filelist_c2c_srf_peer_e2e.f
+ M sim/filelist_c2c_tx_srf_adapter.f
+ M sim/filelist_dma_store_vector_sink.f
+ M sim/filelist_mem_command_adapter.f
+ M sim/filelist_mem_srf.f
+ M sim/filelist_mem_srf_multigroup_align.f
+ M sim/filelist_mem_srf_sxm_existing_workload.f
+ M sim/filelist_mem_srf_sxm_roundtrip.f
+ M sim/filelist_mem_srf_sxm_turnaround.f
+ M sim/filelist_srf.f
+ M sim/filelist_sxm_command_adapter.f
+ M sim/filelist_sxm_srf.f
+ M sim/tb/lpu_mem_srf_dma_store_vector_sink_tb.sv
+ M sim/tb/lpu_mem_srf_sxm_existing_workload_tb.sv
+ M sim/tb/lpu_mem_srf_sxm_roundtrip_tb.sv
+ M sim/tb/lpu_mem_srf_sxm_turnaround_tb.sv
+?? config/
+?? docs_zh/
+?? fpga/
+?? research/
+?? rtl/core/lpu_native_config_pkg.sv
+?? rtl/mem_native/mem_c7_primitive_adapter.sv
+?? scripts/__pycache__/
+?? scripts/generate_native_profiles.py
+?? scripts/run_mem_p1.ps1
+?? scripts/run_srf_acceptance.ps1
+?? scripts/run_srf_p1.ps1
+?? sim/mem_p1/
+?? sim/mem_profiles/
+?? sim/srf_p1/
+?? sim/tb/srf/
+?? spec_new_c7ae225/

@@ -1,0 +1,74 @@
+[
+  {
+    "command": [
+      "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\vivado.bat",
+      "-mode",
+      "batch",
+      "-source",
+      "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run011/src/fpga_experiment/scripts/synth.tcl",
+      "-log",
+      "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_initial_synth/results/run011/mem_leaf/vivado.log",
+      "-journal",
+      "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run011/mem_leaf/vivado.jou",
+      "-tclargs",
+      "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run011/src",
+      "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_initial_synth/results/run011/mem_leaf",
+      "mem_leaf",
+      "xcvu9p-flga2104-2L-e"
+    ],
+    "returncode": null,
+    "status": "timeout",
+    "elapsed_s": 240.3,
+    "case": "mem_leaf",
+    "part": "xcvu9p-flga2104-2L-e",
+    "synthesis_completed": false
+  },
+  {
+    "command": [
+      "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\vivado.bat",
+      "-mode",
+      "batch",
+      "-source",
+      "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run011/src/fpga_experiment/scripts/synth.tcl",
+      "-log",
+      "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_initial_synth/results/run011/old_top/vivado.log",
+      "-journal",
+      "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run011/old_top/vivado.jou",
+      "-tclargs",
+      "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run011/src",
+      "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_initial_synth/results/run011/old_top",
+      "old_top",
+      "xcvu9p-flga2104-2L-e"
+    ],
+    "returncode": 1,
+    "status": "failed",
+    "elapsed_s": 33.7,
+    "case": "old_top",
+    "part": "xcvu9p-flga2104-2L-e",
+    "synthesis_completed": false
+  },
+  {
+    "command": [
+      "C:\\Users\\huazh\\Desktop\\Vivado2023\\Vivado\\2023.2\\bin\\vivado.bat",
+      "-mode",
+      "batch",
+      "-source",
+      "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run011/src/fpga_experiment/scripts/synth.tcl",
+      "-log",
+      "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_initial_synth/results/run011/old_dot/vivado.log",
+      "-journal",
+      "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run011/old_dot/vivado.jou",
+      "-tclargs",
+      "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/tmp/run011/src",
+      "C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_initial_synth/results/run011/old_dot",
+      "old_dot",
+      "xcvu9p-flga2104-2L-e"
+    ],
+    "returncode": 1,
+    "status": "failed",
+    "elapsed_s": 20.8,
+    "case": "old_dot",
+    "part": "xcvu9p-flga2104-2L-e",
+    "synthesis_completed": false
+  }
+]

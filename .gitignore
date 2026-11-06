@@ -41,12 +41,8 @@ __pycache__/
 /sim/tb/srf/*.md
 /sim/mem_profiles/integration_registry.json
 
-# Local FPGA study documents and generated runs; source scripts remain visible
-/fpga/README.md
-/fpga/docs/
-/fpga/test/**/README.md
-/fpga/test/**/results/
-/fpga/tmp/
+# FPGA publication rules live in fpga/.gitignore.
+# Selected reports/logs there override the global EDA output exclusions above.
 
 # Editors and operating systems
 .idea/

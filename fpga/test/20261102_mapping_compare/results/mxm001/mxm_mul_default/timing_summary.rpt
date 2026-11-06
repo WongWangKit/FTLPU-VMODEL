@@ -1,0 +1,637 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version      : Vivado v.2023.2 (win64) Build 4029153 Fri Oct 13 20:14:34 MDT 2023
+| Date              : Mon Nov  2 16:55:33 2026
+| Host              : huazhe running 64-bit major release  (build 9200)
+| Command           : report_timing_summary -max_paths 3 -report_unconstrained -file C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm001/mxm_mul_default/timing_summary.rpt
+| Design            : fpga_mxm_mul
+| Device            : xcvu9p-flga2104
+| Speed File        : -2L  PRODUCTION 1.28 03-30-2022
+| Design State      : Synthesized
+| Temperature Grade : E
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Timing Summary Report
+
+------------------------------------------------------------------------------------------------
+| Timer Settings
+| --------------
+------------------------------------------------------------------------------------------------
+
+  Enable Multi Corner Analysis               :  Yes
+  Enable Pessimism Removal                   :  Yes
+  Pessimism Removal Resolution               :  Nearest Common Node
+  Enable Input Delay Default Clock           :  No
+  Enable Preset / Clear Arcs                 :  No
+  Disable Flight Delays                      :  No
+  Ignore I/O Paths                           :  No
+  Timing Early Launch at Borrowing Latches   :  No
+  Borrow Time for Max Delay Exceptions       :  Yes
+  Merge Timing Exceptions                    :  Yes
+  Inter-SLR Compensation                     :  Conservative
+
+  Corner  Analyze    Analyze    
+  Name    Max Paths  Min Paths  
+  ------  ---------  ---------  
+  Slow    Yes        Yes        
+  Fast    Yes        Yes        
+
+
+------------------------------------------------------------------------------------------------
+| Report Methodology
+| ------------------
+------------------------------------------------------------------------------------------------
+
+No report available as report_methodology has not been run prior. Run report_methodology on the current design for the summary of methodology violations.
+
+
+
+check_timing report
+
+Table of Contents
+-----------------
+1. checking no_clock (0)
+2. checking constant_clock (0)
+3. checking pulse_width_clock (0)
+4. checking unconstrained_internal_endpoints (0)
+5. checking no_input_delay (0)
+6. checking no_output_delay (0)
+7. checking multiple_clock (0)
+8. checking generated_clocks (0)
+9. checking loops (0)
+10. checking partial_input_delay (0)
+11. checking partial_output_delay (0)
+12. checking latch_loops (0)
+
+1. checking no_clock (0)
+------------------------
+ There are 0 register/latch pins with no clock.
+
+
+2. checking constant_clock (0)
+------------------------------
+ There are 0 register/latch pins with constant_clock.
+
+
+3. checking pulse_width_clock (0)
+---------------------------------
+ There are 0 register/latch pins which need pulse_width check
+
+
+4. checking unconstrained_internal_endpoints (0)
+------------------------------------------------
+ There are 0 pins that are not constrained for maximum delay.
+
+ There are 0 pins that are not constrained for maximum delay due to constant clock.
+
+
+5. checking no_input_delay (0)
+------------------------------
+ There are 0 input ports with no input delay specified.
+
+ There are 0 input ports with no input delay but user has a false path constraint.
+
+
+6. checking no_output_delay (0)
+-------------------------------
+ There are 0 ports with no output delay specified.
+
+ There are 0 ports with no output delay but user has a false path constraint
+
+ There are 0 ports with no output delay but with a timing clock defined on it or propagating through it
+
+
+7. checking multiple_clock (0)
+------------------------------
+ There are 0 register/latch pins with multiple clocks.
+
+
+8. checking generated_clocks (0)
+--------------------------------
+ There are 0 generated clocks that are not connected to a clock source.
+
+
+9. checking loops (0)
+---------------------
+ There are 0 combinational loops in the design.
+
+
+10. checking partial_input_delay (0)
+------------------------------------
+ There are 0 input ports with partial input delay specified.
+
+
+11. checking partial_output_delay (0)
+-------------------------------------
+ There are 0 ports with partial output delay specified.
+
+
+12. checking latch_loops (0)
+----------------------------
+ There are 0 combinational latch loops in the design through latch input
+
+
+
+------------------------------------------------------------------------------------------------
+| Design Timing Summary
+| ---------------------
+------------------------------------------------------------------------------------------------
+
+    WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints     WPWS(ns)     TPWS(ns)  TPWS Failing Endpoints  TPWS Total Endpoints  
+    -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------     --------     --------  ----------------------  --------------------  
+      1.949        0.000                      0                   32        2.035        0.000                      0                   32           NA           NA                      NA                    NA  
+
+
+All user specified timing constraints are met.
+
+
+------------------------------------------------------------------------------------------------
+| Clock Summary
+| -------------
+------------------------------------------------------------------------------------------------
+
+Clock  Waveform(ns)       Period(ns)      Frequency(MHz)
+-----  ------------       ----------      --------------
+clk    {0.000 5.000}      10.000          100.000         
+
+
+------------------------------------------------------------------------------------------------
+| Intra Clock Table
+| -----------------
+------------------------------------------------------------------------------------------------
+
+Clock             WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints     WPWS(ns)     TPWS(ns)  TPWS Failing Endpoints  TPWS Total Endpoints  
+-----             -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------     --------     --------  ----------------------  --------------------  
+clk                 1.949        0.000                      0                   32        2.035        0.000                      0                   32                                                                          
+
+
+------------------------------------------------------------------------------------------------
+| Inter Clock Table
+| -----------------
+------------------------------------------------------------------------------------------------
+
+From Clock    To Clock          WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints  
+----------    --------          -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------  
+
+
+------------------------------------------------------------------------------------------------
+| Other Path Groups Table
+| -----------------------
+------------------------------------------------------------------------------------------------
+
+Path Group    From Clock    To Clock          WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints  
+----------    ----------    --------          -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------  
+
+
+------------------------------------------------------------------------------------------------
+| User Ignored Path Table
+| -----------------------
+------------------------------------------------------------------------------------------------
+
+Path Group    From Clock    To Clock    
+----------    ----------    --------    
+
+
+------------------------------------------------------------------------------------------------
+| Unconstrained Path Table
+| ------------------------
+------------------------------------------------------------------------------------------------
+
+Path Group    From Clock    To Clock    
+----------    ----------    --------    
+
+
+------------------------------------------------------------------------------------------------
+| Timing Details
+| --------------
+------------------------------------------------------------------------------------------------
+
+
+---------------------------------------------------------------------------------------------------
+From Clock:  clk
+  To Clock:  clk
+
+Setup :            0  Failing Endpoints,  Worst Slack        1.949ns,  Total Violation        0.000ns
+Hold  :            0  Failing Endpoints,  Worst Slack        2.035ns,  Total Violation        0.000ns
+PW    :           NA  Failing Endpoints,  Worst Slack           NA  ,  Total Violation           NA
+---------------------------------------------------------------------------------------------------
+
+
+Max Delay Paths
+--------------------------------------------------------------------------------------
+Slack (MET) :             1.949ns  (required time - arrival time)
+  Source:                 rhs_i[4]
+                            (input port clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            product_o[10]
+                            (output port clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             clk
+  Path Type:              Max at Slow Process Corner
+  Requirement:            10.000ns  (clk rise@10.000ns - clk rise@0.000ns)
+  Data Path Delay:        6.026ns  (logic 3.171ns (52.622%)  route 2.855ns (47.378%))
+  Logic Levels:           24  (CARRY8=2 DSP_A_B_DATA=1 DSP_ALU=2 DSP_M_DATA=1 DSP_MULTIPLIER=1 DSP_OUTPUT=2 DSP_PREADD_DATA=1 LUT2=1 LUT3=2 LUT4=1 LUT5=5 LUT6=5)
+  Input Delay:            1.000ns
+  Output Delay:           1.000ns
+  Clock Uncertainty:      0.025ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk rise edge)        0.000     0.000 r  
+                         ideal clock network latency
+                                                      0.000     0.000    
+                         input delay                  1.000     1.000    
+                                                      0.000     1.000 f  rhs_i[4] (IN)
+                         net (fo=8, unset)            0.000     1.000    rhs_i[4]
+                         LUT5 (Prop_LUT5_I0_O)        0.125     1.125 f  guard_bit1_i_41/O
+                         net (fo=5, unplaced)         0.215     1.340    guard_bit1_i_41_n_0
+                         LUT5 (Prop_LUT5_I4_O)        0.038     1.378 r  guard_bit1_i_39/O
+                         net (fo=3, unplaced)         0.161     1.539    guard_bit1_i_39_n_0
+                         LUT5 (Prop_LUT5_I0_O)        0.090     1.629 r  guard_bit1_i_31/O
+                         net (fo=4, unplaced)         0.210     1.839    guard_bit1_i_31_n_0
+                         LUT6 (Prop_LUT6_I3_O)        0.038     1.877 f  guard_bit1_i_22/O
+                         net (fo=1, unplaced)         0.197     2.074    guard_bit1_i_22_n_0
+                         LUT3 (Prop_LUT3_I2_O)        0.038     2.112 f  guard_bit1_i_7/O
+                         net (fo=1, unplaced)         0.171     2.283    guard_bit1/A[20]
+                         DSP_A_B_DATA (Prop_DSP_A_B_DATA_A[20]_A2_DATA[20])
+                                                      0.192     2.475 r  guard_bit1/DSP_A_B_DATA_INST/A2_DATA[20]
+                         net (fo=1, unplaced)         0.000     2.475    guard_bit1/DSP_A_B_DATA.A2_DATA<20>
+                         DSP_PREADD_DATA (Prop_DSP_PREADD_DATA_A2_DATA[20]_A2A1[20])
+                                                      0.076     2.551 r  guard_bit1/DSP_PREADD_DATA_INST/A2A1[20]
+                         net (fo=1, unplaced)         0.000     2.551    guard_bit1/DSP_PREADD_DATA.A2A1<20>
+                         DSP_MULTIPLIER (Prop_DSP_MULTIPLIER_A2A1[20]_U[39])
+                                                      0.505     3.056 f  guard_bit1/DSP_MULTIPLIER_INST/U[39]
+                         net (fo=1, unplaced)         0.000     3.056    guard_bit1/DSP_MULTIPLIER.U<39>
+                         DSP_M_DATA (Prop_DSP_M_DATA_U[39]_U_DATA[39])
+                                                      0.047     3.103 r  guard_bit1/DSP_M_DATA_INST/U_DATA[39]
+                         net (fo=1, unplaced)         0.000     3.103    guard_bit1/DSP_M_DATA.U_DATA<39>
+                         DSP_ALU (Prop_DSP_ALU_U_DATA[39]_ALU_OUT[47])
+                                                      0.585     3.688 f  guard_bit1/DSP_ALU_INST/ALU_OUT[47]
+                         net (fo=1, unplaced)         0.000     3.688    guard_bit1/DSP_ALU.ALU_OUT<47>
+                         DSP_OUTPUT (Prop_DSP_OUTPUT_ALU_OUT[47]_PCOUT[47])
+                                                      0.122     3.810 r  guard_bit1/DSP_OUTPUT_INST/PCOUT[47]
+                         net (fo=1, unplaced)         0.014     3.824    guard_bit1__0/PCIN[47]
+                         DSP_ALU (Prop_DSP_ALU_PCIN[47]_ALU_OUT[4])
+                                                      0.546     4.370 f  guard_bit1__0/DSP_ALU_INST/ALU_OUT[4]
+                         net (fo=1, unplaced)         0.000     4.370    guard_bit1__0/DSP_ALU.ALU_OUT<4>
+                         DSP_OUTPUT (Prop_DSP_OUTPUT_ALU_OUT[4]_P[4])
+                                                      0.109     4.479 r  guard_bit1__0/DSP_OUTPUT_INST/P[4]
+                         net (fo=1, unplaced)         0.154     4.633    guard_bit1__0_n_101
+                         LUT4 (Prop_LUT4_I2_O)        0.053     4.686 r  product_o[21]_INST_0_i_9/O
+                         net (fo=1, unplaced)         0.197     4.883    product_o[21]_INST_0_i_9_n_0
+                         LUT5 (Prop_LUT5_I4_O)        0.038     4.921 r  product_o[21]_INST_0_i_7/O
+                         net (fo=1, unplaced)         0.197     5.118    product_o[21]_INST_0_i_7_n_0
+                         LUT6 (Prop_LUT6_I5_O)        0.038     5.156 r  product_o[21]_INST_0_i_4/O
+                         net (fo=1, unplaced)         0.197     5.353    product_o[21]_INST_0_i_4_n_0
+                         LUT6 (Prop_LUT6_I1_O)        0.038     5.391 r  product_o[21]_INST_0_i_1/O
+                         net (fo=32, unplaced)        0.257     5.648    product_o[21]_INST_0_i_1_n_0
+                         LUT2 (Prop_LUT2_I1_O)        0.038     5.686 r  product_o[30]_INST_0_i_3/O
+                         net (fo=47, unplaced)        0.221     5.907    product_o[30]_INST_0_i_3_n_0
+                         LUT6 (Prop_LUT6_I5_O)        0.053     5.960 f  product_o[27]_INST_0_i_1/O
+                         net (fo=3, unplaced)         0.203     6.163    product_o[27]_INST_0_i_1_n_0
+                         LUT5 (Prop_LUT5_I2_O)        0.037     6.200 r  product_o[28]_INST_0_i_30/O
+                         net (fo=1, unplaced)         0.023     6.223    product_o[28]_INST_0_i_30_n_0
+                         CARRY8 (Prop_CARRY8_S[1]_CO[7])
+                                                      0.197     6.420 f  product_o[28]_INST_0_i_3/CO[7]
+                         net (fo=1, unplaced)         0.005     6.425    product_o[28]_INST_0_i_3_n_0
+                         CARRY8 (Prop_CARRY8_CI_CO[6])
+                                                      0.092     6.517 f  product_o[28]_INST_0_i_1/CO[6]
+                         net (fo=10, unplaced)        0.186     6.703    product_o[28]_INST_0_i_1_n_1
+                         LUT3 (Prop_LUT3_I2_O)        0.038     6.741 f  product_o[21]_INST_0_i_3/O
+                         net (fo=21, unplaced)        0.247     6.988    product_o[21]_INST_0_i_3_n_0
+                         LUT6 (Prop_LUT6_I5_O)        0.038     7.026 r  product_o[10]_INST_0/O
+                         net (fo=0)                   0.000     7.026    product_o[10]
+                                                                      r  product_o[10] (OUT)
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk rise edge)       10.000    10.000 r  
+                         ideal clock network latency
+                                                      0.000    10.000    
+                         clock pessimism              0.000    10.000    
+                         clock uncertainty           -0.025     9.975    
+                         output delay                -1.000     8.975    
+  -------------------------------------------------------------------
+                         required time                          8.975    
+                         arrival time                          -7.026    
+  -------------------------------------------------------------------
+                         slack                                  1.949    
+
+Slack (MET) :             1.949ns  (required time - arrival time)
+  Source:                 rhs_i[4]
+                            (input port clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            product_o[11]
+                            (output port clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             clk
+  Path Type:              Max at Slow Process Corner
+  Requirement:            10.000ns  (clk rise@10.000ns - clk rise@0.000ns)
+  Data Path Delay:        6.026ns  (logic 3.171ns (52.622%)  route 2.855ns (47.378%))
+  Logic Levels:           24  (CARRY8=2 DSP_A_B_DATA=1 DSP_ALU=2 DSP_M_DATA=1 DSP_MULTIPLIER=1 DSP_OUTPUT=2 DSP_PREADD_DATA=1 LUT2=1 LUT3=2 LUT4=1 LUT5=5 LUT6=5)
+  Input Delay:            1.000ns
+  Output Delay:           1.000ns
+  Clock Uncertainty:      0.025ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk rise edge)        0.000     0.000 r  
+                         ideal clock network latency
+                                                      0.000     0.000    
+                         input delay                  1.000     1.000    
+                                                      0.000     1.000 f  rhs_i[4] (IN)
+                         net (fo=8, unset)            0.000     1.000    rhs_i[4]
+                         LUT5 (Prop_LUT5_I0_O)        0.125     1.125 f  guard_bit1_i_41/O
+                         net (fo=5, unplaced)         0.215     1.340    guard_bit1_i_41_n_0
+                         LUT5 (Prop_LUT5_I4_O)        0.038     1.378 r  guard_bit1_i_39/O
+                         net (fo=3, unplaced)         0.161     1.539    guard_bit1_i_39_n_0
+                         LUT5 (Prop_LUT5_I0_O)        0.090     1.629 r  guard_bit1_i_31/O
+                         net (fo=4, unplaced)         0.210     1.839    guard_bit1_i_31_n_0
+                         LUT6 (Prop_LUT6_I3_O)        0.038     1.877 f  guard_bit1_i_22/O
+                         net (fo=1, unplaced)         0.197     2.074    guard_bit1_i_22_n_0
+                         LUT3 (Prop_LUT3_I2_O)        0.038     2.112 f  guard_bit1_i_7/O
+                         net (fo=1, unplaced)         0.171     2.283    guard_bit1/A[20]
+                         DSP_A_B_DATA (Prop_DSP_A_B_DATA_A[20]_A2_DATA[20])
+                                                      0.192     2.475 r  guard_bit1/DSP_A_B_DATA_INST/A2_DATA[20]
+                         net (fo=1, unplaced)         0.000     2.475    guard_bit1/DSP_A_B_DATA.A2_DATA<20>
+                         DSP_PREADD_DATA (Prop_DSP_PREADD_DATA_A2_DATA[20]_A2A1[20])
+                                                      0.076     2.551 r  guard_bit1/DSP_PREADD_DATA_INST/A2A1[20]
+                         net (fo=1, unplaced)         0.000     2.551    guard_bit1/DSP_PREADD_DATA.A2A1<20>
+                         DSP_MULTIPLIER (Prop_DSP_MULTIPLIER_A2A1[20]_U[39])
+                                                      0.505     3.056 f  guard_bit1/DSP_MULTIPLIER_INST/U[39]
+                         net (fo=1, unplaced)         0.000     3.056    guard_bit1/DSP_MULTIPLIER.U<39>
+                         DSP_M_DATA (Prop_DSP_M_DATA_U[39]_U_DATA[39])
+                                                      0.047     3.103 r  guard_bit1/DSP_M_DATA_INST/U_DATA[39]
+                         net (fo=1, unplaced)         0.000     3.103    guard_bit1/DSP_M_DATA.U_DATA<39>
+                         DSP_ALU (Prop_DSP_ALU_U_DATA[39]_ALU_OUT[47])
+                                                      0.585     3.688 f  guard_bit1/DSP_ALU_INST/ALU_OUT[47]
+                         net (fo=1, unplaced)         0.000     3.688    guard_bit1/DSP_ALU.ALU_OUT<47>
+                         DSP_OUTPUT (Prop_DSP_OUTPUT_ALU_OUT[47]_PCOUT[47])
+                                                      0.122     3.810 r  guard_bit1/DSP_OUTPUT_INST/PCOUT[47]
+                         net (fo=1, unplaced)         0.014     3.824    guard_bit1__0/PCIN[47]
+                         DSP_ALU (Prop_DSP_ALU_PCIN[47]_ALU_OUT[4])
+                                                      0.546     4.370 f  guard_bit1__0/DSP_ALU_INST/ALU_OUT[4]
+                         net (fo=1, unplaced)         0.000     4.370    guard_bit1__0/DSP_ALU.ALU_OUT<4>
+                         DSP_OUTPUT (Prop_DSP_OUTPUT_ALU_OUT[4]_P[4])
+                                                      0.109     4.479 r  guard_bit1__0/DSP_OUTPUT_INST/P[4]
+                         net (fo=1, unplaced)         0.154     4.633    guard_bit1__0_n_101
+                         LUT4 (Prop_LUT4_I2_O)        0.053     4.686 r  product_o[21]_INST_0_i_9/O
+                         net (fo=1, unplaced)         0.197     4.883    product_o[21]_INST_0_i_9_n_0
+                         LUT5 (Prop_LUT5_I4_O)        0.038     4.921 r  product_o[21]_INST_0_i_7/O
+                         net (fo=1, unplaced)         0.197     5.118    product_o[21]_INST_0_i_7_n_0
+                         LUT6 (Prop_LUT6_I5_O)        0.038     5.156 r  product_o[21]_INST_0_i_4/O
+                         net (fo=1, unplaced)         0.197     5.353    product_o[21]_INST_0_i_4_n_0
+                         LUT6 (Prop_LUT6_I1_O)        0.038     5.391 r  product_o[21]_INST_0_i_1/O
+                         net (fo=32, unplaced)        0.257     5.648    product_o[21]_INST_0_i_1_n_0
+                         LUT2 (Prop_LUT2_I1_O)        0.038     5.686 r  product_o[30]_INST_0_i_3/O
+                         net (fo=47, unplaced)        0.221     5.907    product_o[30]_INST_0_i_3_n_0
+                         LUT6 (Prop_LUT6_I5_O)        0.053     5.960 f  product_o[27]_INST_0_i_1/O
+                         net (fo=3, unplaced)         0.203     6.163    product_o[27]_INST_0_i_1_n_0
+                         LUT5 (Prop_LUT5_I2_O)        0.037     6.200 r  product_o[28]_INST_0_i_30/O
+                         net (fo=1, unplaced)         0.023     6.223    product_o[28]_INST_0_i_30_n_0
+                         CARRY8 (Prop_CARRY8_S[1]_CO[7])
+                                                      0.197     6.420 f  product_o[28]_INST_0_i_3/CO[7]
+                         net (fo=1, unplaced)         0.005     6.425    product_o[28]_INST_0_i_3_n_0
+                         CARRY8 (Prop_CARRY8_CI_CO[6])
+                                                      0.092     6.517 f  product_o[28]_INST_0_i_1/CO[6]
+                         net (fo=10, unplaced)        0.186     6.703    product_o[28]_INST_0_i_1_n_1
+                         LUT3 (Prop_LUT3_I2_O)        0.038     6.741 f  product_o[21]_INST_0_i_3/O
+                         net (fo=21, unplaced)        0.247     6.988    product_o[21]_INST_0_i_3_n_0
+                         LUT6 (Prop_LUT6_I5_O)        0.038     7.026 r  product_o[11]_INST_0/O
+                         net (fo=0)                   0.000     7.026    product_o[11]
+                                                                      r  product_o[11] (OUT)
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk rise edge)       10.000    10.000 r  
+                         ideal clock network latency
+                                                      0.000    10.000    
+                         clock pessimism              0.000    10.000    
+                         clock uncertainty           -0.025     9.975    
+                         output delay                -1.000     8.975    
+  -------------------------------------------------------------------
+                         required time                          8.975    
+                         arrival time                          -7.026    
+  -------------------------------------------------------------------
+                         slack                                  1.949    
+
+Slack (MET) :             1.949ns  (required time - arrival time)
+  Source:                 rhs_i[4]
+                            (input port clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            product_o[12]
+                            (output port clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             clk
+  Path Type:              Max at Slow Process Corner
+  Requirement:            10.000ns  (clk rise@10.000ns - clk rise@0.000ns)
+  Data Path Delay:        6.026ns  (logic 3.171ns (52.622%)  route 2.855ns (47.378%))
+  Logic Levels:           24  (CARRY8=2 DSP_A_B_DATA=1 DSP_ALU=2 DSP_M_DATA=1 DSP_MULTIPLIER=1 DSP_OUTPUT=2 DSP_PREADD_DATA=1 LUT2=1 LUT3=2 LUT4=1 LUT5=5 LUT6=5)
+  Input Delay:            1.000ns
+  Output Delay:           1.000ns
+  Clock Uncertainty:      0.025ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk rise edge)        0.000     0.000 r  
+                         ideal clock network latency
+                                                      0.000     0.000    
+                         input delay                  1.000     1.000    
+                                                      0.000     1.000 f  rhs_i[4] (IN)
+                         net (fo=8, unset)            0.000     1.000    rhs_i[4]
+                         LUT5 (Prop_LUT5_I0_O)        0.125     1.125 f  guard_bit1_i_41/O
+                         net (fo=5, unplaced)         0.215     1.340    guard_bit1_i_41_n_0
+                         LUT5 (Prop_LUT5_I4_O)        0.038     1.378 r  guard_bit1_i_39/O
+                         net (fo=3, unplaced)         0.161     1.539    guard_bit1_i_39_n_0
+                         LUT5 (Prop_LUT5_I0_O)        0.090     1.629 r  guard_bit1_i_31/O
+                         net (fo=4, unplaced)         0.210     1.839    guard_bit1_i_31_n_0
+                         LUT6 (Prop_LUT6_I3_O)        0.038     1.877 f  guard_bit1_i_22/O
+                         net (fo=1, unplaced)         0.197     2.074    guard_bit1_i_22_n_0
+                         LUT3 (Prop_LUT3_I2_O)        0.038     2.112 f  guard_bit1_i_7/O
+                         net (fo=1, unplaced)         0.171     2.283    guard_bit1/A[20]
+                         DSP_A_B_DATA (Prop_DSP_A_B_DATA_A[20]_A2_DATA[20])
+                                                      0.192     2.475 r  guard_bit1/DSP_A_B_DATA_INST/A2_DATA[20]
+                         net (fo=1, unplaced)         0.000     2.475    guard_bit1/DSP_A_B_DATA.A2_DATA<20>
+                         DSP_PREADD_DATA (Prop_DSP_PREADD_DATA_A2_DATA[20]_A2A1[20])
+                                                      0.076     2.551 r  guard_bit1/DSP_PREADD_DATA_INST/A2A1[20]
+                         net (fo=1, unplaced)         0.000     2.551    guard_bit1/DSP_PREADD_DATA.A2A1<20>
+                         DSP_MULTIPLIER (Prop_DSP_MULTIPLIER_A2A1[20]_U[39])
+                                                      0.505     3.056 f  guard_bit1/DSP_MULTIPLIER_INST/U[39]
+                         net (fo=1, unplaced)         0.000     3.056    guard_bit1/DSP_MULTIPLIER.U<39>
+                         DSP_M_DATA (Prop_DSP_M_DATA_U[39]_U_DATA[39])
+                                                      0.047     3.103 r  guard_bit1/DSP_M_DATA_INST/U_DATA[39]
+                         net (fo=1, unplaced)         0.000     3.103    guard_bit1/DSP_M_DATA.U_DATA<39>
+                         DSP_ALU (Prop_DSP_ALU_U_DATA[39]_ALU_OUT[47])
+                                                      0.585     3.688 f  guard_bit1/DSP_ALU_INST/ALU_OUT[47]
+                         net (fo=1, unplaced)         0.000     3.688    guard_bit1/DSP_ALU.ALU_OUT<47>
+                         DSP_OUTPUT (Prop_DSP_OUTPUT_ALU_OUT[47]_PCOUT[47])
+                                                      0.122     3.810 r  guard_bit1/DSP_OUTPUT_INST/PCOUT[47]
+                         net (fo=1, unplaced)         0.014     3.824    guard_bit1__0/PCIN[47]
+                         DSP_ALU (Prop_DSP_ALU_PCIN[47]_ALU_OUT[4])
+                                                      0.546     4.370 f  guard_bit1__0/DSP_ALU_INST/ALU_OUT[4]
+                         net (fo=1, unplaced)         0.000     4.370    guard_bit1__0/DSP_ALU.ALU_OUT<4>
+                         DSP_OUTPUT (Prop_DSP_OUTPUT_ALU_OUT[4]_P[4])
+                                                      0.109     4.479 r  guard_bit1__0/DSP_OUTPUT_INST/P[4]
+                         net (fo=1, unplaced)         0.154     4.633    guard_bit1__0_n_101
+                         LUT4 (Prop_LUT4_I2_O)        0.053     4.686 r  product_o[21]_INST_0_i_9/O
+                         net (fo=1, unplaced)         0.197     4.883    product_o[21]_INST_0_i_9_n_0
+                         LUT5 (Prop_LUT5_I4_O)        0.038     4.921 r  product_o[21]_INST_0_i_7/O
+                         net (fo=1, unplaced)         0.197     5.118    product_o[21]_INST_0_i_7_n_0
+                         LUT6 (Prop_LUT6_I5_O)        0.038     5.156 r  product_o[21]_INST_0_i_4/O
+                         net (fo=1, unplaced)         0.197     5.353    product_o[21]_INST_0_i_4_n_0
+                         LUT6 (Prop_LUT6_I1_O)        0.038     5.391 r  product_o[21]_INST_0_i_1/O
+                         net (fo=32, unplaced)        0.257     5.648    product_o[21]_INST_0_i_1_n_0
+                         LUT2 (Prop_LUT2_I1_O)        0.038     5.686 r  product_o[30]_INST_0_i_3/O
+                         net (fo=47, unplaced)        0.221     5.907    product_o[30]_INST_0_i_3_n_0
+                         LUT6 (Prop_LUT6_I5_O)        0.053     5.960 f  product_o[27]_INST_0_i_1/O
+                         net (fo=3, unplaced)         0.203     6.163    product_o[27]_INST_0_i_1_n_0
+                         LUT5 (Prop_LUT5_I2_O)        0.037     6.200 r  product_o[28]_INST_0_i_30/O
+                         net (fo=1, unplaced)         0.023     6.223    product_o[28]_INST_0_i_30_n_0
+                         CARRY8 (Prop_CARRY8_S[1]_CO[7])
+                                                      0.197     6.420 f  product_o[28]_INST_0_i_3/CO[7]
+                         net (fo=1, unplaced)         0.005     6.425    product_o[28]_INST_0_i_3_n_0
+                         CARRY8 (Prop_CARRY8_CI_CO[6])
+                                                      0.092     6.517 f  product_o[28]_INST_0_i_1/CO[6]
+                         net (fo=10, unplaced)        0.186     6.703    product_o[28]_INST_0_i_1_n_1
+                         LUT3 (Prop_LUT3_I2_O)        0.038     6.741 f  product_o[21]_INST_0_i_3/O
+                         net (fo=21, unplaced)        0.247     6.988    product_o[21]_INST_0_i_3_n_0
+                         LUT6 (Prop_LUT6_I5_O)        0.038     7.026 r  product_o[12]_INST_0/O
+                         net (fo=0)                   0.000     7.026    product_o[12]
+                                                                      r  product_o[12] (OUT)
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk rise edge)       10.000    10.000 r  
+                         ideal clock network latency
+                                                      0.000    10.000    
+                         clock pessimism              0.000    10.000    
+                         clock uncertainty           -0.025     9.975    
+                         output delay                -1.000     8.975    
+  -------------------------------------------------------------------
+                         required time                          8.975    
+                         arrival time                          -7.026    
+  -------------------------------------------------------------------
+                         slack                                  1.949    
+
+
+
+
+
+Min Delay Paths
+--------------------------------------------------------------------------------------
+Slack (MET) :             2.035ns  (arrival time - required time)
+  Source:                 rhs_i[15]
+                            (input port clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            product_o[31]
+                            (output port clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             clk
+  Path Type:              Min at Fast Process Corner
+  Requirement:            0.000ns  (clk rise@0.000ns - clk rise@0.000ns)
+  Data Path Delay:        0.035ns  (logic 0.035ns (100.000%)  route 0.000ns (0.000%))
+  Logic Levels:           1  (LUT4=1)
+  Input Delay:            1.000ns
+  Output Delay:           1.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk rise edge)        0.000     0.000 r  
+                         ideal clock network latency
+                                                      0.000     0.000    
+                         input delay                  1.000     1.000    
+                                                      0.000     1.000 r  rhs_i[15] (IN)
+                         net (fo=0)                   0.000     1.000    rhs_i[15]
+                         LUT4 (Prop_LUT4_I1_O)        0.035     1.035 r  product_o[31]_INST_0/O
+                         net (fo=0)                   0.000     1.035    product_o[31]
+                                                                      r  product_o[31] (OUT)
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk rise edge)        0.000     0.000 r  
+                         ideal clock network latency
+                                                      0.000     0.000    
+                         clock pessimism              0.000     0.000    
+                         output delay                -1.000    -1.000    
+  -------------------------------------------------------------------
+                         required time                          1.000    
+                         arrival time                           1.035    
+  -------------------------------------------------------------------
+                         slack                                  2.035    
+
+Slack (MET) :             2.158ns  (arrival time - required time)
+  Source:                 lhs_i[14]
+                            (input port clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            product_o[30]
+                            (output port clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             clk
+  Path Type:              Min at Fast Process Corner
+  Requirement:            0.000ns  (clk rise@0.000ns - clk rise@0.000ns)
+  Data Path Delay:        0.158ns  (logic 0.091ns (57.595%)  route 0.067ns (42.405%))
+  Logic Levels:           3  (CARRY8=1 LUT6=2)
+  Input Delay:            1.000ns
+  Output Delay:           1.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk rise edge)        0.000     0.000 r  
+                         ideal clock network latency
+                                                      0.000     0.000    
+                         input delay                  1.000     1.000    
+                                                      0.000     1.000 r  lhs_i[14] (IN)
+                         net (fo=32, unset)           0.000     1.000    lhs_i[14]
+                         LUT6 (Prop_LUT6_I1_O)        0.050     1.050 r  product_o[30]_INST_0_i_8/O
+                         net (fo=1, unplaced)         0.012     1.062    exponent[7]
+                         CARRY8 (Prop_CARRY8_S[6]_O[6])
+                                                      0.018     1.080 r  product_o[30]_INST_0_i_2/O[6]
+                         net (fo=3, unplaced)         0.055     1.135    exponent0[7]
+                         LUT6 (Prop_LUT6_I2_O)        0.023     1.158 r  product_o[30]_INST_0/O
+                         net (fo=0)                   0.000     1.158    product_o[30]
+                                                                      r  product_o[30] (OUT)
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk rise edge)        0.000     0.000 r  
+                         ideal clock network latency
+                                                      0.000     0.000    
+                         clock pessimism              0.000     0.000    
+                         output delay                -1.000    -1.000    
+  -------------------------------------------------------------------
+                         required time                          1.000    
+                         arrival time                           1.158    
+  -------------------------------------------------------------------
+                         slack                                  2.158    
+
+Slack (MET) :             2.270ns  (arrival time - required time)
+  Source:                 rhs_i[4]
+                            (input port clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            product_o[23]
+                            (output port clocked by clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             clk
+  Path Type:              Min at Fast Process Corner
+  Requirement:            0.000ns  (clk rise@0.000ns - clk rise@0.000ns)
+  Data Path Delay:        0.270ns  (logic 0.086ns (31.852%)  route 0.184ns (68.148%))
+  Logic Levels:           3  (LUT2=1 LUT6=2)
+  Input Delay:            1.000ns
+  Output Delay:           1.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk rise edge)        0.000     0.000 r  
+                         ideal clock network latency
+                                                      0.000     0.000    
+                         input delay                  1.000     1.000    
+                                                      0.000     1.000 r  rhs_i[4] (IN)
+                         net (fo=8, unset)            0.000     1.000    rhs_i[4]
+                         LUT6 (Prop_LUT6_I5_O)        0.014     1.014 f  product_o[31]_INST_0_i_4/O
+                         net (fo=5, unplaced)         0.107     1.121    product_o[31]_INST_0_i_4_n_0
+                         LUT2 (Prop_LUT2_I1_O)        0.021     1.142 r  product_o[31]_INST_0_i_1/O
+                         net (fo=13, unplaced)        0.077     1.219    product_o[31]_INST_0_i_1_n_0
+                         LUT6 (Prop_LUT6_I3_O)        0.051     1.270 r  product_o[23]_INST_0/O
+                         net (fo=0)                   0.000     1.270    product_o[23]
+                                                                      r  product_o[23] (OUT)
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk rise edge)        0.000     0.000 r  
+                         ideal clock network latency
+                                                      0.000     0.000    
+                         clock pessimism              0.000     0.000    
+                         output delay                -1.000    -1.000    
+  -------------------------------------------------------------------
+                         required time                          1.000    
+                         arrival time                           1.270    
+  -------------------------------------------------------------------
+                         slack                                  2.270    
+
+
+
+
+
+

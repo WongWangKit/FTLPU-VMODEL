@@ -1,0 +1,17 @@
+
+****** xsim v2023.2 (64-bit)
+  **** SW Build 4029153 on Fri Oct 13 20:14:34 MDT 2023
+  **** IP Build 4028589 on Sat Oct 14 00:45:43 MDT 2023
+  **** SharedData Build 4025554 on Tue Oct 10 17:18:54 MDT 2023
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+
+source xsim.dir/snapshot/xsim_script.tcl
+# xsim {snapshot} -autoloadwcfg -runall
+Time resolution is 1 ps
+run -all
+Fatal: MXM dot mismatch fmt=0 vector=0 col=0 actual=00000000 expected=41000000
+Time: 220 ns  Iteration: 0  Process: /mxm_column_tb/Initial21_2  Scope: mxm_column_tb.Block23_3.Block25_4.Block37_7  File: C:/Users/huazh/Desktop/LPU/lpu_src/FTLPU-VMODEL/fpga/test/20261102_mapping_compare/results/mxm_column_rtl002/mxm_column_default/mxm_column_tb.sv Line: 48
+$finish called at time : 220 ns
+exit
+INFO: [Common 17-206] Exiting xsim at Mon Nov  2 17:30:21 2026...

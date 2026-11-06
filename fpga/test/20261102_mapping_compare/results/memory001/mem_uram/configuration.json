@@ -1,0 +1,18 @@
+{
+  "case": "mem_uram",
+  "generics": [
+    "P_MEM_BANK_DEPTH_ROWS=1024",
+    "P_MEM_ACTIVE_ROWS=1024"
+  ],
+  "defines": [],
+  "clocked": true,
+  "top": "mem_bank_superlane_leaf",
+  "files": [
+    "C:\\Users\\huazh\\Desktop\\LPU\\lpu_src\\FTLPU-VMODEL\\fpga\\tmp\\mapping_memory001\\src\\experiment\\rtl\\mem_leaf_uram.sv"
+  ],
+  "tb": "mem_leaf",
+  "tb_defines": [],
+  "sim_files": [],
+  "part": "xcvu9p-flga2104-2L-e",
+  "period_ns": 10.0
+}
