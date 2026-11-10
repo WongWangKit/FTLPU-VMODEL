@@ -39,26 +39,24 @@ module lpu_mxm_backend #(
   output wire fault_o
 );
   import lpu_mxm_backend_isa_pkg::*;
-  wire head_valid,can_launch;
+  wire head_valid;
   wire [INSTRUCTION_BITS-1:0] head;
-  wire [BACKEND_DURATION_BITS-1:0] duration=backend_duration(head[ADDRESS_BITS+2+:lpu_mxm_config_pkg::BACKEND_COUNT_BITS]);
-  wire legal_head=backend_fields_legal(DEPTH,int'(head[2+:ADDRESS_BITS]),int'(duration),head[1:0],head[INSTRUCTION_BITS-1]);
-  wire pop=run_i && launch_i && head_valid && can_launch;
+  wire legal_head=backend_fields_legal(DEPTH,int'(head[2+:ADDRESS_BITS]),head[1:0],head[INSTRUCTION_BITS-1]);
+  wire pop=run_i && launch_i && head_valid;
   wire [COLS*INSTRUCTION_BITS-1:0] column_command;
-  wire [COLS*BACKEND_DURATION_BITS-1:0] index;
   wire [COLS-1:0] column_fault;
   logic control_fault_q;
-  assign launch_ready_o=head_valid && can_launch;
+  assign launch_ready_o=run_i && head_valid;
   lpu_mxm_command_queue #(.WIDTH(INSTRUCTION_BITS),.DEPTH(QUEUE_DEPTH)) u_queue (
     .clk_i,.rst_ni,.enqueue_valid_i,.enqueue_ready_o,.enqueue_data_i(instruction_i),.pop_i(pop),.valid_o(head_valid),.data_o(head));
   // Returned data and backend commands advance between Superlanes one cycle
   // apart, independently of the three-cycle frontend compute instruction wave.
-  lpu_mxm_instruction_wave #(.WIDTH(INSTRUCTION_BITS),.COUNT_BITS(BACKEND_DURATION_BITS),.ROWS(COLS),.INTERVAL(lpu_mxm_config_pkg::RESULT_SUPERLANE_INTERVAL)) u_wave (
-    .clk_i,.rst_ni,.run_i,.launch_i(pop && legal_head),.instruction_i(head),.duration_i(duration),
-    .launch_ready_o(can_launch),.row_valid_o(issue_valid_o),.row_update_o(),
-    .row_instruction_o(column_command),.row_index_o(index));
+  lpu_mxm_instruction_wave #(.WIDTH(INSTRUCTION_BITS),.ROWS(COLS),.INTERVAL(lpu_mxm_config_pkg::RESULT_SUPERLANE_INTERVAL)) u_wave (
+    .clk_i,.rst_ni,.run_i,.launch_i(pop && legal_head),.instruction_i(head),
+    .launch_ready_o(),.row_valid_o(issue_valid_o),.row_update_o(),
+    .row_instruction_o(column_command));
   for(genvar c=0;c<COLS;c++) begin : g_column
-    assign issue_address_o[c*16+:16]=16'(column_command[c*INSTRUCTION_BITS+2+:ADDRESS_BITS])+16'(index[c*BACKEND_DURATION_BITS+:BACKEND_DURATION_BITS]);
+    assign issue_address_o[c*16+:16]=16'(column_command[c*INSTRUCTION_BITS+2+:ADDRESS_BITS]);
     assign issue_operation_o[c*2+:2]=column_command[c*INSTRUCTION_BITS+:2];
     assign issue_bf16_o[c]=column_command[c*INSTRUCTION_BITS+INSTRUCTION_BITS-1];
     lpu_mxm_backend_column #(.LANES(LANES),.DEPTH(DEPTH)) u_column (

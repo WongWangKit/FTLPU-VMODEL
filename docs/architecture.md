@@ -158,31 +158,30 @@ shift chain for MATRIX_N beats or one beat. Column addressing and selective
 group writes are removed; the input sequence determines placement. See
 [`mxm_supercell.md`](mxm_supercell.md) for ports, numerical rules, cycle
 conventions and executable regressions. The new `lpu_mxm_frontend` now connects
-the physical array to queue-specific compact instructions: 17-bit compute
-(6-bit activation stream, 10-bit COUNT-1, 1-bit weight buffer) and
-8-bit load (6-bit weight stream, buffer and mode). Compute
-COUNT is 32..1024; the matrix load duration scales with MATRIX_N. The opcode,
-version and unused fields of the previous shared frontend word are removed
-from the actual FIFO and instruction register widths. The independent backend
-uses 23 bits by default: one BF16 format bit, ten COUNT-1 bits (1..1024 batches),
-ten base-address bits and two opcode bits. Its width is 13+clog2(DEPTH),
-with DEPTH an even number in 2..65536. All operations, including DIRECT_OUT,
-require base+count<=DEPTH; addresses cannot wrap. Default DEPTH=1024 maps to
-two 512x256-bit banks using the low address bit as the bank selector.
-Queues, relay registers and address metadata use these compact widths;
-public address monitors remain zero-extended to 16 bits.
-Each array instruction stream has a local three-cycle relay counter in each
-nonterminal Superlane; the top row has none. Matrix loads last 32 local beats,
-column loads one, and compute commands have COUNT >= 32. A third independent
-queue in `lpu_mxm_backend` controls DIRECT_OUT/STORE/ACC_STORE/ACC_OUT, two 1RW
-banks per column and parallel FP32 addition with five-cycle read-to-write
-latency. `lpu_mxm_core` connects the array and backend through a static
+the physical array to count-free queue-specific instructions: 7-bit compute
+(6-bit activation stream, 1-bit weight buffer), 8-bit load (stream, buffer, mode),
+and a default 13-bit independent backend word (BF16 format, 10-bit explicit
+address, 2-bit operation). Backend width is 3+clog2(DEPTH), with even DEPTH in
+2..65536. Every compute/backend launch describes one beat; repeated equal words
+require repeated valid launches. There is no encoded length, repeat loop,
+per-instruction compute index or backend base+index address generator.
+The compiler retains groups of at least 32 continuous compute beats and even
+complete in-place accumulation passes, including the specified bank phase.
+Both frontend streams relay through two intermediate registers plus the next
+local register per Superlane: three-cycle latency with II=1. Valid bubbles and
+16-bit per-beat transaction tags travel with the word; no forwarding timers remain.
+MATRIX retains its fixed MATRIX_N-beat loading controller (32 by default),
+COLUMN one beat; consecutive COLUMN launches are supported. A third independent
+queue in `lpu_mxm_backend` relays one beat per cycle, one cycle between Superlanes.
+It controls DIRECT_OUT/STORE/ACC_STORE/ACC_OUT, two 1RW 512x256-bit banks per
+output position at default depth, actual bank/dependency detection and five-cycle
+read-to-write latency. `lpu_mxm_core` connects the array and backend through a static
 down/left `lpu_mxm_result_return` fabric. In a square grid, top column c
 descends to bottom-indexed row c, turns left, and enters that Superlane's
 local accumulator. Downward and leftward streams have separate registers
 at crossing cells. Each path has ROWS registers (four by default), retaining
 the one-cycle inter-Superlane phase without added alignment waits. Both output opcodes
-select FP32 or BF16 RNE using the highest backend bit (default bit22). A shared registered output stage
+select FP32 or BF16 RNE using the highest backend bit (default bit12). A shared registered output stage
 gives all four combinations the same six-cycle launch-to-output latency.
 Commands launch two cycles before left-edge returned data availability: SRAM
 is prefetched, and the fresh returned bus directly enters A1 with SRAM B. Three wide

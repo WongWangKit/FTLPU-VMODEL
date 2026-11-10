@@ -2,7 +2,7 @@
 // Fill both buffers using COLUMN instructions ONLY, with alternating buffer
 // IDs and all 32 positions supplied in reverse order. No MATRIX or addressed
 // write is available to rescue an incomplete shift-chain implementation.
-module lpu_mxm_weight_shift_tb;
+module lpu_mxm_weight_shift_tb #(parameter integer LOAD_INTERVAL=3);
   import lpu_mxm_isa_pkg::*;
   localparam integer R=4,C=4,K=8,N=8,CB=COMPUTE_INSTRUCTION_BITS,LB=LOAD_INSTRUCTION_BITS,LIMIT=350;
   logic clk=0,rst_n=0,run=0,ce=0,cl=0,le=0,ll=0;
@@ -37,7 +37,7 @@ module lpu_mxm_weight_shift_tb;
     activation='0;weights='0;
     for(integer r=0;r<R;r++) begin
       logic [31:0] a,w;
-      a=fp32_integer(int'(cx[r*16+:16])%3+r+1);
+      a=fp32_integer((int'(cx[r*16+:16])%32)%3+r+1);
       w=fp32_integer(int'(lp[r*LB+2+:6])+r+1+(lp[r*LB+1]?50:0));
       for(integer k=0;k<K;k++) begin activation[(r*K+k)*16+:16]=a[31:16];weights[(r*K+k)*16+:16]=w[31:16];end
     end
@@ -48,7 +48,7 @@ module lpu_mxm_weight_shift_tb;
     .load_enqueue_valid_i(le),.load_launch_i(ll),.load_instruction_i(li),.load_enqueue_ready_o(lr),.load_launch_ready_o(llr),
     .activation_valid_i(cv),.weight_valid_i(lv),.activation_i(activation),.weight_i(weights),
     .compute_row_valid_o(cv),.load_row_valid_o(lv),.compute_row_instruction_o(cp),.load_row_instruction_o(lp),
-    .compute_row_index_o(cx),.load_row_index_o(lx),.result_valid_o(valid),.result_o(result),.result_tag_o(tags),
+    .compute_row_tag_o(cx),.load_row_index_o(lx),.result_valid_o(valid),.result_o(result),.result_tag_o(tags),
     .result_instruction_o(),.activation_forward_valid_o(),.activation_forward_o(),
     .cell_weight_valid_o(),.cell_weight_buffer_o(),.cell_activation_valid_o(),.cell_activation_buffer_o(),.fault_o(fault));
   always @(posedge clk) begin
@@ -63,8 +63,8 @@ module lpu_mxm_weight_shift_tb;
       end
       if(cl) begin
         if(!clr || (ce && !cr)) $fatal(1,"single-fill compute not ready");
-        for(integer c=0;c<C;c++) for(integer t=0;t<32;t++) begin
-          expected_valid[c][cycle+21+c+t]=1;expected_tag[c][cycle+21+c+t]=computed*32+t;
+        for(integer c=0;c<C;c++) begin
+          expected_valid[c][cycle+21+c]=1;expected_tag[c][cycle+21+c]=computed;
         end
         computed=computed+1;
       end
@@ -93,16 +93,16 @@ module lpu_mxm_weight_shift_tb;
   end
   initial begin
     repeat(3) @(negedge clk);rst_n=1;
-    @(negedge clk);le=1;li=load_word(0);ce=1;ci=CB'(31<<1);
+    @(negedge clk);le=1;li=load_word(0);ce=1;ci=0;
     @(negedge clk);le=0;ce=0;run=1;
     for(integer t=0;t<300;t++) begin
       @(negedge clk);ll=0;le=0;cl=0;ce=0;
-      if(t%3==0 && t/3<64) begin ll=1;le=t/3<63;li=load_word(t/3+1);end
-      if(t==190) begin cl=1;ce=1;ci=CB'(31<<1)|CB'(1);end
-      if(t==222) cl=1;
+      if(t%LOAD_INTERVAL==0 && t/LOAD_INTERVAL<64) begin ll=1;le=t/LOAD_INTERVAL<63;li=load_word(t/LOAD_INTERVAL+1);end
+      cl=t>=190 && t<254;
+      if(cl && t<253) begin ce=1;ci=CB'(t+1>=222);end
     end
     @(negedge clk);ll=0;le=0;cl=0;ce=0;
-    if(commands!=64 || computed!=2 || source_beats!=64*R || checked!=64*C*N)
+    if(commands!=64 || computed!=64 || source_beats!=64*R || checked!=64*C*N)
       $fatal(1,"COLUMN-only coverage missing commands=%0d beats=%0d values=%0d",commands,source_beats,checked);
     $display("MXM_WEIGHT_SHIFT_PASS instruction_bits=%0d column_commands=64 matrix_commands=0 source_beats=%0d vectors=64 fp32_results=%0d interleaved_buffers=1",LB,source_beats,checked);
     $finish;

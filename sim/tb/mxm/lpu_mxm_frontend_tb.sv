@@ -24,7 +24,7 @@ module lpu_mxm_frontend_tb;
     if($value$plusargs("trace_path=%s",trace_path)) begin
       trace_fd=$fopen(trace_path,"w");
       if(!trace_fd) $fatal(1,"cannot open frontend trace");
-      $fdisplay(trace_fd,"sample_ns,reset_n,run,scoring,compute_launch,load_launch,column,compute_row_valid,compute_instruction,compute_index,load_row_valid,load_instruction,load_index,result_valid,result_tag,result_instruction,result_lane0,fault");
+      $fdisplay(trace_fd,"sample_ns,reset_n,run,scoring,compute_launch,load_launch,column,compute_row_valid,compute_instruction,compute_tag,load_row_valid,load_instruction,load_index,result_valid,result_tag,result_instruction,result_lane0,fault");
     end
     if($value$plusargs("vcd_path=%s",vcd_path)) begin
       $dumpfile(vcd_path);
@@ -46,7 +46,7 @@ module lpu_mxm_frontend_tb;
     .load_enqueue_valid_i(le),.load_launch_i(ll),.load_instruction_i(li),.load_enqueue_ready_o(lr),.load_launch_ready_o(llr),
     .activation_valid_i(drop_activation?(cv & 4'b1110):cv),.weight_valid_i(lv),.activation_i(activation),.weight_i(weight_data),
     .compute_row_valid_o(cv),.load_row_valid_o(lv),.compute_row_instruction_o(cp),.load_row_instruction_o(lp),
-    .compute_row_index_o(cx),.load_row_index_o(lx),.result_valid_o(rv),.result_o(result),.result_tag_o(tags),
+    .compute_row_tag_o(cx),.load_row_index_o(lx),.result_valid_o(rv),.result_o(result),.result_tag_o(tags),
     .result_instruction_o(commands),
     .activation_forward_valid_o(),.activation_forward_o(),
     .cell_weight_valid_o(),.cell_weight_buffer_o(),.cell_activation_valid_o(),.cell_activation_buffer_o(),.fault_o(fault));
@@ -60,14 +60,7 @@ module lpu_mxm_frontend_tb;
     end
   endfunction
   function automatic logic [CB-1:0] compute_word(input integer seq);
-    logic [CB-1:0] word_value;
-    begin
-      word_value='0;
-      word_value[10:1]=seq==1?10'd39:10'd31;
-      word_value[0]=seq==1;
-      word_value[16:11]=6'(seq+1);
-      compute_word=word_value;
-    end
+    compute_word=(CB'(seq+1)<<1) | CB'(seq==1);
   endfunction
   function automatic logic [LB-1:0] load_word(input integer bank,input integer stream,input bit single_shift);
     logic [LB-1:0] word_value;
@@ -82,7 +75,7 @@ module lpu_mxm_frontend_tb;
     for(integer r=0;r<R;r++) begin
       integer column_number,w;
       logic [31:0] a_bits,w_bits;
-      a_bits=fp32_integer(int'(cx[r*16+:16])%3+r+1);
+      a_bits=fp32_integer((int'(cx[r*16+:16])-(int'(cx[r*16+:16])<32?0:(int'(cx[r*16+:16])<72?32:72)))%3+r+1);
       column_number=31-int'(lx[r*16+:16]);
       w=lp[r*LB]?100+10*int'(lp[r*LB+2+:6])+r:column_number+r+1+(lp[r*LB+1]?20:0);
       w_bits=fp32_integer(w);
@@ -103,17 +96,14 @@ module lpu_mxm_frontend_tb;
     end else if(run && scoring) begin
       cycle=cycle+1;
       if(cl) begin
-        integer count;
         logic [CB-1:0] word_value;
         if(!clr) $fatal(1,"frontend compute launch blocked");
-        word_value=compute_word(sequence_id);count=int'(word_value[10:1])+1;
-        for(integer c=0;c<C;c++) for(integer t=0;t<count;t++) begin
-          integer due;
-          logic [CB-1:0] addressed;
-          due=cycle+21+c+t;addressed=word_value;
-          expected_valid[c][due]=1;expected_command[c][due]=addressed;expected_tag[c][due]=base_tag+t;
+        word_value=compute_word(sequence_id<32?0:(sequence_id<72?1:2));
+        for(integer c=0;c<C;c++) begin
+          expected_valid[c][cycle+21+c]=1;expected_command[c][cycle+21+c]=word_value;
+          expected_tag[c][cycle+21+c]=base_tag;
         end
-        base_tag=base_tag+count;sequence_id=sequence_id+1;
+        base_tag=base_tag+1;sequence_id=sequence_id+1;
       end
       if(ll && !llr) $fatal(1,"frontend load launch blocked");
       #1;
@@ -157,11 +147,11 @@ module lpu_mxm_frontend_tb;
         64:begin ll=1;le=1;li=load_word(0,2,1);end
         67:begin ll=1;le=1;li=load_word(1,0,0);end
         // Simultaneous compute on bank0 and reload of the inactive bank1.
-        72:begin cl=1;ce=1;ci=compute_word(1);ll=1;end
-        104:begin cl=1;ce=1;ci=compute_word(2);end
-        144:cl=1;
+        72:ll=1;
         default:begin end
       endcase
+      cl=t>=72 && t<176;
+      if(cl && t<175) begin ce=1;ci=compute_word(t+1-72<32?0:(t+1-72<72?1:2));end
     end
     @(negedge clk);le=0;ce=0;cl=0;ll=0;
     if(checked!=104*C*N) $fatal(1,"missing frontend results checked=%0d",checked);

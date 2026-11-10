@@ -27,11 +27,9 @@ package lpu_mxm_config_pkg;
   parameter integer ACCUMULATOR_RESULT_LENGTH = SC_COLS * CELL_N;
   parameter integer ACCUMULATOR_DEPTH = 1024;
   parameter integer INSTRUCTION_QUEUE_DEPTH = 16;
-  localparam integer COMPUTE_MIN_COUNT = 32;
-  localparam integer COMPUTE_COUNT_BITS = 10; // Encoded COUNT-1, max 1024.
-  localparam integer COMPUTE_MAX_COUNT = 1 << COMPUTE_COUNT_BITS;
-  localparam integer BACKEND_COUNT_BITS = 10; // COUNT-1; actual range 1..1024.
-  localparam integer BACKEND_MAX_COUNT = 1 << BACKEND_COUNT_BITS;
+  // Compiler contract only: no encoded length or compute execution counter.
+  localparam integer COMPUTE_MIN_BATCHES = 32;
+  localparam bit ACCUMULATOR_CONTINUOUS_PASS_EVEN_BATCHES = 1'b1;
   localparam integer SUPERLANE_INSTRUCTION_INTERVAL = 3;
   localparam integer DOT_PIPELINE_CYCLES = 9;
   localparam integer PARTIAL_ADD_CYCLES = 3;
@@ -108,8 +106,8 @@ package lpu_mxm_config_pkg;
   // A MATRIX load supplies MATRIX_N consecutive beats to the selected buffer
   // using the horizontal shift chains. Tail data/valid/buffer ID cross ONE
   // register per cell, matching activation. Last-cell completion is later
-  // by SC_COLS-1 edges, overlapped by the same activation offset. At COUNT
-  // >= MATRIX_N, next-buffer loading fits inside the current compute block.
+  // by SC_COLS-1 edges, overlapped by the same activation offset. When compiler-scheduled compute batches
+  // cover MATRIX_N cycles, next-buffer loading fits inside the current compute block.
   // A COLUMN load supplies one beat into the SAME shift chain. Every cell
   // that accepts that buffer's displaced tail shifts once. There is no column
   // address or selective group update; position follows the input sequence.
@@ -125,13 +123,13 @@ package lpu_mxm_config_pkg;
   // Durations count weight input beats at the array interface, not command
   // propagation or result-pipeline drain. No automatic stall/retry: sources
   // and the selected destination buffer must be scheduled ready each beat.
-  // The compiler chooses compute batch lengths (e.g. 32); they are not tied
-  // to either load duration. One-cycle COLUMN commands can overlap their
-  // propagation, but multirow launches stay at least three cycles apart,
-  // so each nonterminal row has a local forwarding counter per stream,
-  // restarted by replacement of that row's instruction. No timer is needed
-  // on the final row. Only neighbor handoff and local execution constrain
-  // replacement; older commands may still travel in upper rows.
+  // Compiler emits each compute beat explicitly, in continuous groups of at
+  // least COMPUTE_MIN_BATCHES. Compute/load instructions relay at full rate
+  // through two intermediate registers plus each next local register (3 cycles).
+  // No propagation timers or variable-length compute loops remain. MATRIX
+  // retains its fixed MATRIX_N-beat loader; COLUMN launches can be consecutive.
+  // For continuous in-place accumulation the compiler also preserves an even
+  // complete address-pass length and the specified bank phase at boundaries.
 
   // ---------- New MXM accumulator architecture contract ----------
   // Implemented by lpu_mxm_backend / lpu_mxm_core; not migrated into the
@@ -197,7 +195,7 @@ package lpu_mxm_config_pkg;
   // before reading it. A separate backend ISA/queue owns these operations;
   // compute instructions carry no SRAM address, route or output-format flags.
   // Both output instructions select FP32 or BF16 RNE using the compact
-  // backend word's high bit (default bit22; address width follows depth).
+  // backend word's high bit (default bit12; address width follows depth).
   // One shared output register gives both types the SAME launch-to-output
   // latency (6), II=1. Left-edge returned data to output is 4 cycles;
   // top-array data adds the equal-length RESULT_RETURN_CYCLES first.

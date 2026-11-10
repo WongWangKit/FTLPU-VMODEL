@@ -24,7 +24,7 @@ module lpu_mxm_core #(
   output wire [ROWS-1:0] compute_row_valid_o,load_row_valid_o,
   output wire [ROWS*lpu_mxm_isa_pkg::COMPUTE_INSTRUCTION_BITS-1:0] compute_row_instruction_o,
   output wire [ROWS*lpu_mxm_isa_pkg::LOAD_INSTRUCTION_BITS-1:0] load_row_instruction_o,
-  output wire [ROWS*16-1:0] compute_row_index_o,load_row_index_o,
+  output wire [ROWS*16-1:0] compute_row_tag_o,load_row_index_o,
   output wire [COLS-1:0] partial_valid_o,result_valid_o,
   output wire [COLS-1:0] result_bf16_o,
   output wire [COLS*OUTPUTS*32-1:0] partial_o,result_o,
@@ -56,7 +56,7 @@ module lpu_mxm_core #(
     .compute_enqueue_ready_o,.compute_launch_ready_o,.load_enqueue_valid_i,.load_launch_i,.load_instruction_i,
     .load_enqueue_ready_o,.load_launch_ready_o,.activation_valid_i,.weight_valid_i,.activation_i,.weight_i,
     .compute_row_valid_o,.load_row_valid_o,.compute_row_instruction_o,.load_row_instruction_o,
-    .compute_row_index_o,.load_row_index_o,.result_valid_o(partial_valid_o),.result_o(partial_o),
+    .compute_row_tag_o,.load_row_index_o,.result_valid_o(partial_valid_o),.result_o(partial_o),
     .result_tag_o(partial_tag_o),.result_instruction_o(),.activation_forward_valid_o(),.activation_forward_o(),
     .cell_weight_valid_o,.cell_weight_buffer_o,.cell_activation_valid_o,.cell_activation_buffer_o,.fault_o(front_fault));
   lpu_mxm_result_return #(.ROWS(ROWS),.COLS(COLS),.LANES(OUTPUTS)) u_result_return (

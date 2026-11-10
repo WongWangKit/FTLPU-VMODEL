@@ -20,7 +20,7 @@ module lpu_mxm_frontend #(
   output wire [ROWS-1:0] compute_row_valid_o,load_row_valid_o,
   output wire [ROWS*lpu_mxm_isa_pkg::COMPUTE_INSTRUCTION_BITS-1:0] compute_row_instruction_o,
   output wire [ROWS*lpu_mxm_isa_pkg::LOAD_INSTRUCTION_BITS-1:0] load_row_instruction_o,
-  output wire [ROWS*16-1:0] compute_row_index_o,load_row_index_o,
+  output wire [ROWS*16-1:0] compute_row_tag_o,load_row_index_o,
   output wire [COLS-1:0] result_valid_o,
   output wire [COLS*OUTPUTS*32-1:0] result_o,
   output wire [COLS*16-1:0] result_tag_o,
@@ -33,7 +33,7 @@ module lpu_mxm_frontend #(
 );
   import lpu_mxm_config_pkg::*;
   import lpu_mxm_isa_pkg::*;
-  wire [ROWS*16-1:0] row_tags;
+  wire [ROWS*16-1:0] row_tags=compute_row_tag_o;
   wire control_fault;
   wire [ROWS*COLS-1:0] cell_fault;
   logic input_fault_q;
@@ -41,7 +41,7 @@ module lpu_mxm_frontend #(
     .clk_i,.rst_ni,.run_i,.compute_enqueue_valid_i,.compute_enqueue_ready_o,.compute_instruction_i,
     .compute_launch_i,.compute_launch_ready_o,.load_enqueue_valid_i,.load_enqueue_ready_o,.load_instruction_i,
     .load_launch_i,.load_launch_ready_o,.compute_row_valid_o,.compute_row_update_o(),
-    .compute_row_instruction_o,.compute_row_index_o,.compute_row_tag_o(row_tags),
+    .compute_row_instruction_o,.compute_row_tag_o,
     .load_row_valid_o,.load_row_update_o(),.load_row_instruction_o,.load_row_index_o,.fault_o(control_fault));
   // Stopping run flushes the arithmetic/link validity, not SRAM data.
   wire cell_reset_n=rst_ni && run_i;
@@ -65,7 +65,7 @@ module lpu_mxm_frontend #(
     assign activation_forward_o[r*TERMS*16+:TERMS*16]=a_data[COLS];
     for(genvar c=0;c<COLS;c++) begin : g_column
       // Both load modes inject into the same registered shift chain. Mode
-      // only sets the row command duration; it never travels as a data route.
+      // only selects the fixed local shift duration; it never travels as a data route.
       assign cell_weight_buffer_o[r*COLS+c]=w_buffer[c];
       assign cell_activation_valid_o[r*COLS+c]=a_valid[c];
       assign cell_activation_buffer_o[r*COLS+c]=a_buffer[c];

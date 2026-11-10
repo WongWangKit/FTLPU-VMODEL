@@ -2,7 +2,7 @@
 // Raw instruction words and public ports; no hierarchical DUT references.
 module lpu_mxm_backend_config_tb;
   parameter integer DEPTH=1000;
-  localparam integer AB=$clog2(DEPTH),IB=AB+13,RB=DEPTH/2>1?$clog2(DEPTH/2):1;
+  localparam integer AB=$clog2(DEPTH),IB=AB+3,RB=DEPTH/2>1?$clog2(DEPTH/2):1;
   import lpu_mxm_backend_isa_pkg::*;
   logic clk=0,rst_n=0,run=0,enqueue=0,launch=0,pv=0;
   logic [IB-1:0] instruction=0;
@@ -25,8 +25,8 @@ module lpu_mxm_backend_config_tb;
     .result_valid_o(rv),.result_bf16_o(rq),.result_o(rd),.result_address_o(ra),.result_tag_o(rt),
     .bank_request_valid_o(bv),.bank_write_o(bw),.bank_address_o(ba),.bank_write_data_o(bd),
     .alu_valid_o(av),.operand_a_o(opa),.operand_b_o(opb),.alu_address_o(aa),.alu_tag_o(at),.fault_o(fault));
-  function automatic logic [IB-1:0] pack_word(input integer op,count,base,input bit bf16);
-    pack_word=(IB'(bf16)<<(IB-1)) | (IB'(count-1)<<(AB+2)) | (IB'(base)<<2) | IB'(op);
+  function automatic logic [IB-1:0] pack_word(input integer op,address,input bit bf16);
+    pack_word=(IB'(bf16)<<(IB-1)) | (IB'(address)<<2) | IB'(op);
   endfunction
   task automatic reset_backend;
     @(negedge clk);rst_n=0;run=0;enqueue=0;launch=0;pv=0;
@@ -37,14 +37,17 @@ module lpu_mxm_backend_config_tb;
     integer expected_address;
     begin
       outputs=0;reads=0;writes=0;issues=0;
-      @(negedge clk);instruction=pack_word(op,count,base,bf16);enqueue=1;
+      @(negedge clk);instruction=pack_word(op,base,bf16);enqueue=1;
       #1;if(!ready) $fatal(1,"config enqueue blocked");
       @(negedge clk);enqueue=0;run=1;
-      @(negedge clk);launch=1;
+      @(negedge clk);launch=1;enqueue=legal && count>1;instruction=pack_word(op,base+1,bf16);
       #1;if(!launch_ready) $fatal(1,"config launch blocked");
       // Tick 0 is launch; requests/operands are sampled before their edge.
       for(integer tick=0;tick<count+9;tick++) begin
-        if(tick>0) begin @(negedge clk);launch=0;end
+        if(tick>0) begin
+          @(negedge clk);launch=legal && tick<count;enqueue=legal && tick+1<count;
+          instruction=pack_word(op,base+tick+1,bf16);
+        end
         pv=legal && tick>=3 && tick<count+3;
         #1;
         if(iv) begin
@@ -80,7 +83,7 @@ module lpu_mxm_backend_config_tb;
           outputs++;
         end
       end
-      @(negedge clk);pv=0;
+      @(negedge clk);pv=0;enqueue=0;launch=0;
       if(legal) begin
         if(issues!=count || writes!=(op==1?count:0) || reads!=(op==3?count:0) ||
            outputs!=((op==0 || op==3)?count:0)) $fatal(1,"config transaction count mismatch");
@@ -94,31 +97,23 @@ module lpu_mxm_backend_config_tb;
   initial begin
     if(backend_address_bits(DEPTH)!=AB || backend_instruction_bits(DEPTH)!=IB)
       $fatal(1,"compact backend width mismatch");
-    // All count/op/format combinations at five representative boundaries.
-    for(integer sample=0;sample<5;sample++) begin
-      case(sample)
-        0:base=0;1:base=1;2:base=DEPTH-2;3:base=DEPTH-1;default:base=(1<<AB)-1;
-      endcase
-      for(integer count=1;count<=1024;count++)
-        for(integer op=0;op<4;op++) for(integer format=0;format<2;format++) begin
-          expected=base+count<=DEPTH && (!format || op==0 || op==3);
-          word=pack_word(op,count,base,1'(format));
-          if(backend_fields_legal(DEPTH,base,count,2'(op),1'(format))!==expected ||
-             backend_duration(word[AB+2+:10])!==11'(count))
-            $fatal(1,"compact decoder mismatch depth=%0d count=%0d base=%0d",DEPTH,count,base);
-          if(DEPTH==1024 && backend_legal(word)!==expected) $fatal(1,"default packed decoder mismatch");
-          patterns++;
-        end
-    end
+    // Every raw address/op/format word, including unused non-power-of-two addresses.
+    for(integer address=0;address<(1<<AB);address++)
+      for(integer op=0;op<4;op++) for(integer format=0;format<2;format++) begin
+        expected=address<DEPTH && (!format || op==0 || op==3);
+        word=pack_word(op,address,1'(format));
+        if(backend_fields_legal(DEPTH,address,2'(op),1'(format))!==expected)
+          $fatal(1,"count-free backend decoder mismatch");
+        if(DEPTH==1024 && backend_legal(word)!==expected) $fatal(1,"default packed decoder mismatch");
+        patterns++;
+      end
     reset_backend();execute(1,2,DEPTH-2,0,1);execute(3,2,DEPTH-2,0,1);
     execute(0,1,DEPTH-1,1,1);
-    reset_backend();execute(0,2,DEPTH-1,0,0);
-    reset_backend();execute(1,2,DEPTH-1,0,0);
     reset_backend();execute(1,1,0,1,0);
     if(DEPTH!=(1<<AB)) begin
       reset_backend();execute(0,1,(1<<AB)-1,0,0);
     end
-    $display("MXM_BACKEND_CONFIG_PASS depth=%0d address_bits=%0d instruction_bits=%0d patterns=%0d tail_sram=1 direct_bounds=1",DEPTH,AB,IB,patterns);
+    $display("MXM_BACKEND_CONFIG_PASS depth=%0d address_bits=%0d instruction_bits=%0d patterns=%0d tail_sram=1 explicit_addresses=1 count_free=1",DEPTH,AB,IB,patterns);
     $finish;
   end
   initial begin #100000;$fatal(1,"backend config timeout");end

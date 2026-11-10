@@ -41,8 +41,8 @@ module lpu_mxm_backend_tb;
   function automatic bit output_bf16(input integer command);
     output_bf16=(operation(command)==0 || operation(command)==3) && command%2==1;
   endfunction
-  function automatic logic [IB-1:0] word_for(input integer op,input integer count,input integer base);
-    word_for=(IB'(count-1)<<(AB+2)) | (IB'(base)<<2) | IB'(op);
+  function automatic logic [IB-1:0] word_for(input integer op,input integer address);
+    word_for=(IB'(address)<<2) | IB'(op);
   endfunction
   bit scoring=1;
   integer trace_fd=0;
@@ -106,7 +106,7 @@ module lpu_mxm_backend_tb;
     integer state;
     begin
       state=short_state(index);
-      short_word=word_for(state>=2?3:0,1,DEPTH-2+index%2) | (IB'(state%2)<<(IB-1));
+      short_word=word_for(state>=2?3:0,DEPTH-2+index%2) | (IB'(state%2)<<(IB-1));
     end
   endfunction
   always @(posedge clk) begin
@@ -157,14 +157,14 @@ module lpu_mxm_backend_tb;
       cycle=cycle+1;
       if(launch) begin
         if(!launch_ready) $fatal(1,"legal backend launch blocked");
-        for(integer c=0;c<COLS;c++) for(integer t=0;t<32;t++) begin
-          integer item,op;
-          item=(sequence_id*32+t)*4+c;op=operation(sequence_id);
-          ei[c][cycle+c+3+t]=1;item_i[c][cycle+c+3+t]=item;
-          if(op>=2) expect_bank(c,t%2,cycle+c+1+t,0,item);
-          if(op>=2) begin ea[c][cycle+c+3+t]=1;item_a[c][cycle+c+3+t]=item;end
-          if(op==1 || op==2) expect_bank(c,t%2,cycle+c+6+t,1,item);
-          if(op==0 || op==3) begin er[c][cycle+c+6+t]=1;item_r[c][cycle+c+6+t]=item;end
+        for(integer c=0;c<COLS;c++) begin
+          integer item,op,t;
+          t=sequence_id%32;item=sequence_id*4+c;op=operation(sequence_id/32);
+          ei[c][cycle+c+3]=1;item_i[c][cycle+c+3]=item;
+          if(op>=2) expect_bank(c,t%2,cycle+c+1,0,item);
+          if(op>=2) begin ea[c][cycle+c+3]=1;item_a[c][cycle+c+3]=item;end
+          if(op==1 || op==2) expect_bank(c,t%2,cycle+c+6,1,item);
+          if(op==0 || op==3) begin er[c][cycle+c+6]=1;item_r[c][cycle+c+6]=item;end
         end
         sequence_id=sequence_id+1;
       end
@@ -218,9 +218,9 @@ module lpu_mxm_backend_tb;
       repeat(2) @(negedge clk);rst_n=1;
     end
   endtask
-  task automatic enqueue_one(input integer op,input integer count,input integer base);
+  task automatic enqueue_one(input integer op,input integer address);
     begin
-      @(negedge clk);enqueue=1;instruction=word_for(op,count,base);
+      @(negedge clk);enqueue=1;instruction=word_for(op,address);
       #1;if(!enqueue_ready) $fatal(1,"enqueue unexpectedly full");
       @(negedge clk);enqueue=0;
     end
@@ -248,11 +248,11 @@ module lpu_mxm_backend_tb;
     if(!$value$plusargs("output_vectors=%s",output_path)) $fatal(1,"missing backend output vectors");
     $readmemh(output_path,output_vectors);
     repeat(3) @(negedge clk);rst_n=1;
-    enqueue_one(operation(0),32,0);run=1;
+    enqueue_one(operation(0),0);run=1;
     for(integer t=0;t<COMMANDS*32+20;t++) begin
-      @(negedge clk);enqueue=0;launch=t<COMMANDS*32 && t%32==0;
-      if(launch && t/32+1<COMMANDS) begin
-        enqueue=1;instruction=word_for(operation(t/32+1),32,0) | (IB'(output_bf16(t/32+1))<<(IB-1));
+      @(negedge clk);enqueue=0;launch=t<COMMANDS*32;
+      if(launch && t+1<COMMANDS*32) begin
+        enqueue=1;instruction=word_for(operation((t+1)/32),(t+1)%32) | (IB'(output_bf16((t+1)/32))<<(IB-1));
       end
       for(integer c=0;c<COLS;c++) begin
         integer item;
@@ -261,19 +261,29 @@ module lpu_mxm_backend_tb;
       end
     end
     @(negedge clk);enqueue=0;launch=0;pv=0;
-    if(sequence_id!=18 || outputs!=9*32*COLS || adds!=8*32*COLS || writes!=9*32*COLS || reads!=8*32*COLS)
+    if(sequence_id!=18*32 || outputs!=9*32*COLS || adds!=8*32*COLS || writes!=9*32*COLS || reads!=8*32*COLS)
       $fatal(1,"backend counts mismatch outputs=%0d adds=%0d reads=%0d writes=%0d",outputs,adds,reads,writes);
     $display("MXM_BACKEND_PASS columns=%0d lanes=%0d batches=576 transitions=16 formats=2 output_latency=6 partial_to_output=4 direct_A=1 outputs=%0d adds=%0d reads=%0d writes=%0d",COLS,LANES,outputs,adds,reads,writes);
     scoring=0;
-    reset_backend();enqueue_one(1,2,DEPTH-2);run=1;launch_one();drive_slots(15);
+    reset_backend();enqueue_one(1,DEPTH-2);run=1;
+    for(integer t=0;t<15;t++) begin
+      @(negedge clk);launch=t<2;enqueue=t==0;instruction=word_for(1,DEPTH-1);
+      pv=0;for(integer c=0;c<COLS;c++) pv[c]=t>=3+c && t<5+c;
+      for(integer lane=0;lane<COLS*LANES;lane++) pd[lane*32+:32]=32'h3f800000;
+    end
     if(fault) $fatal(1,"last bank rows STORE failed");
-    enqueue_one(3,2,DEPTH-2);launch_one();check_tail=1;drive_slots(15);check_tail=0;
+    enqueue_one(3,DEPTH-2);check_tail=1;
+    for(integer t=0;t<15;t++) begin
+      @(negedge clk);launch=t<2;enqueue=t==0;instruction=word_for(3,DEPTH-1);
+      pv=0;for(integer c=0;c<COLS;c++) pv[c]=t>=3+c && t<5+c;
+    end
+    check_tail=0;enqueue=0;launch=0;pv=0;
     if(fault || tail_outputs!=2*COLS) $fatal(1,"last bank rows accumulation failed");
     $display("MXM_BACKEND_DEPTH_PASS logical_depth=1024 last_addresses=1022,1023");
     // Both tail rows retain FP32 1.0; ACC_OUT produces 2.0 without writeback.
     // Launch one command per edge, keeping multiple different instructions
     // simultaneously in the prefetch-control pipeline. Never drive from DUT sv.
-    enqueue_one(0,1,DEPTH-2);check_short=1;
+    enqueue_one(0,DEPTH-2);check_short=1;
     for(integer t=0;t<32;t++) begin
       @(negedge clk);short_tick=t;launch=t<17;enqueue=t<16;
       if(enqueue) instruction=short_word(t+1);
@@ -284,39 +294,35 @@ module lpu_mxm_backend_tb;
     end
     @(negedge clk);launch=0;enqueue=0;pv=0;check_short=0;
     if(short_outputs!=17*COLS) $fatal(1,"missing COUNT1 outputs");
-    $display("MXM_BACKEND_COUNT1_PASS commands=17 mode_transitions=16 outputs=%0d",short_outputs);
+    $display("MXM_BACKEND_BEAT_PASS commands=17 mode_transitions=16 outputs=%0d",short_outputs);
     reset_backend();run=1;
     launch=1;@(negedge clk);launch=0;
     if(!fault) $fatal(1,"empty launch not detected");
-    reset_backend();enqueue_one(1,1024,1);run=1;launch_one();
-    if(!fault || sv!==0) $fatal(1,"maximum COUNT address overflow executed");
     for(integer op=1;op<=2;op++) begin
       reset_backend();
-      @(negedge clk);enqueue=1;instruction=word_for(op,1,0) | (IB'(1)<<(IB-1));
+      @(negedge clk);enqueue=1;instruction=word_for(op,0) | (IB'(1)<<(IB-1));
       @(negedge clk);enqueue=0;run=1;launch_one();
       if(!fault || sv!==0 || bv!==0) $fatal(1,"BF16 storage instruction not rejected");
     end
-    reset_backend();enqueue_one(3,1,40);run=1;launch_one();
+    reset_backend();enqueue_one(3,40);run=1;launch_one();
     drive_slots(12);
     if(!fault || rv!==0) $fatal(1,"uninitialized SRAM read not rejected");
-    reset_backend();enqueue_one(0,1,0);run=1;launch_one();
+    reset_backend();enqueue_one(0,0);run=1;launch_one();
     repeat(3) @(negedge clk);
     if(!fault) $fatal(1,"missing partial not detected");
-    reset_backend();enqueue_one(1,2,DEPTH-1);run=1;launch_one();
-    if(!fault || sv!==0 || bv!==0) $fatal(1,"address overflow not rejected");
     // Original SRAM value must be committed before any read. First initialize
     // address zero, then deliberately violate a pending ACC_STORE dependency.
-    reset_backend();enqueue_one(1,1,0);run=1;launch_one();drive_slots(12);
+    reset_backend();enqueue_one(1,0);run=1;launch_one();drive_slots(12);
     if(fault) $fatal(1,"single-batch STORE failed");
-    enqueue_one(2,1,0);enqueue_one(3,1,0);launch_one();
+    enqueue_one(2,0);enqueue_one(3,0);launch_one();
     // Next launch on the immediately following edge: legal command cadence,
     // illegal address reuse before the first accumulation has written back.
     launch=1;
     drive_slots(1);launch=0;drive_slots(14);
     if(!fault) $fatal(1,"read-before-write dependency not detected");
     // Force a first request onto the same bank/edge as a five-cycle writeback.
-    reset_backend();enqueue_one(1,1,0);run=1;launch_one();drive_slots(12);
-    enqueue_one(2,1,0);enqueue_one(1,1,0);launch_one();
+    reset_backend();enqueue_one(1,0);run=1;launch_one();drive_slots(12);
+    enqueue_one(2,0);enqueue_one(1,0);launch_one();
     drive_slots(4);launch=1;drive_slots(1);launch=0;drive_slots(14);
     if(!fault) $fatal(1,"same-bank writeback collision not detected");
     reset_backend();run=1;

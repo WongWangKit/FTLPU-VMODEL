@@ -39,8 +39,9 @@ def run(command, log):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--compile-only', action='store_true')
-    parser.add_argument('--top', help='Run only one test top')
+    parser.add_argument('--top', help='Run one test top or comma-separated tops')
     parser.add_argument('--trace', action='store_true', help='Export public-port CSV/VCD for control, frontend, backend and core benches')
+    parser.add_argument('--core-scenarios', help='Comma-separated core scenario numbers; defaults to all')
     args = parser.parse_args()
     BUILD.mkdir(parents=True, exist_ok=True)
     tops = ['lpu_mxm_bf16_dot_csa_tb', 'lpu_mxm_fp32_add_pipe_tb', 'lpu_mxm_output_pipe_tb',
@@ -48,7 +49,7 @@ def main():
             'lpu_mxm_control_tb', 'lpu_mxm_compact_isa_tb', 'lpu_mxm_frontend_tb', 'lpu_mxm_weight_shift_tb', 'lpu_mxm_backend_tb',
             'lpu_mxm_backend_config_tb', 'lpu_mxm_result_return_tb', 'lpu_mxm_core_tb']
     if args.top:
-        tops = [args.top]
+        tops = args.top.split(',')
     if args.top == 'lpu_top' and not args.compile_only:
         parser.error('lpu_top is supported here only with --compile-only')
     sources = [line.strip() for line in (ROOT/'sim/filelist_mxm_supercell.f').read_text().splitlines()
@@ -88,14 +89,20 @@ def main():
             [(1,1),(2,3),(4,1),(4,3)] if top == 'lpu_mxm_control_tb' else (
             [(1,1),(1,3),(4,8)] if top == 'lpu_mxm_backend_tb' else (
             [(1,1),(2,3),(3,1),(4,8),(8,3)] if top == 'lpu_mxm_result_return_tb' else (
-            [0,1,2,3,4,5,6,7,8] if top == 'lpu_mxm_core_tb' else [None])))))
+            list(range(11)) if top == 'lpu_mxm_core_tb' else [None])))))
         if top == 'lpu_mxm_backend_config_tb':
             sizes = [2,6,1000,1024,2048,65536]
+        if top == 'lpu_mxm_weight_shift_tb':
+            sizes = [3,1]
+        if top == 'lpu_mxm_core_tb' and args.core_scenarios:
+            sizes = [int(value) for value in args.core_scenarios.split(',')]
         for size in sizes:
             if top == 'lpu_mxm_core_tb':
                 suffix = f'_s{size}' if size else ''
             elif top == 'lpu_mxm_backend_config_tb':
                 suffix = f'_d{size}'
+            elif top == 'lpu_mxm_weight_shift_tb':
+                suffix = '' if size==3 else f'_i{size}'
             else:
                 suffix = (f'_k{size[0]}_n{size[1]}' if isinstance(size,tuple) else f'_k{size}') if size else ''
             name = top + suffix
@@ -110,6 +117,8 @@ def main():
                 command += ['-P', f'{top}.SCENARIO={size}']
             elif top == 'lpu_mxm_backend_config_tb':
                 command += ['-P', f'{top}.DEPTH={size}']
+            elif top == 'lpu_mxm_weight_shift_tb':
+                command += ['-P', f'{top}.LOAD_INTERVAL={size}']
             elif size:
                 command += ['-P', f'{top}.TERMS={size}']
             command += sources + [f'sim/tb/mxm/{top}.sv']
@@ -120,7 +129,7 @@ def main():
                 trace_dir.mkdir(parents=True, exist_ok=True)
                 command += [f'+trace_path={(trace_dir/(name+".csv")).as_posix()}',
                             f'+vcd_path={(trace_dir/(name+".vcd")).as_posix()}']
-            if size and not isinstance(size,tuple) and top not in ('lpu_mxm_core_tb','lpu_mxm_backend_config_tb'):
+            if size and not isinstance(size,tuple) and top not in ('lpu_mxm_core_tb','lpu_mxm_backend_config_tb','lpu_mxm_weight_shift_tb'):
                 command += [f'+vectors={(BUILD/f"vectors/dot_k{size}.hex").as_posix()}', f'+count={dot_count}']
             elif top == 'lpu_mxm_fp32_add_pipe_tb':
                 command += [f'+vectors={(BUILD/"vectors/fp32_add.hex").as_posix()}', f'+count={add_count}']
