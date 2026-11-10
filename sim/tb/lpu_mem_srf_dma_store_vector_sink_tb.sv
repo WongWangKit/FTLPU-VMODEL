@@ -1,6 +1,6 @@
 `timescale 1ns/1ps
 
-module lpu_mem_srf_dma_store_vector_sink_tb;
+module lpu_mem_srf_dma_store_vector_sink_tb #(parameter integer PROFILE=0, ROW_BASE=0);
   localparam integer MEM_SLICES = 52;
   localparam integer COLUMNS = 16;
   localparam integer SUPERLANES = 4;
@@ -55,7 +55,8 @@ module lpu_mem_srf_dma_store_vector_sink_tb;
     .MEM_SLICES(MEM_SLICES),
     .MEM_SLICES_PER_GROUP(4),
     .MEM_DEPTH_ROWS(16),
-    .COMPLETED_FIFO_DEPTH(2)
+    .COMPLETED_FIFO_DEPTH(2),
+    .P_LPU_PROFILE(PROFILE)
   ) dut (
     .clk_i,
     .rst_ni,
@@ -96,7 +97,7 @@ module lpu_mem_srf_dma_store_vector_sink_tb;
       make_cmd = '0;
       make_cmd[2:0] = opcode;
       make_cmd[8:3] = {direction, stream_index};
-      make_cmd[29:15] = row;
+      make_cmd[29:15] = ROW_BASE+row;
       make_cmd[31] = 1'b0;
     end
   endfunction

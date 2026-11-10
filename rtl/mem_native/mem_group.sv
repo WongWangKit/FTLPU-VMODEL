@@ -9,7 +9,8 @@ module mem_group #(
     parameter P_STREAMS_PER_DIRECTION    = 32,
     parameter P_SEGMENT_BITS             = 64,
     parameter P_SLICE_FAULT_CODE_BITS    = 3,
-    parameter P_MEM_BANK_DEPTH_ROWS      = 32768
+    parameter P_MEM_BANK_DEPTH_ROWS      = 32768,
+    parameter P_MEM_ACTIVE_ROWS          = P_MEM_BANK_DEPTH_ROWS
 ) (
     input  wire                         clk_i,
     input  wire                         rst_ni,
@@ -19,18 +20,18 @@ module mem_group #(
     input  wire [P_SLICES*P_BANKS_PER_SLICE*32-1:0] group_issue_i,
 
     // Each boundary uses Slice SR cell ordering:
-    // {direction,stream[4:0],tile[1:0]} (East 0..127, West 128..255).
-    input  wire [255:0]                 left_boundary_state_valid_i,
-    input  wire [16383:0]               left_boundary_state_data_i,
-    input  wire [255:0]                 right_boundary_state_valid_i,
-    input  wire [16383:0]               right_boundary_state_data_i,
+    // (direction*32+stream)*T+tile.
+    input  wire [2*P_STREAMS_PER_DIRECTION*P_TILE_ROWS-1:0]                 left_boundary_state_valid_i,
+    input  wire [2*P_STREAMS_PER_DIRECTION*P_TILE_ROWS*P_SEGMENT_BITS-1:0]               left_boundary_state_data_i,
+    input  wire [2*P_STREAMS_PER_DIRECTION*P_TILE_ROWS-1:0]                 right_boundary_state_valid_i,
+    input  wire [2*P_STREAMS_PER_DIRECTION*P_TILE_ROWS*P_SEGMENT_BITS-1:0]               right_boundary_state_data_i,
 
-    // Candidate ordering: candidate = slice*8 + bank*4 + tile.
+    // Candidate ordering: candidate = (slice*2+bank)*T+tile.
     input  wire [P_SLICES*P_BANKS_PER_SLICE*P_TILE_ROWS-1:0]
                                             external_producer_collision_i,
 
-    output reg  [255:0]                 left_boundary_consume_o,
-    output reg  [255:0]                 right_boundary_consume_o,
+    output reg  [2*P_STREAMS_PER_DIRECTION*P_TILE_ROWS-1:0]                 left_boundary_consume_o,
+    output reg  [2*P_STREAMS_PER_DIRECTION*P_TILE_ROWS-1:0]                 right_boundary_consume_o,
 
     output wire [P_SLICES*P_BANKS_PER_SLICE*P_TILE_ROWS-1:0]
                                             left_boundary_inject_valid_o,
@@ -51,7 +52,7 @@ module mem_group #(
                                             slice_fault_code_o,
     output wire [P_SLICES*P_BANKS_PER_SLICE-1:0] slice_fault_bank_id_o,
     output wire [P_SLICES*P_BANKS_PER_SLICE-1:0] slice_fault_tile_valid_o,
-    output wire [P_SLICES*P_BANKS_PER_SLICE*2-1:0] slice_fault_tile_id_o,
+    output wire [P_SLICES*P_BANKS_PER_SLICE*((P_TILE_ROWS>1)?$clog2(P_TILE_ROWS):1)-1:0] slice_fault_tile_id_o,
     output wire [P_SLICES*P_BANKS_PER_SLICE*15-1:0] slice_fault_row_o,
     output wire                         group_fault_valid_o,
 
@@ -59,24 +60,36 @@ module mem_group #(
     output wire                         group_busy_o
 );
 
+    localparam P_SR_CELLS = 2*P_STREAMS_PER_DIRECTION*P_TILE_ROWS;
+    localparam P_DIR_CELLS = P_STREAMS_PER_DIRECTION*P_TILE_ROWS;
+    localparam P_TILE_ID_BITS = (P_TILE_ROWS>1)?$clog2(P_TILE_ROWS):1;
     localparam P_CANDIDATES =
         P_SLICES * P_BANKS_PER_SLICE * P_TILE_ROWS;
     localparam P_ISSUES = P_SLICES * P_BANKS_PER_SLICE;
 
+`ifndef SYNTHESIS
+    initial begin : check_parameters
+        if (P_SLICES != 4 || P_BANKS_PER_SLICE != 2 || (P_TILE_ROWS != 2 && P_TILE_ROWS != 4 && P_TILE_ROWS != 8) ||
+            P_STREAMS_PER_DIRECTION != 32 || P_SEGMENT_BITS != 64 ||
+            P_SLICE_FAULT_CODE_BITS != 3)
+            $fatal(1, "%m unsupported MEM group profile");
+    end
+`endif
+
     // East Write observes left. West Write observes right. Unused direction
     // halves are deliberately not copied from the opposite boundary.
-    wire [255:0]   slice_sr_state_valid;
-    wire [16383:0] slice_sr_state_data;
-    assign slice_sr_state_valid[127:0] =
-        left_boundary_state_valid_i[127:0];
-    assign slice_sr_state_valid[255:128] =
-        right_boundary_state_valid_i[255:128];
-    assign slice_sr_state_data[8191:0] =
-        left_boundary_state_data_i[8191:0];
-    assign slice_sr_state_data[16383:8192] =
-        right_boundary_state_data_i[16383:8192];
+    wire [2*P_STREAMS_PER_DIRECTION*P_TILE_ROWS-1:0]   slice_sr_state_valid;
+    wire [2*P_STREAMS_PER_DIRECTION*P_TILE_ROWS*P_SEGMENT_BITS-1:0] slice_sr_state_data;
+    assign slice_sr_state_valid[P_DIR_CELLS-1:0] =
+        left_boundary_state_valid_i[P_DIR_CELLS-1:0];
+    assign slice_sr_state_valid[P_SR_CELLS-1:P_DIR_CELLS] =
+        right_boundary_state_valid_i[P_SR_CELLS-1:P_DIR_CELLS];
+    assign slice_sr_state_data[P_DIR_CELLS*P_SEGMENT_BITS-1:0] =
+        left_boundary_state_data_i[P_DIR_CELLS*P_SEGMENT_BITS-1:0];
+    assign slice_sr_state_data[P_SR_CELLS*P_SEGMENT_BITS-1:P_DIR_CELLS*P_SEGMENT_BITS] =
+        right_boundary_state_data_i[P_SR_CELLS*P_SEGMENT_BITS-1:P_DIR_CELLS*P_SEGMENT_BITS];
 
-    wire [P_SLICES*512-1:0] slice_consume;
+    wire [P_SLICES*P_BANKS_PER_SLICE*P_SR_CELLS-1:0] slice_consume;
     wire [P_CANDIDATES-1:0] slice_inject_valid;
     wire [P_CANDIDATES*P_SEGMENT_BITS-1:0] slice_inject_data;
     wire [P_CANDIDATES-1:0] slice_inject_stream_dir;
@@ -91,7 +104,9 @@ module mem_group #(
             wire [63:0] north_cmd_unused;
 
             mem_slice #(
-                .P_MEM_BANK_DEPTH_ROWS(P_MEM_BANK_DEPTH_ROWS)
+                .P_TILE_ROWS(P_TILE_ROWS),
+                .P_MEM_BANK_DEPTH_ROWS(P_MEM_BANK_DEPTH_ROWS),
+                .P_MEM_ACTIVE_ROWS(P_MEM_ACTIVE_ROWS)
             ) u_slice (
                 .clk_i(clk_i),
                 .rst_ni(rst_ni),
@@ -99,18 +114,18 @@ module mem_group #(
                 .bank_issue_i(group_issue_i[slice*64 +: 64]),
                 .sr_state_valid_i(slice_sr_state_valid),
                 .sr_state_data_i(slice_sr_state_data),
-                .producer_collision_i(slice_collision_feedback[slice*8 +: 8]),
-                .sr_consume_o(slice_consume[slice*512 +: 512]),
-                .sr_inject_valid_o(slice_inject_valid[slice*8 +: 8]),
-                .sr_inject_data_o(slice_inject_data[slice*512 +: 512]),
-                .sr_inject_stream_dir_o(slice_inject_stream_dir[slice*8 +: 8]),
-                .sr_inject_stream_idx_o(slice_inject_stream_idx[slice*40 +: 40]),
+                .producer_collision_i(slice_collision_feedback[slice*P_BANKS_PER_SLICE*P_TILE_ROWS +: P_BANKS_PER_SLICE*P_TILE_ROWS]),
+                .sr_consume_o(slice_consume[slice*P_BANKS_PER_SLICE*P_SR_CELLS +: P_BANKS_PER_SLICE*P_SR_CELLS]),
+                .sr_inject_valid_o(slice_inject_valid[slice*P_BANKS_PER_SLICE*P_TILE_ROWS +: P_BANKS_PER_SLICE*P_TILE_ROWS]),
+                .sr_inject_data_o(slice_inject_data[slice*P_BANKS_PER_SLICE*P_TILE_ROWS*P_SEGMENT_BITS +: P_BANKS_PER_SLICE*P_TILE_ROWS*P_SEGMENT_BITS]),
+                .sr_inject_stream_dir_o(slice_inject_stream_dir[slice*P_BANKS_PER_SLICE*P_TILE_ROWS +: P_BANKS_PER_SLICE*P_TILE_ROWS]),
+                .sr_inject_stream_idx_o(slice_inject_stream_idx[slice*P_BANKS_PER_SLICE*P_TILE_ROWS*5 +: P_BANKS_PER_SLICE*P_TILE_ROWS*5]),
                 .mem_fault_valid_o(slice_fault_valid_o[slice*2 +: 2]),
                 .mem_fault_code_o(slice_fault_code_o[slice*2*P_SLICE_FAULT_CODE_BITS +:
                                                       2*P_SLICE_FAULT_CODE_BITS]),
                 .mem_fault_bank_id_o(slice_fault_bank_id_o[slice*2 +: 2]),
                 .mem_fault_tile_valid_o(slice_fault_tile_valid_o[slice*2 +: 2]),
-                .mem_fault_tile_id_o(slice_fault_tile_id_o[slice*4 +: 4]),
+                .mem_fault_tile_id_o(slice_fault_tile_id_o[slice*P_BANKS_PER_SLICE*P_TILE_ID_BITS +: P_BANKS_PER_SLICE*P_TILE_ID_BITS]),
                 .mem_fault_row_o(slice_fault_row_o[slice*30 +: 30]),
                 .bank_north_cmd_valid_o(north_valid_unused),
                 .bank_north_cmd_o(north_cmd_unused),
@@ -147,18 +162,18 @@ module mem_group #(
     integer consume_cell;
     integer consume_source;
     always @* begin
-        left_boundary_consume_o = 256'b0;
-        right_boundary_consume_o = 256'b0;
+        left_boundary_consume_o = '0;
+        right_boundary_consume_o = '0;
         for (consume_slice = 0; consume_slice < P_SLICES;
              consume_slice = consume_slice + 1) begin
             for (consume_bank = 0; consume_bank < P_BANKS_PER_SLICE;
                  consume_bank = consume_bank + 1) begin
-                for (consume_cell = 0; consume_cell < 256;
+                for (consume_cell = 0; consume_cell < P_SR_CELLS;
                      consume_cell = consume_cell + 1) begin
-                    consume_source = consume_slice*512 +
-                                     consume_bank*256 + consume_cell;
+                    consume_source = consume_slice*P_BANKS_PER_SLICE*P_SR_CELLS +
+                                     consume_bank*P_SR_CELLS + consume_cell;
                     if (slice_consume[consume_source]) begin
-                        if (consume_cell < 128)
+                        if (consume_cell < P_DIR_CELLS)
                             left_boundary_consume_o[consume_cell] = 1'b1;
                         else
                             right_boundary_consume_o[consume_cell] = 1'b1;
@@ -170,7 +185,7 @@ module mem_group #(
 
     // Compare all MEM Read candidates without choosing a producer. A target is
     // identified by boundary/direction, stream, and tile. Candidate identity
-    // remains slice*8+bank*4+tile in all outputs and feedback.
+    // remains (slice*2+bank)*T+tile in all outputs and feedback.
     reg [P_CANDIDATES-1:0] internal_mem_collision;
     integer producer_a;
     integer producer_b;

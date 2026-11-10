@@ -10,7 +10,8 @@ module mem_slice #(
     parameter P_SEGMENT_BITS             = 64,
     parameter P_MEM_BANK_DEPTH_ROWS      = 32768,
     parameter P_MEM_FAULT_BITS           = 2,
-    parameter P_SLICE_FAULT_CODE_BITS    = 3
+    parameter P_SLICE_FAULT_CODE_BITS    = 3,
+    parameter P_MEM_ACTIVE_ROWS          = P_MEM_BANK_DEPTH_ROWS
 ) (
     input  wire                         clk_i,
     input  wire                         rst_ni,
@@ -20,8 +21,8 @@ module mem_slice #(
     input  wire [P_BANKS-1:0]           bank_issue_valid_i,
     input  wire [P_BANKS*32-1:0]        bank_issue_i,
 
-    // SR state ordering: cell = {direction, stream_index[4:0], tile[1:0]}.
-    // Cells 0..127 are East; cells 128..255 are West. Each data cell is 64b.
+    // SR state ordering: cell = (direction*32 + stream_index)*T + tile.
+    // Each direction contains 32*T cells; each data cell is 64b.
     input  wire [2*P_STREAMS_PER_DIRECTION*P_TILE_ROWS-1:0] sr_state_valid_i,
     input  wire [2*P_STREAMS_PER_DIRECTION*P_TILE_ROWS*P_SEGMENT_BITS-1:0] sr_state_data_i,
 
@@ -42,7 +43,7 @@ module mem_slice #(
     output reg  [P_BANKS*P_SLICE_FAULT_CODE_BITS-1:0] mem_fault_code_o,
     output reg  [P_BANKS-1:0]           mem_fault_bank_id_o,
     output reg  [P_BANKS-1:0]           mem_fault_tile_valid_o,
-    output reg  [P_BANKS*2-1:0]         mem_fault_tile_id_o,
+    output reg  [P_BANKS*((P_TILE_ROWS>1)?$clog2(P_TILE_ROWS):1)-1:0] mem_fault_tile_id_o,
     output reg  [P_BANKS*15-1:0]        mem_fault_row_o,
 
     output wire [P_BANKS-1:0]           bank_north_cmd_valid_o,
@@ -52,6 +53,7 @@ module mem_slice #(
 );
 
     localparam P_SR_CELLS = 2 * P_STREAMS_PER_DIRECTION * P_TILE_ROWS;
+    localparam P_TILE_ID_BITS = (P_TILE_ROWS > 1) ? $clog2(P_TILE_ROWS) : 1;
     localparam [P_SLICE_FAULT_CODE_BITS-1:0] SLICE_FAULT_NONE      = 0;
     localparam [P_SLICE_FAULT_CODE_BITS-1:0] SLICE_FAULT_ISSUE     = 1;
     localparam [P_SLICE_FAULT_CODE_BITS-1:0] SLICE_FAULT_LEAF      = 2;
@@ -85,11 +87,12 @@ module mem_slice #(
 
 `ifndef SYNTHESIS
     initial begin
-        if (P_BANKS != 2 || P_TILE_ROWS != 4 ||
+        if (P_BANKS != 2 || (P_TILE_ROWS != 2 && P_TILE_ROWS != 4 && P_TILE_ROWS != 8) ||
             P_STREAMS_PER_DIRECTION != 32 || P_SEGMENT_BITS != 64) begin
-            $display("ERROR mem_slice supports the FTLPU_DEFAULT_4T8L profile only");
-            $finish;
+            $fatal(1, "mem_slice supports the FTLPU_DEFAULT_4T8L profile only");
         end
+        if (P_SLICE_FAULT_CODE_BITS < 2)
+            $fatal(1, "mem_slice fault width must represent the existing classes");
     end
 `endif
 
@@ -110,7 +113,9 @@ module mem_slice #(
             assign issue_legal[bank] = supported_opcode &&
                                        !read_preserve_illegal &&
                                        (issue_command[14:9] == 6'b0) &&
-                                       !issue_command[30];
+                                       !issue_command[30] &&
+                                       (issue_command[29:15] < P_MEM_BANK_DEPTH_ROWS) &&
+                                       (issue_command[29:15] < P_MEM_ACTIVE_ROWS);
             assign issue_fault[bank] = bank_issue_valid_i[bank] &&
                                        !issue_legal[bank];
 
@@ -119,6 +124,7 @@ module mem_slice #(
                 .P_LANES_PER_TILE(8),
                 .P_MEM_ELEMENT_BITS(8),
                 .P_MEM_BANK_DEPTH_ROWS(P_MEM_BANK_DEPTH_ROWS),
+                .P_MEM_ACTIVE_ROWS(P_MEM_ACTIVE_ROWS),
                 .P_MEM_CONTROL_HOP_CYCLES(1),
                 .P_MEM_READ_TO_SR_CYCLES(1),
                 .P_MEM_FAULT_BITS(P_MEM_FAULT_BITS)
@@ -169,14 +175,10 @@ module mem_slice #(
             for (select_tile = 0; select_tile < P_TILE_ROWS;
                  select_tile = select_tile + 1) begin : gen_select_tile
                 localparam ENTRY = select_bank*P_TILE_ROWS + select_tile;
-                localparam [1:0] TILE_ID = select_tile;
-                wire [7:0] sr_cell_index;
-
-                assign sr_cell_index = {
-                    current_cmd_stream_dir[ENTRY],
-                    current_cmd_stream_idx[ENTRY*5 +: 5],
-                    TILE_ID
-                };
+                wire [$clog2(P_SR_CELLS)-1:0] sr_cell_index;
+                assign sr_cell_index =
+                    (current_cmd_stream_dir[ENTRY]*P_STREAMS_PER_DIRECTION +
+                     current_cmd_stream_idx[ENTRY*5 +: 5])*P_TILE_ROWS + select_tile;
                 assign selected_stream_valid[ENTRY] =
                     sr_state_valid_i[sr_cell_index];
                 assign selected_stream_data[ENTRY*P_SEGMENT_BITS +: P_SEGMENT_BITS] =
@@ -239,6 +241,8 @@ module mem_slice #(
                     if (current_cmd_valid[consume_entry] &&
                         (current_cmd_opcode[consume_entry*3 +: 3] == 3'b001) &&
                         !current_cmd_preserve[consume_entry] &&
+                        (current_cmd_row[consume_entry*15 +: 15] < P_MEM_BANK_DEPTH_ROWS) &&
+                        (current_cmd_row[consume_entry*15 +: 15] < P_MEM_ACTIVE_ROWS) &&
                         selected_stream_valid[consume_entry]) begin
                         sr_consume_o[consume_index] = 1'b1;
                     end
@@ -259,7 +263,7 @@ module mem_slice #(
         mem_fault_code_o       = {P_BANKS*P_SLICE_FAULT_CODE_BITS{1'b0}};
         mem_fault_bank_id_o    = {P_BANKS{1'b0}};
         mem_fault_tile_valid_o = {P_BANKS{1'b0}};
-        mem_fault_tile_id_o    = {P_BANKS*2{1'b0}};
+        mem_fault_tile_id_o    = {P_BANKS*P_TILE_ID_BITS{1'b0}};
         mem_fault_row_o        = {P_BANKS*15{1'b0}};
 
         for (fault_bank = 0; fault_bank < P_BANKS;
@@ -284,7 +288,7 @@ module mem_slice #(
                                      P_SLICE_FAULT_CODE_BITS] =
                         SLICE_FAULT_COLLISION;
                     mem_fault_tile_valid_o[fault_bank] = 1'b1;
-                    mem_fault_tile_id_o[fault_bank*2 +: 2] = fault_tile;
+                    mem_fault_tile_id_o[fault_bank*P_TILE_ID_BITS +: P_TILE_ID_BITS] = fault_tile;
                     mem_fault_row_o[fault_bank*15 +: 15] =
                         response_row_q[fault_entry*15 +: 15];
                 end
@@ -299,7 +303,7 @@ module mem_slice #(
                     mem_fault_code_o[fault_bank*P_SLICE_FAULT_CODE_BITS +:
                                      P_SLICE_FAULT_CODE_BITS] = SLICE_FAULT_LEAF;
                     mem_fault_tile_valid_o[fault_bank] = 1'b1;
-                    mem_fault_tile_id_o[fault_bank*2 +: 2] = fault_tile;
+                    mem_fault_tile_id_o[fault_bank*P_TILE_ID_BITS +: P_TILE_ID_BITS] = fault_tile;
                     mem_fault_row_o[fault_bank*15 +: 15] =
                         response_row_q[fault_entry*15 +: 15];
                 end
