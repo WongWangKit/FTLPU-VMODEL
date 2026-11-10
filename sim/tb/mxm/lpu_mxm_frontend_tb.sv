@@ -1,16 +1,20 @@
 `timescale 1ns/1ps
 module lpu_mxm_frontend_tb;
   localparam integer R=4,C=4,K=8,N=8,LIMIT=400;
+  import lpu_mxm_isa_pkg::*;
+  localparam integer CB=COMPUTE_INSTRUCTION_BITS,LB=LOAD_INSTRUCTION_BITS;
   logic clk=0,rst_n=0,run=0,ce=0,cl=0,le=0,ll=0;
-  logic [63:0] ci=0,li=0;
+  logic [CB-1:0] ci=0;
+  logic [LB-1:0] li=0;
   wire cr,clr,lr,llr,fault;
   wire [R-1:0] cv,lv;
-  wire [R*64-1:0] cp,lp;
+  wire [R*CB-1:0] cp;
+  wire [R*LB-1:0] lp;
   wire [R*16-1:0] cx,lx;
   wire [C-1:0] rv;
   wire [C*N*32-1:0] result;
   wire [C*16-1:0] tags;
-  wire [C*64-1:0] commands;
+  wire [C*CB-1:0] commands;
   logic [R*K*16-1:0] activation,weight_data;
   logic drop_activation=0;
   bit scoring=1;
@@ -31,8 +35,8 @@ module lpu_mxm_frontend_tb;
     #2;
     if(trace_fd) for(integer c=0;c<C;c++)
       $fdisplay(trace_fd,"%0.3f,%0d,%0d,%0d,%0d,%0d,%0d,%0d,%016h,%0d,%0d,%016h,%0d,%0d,%0d,%016h,%08h,%0d",
-        $realtime,rst_n,run,scoring,cl,ll,c,cv[c],cp[c*64+:64],cx[c*16+:16],lv[c],lp[c*64+:64],lx[c*16+:16],
-        rv[c],tags[c*16+:16],commands[c*64+:64],result[c*N*32+:32],fault);
+        $realtime,rst_n,run,scoring,cl,ll,c,cv[c],cp[c*CB+:CB],cx[c*16+:16],lv[c],lp[c*LB+:LB],lx[c*16+:16],
+        rv[c],tags[c*16+:16],commands[c*CB+:CB],result[c*N*32+:32],fault);
   end
   final if(trace_fd) $fclose(trace_fd);
   always #5 clk=~clk;
@@ -55,21 +59,21 @@ module lpu_mxm_frontend_tb;
       fp32_integer=value==0?32'b0:{1'b0,8'(leading+127),fraction[22:0]};
     end
   endfunction
-  function automatic logic [63:0] compute_word(input integer seq);
-    logic [63:0] word_value;
+  function automatic logic [CB-1:0] compute_word(input integer seq);
+    logic [CB-1:0] word_value;
     begin
-      word_value=64'h8000000000000002;
-      word_value[18:3]=seq==1?16'd40:16'd32;
-      word_value[2]=seq==1;
-      word_value[44:39]=6'(seq+1);
+      word_value='0;
+      word_value[10:1]=seq==1?10'd39:10'd31;
+      word_value[0]=seq==1;
+      word_value[16:11]=6'(seq+1);
       compute_word=word_value;
     end
   endfunction
-  function automatic logic [63:0] load_word(input integer bank,input integer column_number);
-    logic [63:0] word_value;
+  function automatic logic [LB-1:0] load_word(input integer bank,input integer stream,input bit single_shift);
+    logic [LB-1:0] word_value;
     begin
-      word_value=64'h8000000000000000;word_value[2]=1'(bank);
-      if(column_number>=0) begin word_value[1:0]=1;word_value[62:57]=6'(column_number);end
+      word_value='0;word_value[1]=1'(bank);
+      word_value[0]=single_shift;word_value[7:2]=6'(stream);
       load_word=word_value;
     end
   endfunction
@@ -79,8 +83,8 @@ module lpu_mxm_frontend_tb;
       integer column_number,w;
       logic [31:0] a_bits,w_bits;
       a_bits=fp32_integer(int'(cx[r*16+:16])%3+r+1);
-      column_number=lp[r*64+:2]==1?int'(lp[r*64+57+:6]):31-int'(lx[r*16+:16]);
-      w=lp[r*64+:2]==1?100+r:column_number+r+1+(lp[r*64+2]?20:0);
+      column_number=31-int'(lx[r*16+:16]);
+      w=lp[r*LB]?100+10*int'(lp[r*LB+2+:6])+r:column_number+r+1+(lp[r*LB+1]?20:0);
       w_bits=fp32_integer(w);
       for(integer k=0;k<K;k++) begin
         activation[(r*K+k)*16+:16]=a_bits[31:16];
@@ -89,7 +93,7 @@ module lpu_mxm_frontend_tb;
     end
   end
   bit expected_valid[0:C-1][0:LIMIT];
-  logic [63:0] expected_command[0:C-1][0:LIMIT];
+  logic [CB-1:0] expected_command[0:C-1][0:LIMIT];
   integer expected_tag[0:C-1][0:LIMIT];
   integer cycle=0,sequence_id=0,base_tag=0,checked=0;
   always @(posedge clk) begin
@@ -100,12 +104,12 @@ module lpu_mxm_frontend_tb;
       cycle=cycle+1;
       if(cl) begin
         integer count;
-        logic [63:0] word_value;
+        logic [CB-1:0] word_value;
         if(!clr) $fatal(1,"frontend compute launch blocked");
-        word_value=compute_word(sequence_id);count=int'(word_value[18:3]);
+        word_value=compute_word(sequence_id);count=int'(word_value[10:1])+1;
         for(integer c=0;c<C;c++) for(integer t=0;t<count;t++) begin
           integer due;
-          logic [63:0] addressed;
+          logic [CB-1:0] addressed;
           due=cycle+21+c+t;addressed=word_value;
           expected_valid[c][due]=1;expected_command[c][due]=addressed;expected_tag[c][due]=base_tag+t;
         end
@@ -120,17 +124,19 @@ module lpu_mxm_frontend_tb;
           integer tag_value,seq,idx;
           tag_value=expected_tag[c][cycle];seq=tag_value<32?0:(tag_value<72?1:2);
           idx=tag_value-(seq==0?0:(seq==1?32:72));
-          if(tags[c*16+:16]!==16'(tag_value) || commands[c*64+:64]!==expected_command[c][cycle])
+          if(tags[c*16+:16]!==16'(tag_value) || commands[c*CB+:CB]!==expected_command[c][cycle])
             $fatal(1,"in-flight result metadata corrupted column=%0d tag=%0d",c,tag_value);
           for(integer g=0;g<N;g++) begin
             integer total,col,w;
             total=0;col=c*N+g;
             for(integer r=0;r<R;r++) begin
-              w=seq!=1 && (col==9 || col==17)?100+r:col+r+1+(seq==1?20:0);
+              // Two COLUMN commands shifted the full bank0 chain twice:
+              // new group0=120+r, group1=110+r, group n>=2=old[n-2].
+              w=seq==1?col+r+21:(col==0?120+r:(col==1?110+r:col+r-1));
               total=total+K*(idx%3+r+1)*w;
             end
             if(result[(c*N+g)*32+:32]!==fp32_integer(total))
-              $fatal(1,"frontend arithmetic/column isolation mismatch column=%0d group=%0d tag=%0d",c,g,tag_value);
+              $fatal(1,"frontend arithmetic/shift-chain mismatch column=%0d group=%0d tag=%0d",c,g,tag_value);
             checked=checked+1;
           end
         end
@@ -139,17 +145,17 @@ module lpu_mxm_frontend_tb;
   end
   initial begin
     repeat(3) @(negedge clk);rst_n=1;
-    @(negedge clk);le=1;li=load_word(0,-1);ce=1;ci=compute_word(0);
+    @(negedge clk);le=1;li=load_word(0,0,0);ce=1;ci=compute_word(0);
     @(negedge clk);le=0;ce=0;run=1;
     for(integer t=0;t<240;t++) begin
       @(negedge clk);le=0;ce=0;ll=0;cl=0;
       case(t)
-        0:begin ll=1;le=1;li=load_word(1,-1);end
-        32:begin ll=1;le=1;li=load_word(0,9);end
-        // COLUMN follows MATRIX immediately while rightmost MATRIX tails
-        // are still in flight. They must reach their own destination cells.
-        64:begin ll=1;le=1;li=load_word(0,17);end
-        67:begin ll=1;le=1;li=load_word(1,-1);end
+        0:begin ll=1;le=1;li=load_word(1,0,0);end
+        32:begin ll=1;le=1;li=load_word(0,1,1);end
+        // COLUMN follows MATRIX while tails are in flight. Data, valid
+        // and buffer ID must stay associated in the shared shift chain.
+        64:begin ll=1;le=1;li=load_word(0,2,1);end
+        67:begin ll=1;le=1;li=load_word(1,0,0);end
         // Simultaneous compute on bank0 and reload of the inactive bank1.
         72:begin cl=1;ce=1;ci=compute_word(1);ll=1;end
         104:begin cl=1;ce=1;ci=compute_word(2);end

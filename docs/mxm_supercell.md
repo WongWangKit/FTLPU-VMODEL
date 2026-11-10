@@ -11,6 +11,15 @@ migrated to the new accumulator/stream backend. Defaults live in
 eight output groups, BF16 operands, and FP32 result/accumulator storage.
 The existing accumulator capacity stays 32 FP32 elements by 1024 addresses.
 
+In the complete core, top results no longer connect directly to the backend.
+`lpu_mxm_result_return` provides separate downward and leftward registered
+streams at positions r>=c. Column c turns at bottom-indexed row c and exits
+left into that Superlane's accumulator. A square ROWS-by-ROWS grid adds ROWS
+cycles to every path, preserving the one-cycle inter-Superlane result phase.
+The compute Supercell and its upward arithmetic are unchanged. These return
+registers are in a separate coordinate-indexed fabric so standalone arithmetic
+tests retain their existing interfaces; physical co-placement remains a layout task.
+
 ## Dataflow and interfaces
 
 Each valid input is a vector of `TERMS` BF16 activations, a weight-buffer bit,
@@ -33,11 +42,10 @@ Every group has its own `TERMS` multipliers. An 8x8 cell therefore has 64
 8x8-bit significand multipliers. It does not replicate these for Block8 mode.
 There are two private weight shift-register sets and parallel compute taps.
 The matrix/one-column load instructions and their control implementation are
-specified in [mxm_instructions.md](mxm_instructions.md). With
-`weight_column_mode_i=1`, an accepted write updates only the indexed group,
-holds all other groups and disables forwarding. Invalid indices are rejected
-and fault. Bank protection is identical to shift mode; no simultaneous
-same-buffer read/write is permitted even when different groups are involved.
+specified in [mxm_instructions.md](mxm_instructions.md). Both use the same shift
+input: MATRIX supplies MATRIX_N beats and COLUMN supplies one. There is no
+addressed-group write, mode input or column-address port on the Supercell.
+No simultaneous same-buffer compute/write is permitted on the M1 capture edge.
 An accepted write supplies `TERMS` BF16 weights to group zero of the selected
 buffer and shifts its previous contents toward group `OUTPUTS-1`. The other
 buffer holds. There is no group-address input. Weight data is not reset;
@@ -83,8 +91,11 @@ on the next edge; a continuous stream on the same bank keeps it busy.
 The compiler schedules each cell's shifted write/compute phases; consecutive
 32-beat ping-pong blocks satisfy local ownership automatically. There is
 no reverse ready/backpressure link; a receiving-cell conflict faults locally.
-Frontend COLUMN packets also advance one registered edge per cell and select
-only their target. A following COLUMN does not mask a MATRIX tail in flight.
+MATRIX and COLUMN share the registered tail chain. A following COLUMN shifts
+the selected buffer once; it does not discard a preceding MATRIX tail. Already
+valid downstream cells may receive displaced old weights, while empty cells
+wait until a valid tail reaches them. Source order, not an instruction address,
+determines the final contents.
 
 The bottom cell sets `BOTTOM=1` and adds +0 through the same three-register
 adder as every other cell. Other cells require each `below_valid_i[n]` to
@@ -189,7 +200,8 @@ registered stages; functionality and latency are preserved, not timing closure.
 Run `python scripts/test_mxm_supercell.py` with Icarus Verilog on PATH or
 under `build/iverilog/bin`. `--compile-only` uses pyslang on PATH/import path
 or under `build/tools`. `bash scripts/vcs_mxm_supercell.sh` is the VCS runner
-for the nine default-size benches (including output conversion, control, frontend, backend and core).
+for the twelve default-size benches (including output conversion, compact ISA, weight-shift, control, frontend,
+backend, result return and core).
 
 The Python integer reference models DAZ, the retained alignment window and
 exact integer-to-FP32 rounding without host floating-point arithmetic or a

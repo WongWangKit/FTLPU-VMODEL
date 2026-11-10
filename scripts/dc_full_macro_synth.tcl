@@ -31,6 +31,7 @@ set relative_rtl_files [list \
   rtl/mxm/lpu_mxm_accumulator_bank.sv \
   rtl/mxm/lpu_mxm_backend_column.sv \
   rtl/mxm/lpu_mxm_backend.sv \
+  rtl/mxm/lpu_mxm_result_return.sv \
   rtl/mxm/lpu_mxm_core.sv \
   rtl/core/lpu_pkg.sv rtl/core/lpu_isa_decode.sv \
   rtl/core/lpu_stream_stage.sv rtl/core/lpu_control_pipeline.sv \

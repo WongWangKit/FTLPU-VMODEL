@@ -23,9 +23,6 @@ module lpu_mxm_supercell #(
   input logic weight_write_valid_i,
   input logic weight_write_buffer_i,
   input logic [TERMS*16-1:0] weight_write_data_i,
-  // COLUMN mode selectively replaces one group; the shift chain holds.
-  input logic weight_column_mode_i,
-  input logic [(OUTPUTS>1?$clog2(OUTPUTS):1)-1:0] weight_column_index_i,
   output logic weight_write_accepted_o,
   output logic weight_forward_valid_o,
   output logic weight_forward_buffer_o,
@@ -67,8 +64,7 @@ module lpu_mxm_supercell #(
     // Later arithmetic and the outgoing link register no longer read them.
     if (activation_valid_i) weight_buffer_busy_o[weight_buffer_i]=1'b1;
     weight_write_accepted_o=weight_write_valid_i &&
-      !weight_buffer_busy_o[weight_write_buffer_i] &&
-      (!weight_column_mode_i || int'(weight_column_index_i)<OUTPUTS);
+      !weight_buffer_busy_o[weight_write_buffer_i];
   end
 
   assign activation_valid_o=activation_valid_q;
@@ -126,9 +122,9 @@ module lpu_mxm_supercell #(
       fault_o<=0;
       // Weight data is deliberately not reset; validity gates all reads.
     end else begin
-      weight_forward_valid_o<=!LAST_COLUMN && !weight_column_mode_i && weight_write_accepted_o &&
+      weight_forward_valid_o<=!LAST_COLUMN && weight_write_accepted_o &&
         weight_valid_q[weight_write_buffer_i][OUTPUTS-1];
-      if(!LAST_COLUMN && !weight_column_mode_i && weight_write_accepted_o && weight_valid_q[weight_write_buffer_i][OUTPUTS-1]) begin
+      if(!LAST_COLUMN && weight_write_accepted_o && weight_valid_q[weight_write_buffer_i][OUTPUTS-1]) begin
         weight_forward_buffer_o<=weight_write_buffer_i;
         weight_forward_data_o<=weights_q[weight_write_buffer_i][OUTPUTS-1];
       end
@@ -139,16 +135,11 @@ module lpu_mxm_supercell #(
         tag_q<=tag_i;
       end
       if (weight_write_accepted_o) begin
-        if(weight_column_mode_i) begin
-          weights_q[weight_write_buffer_i][weight_column_index_i]<=weight_write_data_i;
-          weight_valid_q[weight_write_buffer_i][weight_column_index_i]<=1'b1;
-        end else begin
-          weights_q[weight_write_buffer_i][0]<=weight_write_data_i;
-          weight_valid_q[weight_write_buffer_i][0]<=1'b1;
-          for (integer group=1; group<OUTPUTS; group++) begin
-            weights_q[weight_write_buffer_i][group]<=weights_q[weight_write_buffer_i][group-1];
-            weight_valid_q[weight_write_buffer_i][group]<=weight_valid_q[weight_write_buffer_i][group-1];
-          end
+        weights_q[weight_write_buffer_i][0]<=weight_write_data_i;
+        weight_valid_q[weight_write_buffer_i][0]<=1'b1;
+        for (integer group=1; group<OUTPUTS; group++) begin
+          weights_q[weight_write_buffer_i][group]<=weights_q[weight_write_buffer_i][group-1];
+          weight_valid_q[weight_write_buffer_i][group]<=weight_valid_q[weight_write_buffer_i][group-1];
         end
       end
       if ((weight_write_valid_i && !weight_write_accepted_o) ||

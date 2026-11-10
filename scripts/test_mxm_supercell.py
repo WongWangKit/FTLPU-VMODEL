@@ -45,7 +45,8 @@ def main():
     BUILD.mkdir(parents=True, exist_ok=True)
     tops = ['lpu_mxm_bf16_dot_csa_tb', 'lpu_mxm_fp32_add_pipe_tb', 'lpu_mxm_output_pipe_tb',
             'lpu_mxm_supercell_tb', 'lpu_mxm_supercell_chain_tb',
-            'lpu_mxm_control_tb', 'lpu_mxm_frontend_tb', 'lpu_mxm_backend_tb', 'lpu_mxm_core_tb']
+            'lpu_mxm_control_tb', 'lpu_mxm_compact_isa_tb', 'lpu_mxm_frontend_tb', 'lpu_mxm_weight_shift_tb', 'lpu_mxm_backend_tb',
+            'lpu_mxm_backend_config_tb', 'lpu_mxm_result_return_tb', 'lpu_mxm_core_tb']
     if args.top:
         tops = [args.top]
     if args.top == 'lpu_top' and not args.compile_only:
@@ -86,10 +87,15 @@ def main():
             [(8,8),(3,3),(1,1),(3,5)] if top == 'lpu_mxm_supercell_tb' else (
             [(1,1),(2,3),(4,1),(4,3)] if top == 'lpu_mxm_control_tb' else (
             [(1,1),(1,3),(4,8)] if top == 'lpu_mxm_backend_tb' else (
-            [0,1,2,3,4,5,6,7] if top == 'lpu_mxm_core_tb' else [None]))))
+            [(1,1),(2,3),(3,1),(4,8),(8,3)] if top == 'lpu_mxm_result_return_tb' else (
+            [0,1,2,3,4,5,6,7,8] if top == 'lpu_mxm_core_tb' else [None])))))
+        if top == 'lpu_mxm_backend_config_tb':
+            sizes = [2,6,1000,1024,2048,65536]
         for size in sizes:
             if top == 'lpu_mxm_core_tb':
                 suffix = f'_s{size}' if size else ''
+            elif top == 'lpu_mxm_backend_config_tb':
+                suffix = f'_d{size}'
             else:
                 suffix = (f'_k{size[0]}_n{size[1]}' if isinstance(size,tuple) else f'_k{size}') if size else ''
             name = top + suffix
@@ -97,21 +103,24 @@ def main():
             command = [iverilog, '-g2012', '-s', top, '-o', str(output)]
             if isinstance(size,tuple):
                 fields = (('ROWS','QUEUE_DEPTH') if top == 'lpu_mxm_control_tb' else (
-                          ('COLS','LANES') if top == 'lpu_mxm_backend_tb' else ('TERMS','OUTPUTS')))
+                          ('COLS','LANES') if top == 'lpu_mxm_backend_tb' else (
+                          ('ROWS','LANES') if top == 'lpu_mxm_result_return_tb' else ('TERMS','OUTPUTS'))))
                 command += ['-P', f'{top}.{fields[0]}={size[0]}', '-P', f'{top}.{fields[1]}={size[1]}']
             elif top == 'lpu_mxm_core_tb':
                 command += ['-P', f'{top}.SCENARIO={size}']
+            elif top == 'lpu_mxm_backend_config_tb':
+                command += ['-P', f'{top}.DEPTH={size}']
             elif size:
                 command += ['-P', f'{top}.TERMS={size}']
             command += sources + [f'sim/tb/mxm/{top}.sv']
             run(command, name+'_compile.log')
             command = [vvp, str(output)]
-            if args.trace and top in ('lpu_mxm_control_tb','lpu_mxm_frontend_tb','lpu_mxm_backend_tb','lpu_mxm_core_tb'):
+            if args.trace and top in ('lpu_mxm_control_tb','lpu_mxm_frontend_tb','lpu_mxm_backend_tb','lpu_mxm_core_tb') and not (top=='lpu_mxm_core_tb' and size==8):
                 trace_dir = BUILD/'traces'
                 trace_dir.mkdir(parents=True, exist_ok=True)
                 command += [f'+trace_path={(trace_dir/(name+".csv")).as_posix()}',
                             f'+vcd_path={(trace_dir/(name+".vcd")).as_posix()}']
-            if size and not isinstance(size,tuple) and top != 'lpu_mxm_core_tb':
+            if size and not isinstance(size,tuple) and top not in ('lpu_mxm_core_tb','lpu_mxm_backend_config_tb'):
                 command += [f'+vectors={(BUILD/f"vectors/dot_k{size}.hex").as_posix()}', f'+count={dot_count}']
             elif top == 'lpu_mxm_fp32_add_pipe_tb':
                 command += [f'+vectors={(BUILD/"vectors/fp32_add.hex").as_posix()}', f'+count={add_count}']
@@ -121,6 +130,16 @@ def main():
             elif top == 'lpu_mxm_output_pipe_tb':
                 command += [f'+vectors={(BUILD/"vectors/output.hex").as_posix()}']
             print(run(command, name+'_run.log'), flush=True)
+        if top == 'lpu_mxm_result_return_tb':
+            invalid = BUILD / 'lpu_mxm_result_return_rectangle.vvp'
+            run([iverilog,'-g2012','-s',top,'-o',str(invalid),
+                 '-P',f'{top}.ROWS=1','-P',f'{top}.COLS=2',
+                 *sources,f'sim/tb/mxm/{top}.sv'], 'lpu_mxm_result_return_rectangle_compile.log')
+            result=subprocess.run([vvp,str(invalid)],text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+            (BUILD/'lpu_mxm_result_return_rectangle_run.log').write_text(result.stdout,encoding='utf-8')
+            if not result.returncode or 'requires a positive square array' not in result.stdout:
+                raise SystemExit('non-square return configuration was not rejected')
+            print('MXM_RETURN_RECTANGLE_REJECT_PASS',flush=True)
 
 
 if __name__ == '__main__':

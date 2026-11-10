@@ -50,7 +50,6 @@ module lpu_mxm_supercell_chain_tb;
       .weight_buffer_i(activation_buffer[c]),.tag_i(activation_tag[c]),
       .activation_valid_o(activation_valid[c+1]),.activation_o(activation[c+1]),
       .weight_buffer_o(activation_buffer[c+1]),.activation_tag_o(activation_tag[c+1]),
-      .weight_column_mode_i(1'b0),.weight_column_index_i('0),
     .weight_write_valid_i(write_valid[c]),.weight_write_buffer_i(write_buffer[c]),
       .weight_write_data_i(write_data[c]),.weight_write_accepted_o(),
       .weight_forward_valid_o(write_valid[c+1]),.weight_forward_buffer_o(write_buffer[c+1]),

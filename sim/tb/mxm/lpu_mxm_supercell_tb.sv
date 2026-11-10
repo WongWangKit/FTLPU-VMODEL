@@ -126,7 +126,6 @@ module lpu_mxm_supercell_tb;
   lpu_mxm_supercell #(.TERMS(TERMS),.OUTPUTS(OUTPUTS),.BOTTOM(1)) bottom (
     .clk_i(clk),.rst_ni(rst_n),.activation_valid_i(input_valid),.activation_i(input_activation),
     .weight_buffer_i(input_buffer),.tag_i(input_tag),
-    .weight_column_mode_i(1'b0),.weight_column_index_i('0),
     .weight_write_valid_i(write_valid),.weight_write_buffer_i(write_buffer),
     .weight_write_data_i(bottom_weights),
     .weight_forward_valid_o(weight_forward_valid),.weight_forward_buffer_o(weight_forward_buffer),
@@ -142,7 +141,6 @@ module lpu_mxm_supercell_tb;
   lpu_mxm_supercell #(.TERMS(TERMS),.OUTPUTS(OUTPUTS),.BOTTOM(0),.LAST_COLUMN(1)) upper (
     .clk_i(clk),.rst_ni(rst_n),.activation_valid_i(upper_wave[2]),.activation_i(upper_activation),
     .weight_buffer_i(upper_buffer[2]),.tag_i(upper_tag[2]),
-    .weight_column_mode_i(1'b0),.weight_column_index_i('0),
     .weight_write_valid_i(write_valid),.weight_write_buffer_i(write_buffer),
     .weight_write_data_i(upper_weights),
     .weight_forward_valid_o(terminal_forward_valid[0]),.weight_forward_buffer_o(),.weight_forward_data_o(),
@@ -158,7 +156,6 @@ module lpu_mxm_supercell_tb;
   lpu_mxm_supercell #(.TERMS(TERMS),.OUTPUTS(OUTPUTS),.BOTTOM(1),.LAST_COLUMN(1)) right_cell (
     .clk_i(clk),.rst_ni(rst_n),.activation_valid_i(right_input_valid),.activation_i(right_input_activation),
     .weight_buffer_i(right_input_buffer),.tag_i(right_input_tag),
-    .weight_column_mode_i(1'b0),.weight_column_index_i('0),
     .weight_write_valid_i(weight_forward_valid),.weight_write_buffer_i(weight_forward_buffer),
     .weight_write_data_i(weight_forward_data),
     .weight_forward_valid_o(terminal_forward_valid[1]),.weight_forward_buffer_o(),.weight_forward_data_o(),

@@ -14,6 +14,7 @@ rtl/mxm/lpu_mxm_backend_isa_pkg.sv
 rtl/mxm/lpu_mxm_accumulator_bank.sv
 rtl/mxm/lpu_mxm_backend_column.sv
 rtl/mxm/lpu_mxm_backend.sv
+rtl/mxm/lpu_mxm_result_return.sv
 rtl/mxm/lpu_mxm_core.sv
 rtl/core/lpu_isa_decode.sv
 rtl/core/lpu_stream_stage.sv
@@ -148,3 +149,7 @@ sim/tb/mxm/lpu_mxm_bf16_dot_csa_tb.sv
 sim/tb/mxm/lpu_mxm_fp32_add_pipe_tb.sv
 sim/tb/mxm/lpu_mxm_output_pipe_tb.sv
 sim/tb/mxm/lpu_mxm_supercell_tb.sv
+sim/tb/mxm/lpu_mxm_result_return_tb.sv
+sim/tb/mxm/lpu_mxm_compact_isa_tb.sv
+sim/tb/mxm/lpu_mxm_weight_shift_tb.sv
+sim/tb/mxm/lpu_mxm_backend_config_tb.sv

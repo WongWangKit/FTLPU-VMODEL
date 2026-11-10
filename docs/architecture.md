@@ -153,23 +153,41 @@ Weight tails also cross one register per cell with data/valid/buffer ID together
 so each cell can start replacing its retired buffer on the following edge.
 Continuous 32-activation tiles now overlap 32-beat loads of four distinct weight
 tiles without compute bubbles; a 40-activation test also keeps compute continuous
-while weight inputs idle. COLUMN packets retain their target/data through the
-same cell phase and do not discard a preceding MATRIX tail. See
+while weight inputs idle. MATRIX and COLUMN use the same registered weight
+shift chain for MATRIX_N beats or one beat. Column addressing and selective
+group writes are removed; the input sequence determines placement. See
 [`mxm_supercell.md`](mxm_supercell.md) for ports, numerical rules, cycle
 conventions and executable regressions. The new `lpu_mxm_frontend` now connects
-the physical array to independent queued 64-bit compute/load instructions.
+the physical array to queue-specific compact instructions: 17-bit compute
+(6-bit activation stream, 10-bit COUNT-1, 1-bit weight buffer) and
+8-bit load (6-bit weight stream, buffer and mode). Compute
+COUNT is 32..1024; the matrix load duration scales with MATRIX_N. The opcode,
+version and unused fields of the previous shared frontend word are removed
+from the actual FIFO and instruction register widths. The independent backend
+uses 23 bits by default: one BF16 format bit, ten COUNT-1 bits (1..1024 batches),
+ten base-address bits and two opcode bits. Its width is 13+clog2(DEPTH),
+with DEPTH an even number in 2..65536. All operations, including DIRECT_OUT,
+require base+count<=DEPTH; addresses cannot wrap. Default DEPTH=1024 maps to
+two 512x256-bit banks using the low address bit as the bank selector.
+Queues, relay registers and address metadata use these compact widths;
+public address monitors remain zero-extended to 16 bits.
 Each array instruction stream has a local three-cycle relay counter in each
 nonterminal Superlane; the top row has none. Matrix loads last 32 local beats,
 column loads one, and compute commands have COUNT >= 32. A third independent
 queue in `lpu_mxm_backend` controls DIRECT_OUT/STORE/ACC_STORE/ACC_OUT, two 1RW
 banks per column and parallel FP32 addition with five-cycle read-to-write
-latency. `lpu_mxm_core` connects the array and backend. Both output opcodes
-select FP32 or BF16 RNE using backend bit34. A shared registered output stage
+latency. `lpu_mxm_core` connects the array and backend through a static
+down/left `lpu_mxm_result_return` fabric. In a square grid, top column c
+descends to bottom-indexed row c, turns left, and enters that Superlane's
+local accumulator. Downward and leftward streams have separate registers
+at crossing cells. Each path has ROWS registers (four by default), retaining
+the one-cycle inter-Superlane phase without added alignment waits. Both output opcodes
+select FP32 or BF16 RNE using the highest backend bit (default bit22). A shared registered output stage
 gives all four combinations the same six-cycle launch-to-output latency.
-Commands launch two cycles before array data availability: SRAM is prefetched,
-and the fresh array bus directly enters A1 with the returned B. Three wide
-new-partial waiting registers have been removed; array availability to output
-is four cycles. STORE uses the existing three-stage passthrough so all writes
+Commands launch two cycles before left-edge returned data availability: SRAM
+is prefetched, and the fresh returned bus directly enters A1 with SRAM B. Three wide
+new-partial waiting registers have been removed; left-edge availability to
+output is four cycles, and top-array availability to output is eight by default. STORE uses the existing three-stage passthrough so all writes
 share the accumulation writeback phase and retain five-cycle read-to-write timing.
 BF16 occupies the low half of each 32-bit core lane with a format sideband;
 final stream packing/routing and the legacy `lpu_top` migration remain separate. See
@@ -178,7 +196,8 @@ final stream packing/routing and the legacy `lpu_top` migration remain separate.
 New frontend modules are `lpu_mxm_isa_pkg`, `lpu_mxm_command_queue`,
 `lpu_mxm_instruction_wave`, `lpu_mxm_control`, and `lpu_mxm_frontend`;
 new backend modules are `lpu_mxm_backend_isa_pkg`, `lpu_mxm_accumulator_bank`,
-`lpu_mxm_backend_column`, `lpu_mxm_output_pipe`, `lpu_mxm_backend`, and `lpu_mxm_core`.
+`lpu_mxm_backend_column`, `lpu_mxm_output_pipe`, `lpu_mxm_backend`,
+`lpu_mxm_result_return`, and `lpu_mxm_core`.
 No dequantization, Block8, per-cycle vertical instruction shift or result
 feedback path exists in this new frontend. The following table describes the
 legacy compatibility datapath only; its old control is explicitly isolated

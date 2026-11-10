@@ -1,23 +1,23 @@
 // Neighbor-to-neighbor relay. Each nonterminal row has a local short counter
 // restarted only when its own instruction is replaced. No global wave lock.
 module lpu_mxm_instruction_wave #(
-  parameter integer WIDTH=64,ROWS=4,INTERVAL=3,
+  parameter integer WIDTH=64,ROWS=4,INTERVAL=3,COUNT_BITS=16,
   localparam integer AGE_BITS=INTERVAL>1?$clog2(INTERVAL):1
 ) (
   input logic clk_i,rst_ni,run_i,
   input logic launch_i,
   input logic [WIDTH-1:0] instruction_i,
-  input logic [15:0] duration_i,
+  input logic [COUNT_BITS-1:0] duration_i,
   output wire launch_ready_o,
   output wire [ROWS-1:0] row_valid_o,
   output logic [ROWS-1:0] row_update_o,
   output logic [ROWS*WIDTH-1:0] row_instruction_o,
-  output wire [ROWS*16-1:0] row_index_o
+  output wire [ROWS*COUNT_BITS-1:0] row_index_o
 );
   logic [ROWS-1:0] pending_q;
   wire [ROWS-1:0] forward_now;
-  logic [15:0] duration_q[0:ROWS-1];
-  logic [15:0] remaining_q[0:ROWS-1],index_q[0:ROWS-1];
+  logic [COUNT_BITS-1:0] duration_q[0:ROWS-1];
+  logic [COUNT_BITS-1:0] remaining_q[0:ROWS-1],index_q[0:ROWS-1];
   // Release the bottom as soon as its immediate neighbor captures the old
   // command. Upper rows relay that old command without retaining a global lock.
   assign launch_ready_o=run_i && (!pending_q[0] || forward_now[0]) && remaining_q[0]<=1;
@@ -41,7 +41,7 @@ module lpu_mxm_instruction_wave #(
       assign forward_now[r]=1'b0;
     end
     assign row_valid_o[r]=run_i && remaining_q[r]!=0;
-    assign row_index_o[r*16+:16]=index_q[r];
+    assign row_index_o[r*COUNT_BITS+:COUNT_BITS]=index_q[r];
   end
   always_ff @(posedge clk_i or negedge rst_ni) begin
     if(!rst_ni) begin
@@ -82,6 +82,6 @@ module lpu_mxm_instruction_wave #(
       end
     end
   end
-  initial if(ROWS<1 || INTERVAL<1)
+  initial if(ROWS<1 || INTERVAL<1 || COUNT_BITS<1)
     $fatal(1,"Invalid MXM instruction wave");
 endmodule

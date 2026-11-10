@@ -3,7 +3,9 @@ module lpu_mxm_backend_tb;
   parameter integer COLS=4,LANES=8,QUEUE_DEPTH=3;
   localparam integer DEPTH=1024,ROW_BITS=9,BITS=LANES*32,LIMIT=1000,COMMANDS=18;
   logic clk=0,rst_n=0,run=0,enqueue=0,launch=0;
-  logic [63:0] instruction=0;
+  import lpu_mxm_backend_isa_pkg::*;
+  localparam integer AB=BACKEND_ADDRESS_BITS,IB=BACKEND_INSTRUCTION_BITS;
+  logic [IB-1:0] instruction=0;
   wire enqueue_ready,launch_ready,fault;
   logic [COLS-1:0] pv=0;
   logic [COLS*BITS-1:0] pd=0;
@@ -39,8 +41,8 @@ module lpu_mxm_backend_tb;
   function automatic bit output_bf16(input integer command);
     output_bf16=(operation(command)==0 || operation(command)==3) && command%2==1;
   endfunction
-  function automatic logic [63:0] word_for(input integer op,input integer count,input integer base);
-    word_for=64'h8000000000000000 | (64'(count)<<18) | (64'(base)<<2) | 64'(op);
+  function automatic logic [IB-1:0] word_for(input integer op,input integer count,input integer base);
+    word_for=(IB'(count-1)<<(AB+2)) | (IB'(base)<<2) | IB'(op);
   endfunction
   bit scoring=1;
   integer trace_fd=0;
@@ -100,11 +102,11 @@ module lpu_mxm_backend_tb;
       default:short_state=3;
     endcase
   endfunction
-  function automatic logic [63:0] short_word(input integer index);
+  function automatic logic [IB-1:0] short_word(input integer index);
     integer state;
     begin
       state=short_state(index);
-      short_word=word_for(state>=2?3:0,1,DEPTH-2+index%2) | (64'(state%2)<<34);
+      short_word=word_for(state>=2?3:0,1,DEPTH-2+index%2) | (IB'(state%2)<<(IB-1));
     end
   endfunction
   always @(posedge clk) begin
@@ -250,7 +252,7 @@ module lpu_mxm_backend_tb;
     for(integer t=0;t<COMMANDS*32+20;t++) begin
       @(negedge clk);enqueue=0;launch=t<COMMANDS*32 && t%32==0;
       if(launch && t/32+1<COMMANDS) begin
-        enqueue=1;instruction=word_for(operation(t/32+1),32,0) | (64'(output_bf16(t/32+1))<<34);
+        enqueue=1;instruction=word_for(operation(t/32+1),32,0) | (IB'(output_bf16(t/32+1))<<(IB-1));
       end
       for(integer c=0;c<COLS;c++) begin
         integer item;
@@ -286,11 +288,11 @@ module lpu_mxm_backend_tb;
     reset_backend();run=1;
     launch=1;@(negedge clk);launch=0;
     if(!fault) $fatal(1,"empty launch not detected");
-    reset_backend();enqueue_one(1,0,0);run=1;launch_one();
-    if(!fault || sv!==0) $fatal(1,"zero COUNT executed");
+    reset_backend();enqueue_one(1,1024,1);run=1;launch_one();
+    if(!fault || sv!==0) $fatal(1,"maximum COUNT address overflow executed");
     for(integer op=1;op<=2;op++) begin
       reset_backend();
-      @(negedge clk);enqueue=1;instruction=word_for(op,1,0) | (64'd1<<34);
+      @(negedge clk);enqueue=1;instruction=word_for(op,1,0) | (IB'(1)<<(IB-1));
       @(negedge clk);enqueue=0;run=1;launch_one();
       if(!fault || sv!==0 || bv!==0) $fatal(1,"BF16 storage instruction not rejected");
     end

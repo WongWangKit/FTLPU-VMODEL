@@ -1,37 +1,36 @@
-// New 64-bit ISA; never reinterpret legacy 48-bit IW/Block8 instructions.
+// Compact queue-specific frontend ISA, incompatible with former 64/48-bit ISA.
 package lpu_mxm_isa_pkg;
   import lpu_mxm_config_pkg::*;
-  localparam integer INSTRUCTION_BITS=64;
-  localparam logic [1:0] LOAD_MATRIX=2'd0, LOAD_COLUMN=2'd1, COMPUTE=2'd2;
+  localparam integer STREAM_BITS=6;
+  localparam integer COMPUTE_INSTRUCTION_BITS=STREAM_BITS+COMPUTE_COUNT_BITS+1;
+  localparam integer LOAD_INSTRUCTION_BITS=STREAM_BITS+2;
+  localparam integer COMPUTE_DURATION_BITS=COMPUTE_COUNT_BITS+1;
+  localparam integer LOAD_DURATION_BITS=MATRIX_N>1?$clog2(MATRIX_N+1):1;
+  localparam logic LOAD_MATRIX=1'b0,LOAD_COLUMN=1'b1;
   typedef struct packed {
-    logic version;                 // [63], must be 1.
-    logic [5:0] column_index;       // [62:57], COLUMN only.
-    logic [5:0] weight_stream;      // [56:51], row-local source binding.
-    logic [5:0] reserved_output;    // [50:45], zero; backend owns output.
-    logic [5:0] activation_stream;  // [44:39].
-    logic [19:0] reserved_backend;  // [38:19], zero; independent backend queue.
-    logic [15:0] count;             // [18:3], activation vectors, not capacity.
-    logic weight_buffer;           // [2].
-    logic [1:0] opcode;             // [1:0].
-  } instruction_t;
-  function automatic logic compute_legal(input logic [63:0] bits);
-    instruction_t cmd;
+    logic [STREAM_BITS-1:0] activation_stream; // Default [16:11].
+    logic [COMPUTE_COUNT_BITS-1:0] count_minus_one; // [10:1], 31..1023.
+    logic weight_buffer;                      // [0]. Queue implies COMPUTE.
+  } compute_instruction_t;
+  typedef struct packed {
+    logic [STREAM_BITS-1:0] weight_stream; // [7:2].
+    logic weight_buffer;                 // [1].
+    logic column_mode;                   // [0], MATRIX=0 / COLUMN=1.
+  } load_instruction_t;
+  function automatic logic [COMPUTE_DURATION_BITS-1:0] compute_duration(
+    input logic [COMPUTE_INSTRUCTION_BITS-1:0] bits
+  );
+    compute_instruction_t cmd;
     begin
       cmd=bits;
-      compute_legal=cmd.version && cmd.opcode==COMPUTE &&
-        cmd.count>=COMPUTE_MIN_COUNT && cmd.column_index==0 && cmd.weight_stream==0 &&
-        cmd.reserved_output==0 && cmd.reserved_backend==0;
+      // Widen BEFORE adding: encoded 1023 is 1024, never zero.
+      compute_duration={1'b0,cmd.count_minus_one}+COMPUTE_DURATION_BITS'(1);
     end
   endfunction
-  function automatic logic load_legal(input logic [63:0] bits);
-    instruction_t cmd;
-    begin
-      cmd=bits;
-      load_legal=cmd.version &&
-        ((cmd.opcode==LOAD_MATRIX && cmd.column_index==0) ||
-         (cmd.opcode==LOAD_COLUMN && int'(cmd.column_index)<MATRIX_N)) &&
-        cmd.count==0 && cmd.reserved_backend==0 &&
-        cmd.activation_stream==0 && cmd.reserved_output==0;
-    end
+  function automatic logic compute_legal(input logic [COMPUTE_INSTRUCTION_BITS-1:0] bits);
+    compute_legal=int'(compute_duration(bits))>=COMPUTE_MIN_COUNT;
   endfunction
+  // All 256 load encodings are meaningful: mode chooses 1 or MATRIX_N shifts.
+  // Queue availability, launch timing, source data and buffer ownership still
+  // require checks; there is no column address or reserved encoding to decode.
 endpackage

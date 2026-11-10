@@ -1,16 +1,19 @@
-// Independent instruction queue for the horizontal accumulator/storage stage.
+// Independent instruction queue for the accumulator/storage result positions.
+// In lpu_mxm_core, position c is Superlane c at the left array edge.
 // No automatic launch, operand feedback, destination routing or dynamic stalls.
 module lpu_mxm_backend #(
   parameter integer COLS=lpu_mxm_config_pkg::SC_COLS,
   parameter integer LANES=lpu_mxm_config_pkg::CELL_N,
   parameter integer DEPTH=lpu_mxm_config_pkg::ACCUMULATOR_DEPTH,
   parameter integer QUEUE_DEPTH=lpu_mxm_config_pkg::INSTRUCTION_QUEUE_DEPTH,
-  localparam integer ROW_BITS=DEPTH/2>1?$clog2(DEPTH/2):1
+  localparam integer ROW_BITS=DEPTH/2>1?$clog2(DEPTH/2):1,
+  localparam integer ADDRESS_BITS=lpu_mxm_backend_isa_pkg::backend_address_bits(DEPTH),
+  localparam integer INSTRUCTION_BITS=lpu_mxm_backend_isa_pkg::backend_instruction_bits(DEPTH)
 ) (
   input logic clk_i,rst_ni,run_i,
   input logic enqueue_valid_i,
   output wire enqueue_ready_o,
-  input logic [63:0] instruction_i,
+  input logic [INSTRUCTION_BITS-1:0] instruction_i,
   input logic launch_i,
   output wire launch_ready_o,
   input logic [COLS-1:0] partial_valid_i,
@@ -37,26 +40,27 @@ module lpu_mxm_backend #(
 );
   import lpu_mxm_backend_isa_pkg::*;
   wire head_valid,can_launch;
-  wire [63:0] head;
-  wire legal_head=backend_legal(head) &&
-    (head[1:0]==DIRECT_OUT || ({1'b0,head[17:2]}+{1'b0,head[33:18]})<=DEPTH);
+  wire [INSTRUCTION_BITS-1:0] head;
+  wire [BACKEND_DURATION_BITS-1:0] duration=backend_duration(head[ADDRESS_BITS+2+:lpu_mxm_config_pkg::BACKEND_COUNT_BITS]);
+  wire legal_head=backend_fields_legal(DEPTH,int'(head[2+:ADDRESS_BITS]),int'(duration),head[1:0],head[INSTRUCTION_BITS-1]);
   wire pop=run_i && launch_i && head_valid && can_launch;
-  wire [COLS*64-1:0] column_command;
-  wire [COLS*16-1:0] index;
+  wire [COLS*INSTRUCTION_BITS-1:0] column_command;
+  wire [COLS*BACKEND_DURATION_BITS-1:0] index;
   wire [COLS-1:0] column_fault;
   logic control_fault_q;
   assign launch_ready_o=head_valid && can_launch;
-  lpu_mxm_command_queue #(.DEPTH(QUEUE_DEPTH)) u_queue (
+  lpu_mxm_command_queue #(.WIDTH(INSTRUCTION_BITS),.DEPTH(QUEUE_DEPTH)) u_queue (
     .clk_i,.rst_ni,.enqueue_valid_i,.enqueue_ready_o,.enqueue_data_i(instruction_i),.pop_i(pop),.valid_o(head_valid),.data_o(head));
-  // Backend command follows horizontal result offsets, not vertical 3-cycle phases.
-  lpu_mxm_instruction_wave #(.ROWS(COLS),.INTERVAL(1)) u_wave (
-    .clk_i,.rst_ni,.run_i,.launch_i(pop && legal_head),.instruction_i(head),.duration_i(head[33:18]),
+  // Returned data and backend commands advance between Superlanes one cycle
+  // apart, independently of the three-cycle frontend compute instruction wave.
+  lpu_mxm_instruction_wave #(.WIDTH(INSTRUCTION_BITS),.COUNT_BITS(BACKEND_DURATION_BITS),.ROWS(COLS),.INTERVAL(lpu_mxm_config_pkg::RESULT_SUPERLANE_INTERVAL)) u_wave (
+    .clk_i,.rst_ni,.run_i,.launch_i(pop && legal_head),.instruction_i(head),.duration_i(duration),
     .launch_ready_o(can_launch),.row_valid_o(issue_valid_o),.row_update_o(),
     .row_instruction_o(column_command),.row_index_o(index));
   for(genvar c=0;c<COLS;c++) begin : g_column
-    assign issue_address_o[c*16+:16]=column_command[c*64+2+:16]+index[c*16+:16];
-    assign issue_operation_o[c*2+:2]=column_command[c*64+:2];
-    assign issue_bf16_o[c]=column_command[c*64+34];
+    assign issue_address_o[c*16+:16]=16'(column_command[c*INSTRUCTION_BITS+2+:ADDRESS_BITS])+16'(index[c*BACKEND_DURATION_BITS+:BACKEND_DURATION_BITS]);
+    assign issue_operation_o[c*2+:2]=column_command[c*INSTRUCTION_BITS+:2];
+    assign issue_bf16_o[c]=column_command[c*INSTRUCTION_BITS+INSTRUCTION_BITS-1];
     lpu_mxm_backend_column #(.LANES(LANES),.DEPTH(DEPTH)) u_column (
       .clk_i,.rst_ni,.run_i,.slot_valid_i(issue_valid_o[c]),.operation_i(issue_operation_o[c*2+:2]),
       .output_bf16_i(issue_bf16_o[c]),
@@ -80,4 +84,6 @@ module lpu_mxm_backend #(
     else if(launch_i && (!launch_ready_o || !legal_head)) control_fault_q<=1;
   end
   assign fault_o=control_fault_q || (|column_fault);
+  initial if(DEPTH<2 || DEPTH%2!=0 || DEPTH>65536)
+    $fatal(1,"Invalid backend storage depth");
 endmodule

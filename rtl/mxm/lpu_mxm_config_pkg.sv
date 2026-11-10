@@ -28,19 +28,29 @@ package lpu_mxm_config_pkg;
   parameter integer ACCUMULATOR_DEPTH = 1024;
   parameter integer INSTRUCTION_QUEUE_DEPTH = 16;
   localparam integer COMPUTE_MIN_COUNT = 32;
-  localparam integer COMPUTE_COUNT_BITS = 16;
+  localparam integer COMPUTE_COUNT_BITS = 10; // Encoded COUNT-1, max 1024.
+  localparam integer COMPUTE_MAX_COUNT = 1 << COMPUTE_COUNT_BITS;
+  localparam integer BACKEND_COUNT_BITS = 10; // COUNT-1; actual range 1..1024.
+  localparam integer BACKEND_MAX_COUNT = 1 << BACKEND_COUNT_BITS;
   localparam integer SUPERLANE_INSTRUCTION_INTERVAL = 3;
   localparam integer DOT_PIPELINE_CYCLES = 9;
   localparam integer PARTIAL_ADD_CYCLES = 3;
+  // Static top-to-left result return: column c turns at bottom-indexed row c.
+  // Down (SC_ROWS-1-c) + left (c+1) registers gives SC_ROWS cycles on every
+  // path. The complete core requires a square grid for this mapping.
+  localparam integer RESULT_RETURN_CYCLES = SC_ROWS;
+  localparam integer RESULT_SUPERLANE_INTERVAL = 1;
   // Work backwards from direct A/B capture, without new-partial wait registers.
   // Launch L0, prefetch L1, array A + SRAM B available L2, A1 captures L3.
   localparam integer BACKEND_COMMAND_TO_READ_CYCLES = 1;
   localparam integer BACKEND_COMMAND_TO_OPERAND_CYCLES = 3;
   localparam integer BACKEND_COMMAND_TO_WRITE_CYCLES = 6;
-  localparam integer BACKEND_COMMAND_LEAD_CYCLES = 2; // Before array data availability.
+  localparam integer BACKEND_COMMAND_LEAD_CYCLES = 2; // Before returned data availability.
   localparam integer OUTPUT_CONVERSION_CYCLES = 1; // Shared FP32/BF16 output register.
   localparam integer BACKEND_OUTPUT_CYCLES = 5 + OUTPUT_CONVERSION_CYCLES;
   localparam integer BACKEND_PARTIAL_TO_OUTPUT_CYCLES = 3 + OUTPUT_CONVERSION_CYCLES;
+  localparam integer ARRAY_PARTIAL_TO_OUTPUT_CYCLES =
+    RESULT_RETURN_CYCLES + BACKEND_PARTIAL_TO_OUTPUT_CYCLES;
 
   // ---------- Derived properties: do not configure independently ----------
 
@@ -100,26 +110,24 @@ package lpu_mxm_config_pkg;
   // register per cell, matching activation. Last-cell completion is later
   // by SC_COLS-1 edges, overlapped by the same activation offset. At COUNT
   // >= MATRIX_N, next-buffer loading fits inside the current compute block.
-  // A COLUMN load supplies one beat and
-  // selectively updates one addressed column, keeping all others unchanged.
-  // lpu_mxm_frontend registers COLUMN packets one edge per cell to the target;
-  // they never discard a preceding MATRIX tail in the independent tail link.
-  // lpu_mxm_isa_pkg defines the executable new 64-bit instruction format.
+  // A COLUMN load supplies one beat into the SAME shift chain. Every cell
+  // that accepts that buffer's displaced tail shifts once. There is no column
+  // address or selective group update; position follows the input sequence.
+  // lpu_mxm_isa_pkg defines separate compact compute/load instruction formats.
   localparam integer WEIGHT_LOAD_ELEMENTS_PER_BEAT = MATRIX_K;
   localparam integer WEIGHT_LOAD_BEAT_BITS =
     WEIGHT_LOAD_ELEMENTS_PER_BEAT * OPERAND_BITS;
   localparam integer WEIGHT_LOAD_ROW_BEAT_BITS = CELL_K * OPERAND_BITS;
   localparam integer WEIGHT_LOAD_MATRIX_CYCLES = MATRIX_N;
   localparam integer WEIGHT_LOAD_COLUMN_CYCLES = 1;
-  localparam integer WEIGHT_LOAD_COLUMN_ADDRESS_BITS =
-    MATRIX_N > 1 ? $clog2(MATRIX_N) : 1;
   localparam integer WEIGHT_LOAD_BUFFER_ADDRESS_BITS =
     WEIGHT_BUFFER_COUNT > 1 ? $clog2(WEIGHT_BUFFER_COUNT) : 1;
   // Durations count weight input beats at the array interface, not command
   // propagation or result-pipeline drain. No automatic stall/retry: sources
   // and the selected destination buffer must be scheduled ready each beat.
   // The compiler chooses compute batch lengths (e.g. 32); they are not tied
-  // to either load duration. One-cycle COLUMN commands may be back-to-back,
+  // to either load duration. One-cycle COLUMN commands can overlap their
+  // propagation, but multirow launches stay at least three cycles apart,
   // so each nonterminal row has a local forwarding counter per stream,
   // restarted by replacement of that row's instruction. No timer is needed
   // on the final row. Only neighbor handoff and local execution constrain
@@ -153,7 +161,8 @@ package lpu_mxm_config_pkg;
   // Logical batch address a: bank = a % 2, bank row = a / 2. Every batch
   // keeps all CELL_N FP32 values together and writes back to the SAME bank
   // and row. Each column starts its own stream at Bank0, then Bank1, etc.;
-  // horizontally adjacent columns retain their one-edge launch offsets.
+  // Column c is returned to Superlane c; adjacent Superlanes retain the
+  // original one-edge output/command offsets after equal-length return.
   localparam bit ACCUMULATOR_IN_PLACE_WRITEBACK = 1'b1;
   localparam integer ACCUMULATOR_FIRST_BANK = 0;
 
@@ -187,9 +196,11 @@ package lpu_mxm_config_pkg;
   // SRAM is not cleared on reset: consumers must initialize each address
   // before reading it. A separate backend ISA/queue owns these operations;
   // compute instructions carry no SRAM address, route or output-format flags.
-  // Both output instructions select FP32 or BF16 RNE using backend bit34.
+  // Both output instructions select FP32 or BF16 RNE using the compact
+  // backend word's high bit (default bit22; address width follows depth).
   // One shared output register gives both types the SAME launch-to-output
-  // latency (6), II=1. Array-data availability to output is 4 cycles.
+  // latency (6), II=1. Left-edge returned data to output is 4 cycles;
+  // top-array data adds the equal-length RESULT_RETURN_CYCLES first.
   // SRAM/accumulation stay FP32, with D=5 unchanged. STORE reuses the
   // three-stage passthrough so all writes occupy the same A+3 commit phase.
   // BF16 output preserves subnormals and quiets NaNs; no output DAZ/FTZ.
@@ -206,6 +217,7 @@ package lpu_mxm_config_pkg;
     (WEIGHT_BUFFER_COUNT == 2) &&
     (DOT_ALIGNED_PRODUCT_BITS >= 16) &&
     (ACCUMULATOR_RESULT_LENGTH == MATRIX_N) &&
-    (ACCUMULATOR_DEPTH >= 2) && ((ACCUMULATOR_DEPTH % 2) == 0) &&
+    (ACCUMULATOR_DEPTH >= 2) && (ACCUMULATOR_DEPTH <= 65536) &&
+    ((ACCUMULATOR_DEPTH % 2) == 0) &&
     ((ACCUMULATOR_READ_TO_WRITE_CYCLES % 2) == 1);
 endpackage

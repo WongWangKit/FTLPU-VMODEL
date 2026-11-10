@@ -13,4 +13,5 @@ rtl/mxm/lpu_mxm_backend_isa_pkg.sv
 rtl/mxm/lpu_mxm_accumulator_bank.sv
 rtl/mxm/lpu_mxm_backend_column.sv
 rtl/mxm/lpu_mxm_backend.sv
+rtl/mxm/lpu_mxm_result_return.sv
 rtl/mxm/lpu_mxm_core.sv

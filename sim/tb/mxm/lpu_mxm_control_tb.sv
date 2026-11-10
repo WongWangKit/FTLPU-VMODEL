@@ -2,11 +2,15 @@
 module lpu_mxm_control_tb;
   parameter integer ROWS=4,QUEUE_DEPTH=3;
   localparam integer LIMIT=240;
+  import lpu_mxm_isa_pkg::*;
+  localparam integer CB=COMPUTE_INSTRUCTION_BITS,LB=LOAD_INSTRUCTION_BITS;
   logic clk=0,rst_n=0,run=0,ce=0,cl=0,le=0,ll=0;
-  logic [63:0] ci=0,li=0;
+  logic [CB-1:0] ci=0;
+  logic [LB-1:0] li=0;
   wire cr,lr,clr,llr,fault;
   wire [ROWS-1:0] cv,cu,lv,lu;
-  wire [ROWS*64-1:0] cp,lp;
+  wire [ROWS*CB-1:0] cp;
+  wire [ROWS*LB-1:0] lp;
   wire [ROWS*16-1:0] cx,ct,lx;
   bit scoring=1;
   // Optional trace exports contain public DUT ports only, never expectations.
@@ -27,8 +31,8 @@ module lpu_mxm_control_tb;
     #2;
     if(trace_fd) for(integer r=0;r<ROWS;r++)
       $fdisplay(trace_fd,"%0.3f,%0d,%0d,%0d,%0d,%0d,%0d,%0d,%0d,%016h,%0d,%0d,%0d,%0d,%016h,%0d,%0d",
-        $realtime,rst_n,run,scoring,cl,ll,r,cv[r],cu[r],cp[r*64+:64],cx[r*16+:16],ct[r*16+:16],
-        lv[r],lu[r],lp[r*64+:64],lx[r*16+:16],fault);
+        $realtime,rst_n,run,scoring,cl,ll,r,cv[r],cu[r],cp[r*CB+:CB],cx[r*16+:16],ct[r*16+:16],
+        lv[r],lu[r],lp[r*LB+:LB],lx[r*16+:16],fault);
   end
   final if(trace_fd) $fclose(trace_fd);
   always #5 clk=~clk;
@@ -39,26 +43,28 @@ module lpu_mxm_control_tb;
     .load_launch_ready_o(llr),.compute_row_valid_o(cv),.compute_row_update_o(cu),.compute_row_instruction_o(cp),
     .compute_row_index_o(cx),.compute_row_tag_o(ct),.load_row_valid_o(lv),.load_row_update_o(lu),
     .load_row_instruction_o(lp),.load_row_index_o(lx),.fault_o(fault));
-  function automatic logic [63:0] compute_word(input integer n,input integer bank,input integer base);
-    logic [63:0] word_value;
+  function automatic logic [CB-1:0] compute_word(input integer n,input integer bank,input integer base);
+    logic [CB-1:0] word_value;
     begin
-      word_value=64'h8000000000000002;
-      word_value[18:3]=16'(n);word_value[2]=1'(bank);word_value[44:39]=6'(base/64);
+      word_value='0;
+      word_value[10:1]=10'(n-1);word_value[0]=1'(bank);word_value[16:11]=6'(base/64);
       compute_word=word_value;
     end
   endfunction
-  function automatic logic [63:0] load_word(input integer column_number);
-    logic [63:0] word_value;
+  function automatic logic [LB-1:0] load_word(input integer source_or_matrix);
+    logic [LB-1:0] word_value;
     begin
-      word_value=64'h8000000000000000;
-      if(column_number>=0) begin word_value[1:0]=1;word_value[62:57]=6'(column_number);end
+      word_value='0;
+      if(source_or_matrix>=0) begin word_value[0]=1;word_value[7:2]=6'(source_or_matrix);end
       load_word=word_value;
     end
   endfunction
-  logic [63:0] cq[0:31],lq[0:31];
+  logic [CB-1:0] cq[0:31];
+  logic [LB-1:0] lq[0:31];
   integer ch=0,ctail=0,lh=0,ltail=0,cycle=0,next_tag=0,checked_c=0,checked_l=0,updates=0;
   bit ecv[0:ROWS-1][0:LIMIT],elv[0:ROWS-1][0:LIMIT],ecu[0:ROWS-1][0:LIMIT],elu[0:ROWS-1][0:LIMIT];
-  logic [63:0] ecp[0:ROWS-1][0:LIMIT],elp[0:ROWS-1][0:LIMIT];
+  logic [CB-1:0] ecp[0:ROWS-1][0:LIMIT];
+  logic [LB-1:0] elp[0:ROWS-1][0:LIMIT];
   integer ecx[0:ROWS-1][0:LIMIT],elx[0:ROWS-1][0:LIMIT],ect[0:ROWS-1][0:LIMIT];
   always @(posedge clk) begin
     if(!rst_n) begin
@@ -75,17 +81,17 @@ module lpu_mxm_control_tb;
           if(!clr || ch>=ctail) $fatal(1,"legal compute launch unexpectedly blocked");
           for(integer r=0;r<ROWS;r++) begin
             ecu[r][cycle+3*r]=1;
-            for(integer t=0;t<int'(cq[ch][18:3]);t++) begin
+            for(integer t=0;t<(int'(cq[ch][10:1])+1);t++) begin
               ecv[r][cycle+3*r+t]=1;ecp[r][cycle+3*r+t]=cq[ch];
               ecx[r][cycle+3*r+t]=t;ect[r][cycle+3*r+t]=next_tag+t;
             end
           end
-          next_tag=next_tag+int'(cq[ch][18:3]);ch=ch+1;
+          next_tag=next_tag+(int'(cq[ch][10:1])+1);ch=ch+1;
         end
         if(ll) begin
           integer duration;
           if(!llr || lh>=ltail) $fatal(1,"legal load launch unexpectedly blocked");
-          duration=lq[lh][1:0]==0?32:1;
+          duration=lq[lh][0]==0?32:1;
           for(integer r=0;r<ROWS;r++) begin
             elu[r][cycle+3*r]=1;
             for(integer t=0;t<duration;t++) begin
@@ -100,12 +106,12 @@ module lpu_mxm_control_tb;
           if(cv[r]!==ecv[r][cycle] || lv[r]!==elv[r][cycle] || cu[r]!==ecu[r][cycle] || lu[r]!==elu[r][cycle])
             $fatal(1,"wave/update mismatch row=%0d cycle=%0d",r,cycle);
           if(cv[r]) begin
-            if(cp[r*64+:64]!==ecp[r][cycle] || cx[r*16+:16]!==16'(ecx[r][cycle]) || ct[r*16+:16]!==16'(ect[r][cycle]))
+            if(cp[r*CB+:CB]!==ecp[r][cycle] || cx[r*16+:16]!==16'(ecx[r][cycle]) || ct[r*16+:16]!==16'(ect[r][cycle]))
               $fatal(1,"compute command/count/tag mismatch row=%0d cycle=%0d",r,cycle);
             checked_c=checked_c+1;
           end
           if(lv[r]) begin
-            if(lp[r*64+:64]!==elp[r][cycle] || lx[r*16+:16]!==16'(elx[r][cycle]))
+            if(lp[r*LB+:LB]!==elp[r][cycle] || lx[r*16+:16]!==16'(elx[r][cycle]))
               $fatal(1,"load command/count mismatch row=%0d cycle=%0d",r,cycle);
             checked_l=checked_l+1;
           end
@@ -151,11 +157,11 @@ module lpu_mxm_control_tb;
     @(negedge clk);cl=0;ll=0;
     if(!fault || cv!==0 || lv!==0) $fatal(1,"empty launch not detected");
     reset_control();
-    @(negedge clk);ce=1;ci=compute_word(31,0,0);le=1;li=load_word(0);li[63]=0;
-    @(negedge clk);ce=0;le=0;run=1;cl=1;ll=1;
+    @(negedge clk);ce=1;ci=compute_word(31,0,0);le=0;li=load_word(-1);
+    @(negedge clk);ce=0;le=0;run=1;cl=1;ll=0;
     @(negedge clk);cl=0;ll=0;
     repeat(12) @(negedge clk);
-    if(!fault || cv!==0 || lv!==0) $fatal(1,"illegal count/version executed");
+    if(!fault || cv!==0 || lv!==0) $fatal(1,"illegal compute count executed");
     reset_control();
     @(negedge clk);ce=1;ci=compute_word(32,0,0);le=1;li=load_word(0);
     @(negedge clk);ce=0;le=0;run=1;cl=1;ll=1;
@@ -170,7 +176,7 @@ module lpu_mxm_control_tb;
     if(cv!==0 || !clr) $fatal(1,"rejected command lost or retried autonomously");
     cl=1;
     @(negedge clk);cl=0;
-    if(cp[0+:64]!==compute_word(32,1,64)) $fatal(1,"early launch consumed queued command");
+    if(cp[0+:CB]!==compute_word(32,1,64)) $fatal(1,"early launch consumed queued command");
     reset_control();run=1;
     repeat(15) @(negedge clk);
     if(cv!==0 || lv!==0 || clr || llr) $fatal(1,"reset did not flush pending waves/queues");
