@@ -1,9 +1,9 @@
 `timescale 1ns/1ps
 // Runs the original local-transpose vectors through the independent
 // native MEM -> SRF -> SXM -> SRF -> MEM integration hierarchy.
-module lpu_mem_srf_sxm_existing_workload_tb;
+module lpu_mem_srf_sxm_existing_workload_tb #(parameter integer PROFILE=0, ROW_BASE=0);
   import lpu_pkg::*;
-  localparam integer N=16,G=4,C=16,T=4,S=32,B=64;
+  localparam integer N=PROFILE==0?16:52,G=N/4,C=16,T=4,S=32,B=64;
   logic clk_i,rst_ni;
   logic [N*2-1:0] vmodel_mem_issue_valid_i,native_mem_issue_valid_o,mem_command_fault_o;
   logic [N*2*47-1:0] vmodel_mem_issue_instruction_i;
@@ -28,11 +28,11 @@ module lpu_mem_srf_sxm_existing_workload_tb;
   integer e,tile,stream,lane,g,l,w,west_visible[0:3],write_issue[0:3],consume_cycle[0:3];
 
   // The original workload uses destination address 32, hence depth 64.
-  lpu_mem_srf_sxm_roundtrip_integration #(.MEM_DEPTH_ROWS(64)) dut(.*);
+  lpu_mem_srf_sxm_roundtrip_integration #(.MEM_DEPTH_ROWS(64),.P_LPU_PROFILE(PROFILE)) dut(.*);
   always #5 clk_i=~clk_i;
 
   function automatic [46:0] mp(input[2:0]o,input west,input[4:0]s,input[14:0]r);
-    begin mp='0;mp[2:0]=o;mp[8:3]={west,s};mp[30:15]=r;end
+    begin mp='0;mp[2:0]=o;mp[8:3]={west,s};mp[30:15]=ROW_BASE+r;end
   endfunction
   function automatic [415:0] sp(input[1:0]o,input sw,input[4:0]sb,input dw,input[4:0]db,input[2:0]ot,input integer ph);
     integer i,d,x;

@@ -1,0 +1,2 @@
+PASS WRITETAP NEG=8 T=4 first_fault=1
+- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_final02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:94: Verilog $finish

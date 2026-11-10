@@ -1,0 +1,17 @@
+{
+  "clock": "QueryUnbiasedInterruptTime",
+  "timeout_awake_seconds": 43200,
+  "keep_awake": "ES_CONTINUOUS | ES_SYSTEM_REQUIRED",
+  "display_required": false,
+  "global_power_plan_changed": false,
+  "exit_code": 0,
+  "status": "completed",
+  "awake_seconds": 6634.592686,
+  "wall_seconds": 6634.594,
+  "excluded_sleep_seconds": 0.001314,
+  "expired": false,
+  "started": 1794277386.9894726,
+  "finished": 1794284021.582158,
+  "keep_awake_previous": 2147483648,
+  "keep_awake_released": true
+}

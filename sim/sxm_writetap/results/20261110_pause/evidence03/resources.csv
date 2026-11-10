@@ -1,0 +1,10 @@
+component,T,synth_LUT,synth_FF,routed_LUT,routed_FF,BRAM,DSP,setup_ns,hold_ns,accepted
+core,2,78688.0,9416.0,,,,,,,False
+core,4,217787.0,26509.0,,,,,,,False
+core,8,,,,,,,,,False
+adapter,2,3635.0,185.0,,,,,,,False
+adapter,4,7159.0,318.0,,,,,,,False
+adapter,8,14510.0,623.0,,,,,,,False
+combined,2,,,,,,,,,False
+combined,4,,,,,,,,,False
+combined,8,,,,,,,,,False

@@ -1,0 +1,267 @@
+#-----------------------------------------------------------
+# Vivado v2023.2 (64-bit)
+# SW Build 4029153 on Fri Oct 13 20:14:34 MDT 2023
+# IP Build 4028589 on Sat Oct 14 00:45:43 MDT 2023
+# SharedData Build 4025554 on Tue Oct 10 17:18:54 MDT 2023
+# Start of session at: Tue Nov 10 12:14:25 2026
+# Process ID: 2820
+# Current directory: <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t8_synth/synthesized
+# Command line: vivado.exe -mode batch -nojournal -log <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/results/l5_queue05_core_t8_synth/synthesized/vivado.log -source <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t8_synth/src/physical.tcl -tclargs <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t8_synth/src <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/results/l5_queue05_core_t8_synth/synthesized 8 <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t8_synth/synthesized none structural synthesized BUFGCE_X0Y120 Default synthesized 1 internal sxm_triangle_full_core
+# Log file: <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/results/l5_queue05_core_t8_synth/synthesized/vivado.log
+# Journal file: 
+# Running On: <HOST>, OS: Windows, CPU Frequency: 2918 MHz, CPU Physical cores: 14, Host memory: 42660 MB
+#-----------------------------------------------------------
+source <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t8_synth/src/physical.tcl
+# set src [lindex $argv 0]
+# set out [lindex $argv 1]
+# set tiles [lindex $argv 2]
+# set work [lindex $argv 3]
+# set resume [lindex $argv 4]
+# set synth_mode [lindex $argv 5]
+# set resume_stage [lindex $argv 6]
+# set clock_site [lindex $argv 7]
+# set route_directive [lindex $argv 8]
+# set stop_after [lindex $argv 9]
+# proc finish_stage {stage} {
+#   global stop_after
+#   if {$stop_after eq $stage} {puts "SXM_STAGE_FINISHED $stage";exit}
+# }
+# set top [lindex $argv 12]
+# set completed 0
+# puts "ENV_CHECK native=[exec cmd.exe /d /c cd] tcl=[pwd] normalized=[file normalize [pwd]] expected=$work"
+ENV_CHECK native=<LPU_WORKSPACE>\learn\sxm_writetap_implementation_20261109\tmp\l5_queue05_core_t8_synth\synthesized tcl=<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t8_synth/synthesized normalized=<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t8_synth/synthesized expected=<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t8_synth/synthesized
+# if {[file normalize [pwd]] ne $work} {error "Unsafe Tcl cwd normalization; stop before synthesis"}
+# set threads 4
+# if {[llength $argv]>10} {set threads [lindex $argv 10]}
+# set_param general.maxThreads $threads
+# set timing_scope all
+# if {[llength $argv]>11} {set timing_scope [lindex $argv 11]}
+# if {$resume eq "none"} {
+#   create_project -in_memory -part xcvu9p-flga2104-2L-e
+#   set fh [open [file join $src rtl_files.txt] r]
+#   foreach name [split [string trim [read $fh]] "\n"] {read_verilog -sv [file join $src $name]}
+#   close $fh
+#   # Keep all constraints. Structural mapping may skip timing-driven synthesis;
+#   # implementation and final min/max STA retain the full 100 MHz contract.
+#   read_xdc [file join $src timing.xdc]
+#   foreach name {XILINX_PATH HRT_TCL_PATH SYNTH_COMMON} {
+#     if {[info exists env($name)]} {puts "SYNTH_ENV $name=$env($name)"}
+#   }
+#   set extra {}
+#   if {$synth_mode eq "structural"} {lappend extra -no_timing_driven}
+#   set generics [list T=$tiles]
+#   if {$top eq "sxm_triangle_full_core" || $top eq "sxm_triangle_writetap_core"} {lappend generics PORT_STREAMS=32 TIMER_BITS=16}
+#   synth_design -top $top -part xcvu9p-flga2104-2L-e -mode out_of_context -flatten_hierarchy rebuilt -generic $generics {*}$extra
+# } else {
+#   open_checkpoint $resume
+#   set completed [lsearch -exact {synthesized optimized placed physopt routed} $resume_stage]
+#   if {$completed < 0} {error "invalid resume stage"}
+# }
+create_project: Time (s): cpu = 00:00:04 ; elapsed = 00:00:14 . Memory (MB): peak = 567.676 ; gain = 179.465
+SYNTH_ENV XILINX_PATH=<LPU_WORKSPACE>/learn/sxm_gap10_20261104/tmp/vendor_overlay_01
+SYNTH_ENV HRT_TCL_PATH=<LPU_WORKSPACE>/learn/sxm_gap10_20261104/tmp/vendor_overlay_01/scripts/rt/fpga_tcl
+SYNTH_ENV SYNTH_COMMON=<LPU_WORKSPACE>/learn/sxm_gap10_20261104/tmp/vendor_overlay_01/scripts/rt/data
+Command: synth_design -top sxm_triangle_full_core -part xcvu9p-flga2104-2L-e -mode out_of_context -flatten_hierarchy rebuilt -generic {T=8 PORT_STREAMS=32 TIMER_BITS=16} -no_timing_driven
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xcvu9p'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xcvu9p'
+INFO: [Device 21-403] Loading part xcvu9p-flga2104-2L-e
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 1 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 8052
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:02 ; elapsed = 00:00:06 . Memory (MB): peak = 2174.711 ; gain = 432.500
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-6901] identifier 'row_any' is used before its declaration [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t8_synth/src/sxm_triangle_full_core.sv:65]
+WARNING: [Synth 8-6901] identifier 'legacy_any' is used before its declaration [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t8_synth/src/sxm_triangle_full_core.sv:65]
+INFO: [Synth 8-6157] synthesizing module 'sxm_triangle_full_core' [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t8_synth/src/sxm_triangle_full_core.sv:5]
+	Parameter T bound to: 8 - type: integer 
+	Parameter TIMER_BITS bound to: 16 - type: integer 
+	Parameter PORT_STREAMS bound to: 32 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'sxm_triangle_row_frontend' [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t8_synth/src/sxm_triangle_row_frontend.sv:6]
+	Parameter T bound to: 8 - type: integer 
+	Parameter TIMER_BITS bound to: 16 - type: integer 
+	Parameter COMPAT_STORAGE bound to: 0 - type: integer 
+	Parameter PORT_STREAMS bound to: 32 - type: integer 
+INFO: [Synth 8-155] case statement is not full and has no default [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t8_synth/src/sxm_triangle_row_frontend.sv:321]
+INFO: [Synth 8-6155] done synthesizing module 'sxm_triangle_row_frontend' (0#1) [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t8_synth/src/sxm_triangle_row_frontend.sv:6]
+INFO: [Synth 8-6157] synthesizing module 'sxm_compat_engine' [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t8_synth/src/sxm_compat_engine.sv:5]
+	Parameter T bound to: 8 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'sxm_compat_decode' [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t8_synth/src/sxm_compat_decode.sv:7]
+	Parameter T bound to: 8 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'sxm_compat_decode' (0#1) [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t8_synth/src/sxm_compat_decode.sv:7]
+INFO: [Synth 8-6155] done synthesizing module 'sxm_compat_engine' (0#1) [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t8_synth/src/sxm_compat_engine.sv:5]
+INFO: [Synth 8-6157] synthesizing module 'sxm_triangle_core' [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t8_synth/src/sxm_triangle_core.sv:6]
+	Parameter T bound to: 8 - type: integer 
+	Parameter TIMER_BITS bound to: 16 - type: integer 
+	Parameter COMPAT_STORAGE bound to: 1 - type: integer 
+	Parameter SHARED_ROW bound to: 1 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'sxm_triangle_core' (0#1) [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t8_synth/src/sxm_triangle_core.sv:6]
+INFO: [Synth 8-6155] done synthesizing module 'sxm_triangle_full_core' (0#1) [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t8_synth/src/sxm_triangle_full_core.sv:5]
+WARNING: [Synth 8-6014] Unused sequential element slot_reg was removed.  [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t8_synth/src/sxm_triangle_row_frontend.sv:325]
+WARNING: [Synth 8-7137] Register pair_data_q_reg[0] in module sxm_triangle_row_frontend has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t8_synth/src/sxm_triangle_row_frontend.sv:317]
+WARNING: [Synth 8-7137] Register pair_data_q_reg[1] in module sxm_triangle_row_frontend has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t8_synth/src/sxm_triangle_row_frontend.sv:317]
+WARNING: [Synth 8-7137] Register pair_data_q_reg[2] in module sxm_triangle_row_frontend has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t8_synth/src/sxm_triangle_row_frontend.sv:317]
+WARNING: [Synth 8-7137] Register pair_data_q_reg[3] in module sxm_triangle_row_frontend has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t8_synth/src/sxm_triangle_row_frontend.sv:317]
+WARNING: [Synth 8-7137] Register pair_data_q_reg[4] in module sxm_triangle_row_frontend has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t8_synth/src/sxm_triangle_row_frontend.sv:317]
+WARNING: [Synth 8-7137] Register pair_data_q_reg[5] in module sxm_triangle_row_frontend has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t8_synth/src/sxm_triangle_row_frontend.sv:317]
+WARNING: [Synth 8-7137] Register pair_data_q_reg[6] in module sxm_triangle_row_frontend has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t8_synth/src/sxm_triangle_row_frontend.sv:317]
+WARNING: [Synth 8-7137] Register pair_data_q_reg[7] in module sxm_triangle_row_frontend has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t8_synth/src/sxm_triangle_row_frontend.sv:317]
+WARNING: [Synth 8-7137] Register pipe_data_q_reg in module sxm_triangle_row_frontend has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t8_synth/src/sxm_triangle_row_frontend.sv:317]
+WARNING: [Synth 8-6014] Unused sequential element ss_reg was removed.  [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t8_synth/src/sxm_compat_engine.sv:136]
+WARNING: [Synth 8-11357] Potential Runtime issue for 3D-RAM or RAM from Record/Structs for RAM  data_q_reg with 73728 registers
+WARNING: [Synth 8-6014] Unused sequential element g_source[0].word_in_reg was removed.  [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t8_synth/src/sxm_triangle_core.sv:149]
+WARNING: [Synth 8-6014] Unused sequential element g_source[1].word_in_reg was removed.  [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t8_synth/src/sxm_triangle_core.sv:149]
+WARNING: [Synth 8-6014] Unused sequential element g_source[2].word_in_reg was removed.  [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t8_synth/src/sxm_triangle_core.sv:149]
+WARNING: [Synth 8-6014] Unused sequential element g_source[3].word_in_reg was removed.  [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t8_synth/src/sxm_triangle_core.sv:149]
+WARNING: [Synth 8-6014] Unused sequential element g_source[4].word_in_reg was removed.  [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t8_synth/src/sxm_triangle_core.sv:149]
+WARNING: [Synth 8-6014] Unused sequential element g_source[5].word_in_reg was removed.  [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t8_synth/src/sxm_triangle_core.sv:149]
+WARNING: [Synth 8-6014] Unused sequential element g_source[6].word_in_reg was removed.  [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t8_synth/src/sxm_triangle_core.sv:149]
+WARNING: [Synth 8-6014] Unused sequential element g_source[7].word_in_reg was removed.  [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t8_synth/src/sxm_triangle_core.sv:149]
+WARNING: [Synth 8-7129] Port raw_i[5] in module sxm_compat_decode is either unconnected or has no load
+WARNING: [Synth 8-7129] Port raw_i[4] in module sxm_compat_decode is either unconnected or has no load
+WARNING: [Synth 8-7129] Port raw_i[3] in module sxm_compat_decode is either unconnected or has no load
+WARNING: [Synth 8-7129] Port raw_i[2] in module sxm_compat_decode is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[63] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[62] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[61] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[60] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[59] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[58] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[57] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[56] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[55] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[54] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[53] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[52] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[51] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[50] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[49] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[48] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[47] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[46] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[45] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[44] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[43] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[42] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[41] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[40] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[39] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[38] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[37] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[36] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[35] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[34] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[33] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[32] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[31] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[30] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[29] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[28] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[27] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[26] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[25] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[24] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[23] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[22] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[21] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[20] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[19] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[18] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[17] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[16] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[15] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[14] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[13] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[12] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[11] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[10] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[9] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[8] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[7] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[6] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[5] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[4] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[3] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[2] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[1] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[0] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[8191] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[8190] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[8189] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[8188] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[8187] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[8186] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[8185] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[8184] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[8183] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[8182] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[8181] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[8180] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[8179] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[8178] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[8177] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[8176] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[8175] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[8174] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[8173] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[8172] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[8171] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[8170] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[8169] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[8168] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[8167] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[8166] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[8165] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[8164] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[8163] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[8162] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[8161] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[8160] in module sxm_triangle_row_frontend is either unconnected or has no load
+INFO: [Common 17-14] Message 'Synth 8-7129' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:01:23 ; elapsed = 00:03:16 . Memory (MB): peak = 16748.234 ; gain = 15006.023
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:01:27 ; elapsed = 00:03:25 . Memory (MB): peak = 16748.234 ; gain = 15006.023
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:01:27 ; elapsed = 00:03:25 . Memory (MB): peak = 16748.234 ; gain = 15006.023
+---------------------------------------------------------------------------------
+Netlist sorting complete. Time (s): cpu = 00:01:28 ; elapsed = 00:02:47 . Memory (MB): peak = 25285.617 ; gain = 0.000
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Parsing XDC File [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t8_synth/src/timing.xdc]
+create_clock: Time (s): cpu = 00:00:03 ; elapsed = 00:00:05 . Memory (MB): peak = 37707.242 ; gain = 0.000
+Finished Parsing XDC File [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t8_synth/src/timing.xdc]
+Completed Processing XDC Constraints
+
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.068 . Memory (MB): peak = 37707.242 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+WARNING: [Constraints 18-929] The number of objects selected for the constraint defined at line 2 of constraint file '<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t8_synth/src/timing.xdc' exceeds the default limit of 10000, this constraint will be excluded from synthesis.
+write_xdc: Time (s): cpu = 00:00:30 ; elapsed = 00:01:06 . Memory (MB): peak = 37742.148 ; gain = 34.906
+Constraint Validation Runtime : Time (s): cpu = 00:00:30 ; elapsed = 00:01:06 . Memory (MB): peak = 37742.148 ; gain = 34.906
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:20:47 ; elapsed = 00:41:23 . Memory (MB): peak = 37742.148 ; gain = 35999.938
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xcvu9p-flga2104-2L-e
+INFO: [Synth 8-6742] Reading net delay rules and data
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:20:47 ; elapsed = 00:41:23 . Memory (MB): peak = 37742.148 ; gain = 35999.938
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying 'set_property' XDC Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:20:47 ; elapsed = 00:41:23 . Memory (MB): peak = 37742.148 ; gain = 35999.938
+---------------------------------------------------------------------------------

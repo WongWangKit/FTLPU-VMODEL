@@ -1,4 +1,10 @@
+rtl/core/lpu_native_config_pkg.sv
 rtl/core/lpu_pkg.sv
+sim/tb/srf/lpu_srf_runtime_checker.sv
+sim/tb/srf/lpu_srf_superlane_col_dir_bind.sv
+sim/tb/srf/lpu_srf_column_dir_bind.sv
+sim/tb/srf/lpu_srf_direction_fabric_bind.sv
+sim/tb/srf/lpu_srf_hemisphere_fabric_bind.sv
 rtl/srf/ftlpu_sr_superlane_col_dir.sv
 rtl/srf/ftlpu_sr_column_dir.sv
 rtl/srf/ftlpu_sr_direction_fabric.sv
@@ -15,6 +21,10 @@ rtl/sxm_native/sxm_transpose_control_column.sv
 rtl/sxm_native/sxm_transpose_result_buffer_array.sv
 rtl/sxm_native/sxm_permute_engine.sv
 rtl/sxm_native/sxm_slice.sv
+rtl/sxm_native/sxm_row_core.sv
+rtl/sxm_native/sxm_compat_decode.sv
+rtl/sxm_native/sxm_compat_engine.sv
+rtl/sxm_native/sxm_compatible_core.sv
 rtl/integration/lpu_mem_command_adapter.sv
 rtl/integration/lpu_sxm_command_adapter.sv
 rtl/integration/lpu_sxm_srf_adapter.sv

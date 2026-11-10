@@ -1,0 +1,3 @@
+COMPAT_CONTROL_BITS T=4 bits=1019 PAYLOAD_ADDED=0
+SXM_COMPATIBLE_CORE PASS T=4 cycles=11 segments=64 captures=0 negative_faults=0
+- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/full07/sxm_compatible_core_tb.sv:100: Verilog $finish

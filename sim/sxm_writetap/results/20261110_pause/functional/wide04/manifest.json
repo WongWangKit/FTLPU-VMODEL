@@ -1,0 +1,471 @@
+{
+  "hashes": {
+    "<VMODEL>/rtl/sxm_native/sxm_triangle_core.sv": "7f7e5c2083e49322f18aac3baa290fb3570b2d30ee6ce57870e11a07dcf73b05",
+    "<VMODEL>/rtl/sxm_native/sxm_triangle_row_frontend.sv": "1038b753ea348895e218bb78b9aefc47dbc5a22e54af8976829506be449ff5e6",
+    "<VMODEL>/rtl/sxm_native/sxm_compat_decode.sv": "5cea05401aa5c208f622b81b6df7a32d5357b69cb97faa4e47d78da1a94f7f2d",
+    "<VMODEL>/rtl/sxm_native/sxm_compat_engine.sv": "b6230239c74e06a1e50489fdc12c8cdb0574d2267953a1d72ed400daaa468362",
+    "<VMODEL>/rtl/sxm_native/sxm_triangle_full_core.sv": "c5c6e54d5b48313f934dbb30d629baab0f375e63da5a58323ee4df2a72783a38",
+    "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/sxm_compatible_core_tb.sv": "9e70abe08c66e4ffef67da210a3e88854be9209cfa20bf6380a7e60ba76f75d8"
+  },
+  "cases": [
+    {
+      "name": "t2_m0_16_row_row_triangle",
+      "T": 2,
+      "cycles": 137,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t2_m0_16_row_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t2_m0_16_row_row"
+    },
+    {
+      "name": "t2_m0_16_row_block_triangle",
+      "T": 2,
+      "cycles": 45,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t2_m0_16_row_block_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t2_m0_16_row_block"
+    },
+    {
+      "name": "t2_m0_16_block_row_triangle",
+      "T": 2,
+      "cycles": 109,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t2_m0_16_block_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t2_m0_16_block_row"
+    },
+    {
+      "name": "t2_m0_16_block_block_triangle",
+      "T": 2,
+      "cycles": 17,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t2_m0_16_block_block_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t2_m0_16_block_block"
+    },
+    {
+      "name": "t2_m1_16_row_row_triangle",
+      "T": 2,
+      "cycles": 25,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t2_m1_16_row_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t2_m1_16_row_row"
+    },
+    {
+      "name": "t2_m2_16_row_row_triangle",
+      "T": 2,
+      "cycles": 109,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t2_m2_16_row_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t2_m2_16_row_row"
+    },
+    {
+      "name": "t2_m2_16_row_block_triangle",
+      "T": 2,
+      "cycles": 17,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t2_m2_16_row_block_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t2_m2_16_row_block"
+    },
+    {
+      "name": "t2_vector_tail_16",
+      "T": 2,
+      "cycles": 42,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t2_vector_tail_16",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "new 3*T+1 fragments, no padded rows"
+    },
+    {
+      "name": "t2_m0_32_row_row_triangle",
+      "T": 2,
+      "cycles": 137,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t2_m0_32_row_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t2_m0_32_row_row"
+    },
+    {
+      "name": "t2_m0_32_row_block_triangle",
+      "T": 2,
+      "cycles": 45,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t2_m0_32_row_block_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t2_m0_32_row_block"
+    },
+    {
+      "name": "t2_m0_32_block_row_triangle",
+      "T": 2,
+      "cycles": 109,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t2_m0_32_block_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t2_m0_32_block_row"
+    },
+    {
+      "name": "t2_m0_32_block_block_triangle",
+      "T": 2,
+      "cycles": 17,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t2_m0_32_block_block_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t2_m0_32_block_block"
+    },
+    {
+      "name": "t2_m1_32_row_row_triangle",
+      "T": 2,
+      "cycles": 25,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t2_m1_32_row_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t2_m1_32_row_row"
+    },
+    {
+      "name": "t2_m2_32_row_row_triangle",
+      "T": 2,
+      "cycles": 109,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t2_m2_32_row_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t2_m2_32_row_row"
+    },
+    {
+      "name": "t2_m2_32_row_block_triangle",
+      "T": 2,
+      "cycles": 17,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t2_m2_32_row_block_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t2_m2_32_row_block"
+    },
+    {
+      "name": "t2_vector_tail_32",
+      "T": 2,
+      "cycles": 42,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t2_vector_tail_32",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "new 3*T+1 fragments, no padded rows"
+    },
+    {
+      "name": "t2_full_block_mirror_pairs",
+      "T": 2,
+      "cycles": 25,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t2_full_block_mirror_pairs",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "unchanged FP32 P-pair/RUN two-phase effective timing"
+    },
+    {
+      "name": "t4_m0_16_row_row_triangle",
+      "T": 4,
+      "cycles": 525,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t4_m0_16_row_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t4_m0_16_row_row"
+    },
+    {
+      "name": "t4_m0_16_row_block_triangle",
+      "T": 4,
+      "cycles": 157,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t4_m0_16_row_block_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t4_m0_16_row_block"
+    },
+    {
+      "name": "t4_m0_16_block_row_triangle",
+      "T": 4,
+      "cycles": 413,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t4_m0_16_block_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t4_m0_16_block_row"
+    },
+    {
+      "name": "t4_m0_16_block_block_triangle",
+      "T": 4,
+      "cycles": 45,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t4_m0_16_block_block_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t4_m0_16_block_block"
+    },
+    {
+      "name": "t4_m1_16_row_row_triangle",
+      "T": 4,
+      "cycles": 77,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t4_m1_16_row_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t4_m1_16_row_row"
+    },
+    {
+      "name": "t4_m2_16_row_row_triangle",
+      "T": 4,
+      "cycles": 413,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t4_m2_16_row_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t4_m2_16_row_row"
+    },
+    {
+      "name": "t4_m2_16_row_block_triangle",
+      "T": 4,
+      "cycles": 45,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t4_m2_16_row_block_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t4_m2_16_row_block"
+    },
+    {
+      "name": "t4_vector_tail_16",
+      "T": 4,
+      "cycles": 74,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t4_vector_tail_16",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "new 3*T+1 fragments, no padded rows"
+    },
+    {
+      "name": "t4_m0_32_row_row_triangle",
+      "T": 4,
+      "cycles": 525,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t4_m0_32_row_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t4_m0_32_row_row"
+    },
+    {
+      "name": "t4_m0_32_row_block_triangle",
+      "T": 4,
+      "cycles": 157,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t4_m0_32_row_block_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t4_m0_32_row_block"
+    },
+    {
+      "name": "t4_m0_32_block_row_triangle",
+      "T": 4,
+      "cycles": 413,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t4_m0_32_block_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t4_m0_32_block_row"
+    },
+    {
+      "name": "t4_m0_32_block_block_triangle",
+      "T": 4,
+      "cycles": 45,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t4_m0_32_block_block_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t4_m0_32_block_block"
+    },
+    {
+      "name": "t4_m1_32_row_row_triangle",
+      "T": 4,
+      "cycles": 77,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t4_m1_32_row_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t4_m1_32_row_row"
+    },
+    {
+      "name": "t4_m2_32_row_row_triangle",
+      "T": 4,
+      "cycles": 413,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t4_m2_32_row_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t4_m2_32_row_row"
+    },
+    {
+      "name": "t4_m2_32_row_block_triangle",
+      "T": 4,
+      "cycles": 45,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t4_m2_32_row_block_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t4_m2_32_row_block"
+    },
+    {
+      "name": "t4_vector_tail_32",
+      "T": 4,
+      "cycles": 74,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t4_vector_tail_32",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "new 3*T+1 fragments, no padded rows"
+    },
+    {
+      "name": "t4_full_block_mirror_pairs",
+      "T": 4,
+      "cycles": 27,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t4_full_block_mirror_pairs",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "unchanged FP32 P-pair/RUN two-phase effective timing"
+    },
+    {
+      "name": "t8_m0_16_row_row_triangle",
+      "T": 8,
+      "cycles": 2069,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t8_m0_16_row_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t8_m0_16_row_row"
+    },
+    {
+      "name": "t8_m0_16_row_block_triangle",
+      "T": 8,
+      "cycles": 597,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t8_m0_16_row_block_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t8_m0_16_row_block"
+    },
+    {
+      "name": "t8_m0_16_block_row_triangle",
+      "T": 8,
+      "cycles": 1621,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t8_m0_16_block_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t8_m0_16_block_row"
+    },
+    {
+      "name": "t8_m0_16_block_block_triangle",
+      "T": 8,
+      "cycles": 149,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t8_m0_16_block_block_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t8_m0_16_block_block"
+    },
+    {
+      "name": "t8_m1_16_row_row_triangle",
+      "T": 8,
+      "cycles": 277,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t8_m1_16_row_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t8_m1_16_row_row"
+    },
+    {
+      "name": "t8_m2_16_row_row_triangle",
+      "T": 8,
+      "cycles": 1621,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t8_m2_16_row_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t8_m2_16_row_row"
+    },
+    {
+      "name": "t8_m2_16_row_block_triangle",
+      "T": 8,
+      "cycles": 149,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t8_m2_16_row_block_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t8_m2_16_row_block"
+    },
+    {
+      "name": "t8_vector_tail_16",
+      "T": 8,
+      "cycles": 138,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t8_vector_tail_16",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "new 3*T+1 fragments, no padded rows"
+    },
+    {
+      "name": "t8_m0_32_row_row_triangle",
+      "T": 8,
+      "cycles": 2069,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t8_m0_32_row_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t8_m0_32_row_row"
+    },
+    {
+      "name": "t8_m0_32_row_block_triangle",
+      "T": 8,
+      "cycles": 597,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t8_m0_32_row_block_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t8_m0_32_row_block"
+    },
+    {
+      "name": "t8_m0_32_block_row_triangle",
+      "T": 8,
+      "cycles": 1621,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t8_m0_32_block_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t8_m0_32_block_row"
+    },
+    {
+      "name": "t8_m0_32_block_block_triangle",
+      "T": 8,
+      "cycles": 149,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t8_m0_32_block_block_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t8_m0_32_block_block"
+    },
+    {
+      "name": "t8_m1_32_row_row_triangle",
+      "T": 8,
+      "cycles": 277,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t8_m1_32_row_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t8_m1_32_row_row"
+    },
+    {
+      "name": "t8_m2_32_row_row_triangle",
+      "T": 8,
+      "cycles": 1621,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t8_m2_32_row_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t8_m2_32_row_row"
+    },
+    {
+      "name": "t8_m2_32_row_block_triangle",
+      "T": 8,
+      "cycles": 149,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t8_m2_32_row_block_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t8_m2_32_row_block"
+    },
+    {
+      "name": "t8_vector_tail_32",
+      "T": 8,
+      "cycles": 138,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t8_vector_tail_32",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "new 3*T+1 fragments, no padded rows"
+    },
+    {
+      "name": "t8_full_block_mirror_pairs",
+      "T": 8,
+      "cycles": 31,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide04/cases/t8_full_block_mirror_pairs",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "unchanged FP32 P-pair/RUN two-phase effective timing"
+    }
+  ]
+}

@@ -1,0 +1,2 @@
+PASS CORE T=4 FP=1 MODE=1 N=100 blocks=400 timer_bits=8
+- <VMODEL>/sim/tb/sxm_triangle/sxm_triangle_core_tb.sv:100: Verilog $finish

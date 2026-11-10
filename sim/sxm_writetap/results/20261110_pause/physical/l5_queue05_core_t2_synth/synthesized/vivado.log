@@ -1,0 +1,624 @@
+#-----------------------------------------------------------
+# Vivado v2023.2 (64-bit)
+# SW Build 4029153 on Fri Oct 13 20:14:34 MDT 2023
+# IP Build 4028589 on Sat Oct 14 00:45:43 MDT 2023
+# SharedData Build 4025554 on Tue Oct 10 17:18:54 MDT 2023
+# Start of session at: Tue Nov 10 09:41:58 2026
+# Process ID: 11672
+# Current directory: <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t2_synth/synthesized
+# Command line: vivado.exe -mode batch -nojournal -log <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/results/l5_queue05_core_t2_synth/synthesized/vivado.log -source <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t2_synth/src/physical.tcl -tclargs <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t2_synth/src <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/results/l5_queue05_core_t2_synth/synthesized 2 <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t2_synth/synthesized none structural synthesized BUFGCE_X0Y120 Default synthesized 1 internal sxm_triangle_full_core
+# Log file: <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/results/l5_queue05_core_t2_synth/synthesized/vivado.log
+# Journal file: 
+# Running On: <HOST>, OS: Windows, CPU Frequency: 2918 MHz, CPU Physical cores: 14, Host memory: 42660 MB
+#-----------------------------------------------------------
+source <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t2_synth/src/physical.tcl
+# set src [lindex $argv 0]
+# set out [lindex $argv 1]
+# set tiles [lindex $argv 2]
+# set work [lindex $argv 3]
+# set resume [lindex $argv 4]
+# set synth_mode [lindex $argv 5]
+# set resume_stage [lindex $argv 6]
+# set clock_site [lindex $argv 7]
+# set route_directive [lindex $argv 8]
+# set stop_after [lindex $argv 9]
+# proc finish_stage {stage} {
+#   global stop_after
+#   if {$stop_after eq $stage} {puts "SXM_STAGE_FINISHED $stage";exit}
+# }
+# set top [lindex $argv 12]
+# set completed 0
+# puts "ENV_CHECK native=[exec cmd.exe /d /c cd] tcl=[pwd] normalized=[file normalize [pwd]] expected=$work"
+ENV_CHECK native=<LPU_WORKSPACE>\learn\sxm_writetap_implementation_20261109\tmp\l5_queue05_core_t2_synth\synthesized tcl=<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t2_synth/synthesized normalized=<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t2_synth/synthesized expected=<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t2_synth/synthesized
+# if {[file normalize [pwd]] ne $work} {error "Unsafe Tcl cwd normalization; stop before synthesis"}
+# set threads 4
+# if {[llength $argv]>10} {set threads [lindex $argv 10]}
+# set_param general.maxThreads $threads
+# set timing_scope all
+# if {[llength $argv]>11} {set timing_scope [lindex $argv 11]}
+# if {$resume eq "none"} {
+#   create_project -in_memory -part xcvu9p-flga2104-2L-e
+#   set fh [open [file join $src rtl_files.txt] r]
+#   foreach name [split [string trim [read $fh]] "\n"] {read_verilog -sv [file join $src $name]}
+#   close $fh
+#   # Keep all constraints. Structural mapping may skip timing-driven synthesis;
+#   # implementation and final min/max STA retain the full 100 MHz contract.
+#   read_xdc [file join $src timing.xdc]
+#   foreach name {XILINX_PATH HRT_TCL_PATH SYNTH_COMMON} {
+#     if {[info exists env($name)]} {puts "SYNTH_ENV $name=$env($name)"}
+#   }
+#   set extra {}
+#   if {$synth_mode eq "structural"} {lappend extra -no_timing_driven}
+#   set generics [list T=$tiles]
+#   if {$top eq "sxm_triangle_full_core" || $top eq "sxm_triangle_writetap_core"} {lappend generics PORT_STREAMS=32 TIMER_BITS=16}
+#   synth_design -top $top -part xcvu9p-flga2104-2L-e -mode out_of_context -flatten_hierarchy rebuilt -generic $generics {*}$extra
+# } else {
+#   open_checkpoint $resume
+#   set completed [lsearch -exact {synthesized optimized placed physopt routed} $resume_stage]
+#   if {$completed < 0} {error "invalid resume stage"}
+# }
+create_project: Time (s): cpu = 00:00:02 ; elapsed = 00:00:10 . Memory (MB): peak = 568.309 ; gain = 181.207
+SYNTH_ENV XILINX_PATH=<LPU_WORKSPACE>/learn/sxm_gap10_20261104/tmp/vendor_overlay_01
+SYNTH_ENV HRT_TCL_PATH=<LPU_WORKSPACE>/learn/sxm_gap10_20261104/tmp/vendor_overlay_01/scripts/rt/fpga_tcl
+SYNTH_ENV SYNTH_COMMON=<LPU_WORKSPACE>/learn/sxm_gap10_20261104/tmp/vendor_overlay_01/scripts/rt/data
+Command: synth_design -top sxm_triangle_full_core -part xcvu9p-flga2104-2L-e -mode out_of_context -flatten_hierarchy rebuilt -generic {T=2 PORT_STREAMS=32 TIMER_BITS=16} -no_timing_driven
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xcvu9p'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xcvu9p'
+INFO: [Device 21-403] Loading part xcvu9p-flga2104-2L-e
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 1 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 9860
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:03 ; elapsed = 00:00:06 . Memory (MB): peak = 2176.582 ; gain = 432.203
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-6901] identifier 'row_any' is used before its declaration [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t2_synth/src/sxm_triangle_full_core.sv:65]
+WARNING: [Synth 8-6901] identifier 'legacy_any' is used before its declaration [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t2_synth/src/sxm_triangle_full_core.sv:65]
+INFO: [Synth 8-6157] synthesizing module 'sxm_triangle_full_core' [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t2_synth/src/sxm_triangle_full_core.sv:5]
+	Parameter T bound to: 2 - type: integer 
+	Parameter TIMER_BITS bound to: 16 - type: integer 
+	Parameter PORT_STREAMS bound to: 32 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'sxm_triangle_row_frontend' [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t2_synth/src/sxm_triangle_row_frontend.sv:6]
+	Parameter T bound to: 2 - type: integer 
+	Parameter TIMER_BITS bound to: 16 - type: integer 
+	Parameter COMPAT_STORAGE bound to: 0 - type: integer 
+	Parameter PORT_STREAMS bound to: 32 - type: integer 
+INFO: [Synth 8-155] case statement is not full and has no default [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t2_synth/src/sxm_triangle_row_frontend.sv:321]
+INFO: [Synth 8-6155] done synthesizing module 'sxm_triangle_row_frontend' (0#1) [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t2_synth/src/sxm_triangle_row_frontend.sv:6]
+INFO: [Synth 8-6157] synthesizing module 'sxm_compat_engine' [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t2_synth/src/sxm_compat_engine.sv:5]
+	Parameter T bound to: 2 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'sxm_compat_decode' [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t2_synth/src/sxm_compat_decode.sv:7]
+	Parameter T bound to: 2 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'sxm_compat_decode' (0#1) [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t2_synth/src/sxm_compat_decode.sv:7]
+INFO: [Synth 8-6155] done synthesizing module 'sxm_compat_engine' (0#1) [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t2_synth/src/sxm_compat_engine.sv:5]
+INFO: [Synth 8-6157] synthesizing module 'sxm_triangle_core' [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t2_synth/src/sxm_triangle_core.sv:6]
+	Parameter T bound to: 2 - type: integer 
+	Parameter TIMER_BITS bound to: 16 - type: integer 
+	Parameter COMPAT_STORAGE bound to: 1 - type: integer 
+	Parameter SHARED_ROW bound to: 1 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'sxm_triangle_core' (0#1) [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t2_synth/src/sxm_triangle_core.sv:6]
+INFO: [Synth 8-6155] done synthesizing module 'sxm_triangle_full_core' (0#1) [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t2_synth/src/sxm_triangle_full_core.sv:5]
+WARNING: [Synth 8-6014] Unused sequential element slot_reg was removed.  [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t2_synth/src/sxm_triangle_row_frontend.sv:325]
+WARNING: [Synth 8-7137] Register pair_data_q_reg[0] in module sxm_triangle_row_frontend has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t2_synth/src/sxm_triangle_row_frontend.sv:317]
+WARNING: [Synth 8-7137] Register pair_data_q_reg[1] in module sxm_triangle_row_frontend has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t2_synth/src/sxm_triangle_row_frontend.sv:317]
+WARNING: [Synth 8-7137] Register pipe_data_q_reg in module sxm_triangle_row_frontend has both Set and reset with same priority. This may cause simulation mismatches. Consider rewriting code  [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t2_synth/src/sxm_triangle_row_frontend.sv:317]
+WARNING: [Synth 8-6014] Unused sequential element ss_reg was removed.  [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t2_synth/src/sxm_compat_engine.sv:136]
+WARNING: [Synth 8-6014] Unused sequential element g_source[0].word_in_reg was removed.  [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t2_synth/src/sxm_triangle_core.sv:149]
+WARNING: [Synth 8-6014] Unused sequential element g_source[1].word_in_reg was removed.  [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t2_synth/src/sxm_triangle_core.sv:149]
+WARNING: [Synth 8-7129] Port raw_i[5] in module sxm_compat_decode is either unconnected or has no load
+WARNING: [Synth 8-7129] Port raw_i[4] in module sxm_compat_decode is either unconnected or has no load
+WARNING: [Synth 8-7129] Port raw_i[3] in module sxm_compat_decode is either unconnected or has no load
+WARNING: [Synth 8-7129] Port raw_i[2] in module sxm_compat_decode is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[15] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[14] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[13] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[12] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[11] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[10] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[9] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[8] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[7] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[6] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[5] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[4] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[3] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[2] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[1] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_rows_i[0] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2047] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2046] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2045] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2044] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2043] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2042] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2041] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2040] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2039] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2038] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2037] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2036] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2035] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2034] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2033] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2032] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2031] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2030] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2029] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2028] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2027] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2026] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2025] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2024] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2023] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2022] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2021] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2020] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2019] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2018] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2017] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2016] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2015] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2014] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2013] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2012] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2011] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2010] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2009] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2008] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2007] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2006] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2005] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2004] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2003] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2002] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2001] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[2000] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[1999] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[1998] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[1997] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[1996] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[1995] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[1994] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[1993] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[1992] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[1991] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[1990] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[1989] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[1988] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[1987] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[1986] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[1985] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[1984] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[1983] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[1982] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[1981] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[1980] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[1979] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[1978] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[1977] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[1976] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[1975] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[1974] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[1973] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[1972] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[1971] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[1970] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[1969] in module sxm_triangle_row_frontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port compat_write_data_i[1968] in module sxm_triangle_row_frontend is either unconnected or has no load
+INFO: [Common 17-14] Message 'Synth 8-7129' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:12 ; elapsed = 00:00:22 . Memory (MB): peak = 3369.617 ; gain = 1625.238
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:13 ; elapsed = 00:00:23 . Memory (MB): peak = 3369.617 ; gain = 1625.238
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:13 ; elapsed = 00:00:23 . Memory (MB): peak = 3369.617 ; gain = 1625.238
+---------------------------------------------------------------------------------
+Netlist sorting complete. Time (s): cpu = 00:00:05 ; elapsed = 00:00:08 . Memory (MB): peak = 3753.086 ; gain = 0.000
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Parsing XDC File [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t2_synth/src/timing.xdc]
+Finished Parsing XDC File [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t2_synth/src/timing.xdc]
+Completed Processing XDC Constraints
+
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.007 . Memory (MB): peak = 4853.570 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+Constraint Validation Runtime : Time (s): cpu = 00:00:02 ; elapsed = 00:00:03 . Memory (MB): peak = 4859.586 ; gain = 6.016
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:01:10 ; elapsed = 00:01:53 . Memory (MB): peak = 4859.586 ; gain = 3115.207
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xcvu9p-flga2104-2L-e
+INFO: [Synth 8-6742] Reading net delay rules and data
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:01:10 ; elapsed = 00:01:53 . Memory (MB): peak = 4859.586 ; gain = 3115.207
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying 'set_property' XDC Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:01:10 ; elapsed = 00:01:53 . Memory (MB): peak = 4859.586 ; gain = 3115.207
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:02:52 ; elapsed = 00:04:37 . Memory (MB): peak = 8668.516 ; gain = 6924.137
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input   32 Bit       Adders := 1     
+	   3 Input   16 Bit       Adders := 3     
+	   2 Input   16 Bit       Adders := 2     
+	   2 Input    7 Bit       Adders := 1     
+	   2 Input    6 Bit       Adders := 5     
+	   2 Input    5 Bit       Adders := 1     
+	   2 Input    3 Bit       Adders := 2     
+	   2 Input    1 Bit       Adders := 4     
++---XORs : 
+	   2 Input      6 Bit         XORs := 64    
++---Registers : 
+	              512 Bit    Registers := 2     
+	              196 Bit    Registers := 1     
+	              128 Bit    Registers := 6     
+	               96 Bit    Registers := 2     
+	               48 Bit    Registers := 1     
+	               32 Bit    Registers := 192   
+	               16 Bit    Registers := 15    
+	                8 Bit    Registers := 8     
+	                6 Bit    Registers := 6     
+	                3 Bit    Registers := 3     
+	                2 Bit    Registers := 16    
+	                1 Bit    Registers := 20    
++---Multipliers : 
+	               2x32  Multipliers := 1     
+	               3x32  Multipliers := 2     
++---Muxes : 
+	   2 Input 6144 Bit        Muxes := 2     
+	   2 Input 4096 Bit        Muxes := 122   
+	  22 Input 4096 Bit        Muxes := 1     
+	  21 Input 4096 Bit        Muxes := 4     
+	  28 Input 4096 Bit        Muxes := 1     
+	   2 Input 2048 Bit        Muxes := 8     
+	   2 Input  512 Bit        Muxes := 6     
+	   2 Input  384 Bit        Muxes := 3     
+	   2 Input  256 Bit        Muxes := 27    
+	   2 Input  192 Bit        Muxes := 3     
+	   2 Input  128 Bit        Muxes := 30    
+	   2 Input  123 Bit        Muxes := 5     
+	   2 Input  120 Bit        Muxes := 3     
+	   2 Input  118 Bit        Muxes := 2     
+	   2 Input  117 Bit        Muxes := 6     
+	   2 Input  115 Bit        Muxes := 4     
+	   2 Input  114 Bit        Muxes := 5     
+	   2 Input  111 Bit        Muxes := 3     
+	   2 Input  108 Bit        Muxes := 3     
+	   2 Input  105 Bit        Muxes := 3     
+	   2 Input  102 Bit        Muxes := 3     
+	   2 Input   99 Bit        Muxes := 3     
+	   2 Input   96 Bit        Muxes := 9     
+	   2 Input   90 Bit        Muxes := 6     
+	   2 Input   84 Bit        Muxes := 6     
+	   2 Input   78 Bit        Muxes := 6     
+	   2 Input   72 Bit        Muxes := 6     
+	   2 Input   66 Bit        Muxes := 6     
+	   2 Input   64 Bit        Muxes := 58    
+	   3 Input   64 Bit        Muxes := 1     
+	   2 Input   60 Bit        Muxes := 6     
+	   2 Input   54 Bit        Muxes := 6     
+	   2 Input   48 Bit        Muxes := 6     
+	   2 Input   42 Bit        Muxes := 6     
+	   2 Input   36 Bit        Muxes := 6     
+	   2 Input   32 Bit        Muxes := 1170  
+	   4 Input   32 Bit        Muxes := 80    
+	   3 Input   32 Bit        Muxes := 224   
+	   2 Input   30 Bit        Muxes := 6     
+	   2 Input   24 Bit        Muxes := 9     
+	   2 Input   21 Bit        Muxes := 1     
+	   2 Input   19 Bit        Muxes := 1     
+	   2 Input   18 Bit        Muxes := 6     
+	   2 Input   16 Bit        Muxes := 17    
+	   2 Input   12 Bit        Muxes := 6     
+	   2 Input    8 Bit        Muxes := 468   
+	   3 Input    8 Bit        Muxes := 2     
+	   4 Input    8 Bit        Muxes := 1     
+	   6 Input    8 Bit        Muxes := 2     
+	   2 Input    7 Bit        Muxes := 1     
+	   2 Input    6 Bit        Muxes := 15    
+	   2 Input    5 Bit        Muxes := 8     
+	   2 Input    4 Bit        Muxes := 16    
+	   2 Input    3 Bit        Muxes := 26    
+	   4 Input    3 Bit        Muxes := 6     
+	   3 Input    2 Bit        Muxes := 2     
+	   2 Input    2 Bit        Muxes := 80    
+	   4 Input    2 Bit        Muxes := 4     
+	   2 Input    1 Bit        Muxes := 391   
+	   4 Input    1 Bit        Muxes := 10    
+	   3 Input    1 Bit        Muxes := 3     
+	   8 Input    1 Bit        Muxes := 32    
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 6840 (col length:120)
+BRAMs: 4320 (col length: RAMB18 360 RAMB36 180)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O4[5] driven by constant 1
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O4[4] driven by constant 1
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O4[3] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O4[2] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O4[1] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O4[0] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O31[5] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O31[4] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O31[3] driven by constant 1
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O31[2] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O31[1] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O31[0] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O37[5] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O37[4] driven by constant 1
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O37[3] driven by constant 1
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O37[2] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O37[1] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O37[0] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O38[5] driven by constant 1
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O38[4] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O38[3] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O38[2] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O38[1] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O38[0] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O46[5] driven by constant 1
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O46[4] driven by constant 1
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O46[3] driven by constant 1
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O46[2] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O46[1] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O46[0] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O82[5] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O82[4] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O82[3] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O82[2] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O82[1] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O82[0] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O99[5] driven by constant 1
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O99[4] driven by constant 1
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O99[3] driven by constant 1
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O99[2] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O99[1] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O99[0] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O102[5] driven by constant 1
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O102[4] driven by constant 1
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O102[3] driven by constant 1
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O102[2] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O102[1] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB0 has port O102[0] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port P[5] driven by constant 1
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port P[4] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port P[3] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port P[2] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port P[1] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port P[0] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port O684[5] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port O684[4] driven by constant 1
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port O684[3] driven by constant 1
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port O684[2] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port O684[1] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port O684[0] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port O685[5] driven by constant 1
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port O685[4] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port O685[3] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port O685[2] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port O685[1] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port O685[0] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port O688[5] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port O688[4] driven by constant 1
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port O688[3] driven by constant 1
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port O688[2] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port O688[1] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port O688[0] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port O689[5] driven by constant 1
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port O689[4] driven by constant 1
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port O689[3] driven by constant 1
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port O689[2] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port O689[1] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port O689[0] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port O691[5] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port O691[4] driven by constant 1
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port O691[3] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port O691[2] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port O691[1] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port O691[0] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port O692[5] driven by constant 1
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port O692[4] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port O692[3] driven by constant 1
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port O692[2] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port O692[1] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port O692[0] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port O693[5] driven by constant 1
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port O693[4] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port O693[3] driven by constant 1
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port O693[2] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port O693[1] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port O693[0] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port O694[5] driven by constant 1
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port O694[4] driven by constant 0
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port O694[3] driven by constant 1
+WARNING: [Synth 8-3917] design sxm_triangle_row_frontend__GB8 has port O694[2] driven by constant 0
+INFO: [Common 17-14] Message 'Synth 8-3917' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+INFO: [Common 17-14] Message 'Synth 8-3917' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+INFO: [Synth 8-4471] merging register 'count_q_reg[15:0]' into 'count_q_reg[15:0]' [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t2_synth/src/sxm_triangle_core.sv:67]
+INFO: [Synth 8-4471] merging register 'count_q_reg[15:0]' into 'count_q_reg[15:0]' [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t2_synth/src/sxm_triangle_core.sv:67]
+INFO: [Synth 8-4471] merging register 'count_q_reg[15:0]' into 'count_q_reg[15:0]' [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t2_synth/src/sxm_triangle_core.sv:67]
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\g_source[0].wr_q_reg[0] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\g_source[0].rd_q_reg[0] )
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:18:48 ; elapsed = 00:34:13 . Memory (MB): peak = 9704.652 ; gain = 7960.273
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:19:00 ; elapsed = 00:34:41 . Memory (MB): peak = 9704.652 ; gain = 7960.273
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:19:16 ; elapsed = 00:35:25 . Memory (MB): peak = 9704.652 ; gain = 7960.273
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:19:35 ; elapsed = 00:36:01 . Memory (MB): peak = 9704.652 ; gain = 7960.273
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:19:36 ; elapsed = 00:36:05 . Memory (MB): peak = 9704.652 ; gain = 7960.273
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:19:39 ; elapsed = 00:36:10 . Memory (MB): peak = 9704.652 ; gain = 7960.273
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:19:39 ; elapsed = 00:36:10 . Memory (MB): peak = 9704.652 ; gain = 7960.273
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:19:46 ; elapsed = 00:36:22 . Memory (MB): peak = 9704.652 ; gain = 7960.273
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:19:46 ; elapsed = 00:36:23 . Memory (MB): peak = 9704.652 ; gain = 7960.273
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++-+--------------+----------+
+| |BlackBox name |Instances |
++-+--------------+----------+
++-+--------------+----------+
+
+Report Cell Usage: 
++------+-------+------+
+|      |Cell   |Count |
++------+-------+------+
+|1     |CARRY8 |   140|
+|2     |LUT1   |    65|
+|3     |LUT2   |   691|
+|4     |LUT3   |  9462|
+|5     |LUT4   | 13146|
+|6     |LUT5   |  9191|
+|7     |LUT6   | 54322|
+|8     |MUXF7  | 14095|
+|9     |MUXF8  |   564|
+|10    |FDCE   |  1300|
+|11    |FDRE   |  8116|
++------+-------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:19:46 ; elapsed = 00:36:23 . Memory (MB): peak = 9704.652 ; gain = 7960.273
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 100 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:18:43 ; elapsed = 00:35:06 . Memory (MB): peak = 9704.652 ; gain = 6470.305
+Synthesis Optimization Complete : Time (s): cpu = 00:19:46 ; elapsed = 00:36:25 . Memory (MB): peak = 9704.652 ; gain = 7960.273
+INFO: [Project 1-571] Translating synthesized netlist
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:02 . Memory (MB): peak = 9704.652 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 14799 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+Parsing XDC File [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t2_synth/src/timing.xdc]
+create_clock: Time (s): cpu = 00:00:03 ; elapsed = 00:00:08 . Memory (MB): peak = 9704.652 ; gain = 0.000
+Finished Parsing XDC File [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t2_synth/src/timing.xdc]
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.033 . Memory (MB): peak = 9704.652 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+Synth Design complete | Checksum: 1dbed524
+INFO: [Common 17-83] Releasing license: Synthesis
+34 Infos, 209 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:20:11 ; elapsed = 00:37:32 . Memory (MB): peak = 9704.652 ; gain = 9136.344
+# if {[llength [get_sites -quiet $clock_site]] != 1} {error "Invalid OOC clock source site: $clock_site"}
+# reset_timing
+# read_xdc [file join $src timing.xdc]
+WARNING: [filemgmt 56-128] File '<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t2_synth/src/timing.xdc' is already in the project and will not be added again
+Parsing XDC File [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t2_synth/src/timing.xdc]
+Finished Parsing XDC File [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue05_core_t2_synth/src/timing.xdc]
+# set_property HD.CLK_SRC $clock_site [get_ports clk_i]
+INFO: [Vivado 12-4761] HD.CLK_SRC property is set on port clk_i. The net connecting to the port drives either clock PIN or hierarchical black box. Use the create_clock constraint to create a clock on this port prior to setting HD.CLK_SRC. 
+# puts "OOC_CLOCK_CONTEXT HD.CLK_SRC=$clock_site (evaluation assumption, not system floorplan)"
+OOC_CLOCK_CONTEXT HD.CLK_SRC=BUFGCE_X0Y120 (evaluation assumption, not system floorplan)
+# if {$timing_scope eq "internal"} {
+#   set_false_path -from [get_ports -filter {DIRECTION == IN && NAME != clk_i && NAME != rst_ni}]
+#   set_false_path -to [all_outputs]
+#   puts "TIMING_SCOPE internal: user-approved core signoff; IO budget reported separately after routing"
+# }
+TIMING_SCOPE internal: user-approved core signoff; IO budget reported separately after routing
+# if {$completed == 0} {
+# write_checkpoint -force [file join $out synthesized.dcp]
+# write_verilog -force -mode funcsim [file join $out synthesized.v]
+# report_utilization -hierarchical -file [file join $out synth_hierarchical.rpt]
+# report_utilization -file [file join $out synth_utilization.rpt]
+# report_timing_summary -delay_type min_max -max_paths 10 -report_unconstrained -file [file join $out synth_timing.rpt]
+# set fd [open [file join $out checks.txt] w]
+# puts $fd "blackbox_count=[llength [get_cells -hier -quiet -filter {IS_BLACKBOX == 1}]]"
+# puts $fd "latch_count=[llength [get_cells -hier -quiet -filter {REF_NAME =~ LD*}]]"
+# puts $fd "clocks=[get_clocks]"
+# close $fd
+# puts "SXM_STAGE_DONE synth T=$tiles"
+# finish_stage synthesized
+# }
+INFO: [Timing 38-35] Done setting XDC timing constraints.
+INFO: [Timing 38-480] Writing timing data to binary archive.
+Write ShapeDB Complete: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.270 . Memory (MB): peak = 9704.652 ; gain = 0.000
+INFO: [Common 17-1381] The checkpoint '<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/results/l5_queue05_core_t2_synth/synthesized/synthesized.dcp' has been generated.
+write_checkpoint: Time (s): cpu = 00:00:11 ; elapsed = 00:00:29 . Memory (MB): peak = 9704.652 ; gain = 0.000
+write_verilog: Time (s): cpu = 00:00:03 ; elapsed = 00:00:07 . Memory (MB): peak = 9704.652 ; gain = 0.000
+INFO: [Timing 38-91] UpdateTimingParams: Speed grade: -2L, Temperature grade: E, Delay Type: min_max.
+report_timing_summary: Time (s): cpu = 00:00:52 ; elapsed = 00:01:45 . Memory (MB): peak = 9704.652 ; gain = 0.000
+SXM_STAGE_DONE synth T=2
+SXM_STAGE_FINISHED synthesized
+INFO: [Common 17-206] Exiting Vivado at Tue Nov 10 10:22:25 2026...

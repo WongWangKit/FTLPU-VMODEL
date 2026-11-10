@@ -1,0 +1,2 @@
+SXM_ROW_BOUNDS PASS T=2 payload_bits=7680 control_bits=955 delay_max=65535 sequence_max=63 count_max=63
+- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/bounds01/sxm_row_bounds_tb.sv:95: Verilog $finish

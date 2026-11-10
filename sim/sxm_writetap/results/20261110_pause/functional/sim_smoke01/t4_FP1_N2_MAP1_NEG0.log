@@ -1,0 +1,2 @@
+PASS WRITETAP T=4 FP=1 N=2 elements=2048 commits=1024 reads=1024 payload_shell_bytes=0
+- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_smoke01/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:114: Verilog $finish

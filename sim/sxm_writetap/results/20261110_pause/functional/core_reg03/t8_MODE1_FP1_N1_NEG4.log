@@ -1,0 +1,2 @@
+PASS CORE NEG=4 T=8
+- <VMODEL>/sim/tb/sxm_triangle/sxm_triangle_core_tb.sv:75: Verilog $finish

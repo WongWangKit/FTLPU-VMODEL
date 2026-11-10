@@ -1,0 +1,895 @@
+{
+  "scope": "Independent model, NOT RTL",
+  "runs": [
+    {
+      "T": 2,
+      "M": 1,
+      "format": "BF16",
+      "peakSlots": [
+        1,
+        2
+      ],
+      "payloadBytes": 768,
+      "bankCount": 16,
+      "bytesChecked": 512,
+      "bankWrites": 64,
+      "tapNoops": 64,
+      "commandCollisions": 0,
+      "firstLastMatrixCommits": [
+        28,
+        28
+      ],
+      "mapped": false,
+      "status": "PASS_MODEL"
+    },
+    {
+      "T": 2,
+      "M": 2,
+      "format": "BF16",
+      "peakSlots": [
+        1,
+        2
+      ],
+      "payloadBytes": 768,
+      "bankCount": 16,
+      "bytesChecked": 1024,
+      "bankWrites": 128,
+      "tapNoops": 128,
+      "commandCollisions": 0,
+      "firstLastMatrixCommits": [
+        28,
+        44
+      ],
+      "mapped": false,
+      "status": "PASS_MODEL"
+    },
+    {
+      "T": 2,
+      "M": 3,
+      "format": "BF16",
+      "peakSlots": [
+        1,
+        2
+      ],
+      "payloadBytes": 768,
+      "bankCount": 16,
+      "bytesChecked": 1536,
+      "bankWrites": 192,
+      "tapNoops": 192,
+      "commandCollisions": 0,
+      "firstLastMatrixCommits": [
+        28,
+        60
+      ],
+      "mapped": false,
+      "status": "PASS_MODEL"
+    },
+    {
+      "T": 2,
+      "M": 3,
+      "format": "BF16",
+      "peakSlots": [
+        1,
+        2
+      ],
+      "payloadBytes": 768,
+      "bankCount": 16,
+      "bytesChecked": 1536,
+      "bankWrites": 192,
+      "tapNoops": 192,
+      "commandCollisions": 0,
+      "firstLastMatrixCommits": [
+        28,
+        60
+      ],
+      "mapped": true,
+      "status": "PASS_MODEL"
+    },
+    {
+      "T": 2,
+      "M": 32,
+      "format": "BF16",
+      "peakSlots": [
+        1,
+        2
+      ],
+      "payloadBytes": 768,
+      "bankCount": 16,
+      "bytesChecked": 16384,
+      "bankWrites": 2048,
+      "tapNoops": 2048,
+      "commandCollisions": 0,
+      "firstLastMatrixCommits": [
+        28,
+        524
+      ],
+      "mapped": false,
+      "status": "PASS_MODEL"
+    },
+    {
+      "T": 2,
+      "M": 100,
+      "format": "BF16",
+      "peakSlots": [
+        1,
+        2
+      ],
+      "payloadBytes": 768,
+      "bankCount": 16,
+      "bytesChecked": 51200,
+      "bankWrites": 6400,
+      "tapNoops": 6400,
+      "commandCollisions": 0,
+      "firstLastMatrixCommits": [
+        28,
+        1612
+      ],
+      "mapped": false,
+      "status": "PASS_MODEL"
+    },
+    {
+      "T": 2,
+      "M": 1,
+      "format": "FP32",
+      "peakSlots": [
+        1,
+        2
+      ],
+      "payloadBytes": 768,
+      "bankCount": 32,
+      "bytesChecked": 1024,
+      "bankWrites": 128,
+      "tapNoops": 128,
+      "commandCollisions": 0,
+      "firstLastMatrixCommits": [
+        30,
+        30
+      ],
+      "mapped": false,
+      "status": "PASS_MODEL"
+    },
+    {
+      "T": 2,
+      "M": 2,
+      "format": "FP32",
+      "peakSlots": [
+        1,
+        2
+      ],
+      "payloadBytes": 768,
+      "bankCount": 32,
+      "bytesChecked": 2048,
+      "bankWrites": 256,
+      "tapNoops": 256,
+      "commandCollisions": 0,
+      "firstLastMatrixCommits": [
+        30,
+        46
+      ],
+      "mapped": false,
+      "status": "PASS_MODEL"
+    },
+    {
+      "T": 2,
+      "M": 3,
+      "format": "FP32",
+      "peakSlots": [
+        1,
+        2
+      ],
+      "payloadBytes": 768,
+      "bankCount": 32,
+      "bytesChecked": 3072,
+      "bankWrites": 384,
+      "tapNoops": 384,
+      "commandCollisions": 0,
+      "firstLastMatrixCommits": [
+        30,
+        62
+      ],
+      "mapped": false,
+      "status": "PASS_MODEL"
+    },
+    {
+      "T": 2,
+      "M": 3,
+      "format": "FP32",
+      "peakSlots": [
+        1,
+        2
+      ],
+      "payloadBytes": 768,
+      "bankCount": 32,
+      "bytesChecked": 3072,
+      "bankWrites": 384,
+      "tapNoops": 384,
+      "commandCollisions": 0,
+      "firstLastMatrixCommits": [
+        30,
+        62
+      ],
+      "mapped": true,
+      "status": "PASS_MODEL"
+    },
+    {
+      "T": 2,
+      "M": 32,
+      "format": "FP32",
+      "peakSlots": [
+        1,
+        2
+      ],
+      "payloadBytes": 768,
+      "bankCount": 32,
+      "bytesChecked": 32768,
+      "bankWrites": 4096,
+      "tapNoops": 4096,
+      "commandCollisions": 0,
+      "firstLastMatrixCommits": [
+        30,
+        526
+      ],
+      "mapped": false,
+      "status": "PASS_MODEL"
+    },
+    {
+      "T": 2,
+      "M": 100,
+      "format": "FP32",
+      "peakSlots": [
+        1,
+        2
+      ],
+      "payloadBytes": 768,
+      "bankCount": 32,
+      "bytesChecked": 102400,
+      "bankWrites": 12800,
+      "tapNoops": 12800,
+      "commandCollisions": 0,
+      "firstLastMatrixCommits": [
+        30,
+        1614
+      ],
+      "mapped": false,
+      "status": "PASS_MODEL"
+    },
+    {
+      "T": 4,
+      "M": 1,
+      "format": "BF16",
+      "peakSlots": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "payloadBytes": 2560,
+      "bankCount": 16,
+      "bytesChecked": 2048,
+      "bankWrites": 256,
+      "tapNoops": 768,
+      "commandCollisions": 0,
+      "firstLastMatrixCommits": [
+        60,
+        60
+      ],
+      "mapped": false,
+      "status": "PASS_MODEL"
+    },
+    {
+      "T": 4,
+      "M": 2,
+      "format": "BF16",
+      "peakSlots": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "payloadBytes": 2560,
+      "bankCount": 16,
+      "bytesChecked": 4096,
+      "bankWrites": 512,
+      "tapNoops": 1536,
+      "commandCollisions": 0,
+      "firstLastMatrixCommits": [
+        60,
+        92
+      ],
+      "mapped": false,
+      "status": "PASS_MODEL"
+    },
+    {
+      "T": 4,
+      "M": 3,
+      "format": "BF16",
+      "peakSlots": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "payloadBytes": 2560,
+      "bankCount": 16,
+      "bytesChecked": 6144,
+      "bankWrites": 768,
+      "tapNoops": 2304,
+      "commandCollisions": 0,
+      "firstLastMatrixCommits": [
+        60,
+        124
+      ],
+      "mapped": false,
+      "status": "PASS_MODEL"
+    },
+    {
+      "T": 4,
+      "M": 3,
+      "format": "BF16",
+      "peakSlots": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "payloadBytes": 2560,
+      "bankCount": 16,
+      "bytesChecked": 6144,
+      "bankWrites": 768,
+      "tapNoops": 2304,
+      "commandCollisions": 0,
+      "firstLastMatrixCommits": [
+        60,
+        124
+      ],
+      "mapped": true,
+      "status": "PASS_MODEL"
+    },
+    {
+      "T": 4,
+      "M": 32,
+      "format": "BF16",
+      "peakSlots": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "payloadBytes": 2560,
+      "bankCount": 16,
+      "bytesChecked": 65536,
+      "bankWrites": 8192,
+      "tapNoops": 24576,
+      "commandCollisions": 0,
+      "firstLastMatrixCommits": [
+        60,
+        1052
+      ],
+      "mapped": false,
+      "status": "PASS_MODEL"
+    },
+    {
+      "T": 4,
+      "M": 100,
+      "format": "BF16",
+      "peakSlots": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "payloadBytes": 2560,
+      "bankCount": 16,
+      "bytesChecked": 204800,
+      "bankWrites": 25600,
+      "tapNoops": 76800,
+      "commandCollisions": 0,
+      "firstLastMatrixCommits": [
+        60,
+        3228
+      ],
+      "mapped": false,
+      "status": "PASS_MODEL"
+    },
+    {
+      "T": 4,
+      "M": 1,
+      "format": "FP32",
+      "peakSlots": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "payloadBytes": 2560,
+      "bankCount": 32,
+      "bytesChecked": 4096,
+      "bankWrites": 512,
+      "tapNoops": 1536,
+      "commandCollisions": 0,
+      "firstLastMatrixCommits": [
+        62,
+        62
+      ],
+      "mapped": false,
+      "status": "PASS_MODEL"
+    },
+    {
+      "T": 4,
+      "M": 2,
+      "format": "FP32",
+      "peakSlots": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "payloadBytes": 2560,
+      "bankCount": 32,
+      "bytesChecked": 8192,
+      "bankWrites": 1024,
+      "tapNoops": 3072,
+      "commandCollisions": 0,
+      "firstLastMatrixCommits": [
+        62,
+        94
+      ],
+      "mapped": false,
+      "status": "PASS_MODEL"
+    },
+    {
+      "T": 4,
+      "M": 3,
+      "format": "FP32",
+      "peakSlots": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "payloadBytes": 2560,
+      "bankCount": 32,
+      "bytesChecked": 12288,
+      "bankWrites": 1536,
+      "tapNoops": 4608,
+      "commandCollisions": 0,
+      "firstLastMatrixCommits": [
+        62,
+        126
+      ],
+      "mapped": false,
+      "status": "PASS_MODEL"
+    },
+    {
+      "T": 4,
+      "M": 3,
+      "format": "FP32",
+      "peakSlots": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "payloadBytes": 2560,
+      "bankCount": 32,
+      "bytesChecked": 12288,
+      "bankWrites": 1536,
+      "tapNoops": 4608,
+      "commandCollisions": 0,
+      "firstLastMatrixCommits": [
+        62,
+        126
+      ],
+      "mapped": true,
+      "status": "PASS_MODEL"
+    },
+    {
+      "T": 4,
+      "M": 32,
+      "format": "FP32",
+      "peakSlots": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "payloadBytes": 2560,
+      "bankCount": 32,
+      "bytesChecked": 131072,
+      "bankWrites": 16384,
+      "tapNoops": 49152,
+      "commandCollisions": 0,
+      "firstLastMatrixCommits": [
+        62,
+        1054
+      ],
+      "mapped": false,
+      "status": "PASS_MODEL"
+    },
+    {
+      "T": 4,
+      "M": 100,
+      "format": "FP32",
+      "peakSlots": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "payloadBytes": 2560,
+      "bankCount": 32,
+      "bytesChecked": 409600,
+      "bankWrites": 51200,
+      "tapNoops": 153600,
+      "commandCollisions": 0,
+      "firstLastMatrixCommits": [
+        62,
+        3230
+      ],
+      "mapped": false,
+      "status": "PASS_MODEL"
+    },
+    {
+      "T": 8,
+      "M": 1,
+      "format": "BF16",
+      "peakSlots": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "payloadBytes": 9216,
+      "bankCount": 16,
+      "bytesChecked": 8192,
+      "bankWrites": 1024,
+      "tapNoops": 7168,
+      "commandCollisions": 0,
+      "firstLastMatrixCommits": [
+        124,
+        124
+      ],
+      "mapped": false,
+      "status": "PASS_MODEL"
+    },
+    {
+      "T": 8,
+      "M": 2,
+      "format": "BF16",
+      "peakSlots": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "payloadBytes": 9216,
+      "bankCount": 16,
+      "bytesChecked": 16384,
+      "bankWrites": 2048,
+      "tapNoops": 14336,
+      "commandCollisions": 0,
+      "firstLastMatrixCommits": [
+        124,
+        188
+      ],
+      "mapped": false,
+      "status": "PASS_MODEL"
+    },
+    {
+      "T": 8,
+      "M": 3,
+      "format": "BF16",
+      "peakSlots": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "payloadBytes": 9216,
+      "bankCount": 16,
+      "bytesChecked": 24576,
+      "bankWrites": 3072,
+      "tapNoops": 21504,
+      "commandCollisions": 0,
+      "firstLastMatrixCommits": [
+        124,
+        252
+      ],
+      "mapped": false,
+      "status": "PASS_MODEL"
+    },
+    {
+      "T": 8,
+      "M": 3,
+      "format": "BF16",
+      "peakSlots": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "payloadBytes": 9216,
+      "bankCount": 16,
+      "bytesChecked": 24576,
+      "bankWrites": 3072,
+      "tapNoops": 21504,
+      "commandCollisions": 0,
+      "firstLastMatrixCommits": [
+        124,
+        252
+      ],
+      "mapped": true,
+      "status": "PASS_MODEL"
+    },
+    {
+      "T": 8,
+      "M": 32,
+      "format": "BF16",
+      "peakSlots": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "payloadBytes": 9216,
+      "bankCount": 16,
+      "bytesChecked": 262144,
+      "bankWrites": 32768,
+      "tapNoops": 229376,
+      "commandCollisions": 0,
+      "firstLastMatrixCommits": [
+        124,
+        2108
+      ],
+      "mapped": false,
+      "status": "PASS_MODEL"
+    },
+    {
+      "T": 8,
+      "M": 100,
+      "format": "BF16",
+      "peakSlots": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "payloadBytes": 9216,
+      "bankCount": 16,
+      "bytesChecked": 819200,
+      "bankWrites": 102400,
+      "tapNoops": 716800,
+      "commandCollisions": 0,
+      "firstLastMatrixCommits": [
+        124,
+        6460
+      ],
+      "mapped": false,
+      "status": "PASS_MODEL"
+    },
+    {
+      "T": 8,
+      "M": 1,
+      "format": "FP32",
+      "peakSlots": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "payloadBytes": 9216,
+      "bankCount": 32,
+      "bytesChecked": 16384,
+      "bankWrites": 2048,
+      "tapNoops": 14336,
+      "commandCollisions": 0,
+      "firstLastMatrixCommits": [
+        126,
+        126
+      ],
+      "mapped": false,
+      "status": "PASS_MODEL"
+    },
+    {
+      "T": 8,
+      "M": 2,
+      "format": "FP32",
+      "peakSlots": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "payloadBytes": 9216,
+      "bankCount": 32,
+      "bytesChecked": 32768,
+      "bankWrites": 4096,
+      "tapNoops": 28672,
+      "commandCollisions": 0,
+      "firstLastMatrixCommits": [
+        126,
+        190
+      ],
+      "mapped": false,
+      "status": "PASS_MODEL"
+    },
+    {
+      "T": 8,
+      "M": 3,
+      "format": "FP32",
+      "peakSlots": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "payloadBytes": 9216,
+      "bankCount": 32,
+      "bytesChecked": 49152,
+      "bankWrites": 6144,
+      "tapNoops": 43008,
+      "commandCollisions": 0,
+      "firstLastMatrixCommits": [
+        126,
+        254
+      ],
+      "mapped": false,
+      "status": "PASS_MODEL"
+    },
+    {
+      "T": 8,
+      "M": 3,
+      "format": "FP32",
+      "peakSlots": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "payloadBytes": 9216,
+      "bankCount": 32,
+      "bytesChecked": 49152,
+      "bankWrites": 6144,
+      "tapNoops": 43008,
+      "commandCollisions": 0,
+      "firstLastMatrixCommits": [
+        126,
+        254
+      ],
+      "mapped": true,
+      "status": "PASS_MODEL"
+    },
+    {
+      "T": 8,
+      "M": 32,
+      "format": "FP32",
+      "peakSlots": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "payloadBytes": 9216,
+      "bankCount": 32,
+      "bytesChecked": 524288,
+      "bankWrites": 65536,
+      "tapNoops": 458752,
+      "commandCollisions": 0,
+      "firstLastMatrixCommits": [
+        126,
+        2110
+      ],
+      "mapped": false,
+      "status": "PASS_MODEL"
+    },
+    {
+      "T": 8,
+      "M": 100,
+      "format": "FP32",
+      "peakSlots": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "payloadBytes": 9216,
+      "bankCount": 32,
+      "bytesChecked": 1638400,
+      "bankWrites": 204800,
+      "tapNoops": 1433600,
+      "commandCollisions": 0,
+      "firstLastMatrixCommits": [
+        126,
+        6462
+      ],
+      "mapped": false,
+      "status": "PASS_MODEL"
+    }
+  ],
+  "negative": [
+    {
+      "T": 2,
+      "fault": 1,
+      "rejected": true,
+      "error": "missing target Tap"
+    },
+    {
+      "T": 2,
+      "fault": 2,
+      "rejected": true,
+      "error": "wrong tile command"
+    },
+    {
+      "T": 4,
+      "fault": 1,
+      "rejected": true,
+      "error": "missing target Tap"
+    },
+    {
+      "T": 4,
+      "fault": 2,
+      "rejected": true,
+      "error": "wrong tile command"
+    },
+    {
+      "T": 8,
+      "fault": 1,
+      "rejected": true,
+      "error": "missing target Tap"
+    },
+    {
+      "T": 8,
+      "fault": 2,
+      "rejected": true,
+      "error": "wrong tile command"
+    }
+  ]
+}

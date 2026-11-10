@@ -1,0 +1,103 @@
+{
+  "physical": "l5_queue05_core_t2_synth",
+  "cases": [
+    {
+      "name": "t2_m0_16_row_row_triangle",
+      "T": 2,
+      "cycles": 137,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide02/cases/t2_m0_16_row_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t2_m0_16_row_row",
+      "pass_": true
+    },
+    {
+      "name": "t2_vector_tail_16",
+      "T": 2,
+      "cycles": 42,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide02/cases/t2_vector_tail_16",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "new 3*T+1 fragments, no padded rows",
+      "pass_": true
+    },
+    {
+      "name": "t2_m0_32_row_row_triangle",
+      "T": 2,
+      "cycles": 137,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide02/cases/t2_m0_32_row_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t2_m0_32_row_row",
+      "pass_": true
+    },
+    {
+      "name": "t2_m0_32_block_block_triangle",
+      "T": 2,
+      "cycles": 17,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide02/cases/t2_m0_32_block_block_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t2_m0_32_block_block",
+      "pass_": true
+    },
+    {
+      "name": "t2_vector_tail_32",
+      "T": 2,
+      "cycles": 42,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide02/cases/t2_vector_tail_32",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "new 3*T+1 fragments, no padded rows",
+      "pass_": true
+    },
+    {
+      "name": "t2_full_block_mirror_pairs",
+      "T": 2,
+      "cycles": 25,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/wide02/cases/t2_full_block_mirror_pairs",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "unchanged FP32 P-pair/RUN two-phase effective timing",
+      "pass_": true
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_block_block_dir0",
+      "cycles": 6,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/gate_probe04/cases/t2_compat_block_block_dir0",
+      "compat": 1,
+      "migration": "unchanged golden",
+      "pass_": true
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_block_block_dir1",
+      "cycles": 6,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/gate_probe04/cases/t2_compat_block_block_dir1",
+      "compat": 1,
+      "migration": "unchanged golden",
+      "pass_": true
+    },
+    {
+      "name": "t2_negative_missing_plane",
+      "T": 2,
+      "cycles": 8,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/gate_probe04/cases/t2_negative_missing_plane",
+      "compat": 0,
+      "migration": "unchanged golden",
+      "pass_": true
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_arbitration_and_reset",
+      "cycles": 8,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/gate_probe04/cases/t2_compat_arbitration_and_reset",
+      "compat": 1,
+      "migration": "unchanged golden",
+      "pass_": true
+    }
+  ],
+  "netlist_sha256": "5dbb71e6f235b982b234890ec30b3cec74cbb0e3fc2c39e3f832d2ae02c37473",
+  "tb_sha256": "93b7bc2d40bbbd84d4a8a5bbdd895db81555d63a4a2207795c2d6da3e44ef45a"
+}

@@ -10,6 +10,8 @@ ucli.key
 *.fst
 *.wlf
 *.log
+xsim.dir/
+*.wdb
 
 # FPGA / EDA tool outputs
 .Xil/
@@ -23,6 +25,92 @@ ucli.key
 *.pvl
 *.svf
 *.syn
+
+# Python runtime caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Local design documents and architecture research (kept on this workstation)
+/spec_new_*/
+/docs_zh/
+/research/
+/sim/mem_p1/*.md
+/sim/mem_profiles/*.md
+/sim/srf_p1/*.md
+/sim/tb/srf/*.md
+/sim/mem_profiles/integration_registry.json
+
+# Local FPGA study documents and generated runs; source scripts remain visible
+/fpga/README.md
+/fpga/docs/
+/fpga/test/**/README.md
+/fpga/test/**/results/
+/fpga/tmp/
+
+# Publish only the current SXM contract/checklist, not local archives/research.
+!/spec_new_c7ae225/
+/spec_new_c7ae225/*
+!/spec_new_c7ae225/sxm设计与参数化方案.md
+!/spec_new_c7ae225/SXM三角主设计回归测试清单.md
+!/spec_new_c7ae225/脑测与架构探索文件存放约定.md
+
+# Additional reconstructible build products. Do not ignore .mem/.hex test inputs.
+tmp/
+*.o
+*.obj
+*.a
+*.so
+*.dll
+*.exe
+*.bit
+*.ltx
+*.wcfg
+*.zip
+*.7z
+*.tar
+*.gz
+*.runs/
+*.cache/
+*.hw/
+*.ip_user_files/
+*_sim_netlist.v
+*_funcsim.v
+synthesized.v
+routed.v
+
+# Machine-local settings, credentials, licenses and agent state.
+.env
+.env.*
+!.env.example
+!.env.template
+.ssh/
+.aws/
+.azure/
+.codex/
+.agents/
+.git-credentials
+.netrc
+_netrc
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.lic
+license.dat
+id_rsa*
+id_ed25519*
+credentials.json
+credentials.local.*
+secrets.*
+*.local.json
+*.local.yaml
+*.local.yml
+*.local.toml
+*.local.ini
+*.local.tcl
+*.local.ps1
 
 # Editors and operating systems
 .idea/

@@ -11,7 +11,8 @@ module mem_bank_superlane_leaf #(
     parameter P_LANES_PER_TILE      = 8,
     parameter P_MEM_ELEMENT_BITS    = 8,
     parameter P_MEM_READ_TO_SR_CYCLES = 1,
-    parameter P_MEM_FAULT_BITS      = 2
+    parameter P_MEM_FAULT_BITS      = 2,
+    parameter P_MEM_ACTIVE_ROWS     = P_MEM_BANK_DEPTH_ROWS
 ) (
     input  wire                             clk_i,
     input  wire                             rst_ni,
@@ -48,10 +49,35 @@ module mem_bank_superlane_leaf #(
     localparam [P_MEM_FAULT_BITS-1:0] MEM_FAULT_ILLEGAL_OPCODE = 1;
     localparam [P_MEM_FAULT_BITS-1:0] MEM_FAULT_READ_PRESERVE  = 2;
     localparam [P_MEM_FAULT_BITS-1:0] MEM_FAULT_INVALID_WRITE  = 3;
+    // Address errors share the existing illegal-request class. Detailed
+    // causes are retained by the simulation checker, not a wider fault port.
+    localparam [P_MEM_FAULT_BITS-1:0] MEM_FAULT_INVALID_ADDRESS = 1;
 
     // Behavioral model of one 32768 x 64-bit SRAM in the default profile.
     // Do not add this array to the reset branch.
     reg [P_ROW_BITS-1:0] mem_array [0:P_MEM_BANK_DEPTH_ROWS-1];
+
+    // Cold behavioral storage epoch only. Execution reset never clears SRAM.
+    // A future physical macro must separately provide this observable policy.
+    integer initial_row;
+    initial begin : initialize_storage
+        for (initial_row = 0; initial_row < P_MEM_BANK_DEPTH_ROWS;
+             initial_row = initial_row + 1)
+            mem_array[initial_row] = {P_ROW_BITS{1'b0}};
+    end
+
+`ifndef SYNTHESIS
+    initial begin : check_parameters
+        if (P_MEM_BANK_DEPTH_ROWS < 16 || P_MEM_BANK_DEPTH_ROWS > 32768 ||
+            (P_MEM_BANK_DEPTH_ROWS & (P_MEM_BANK_DEPTH_ROWS-1)) != 0 ||
+            P_MEM_ACTIVE_ROWS <= 0 || P_MEM_ACTIVE_ROWS > P_MEM_BANK_DEPTH_ROWS ||
+            (P_MEM_ACTIVE_ROWS & (P_MEM_ACTIVE_ROWS-1)) != 0)
+            $fatal(1, "%m illegal MEM physical/active depth");
+        if (P_LANES_PER_TILE != 8 || P_MEM_ELEMENT_BITS != 8 ||
+            P_MEM_READ_TO_SR_CYCLES != 1 || P_MEM_FAULT_BITS < 2)
+            $fatal(1, "%m unsupported MEM leaf profile");
+    end
+`endif
 
     // P_MEM_READ_TO_SR_CYCLES is fixed to 1 for this implementation stage.
     // A legal Read is sampled at the active edge and produces one registered
@@ -72,7 +98,14 @@ module mem_bank_superlane_leaf #(
             fault_valid_o    <= 1'b0;
             fault_code_o     <= MEM_FAULT_NONE;
 
-            if (cmd_valid_i) begin
+            if (cmd_valid_i &&
+                (cmd_opcode_i == MEM_OPCODE_READ || cmd_opcode_i == MEM_OPCODE_WRITE) &&
+                !(cmd_opcode_i == MEM_OPCODE_READ && cmd_preserve_i) &&
+                (cmd_row_i >= P_MEM_BANK_DEPTH_ROWS || cmd_row_i >= P_MEM_ACTIVE_ROWS)) begin
+                // Reject before any array access, even for a missing Tap.
+                fault_valid_o <= 1'b1;
+                fault_code_o  <= MEM_FAULT_INVALID_ADDRESS;
+            end else if (cmd_valid_i) begin
                 case (cmd_opcode_i)
                     MEM_OPCODE_READ: begin
                         if (cmd_preserve_i) begin
@@ -98,7 +131,7 @@ module mem_bank_superlane_leaf #(
                             mem_array[cmd_row_i] <= stream_data_i;
                             stream_consume_o     <= 1'b1;
                         end else begin
-                            // Never replace missing stream data with zeros.
+                            // Missing data is a scheduling fault, not a write.
                             fault_valid_o <= 1'b1;
                             fault_code_o  <= MEM_FAULT_INVALID_WRITE;
                         end

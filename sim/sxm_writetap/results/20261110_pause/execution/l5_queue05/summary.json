@@ -1,0 +1,35 @@
+[
+  {
+    "run": "l5_queue05_adapter_t2_synth",
+    "T": 2,
+    "component": "adapter",
+    "exit_code": 0,
+    "reused_from": "l5_queue04_adapter_t2_synth"
+  },
+  {
+    "run": "l5_queue05_adapter_t4_synth",
+    "T": 4,
+    "component": "adapter",
+    "exit_code": 0,
+    "reused_from": "l5_queue04_adapter_t4_synth"
+  },
+  {
+    "run": "l5_queue05_adapter_t8_synth",
+    "T": 8,
+    "component": "adapter",
+    "exit_code": 0,
+    "reused_from": "l5_queue04_adapter_t8_synth"
+  },
+  {
+    "run": "l5_queue05_core_t2_synth",
+    "T": 2,
+    "component": "core",
+    "exit_code": 0
+  },
+  {
+    "run": "l5_queue05_core_t4_synth",
+    "T": 4,
+    "component": "core",
+    "exit_code": 0
+  }
+]

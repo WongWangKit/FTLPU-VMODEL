@@ -1,0 +1,23 @@
+# Only the exporter-selected text evidence is publishable.
+/tmp/
+/results/**
+!/results/**/
+!/results/**/*.json
+!/results/**/*.csv
+!/results/**/*.rpt
+!/results/**/*.log
+!/results/**/*.txt
+!/results/**/*.tcl
+!/results/**/*.xdc
+# A whitelist must not re-admit credentials or generated payloads.
+/results/**/credentials.json
+/results/**/secrets.*
+/results/**/*.local.*
+/results/**/host_samples.jsonl
+/results/**/process.json
+/results/**/vendor_hashes.json
+/results/**/synthesized.v
+/results/**/routed.v
+/results/**/*.dcp
+/results/**/.Xil/
+/results/**/xsim.dir/

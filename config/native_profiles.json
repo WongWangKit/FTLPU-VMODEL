@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "cmodel_base": "c7ae225b9cdd4a5fb5d96e7b1eabcf484dedc0ec",
+  "cmodel_working_reference": "../FTLPU-CMODEL",
+  "scope": "MEM verification on local synchronous-read R1; not a whole-system SOFTWARE ABI",
+  "profiles": {
+    "16": "config/mem-profiles/ftlpu-lpu16.json",
+    "32": "config/mem-profiles/ftlpu-lpu32.json",
+    "64": "config/mem-profiles/ftlpu-lpu64.json"
+  }
+}

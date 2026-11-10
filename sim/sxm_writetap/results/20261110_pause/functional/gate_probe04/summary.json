@@ -1,0 +1,42 @@
+[
+  {
+    "name": "t2_m0_16_row_row_triangle",
+    "pass_": true
+  },
+  {
+    "name": "t2_vector_tail_16",
+    "pass_": true
+  },
+  {
+    "name": "t2_m0_32_row_row_triangle",
+    "pass_": true
+  },
+  {
+    "name": "t2_m0_32_block_block_triangle",
+    "pass_": true
+  },
+  {
+    "name": "t2_vector_tail_32",
+    "pass_": true
+  },
+  {
+    "name": "t2_full_block_mirror_pairs",
+    "pass_": true
+  },
+  {
+    "name": "t2_compat_block_block_dir0",
+    "pass_": true
+  },
+  {
+    "name": "t2_compat_block_block_dir1",
+    "pass_": true
+  },
+  {
+    "name": "t2_negative_missing_plane",
+    "pass_": true
+  },
+  {
+    "name": "t2_compat_arbitration_and_reset",
+    "pass_": true
+  }
+]

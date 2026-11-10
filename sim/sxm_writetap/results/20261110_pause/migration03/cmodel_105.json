@@ -1,0 +1,530 @@
+{
+  "evidence": "cmodel01",
+  "rows": [
+    {
+      "name": "t2_compat_block_block_dir0",
+      "T": 2,
+      "pass_": true
+    },
+    {
+      "name": "t2_compat_block_rows_dir0",
+      "T": 2,
+      "pass_": true
+    },
+    {
+      "name": "t2_compat_block_consume_dir0",
+      "T": 2,
+      "pass_": true
+    },
+    {
+      "name": "t2_compat_rows_block_dir0",
+      "T": 2,
+      "pass_": true
+    },
+    {
+      "name": "t2_compat_rows_rows_dir0",
+      "T": 2,
+      "pass_": true
+    },
+    {
+      "name": "t2_compat_rows_consume_dir0",
+      "T": 2,
+      "pass_": true
+    },
+    {
+      "name": "t2_compat_broadcast_block_dir0",
+      "T": 2,
+      "pass_": true
+    },
+    {
+      "name": "t2_compat_broadcast_rows_dir0",
+      "T": 2,
+      "pass_": true
+    },
+    {
+      "name": "t2_compat_broadcast_consume_dir0",
+      "T": 2,
+      "pass_": true
+    },
+    {
+      "name": "t2_compat_block_block_dir1",
+      "T": 2,
+      "pass_": true
+    },
+    {
+      "name": "t2_compat_block_rows_dir1",
+      "T": 2,
+      "pass_": true
+    },
+    {
+      "name": "t2_compat_block_consume_dir1",
+      "T": 2,
+      "pass_": true
+    },
+    {
+      "name": "t2_compat_rows_block_dir1",
+      "T": 2,
+      "pass_": true
+    },
+    {
+      "name": "t2_compat_rows_rows_dir1",
+      "T": 2,
+      "pass_": true
+    },
+    {
+      "name": "t2_compat_rows_consume_dir1",
+      "T": 2,
+      "pass_": true
+    },
+    {
+      "name": "t2_compat_broadcast_block_dir1",
+      "T": 2,
+      "pass_": true
+    },
+    {
+      "name": "t2_compat_broadcast_rows_dir1",
+      "T": 2,
+      "pass_": true
+    },
+    {
+      "name": "t2_compat_broadcast_consume_dir1",
+      "T": 2,
+      "pass_": true
+    },
+    {
+      "name": "t2_compat_read_old_write_new",
+      "T": 2,
+      "pass_": true
+    },
+    {
+      "name": "t2_compat_private_wave",
+      "T": 2,
+      "pass_": true
+    },
+    {
+      "name": "t2_compat_diagonal",
+      "T": 2,
+      "pass_": true
+    },
+    {
+      "name": "t2_compat_rewrite_partial",
+      "T": 2,
+      "pass_": true
+    },
+    {
+      "name": "t2_compat_last_row_no_bypass",
+      "T": 2,
+      "pass_": true
+    },
+    {
+      "name": "t2_compat_consume9",
+      "T": 2,
+      "pass_": true
+    },
+    {
+      "name": "t2_compat_consume10",
+      "T": 2,
+      "pass_": true
+    },
+    {
+      "name": "t2_compat_consume11",
+      "T": 2,
+      "pass_": true
+    },
+    {
+      "name": "t2_compat_consume12",
+      "T": 2,
+      "pass_": true
+    },
+    {
+      "name": "t2_compat_consume13",
+      "T": 2,
+      "pass_": true
+    },
+    {
+      "name": "t2_compat_consume14",
+      "T": 2,
+      "pass_": true
+    },
+    {
+      "name": "t2_compat_consume15",
+      "T": 2,
+      "pass_": true
+    },
+    {
+      "name": "t2_compat_partial_p_keeps_rows",
+      "T": 2,
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_block_block_dir0",
+      "T": 4,
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_block_rows_dir0",
+      "T": 4,
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_block_consume_dir0",
+      "T": 4,
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_rows_block_dir0",
+      "T": 4,
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_rows_rows_dir0",
+      "T": 4,
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_rows_consume_dir0",
+      "T": 4,
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_broadcast_block_dir0",
+      "T": 4,
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_broadcast_rows_dir0",
+      "T": 4,
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_broadcast_consume_dir0",
+      "T": 4,
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_block_block_dir1",
+      "T": 4,
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_block_rows_dir1",
+      "T": 4,
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_block_consume_dir1",
+      "T": 4,
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_rows_block_dir1",
+      "T": 4,
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_rows_rows_dir1",
+      "T": 4,
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_rows_consume_dir1",
+      "T": 4,
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_broadcast_block_dir1",
+      "T": 4,
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_broadcast_rows_dir1",
+      "T": 4,
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_broadcast_consume_dir1",
+      "T": 4,
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_read_old_write_new",
+      "T": 4,
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_private_wave",
+      "T": 4,
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_diagonal",
+      "T": 4,
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_rewrite_partial",
+      "T": 4,
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_last_row_no_bypass",
+      "T": 4,
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_consume9",
+      "T": 4,
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_consume10",
+      "T": 4,
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_consume11",
+      "T": 4,
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_consume12",
+      "T": 4,
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_consume13",
+      "T": 4,
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_consume14",
+      "T": 4,
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_consume15",
+      "T": 4,
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_vmodel416_all",
+      "T": 4,
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_vmodel416_selected",
+      "T": 4,
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_diff_phase0_dir0",
+      "T": 4,
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_diff_phase1_dir0",
+      "T": 4,
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_diff_phase2_dir0",
+      "T": 4,
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_diff_phase3_dir0",
+      "T": 4,
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_diff_general_dir0",
+      "T": 4,
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_diff_phase0_dir1",
+      "T": 4,
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_diff_phase1_dir1",
+      "T": 4,
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_diff_phase2_dir1",
+      "T": 4,
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_diff_phase3_dir1",
+      "T": 4,
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_diff_general_dir1",
+      "T": 4,
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_partial_p_keeps_rows",
+      "T": 4,
+      "pass_": true
+    },
+    {
+      "name": "t8_compat_block_block_dir0",
+      "T": 8,
+      "pass_": true
+    },
+    {
+      "name": "t8_compat_block_rows_dir0",
+      "T": 8,
+      "pass_": true
+    },
+    {
+      "name": "t8_compat_block_consume_dir0",
+      "T": 8,
+      "pass_": true
+    },
+    {
+      "name": "t8_compat_rows_block_dir0",
+      "T": 8,
+      "pass_": true
+    },
+    {
+      "name": "t8_compat_rows_rows_dir0",
+      "T": 8,
+      "pass_": true
+    },
+    {
+      "name": "t8_compat_rows_consume_dir0",
+      "T": 8,
+      "pass_": true
+    },
+    {
+      "name": "t8_compat_broadcast_block_dir0",
+      "T": 8,
+      "pass_": true
+    },
+    {
+      "name": "t8_compat_broadcast_rows_dir0",
+      "T": 8,
+      "pass_": true
+    },
+    {
+      "name": "t8_compat_broadcast_consume_dir0",
+      "T": 8,
+      "pass_": true
+    },
+    {
+      "name": "t8_compat_block_block_dir1",
+      "T": 8,
+      "pass_": true
+    },
+    {
+      "name": "t8_compat_block_rows_dir1",
+      "T": 8,
+      "pass_": true
+    },
+    {
+      "name": "t8_compat_block_consume_dir1",
+      "T": 8,
+      "pass_": true
+    },
+    {
+      "name": "t8_compat_rows_block_dir1",
+      "T": 8,
+      "pass_": true
+    },
+    {
+      "name": "t8_compat_rows_rows_dir1",
+      "T": 8,
+      "pass_": true
+    },
+    {
+      "name": "t8_compat_rows_consume_dir1",
+      "T": 8,
+      "pass_": true
+    },
+    {
+      "name": "t8_compat_broadcast_block_dir1",
+      "T": 8,
+      "pass_": true
+    },
+    {
+      "name": "t8_compat_broadcast_rows_dir1",
+      "T": 8,
+      "pass_": true
+    },
+    {
+      "name": "t8_compat_broadcast_consume_dir1",
+      "T": 8,
+      "pass_": true
+    },
+    {
+      "name": "t8_compat_read_old_write_new",
+      "T": 8,
+      "pass_": true
+    },
+    {
+      "name": "t8_compat_private_wave",
+      "T": 8,
+      "pass_": true
+    },
+    {
+      "name": "t8_compat_diagonal",
+      "T": 8,
+      "pass_": true
+    },
+    {
+      "name": "t8_compat_rewrite_partial",
+      "T": 8,
+      "pass_": true
+    },
+    {
+      "name": "t8_compat_last_row_no_bypass",
+      "T": 8,
+      "pass_": true
+    },
+    {
+      "name": "t8_compat_consume9",
+      "T": 8,
+      "pass_": true
+    },
+    {
+      "name": "t8_compat_consume10",
+      "T": 8,
+      "pass_": true
+    },
+    {
+      "name": "t8_compat_consume11",
+      "T": 8,
+      "pass_": true
+    },
+    {
+      "name": "t8_compat_consume12",
+      "T": 8,
+      "pass_": true
+    },
+    {
+      "name": "t8_compat_consume13",
+      "T": 8,
+      "pass_": true
+    },
+    {
+      "name": "t8_compat_consume14",
+      "T": 8,
+      "pass_": true
+    },
+    {
+      "name": "t8_compat_consume15",
+      "T": 8,
+      "pass_": true
+    },
+    {
+      "name": "t8_compat_partial_p_keeps_rows",
+      "T": 8,
+      "pass_": true
+    }
+  ]
+}

@@ -1,0 +1,2 @@
+PASS COUNT_EQ T=4 checks=4096 final_segments=11934
+- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/count_eq02/count_tb.sv:60: Verilog $finish

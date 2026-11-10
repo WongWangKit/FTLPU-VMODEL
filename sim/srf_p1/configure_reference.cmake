@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.20)
+if(NOT DEFINED CMODEL OR NOT DEFINED OUTPUT_HEADER)
+  message(FATAL_ERROR "CMODEL and OUTPUT_HEADER are required")
+endif()
+include("${CMODEL}/cmake/FTLPUHardwareConfig.cmake")
+ftlpu_generate_hardware_config("${CMODEL}/config/ftlpu-lpu32.json" "${OUTPUT_HEADER}")

@@ -1,0 +1,10 @@
+-- The CXX compiler identification is GNU 11.4.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- FTLPU hardware target 'ftlpu-lpu16-decode' from <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/cmodel01/source/config/ftlpu-lpu16-decode.json
+-- Configuring done
+-- Generating done
+-- Build files have been written to: <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/cmodel01/t2
