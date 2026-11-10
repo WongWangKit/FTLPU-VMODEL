@@ -1,0 +1,4 @@
+COMPAT_CONTROL_BITS T=2 bits=409 PAYLOAD_ADDED=0
+STATE_BITS T=2 source_payload=6144 typed_control=294 row_control=955 row_pair_payload=1536 legacy_control=409
+SXM_COMPATIBLE_CORE PASS T=2 cycles=146 segments=192 captures=32 negative_faults=0
+- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/switch03/mixed_tb.sv:149: Verilog $finish

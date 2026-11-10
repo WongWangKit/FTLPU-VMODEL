@@ -1,0 +1,2031 @@
+{
+  "hashes": {
+    "<VMODEL>/rtl/sxm_native/sxm_triangle_core.sv": "7f7e5c2083e49322f18aac3baa290fb3570b2d30ee6ce57870e11a07dcf73b05",
+    "<VMODEL>/rtl/sxm_native/sxm_triangle_row_frontend.sv": "1038b753ea348895e218bb78b9aefc47dbc5a22e54af8976829506be449ff5e6",
+    "<VMODEL>/rtl/sxm_native/sxm_compat_decode.sv": "5cea05401aa5c208f622b81b6df7a32d5357b69cb97faa4e47d78da1a94f7f2d",
+    "<VMODEL>/rtl/sxm_native/sxm_compat_engine.sv": "b6230239c74e06a1e50489fdc12c8cdb0574d2267953a1d72ed400daaa468362",
+    "<VMODEL>/rtl/sxm_native/sxm_triangle_full_core.sv": "c5c6e54d5b48313f934dbb30d629baab0f375e63da5a58323ee4df2a72783a38",
+    "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/full07/sxm_compatible_core_tb.sv": "2ff8d92a3dad788b45ad67206f4d1842096fe886092a58cb6954ae37728726cc"
+  },
+  "cases": [
+    {
+      "name": "t2_m0_16_row_row_triangle",
+      "T": 2,
+      "cycles": 137,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/full07/cases/t2_m0_16_row_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t2_m0_16_row_row"
+    },
+    {
+      "name": "t2_m1_16_row_row_triangle",
+      "T": 2,
+      "cycles": 25,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/full07/cases/t2_m1_16_row_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t2_m1_16_row_row"
+    },
+    {
+      "name": "t2_m2_16_row_row_triangle",
+      "T": 2,
+      "cycles": 109,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/full07/cases/t2_m2_16_row_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t2_m2_16_row_row"
+    },
+    {
+      "name": "t2_m0_16_block_row_triangle",
+      "T": 2,
+      "cycles": 109,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/full07/cases/t2_m0_16_block_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t2_m0_16_block_row"
+    },
+    {
+      "name": "t2_m0_16_row_block_triangle",
+      "T": 2,
+      "cycles": 45,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/full07/cases/t2_m0_16_row_block_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t2_m0_16_row_block"
+    },
+    {
+      "name": "t2_m0_16_block_block_triangle",
+      "T": 2,
+      "cycles": 17,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/full07/cases/t2_m0_16_block_block_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t2_m0_16_block_block"
+    },
+    {
+      "name": "t2_m2_16_row_block_triangle",
+      "T": 2,
+      "cycles": 17,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/full07/cases/t2_m2_16_row_block_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t2_m2_16_row_block"
+    },
+    {
+      "name": "t2_m0_32_row_row_triangle",
+      "T": 2,
+      "cycles": 137,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/full07/cases/t2_m0_32_row_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t2_m0_32_row_row"
+    },
+    {
+      "name": "t2_m1_32_row_row_triangle",
+      "T": 2,
+      "cycles": 25,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/full07/cases/t2_m1_32_row_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t2_m1_32_row_row"
+    },
+    {
+      "name": "t2_m2_32_row_row_triangle",
+      "T": 2,
+      "cycles": 109,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/full07/cases/t2_m2_32_row_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t2_m2_32_row_row"
+    },
+    {
+      "name": "t2_m0_16_row_row_consume_triangle",
+      "T": 2,
+      "cycles": 53,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/full07/cases/t2_m0_16_row_row_consume_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t2_m0_16_row_row_consume"
+    },
+    {
+      "name": "t2_independent_m1_16",
+      "T": 2,
+      "cycles": 12,
+      "path": "<LPU_WORKSPACE>/learn/sxm_01_03_20261104/cases/t2_independent_m1_16",
+      "compat": 0,
+      "migration": "unchanged golden"
+    },
+    {
+      "name": "t2_independent_m1_32",
+      "T": 2,
+      "cycles": 12,
+      "path": "<LPU_WORKSPACE>/learn/sxm_01_03_20261104/cases/t2_independent_m1_32",
+      "compat": 0,
+      "migration": "unchanged golden"
+    },
+    {
+      "name": "t2_independent_m2_16",
+      "T": 2,
+      "cycles": 12,
+      "path": "<LPU_WORKSPACE>/learn/sxm_01_03_20261104/cases/t2_independent_m2_16",
+      "compat": 0,
+      "migration": "unchanged golden"
+    },
+    {
+      "name": "t2_independent_m2_32",
+      "T": 2,
+      "cycles": 12,
+      "path": "<LPU_WORKSPACE>/learn/sxm_01_03_20261104/cases/t2_independent_m2_32",
+      "compat": 0,
+      "migration": "unchanged golden"
+    },
+    {
+      "name": "t2_negative_occupied_reserve",
+      "T": 2,
+      "cycles": 8,
+      "path": "<LPU_WORKSPACE>/learn/sxm_01_03_20261104/cases/t2_negative_occupied_reserve",
+      "compat": 0,
+      "migration": "unchanged golden"
+    },
+    {
+      "name": "t2_negative_live_config",
+      "T": 2,
+      "cycles": 8,
+      "path": "<LPU_WORKSPACE>/learn/sxm_01_03_20261104/cases/t2_negative_live_config",
+      "compat": 0,
+      "migration": "unchanged golden"
+    },
+    {
+      "name": "t2_negative_missing_plane",
+      "T": 2,
+      "cycles": 8,
+      "path": "<LPU_WORKSPACE>/learn/sxm_01_03_20261104/cases/t2_negative_missing_plane",
+      "compat": 0,
+      "migration": "unchanged golden"
+    },
+    {
+      "name": "t2_negative_fp32_block",
+      "T": 2,
+      "cycles": 8,
+      "path": "<LPU_WORKSPACE>/learn/sxm_01_03_20261104/cases/t2_negative_fp32_block",
+      "compat": 0,
+      "migration": "unchanged golden"
+    },
+    {
+      "name": "t2_negative_early_p",
+      "T": 2,
+      "cycles": 8,
+      "path": "<LPU_WORKSPACE>/learn/sxm_01_03_20261104/cases/t2_negative_early_p",
+      "compat": 0,
+      "migration": "unchanged golden"
+    },
+    {
+      "name": "t2_negative_odd_pair",
+      "T": 2,
+      "cycles": 16,
+      "path": "<LPU_WORKSPACE>/learn/sxm_01_03_20261104/cases/t2_negative_odd_pair",
+      "compat": 0,
+      "migration": "unchanged golden"
+    },
+    {
+      "name": "t2_negative_missing_pair",
+      "T": 2,
+      "cycles": 9,
+      "path": "<LPU_WORKSPACE>/learn/sxm_01_03_20261104/cases/t2_negative_missing_pair",
+      "compat": 0,
+      "migration": "unchanged golden"
+    },
+    {
+      "name": "t2_negative_sequence_overflow",
+      "T": 2,
+      "cycles": 8,
+      "path": "<LPU_WORKSPACE>/learn/sxm_01_03_20261104/cases/t2_negative_sequence_overflow",
+      "compat": 0,
+      "migration": "unchanged golden"
+    },
+    {
+      "name": "t2_negative_zero_count",
+      "T": 2,
+      "cycles": 8,
+      "path": "<LPU_WORKSPACE>/learn/sxm_01_03_20261104/cases/t2_negative_zero_count",
+      "compat": 0,
+      "migration": "unchanged golden"
+    },
+    {
+      "name": "t2_negative_zero_interval",
+      "T": 2,
+      "cycles": 8,
+      "path": "<LPU_WORKSPACE>/learn/sxm_01_03_20261104/cases/t2_negative_zero_interval",
+      "compat": 0,
+      "migration": "unchanged golden"
+    },
+    {
+      "name": "t2_negative_illegal_ctrl",
+      "T": 2,
+      "cycles": 8,
+      "path": "<LPU_WORKSPACE>/learn/sxm_01_03_20261104/cases/t2_negative_illegal_ctrl",
+      "compat": 0,
+      "migration": "unchanged golden"
+    },
+    {
+      "name": "t4_m0_16_row_row_triangle",
+      "T": 4,
+      "cycles": 525,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/full07/cases/t4_m0_16_row_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t4_m0_16_row_row"
+    },
+    {
+      "name": "t4_m1_16_row_row_triangle",
+      "T": 4,
+      "cycles": 77,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/full07/cases/t4_m1_16_row_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t4_m1_16_row_row"
+    },
+    {
+      "name": "t4_m2_16_row_row_triangle",
+      "T": 4,
+      "cycles": 413,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/full07/cases/t4_m2_16_row_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t4_m2_16_row_row"
+    },
+    {
+      "name": "t4_m0_16_block_row_triangle",
+      "T": 4,
+      "cycles": 413,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/full07/cases/t4_m0_16_block_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t4_m0_16_block_row"
+    },
+    {
+      "name": "t4_m0_16_row_block_triangle",
+      "T": 4,
+      "cycles": 157,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/full07/cases/t4_m0_16_row_block_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t4_m0_16_row_block"
+    },
+    {
+      "name": "t4_m0_16_block_block_triangle",
+      "T": 4,
+      "cycles": 45,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/full07/cases/t4_m0_16_block_block_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t4_m0_16_block_block"
+    },
+    {
+      "name": "t4_m2_16_row_block_triangle",
+      "T": 4,
+      "cycles": 45,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/full07/cases/t4_m2_16_row_block_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t4_m2_16_row_block"
+    },
+    {
+      "name": "t4_m0_32_row_row_triangle",
+      "T": 4,
+      "cycles": 525,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/full07/cases/t4_m0_32_row_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t4_m0_32_row_row"
+    },
+    {
+      "name": "t4_m1_32_row_row_triangle",
+      "T": 4,
+      "cycles": 77,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/full07/cases/t4_m1_32_row_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t4_m1_32_row_row"
+    },
+    {
+      "name": "t4_m2_32_row_row_triangle",
+      "T": 4,
+      "cycles": 413,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/full07/cases/t4_m2_32_row_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t4_m2_32_row_row"
+    },
+    {
+      "name": "t4_m0_16_row_row_consume_triangle",
+      "T": 4,
+      "cycles": 189,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/full07/cases/t4_m0_16_row_row_consume_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t4_m0_16_row_row_consume"
+    },
+    {
+      "name": "t4_independent_m1_16",
+      "T": 4,
+      "cycles": 14,
+      "path": "<LPU_WORKSPACE>/learn/sxm_01_03_20261104/cases/t4_independent_m1_16",
+      "compat": 0,
+      "migration": "unchanged golden"
+    },
+    {
+      "name": "t4_independent_m1_32",
+      "T": 4,
+      "cycles": 14,
+      "path": "<LPU_WORKSPACE>/learn/sxm_01_03_20261104/cases/t4_independent_m1_32",
+      "compat": 0,
+      "migration": "unchanged golden"
+    },
+    {
+      "name": "t4_independent_m2_16",
+      "T": 4,
+      "cycles": 14,
+      "path": "<LPU_WORKSPACE>/learn/sxm_01_03_20261104/cases/t4_independent_m2_16",
+      "compat": 0,
+      "migration": "unchanged golden"
+    },
+    {
+      "name": "t4_independent_m2_32",
+      "T": 4,
+      "cycles": 14,
+      "path": "<LPU_WORKSPACE>/learn/sxm_01_03_20261104/cases/t4_independent_m2_32",
+      "compat": 0,
+      "migration": "unchanged golden"
+    },
+    {
+      "name": "t4_negative_occupied_reserve",
+      "T": 4,
+      "cycles": 10,
+      "path": "<LPU_WORKSPACE>/learn/sxm_01_03_20261104/cases/t4_negative_occupied_reserve",
+      "compat": 0,
+      "migration": "unchanged golden"
+    },
+    {
+      "name": "t4_negative_live_config",
+      "T": 4,
+      "cycles": 10,
+      "path": "<LPU_WORKSPACE>/learn/sxm_01_03_20261104/cases/t4_negative_live_config",
+      "compat": 0,
+      "migration": "unchanged golden"
+    },
+    {
+      "name": "t4_negative_missing_plane",
+      "T": 4,
+      "cycles": 10,
+      "path": "<LPU_WORKSPACE>/learn/sxm_01_03_20261104/cases/t4_negative_missing_plane",
+      "compat": 0,
+      "migration": "unchanged golden"
+    },
+    {
+      "name": "t4_negative_fp32_block",
+      "T": 4,
+      "cycles": 10,
+      "path": "<LPU_WORKSPACE>/learn/sxm_01_03_20261104/cases/t4_negative_fp32_block",
+      "compat": 0,
+      "migration": "unchanged golden"
+    },
+    {
+      "name": "t4_negative_early_p",
+      "T": 4,
+      "cycles": 10,
+      "path": "<LPU_WORKSPACE>/learn/sxm_01_03_20261104/cases/t4_negative_early_p",
+      "compat": 0,
+      "migration": "unchanged golden"
+    },
+    {
+      "name": "t4_negative_odd_pair",
+      "T": 4,
+      "cycles": 18,
+      "path": "<LPU_WORKSPACE>/learn/sxm_01_03_20261104/cases/t4_negative_odd_pair",
+      "compat": 0,
+      "migration": "unchanged golden"
+    },
+    {
+      "name": "t4_negative_missing_pair",
+      "T": 4,
+      "cycles": 11,
+      "path": "<LPU_WORKSPACE>/learn/sxm_01_03_20261104/cases/t4_negative_missing_pair",
+      "compat": 0,
+      "migration": "unchanged golden"
+    },
+    {
+      "name": "t4_negative_sequence_overflow",
+      "T": 4,
+      "cycles": 10,
+      "path": "<LPU_WORKSPACE>/learn/sxm_01_03_20261104/cases/t4_negative_sequence_overflow",
+      "compat": 0,
+      "migration": "unchanged golden"
+    },
+    {
+      "name": "t4_negative_zero_count",
+      "T": 4,
+      "cycles": 10,
+      "path": "<LPU_WORKSPACE>/learn/sxm_01_03_20261104/cases/t4_negative_zero_count",
+      "compat": 0,
+      "migration": "unchanged golden"
+    },
+    {
+      "name": "t4_negative_zero_interval",
+      "T": 4,
+      "cycles": 10,
+      "path": "<LPU_WORKSPACE>/learn/sxm_01_03_20261104/cases/t4_negative_zero_interval",
+      "compat": 0,
+      "migration": "unchanged golden"
+    },
+    {
+      "name": "t4_negative_illegal_ctrl",
+      "T": 4,
+      "cycles": 10,
+      "path": "<LPU_WORKSPACE>/learn/sxm_01_03_20261104/cases/t4_negative_illegal_ctrl",
+      "compat": 0,
+      "migration": "unchanged golden"
+    },
+    {
+      "name": "t8_m0_16_row_row_triangle",
+      "T": 8,
+      "cycles": 2069,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/full07/cases/t8_m0_16_row_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t8_m0_16_row_row"
+    },
+    {
+      "name": "t8_m1_16_row_row_triangle",
+      "T": 8,
+      "cycles": 277,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/full07/cases/t8_m1_16_row_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t8_m1_16_row_row"
+    },
+    {
+      "name": "t8_m2_16_row_row_triangle",
+      "T": 8,
+      "cycles": 1621,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/full07/cases/t8_m2_16_row_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t8_m2_16_row_row"
+    },
+    {
+      "name": "t8_m0_16_block_row_triangle",
+      "T": 8,
+      "cycles": 1621,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/full07/cases/t8_m0_16_block_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t8_m0_16_block_row"
+    },
+    {
+      "name": "t8_m0_16_row_block_triangle",
+      "T": 8,
+      "cycles": 597,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/full07/cases/t8_m0_16_row_block_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t8_m0_16_row_block"
+    },
+    {
+      "name": "t8_m0_16_block_block_triangle",
+      "T": 8,
+      "cycles": 149,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/full07/cases/t8_m0_16_block_block_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t8_m0_16_block_block"
+    },
+    {
+      "name": "t8_m2_16_row_block_triangle",
+      "T": 8,
+      "cycles": 149,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/full07/cases/t8_m2_16_row_block_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t8_m2_16_row_block"
+    },
+    {
+      "name": "t8_m0_32_row_row_triangle",
+      "T": 8,
+      "cycles": 2069,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/full07/cases/t8_m0_32_row_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t8_m0_32_row_row"
+    },
+    {
+      "name": "t8_m1_32_row_row_triangle",
+      "T": 8,
+      "cycles": 277,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/full07/cases/t8_m1_32_row_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t8_m1_32_row_row"
+    },
+    {
+      "name": "t8_m2_32_row_row_triangle",
+      "T": 8,
+      "cycles": 1621,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/full07/cases/t8_m2_32_row_row_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t8_m2_32_row_row"
+    },
+    {
+      "name": "t8_m0_16_row_row_consume_triangle",
+      "T": 8,
+      "cycles": 725,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/full07/cases/t8_m0_16_row_row_consume_triangle",
+      "compat": 0,
+      "migration": "rescheduled physical-slot lifetime, same values",
+      "original": "t8_m0_16_row_row_consume"
+    },
+    {
+      "name": "t8_independent_m1_16",
+      "T": 8,
+      "cycles": 18,
+      "path": "<LPU_WORKSPACE>/learn/sxm_01_03_20261104/cases/t8_independent_m1_16",
+      "compat": 0,
+      "migration": "unchanged golden"
+    },
+    {
+      "name": "t8_independent_m1_32",
+      "T": 8,
+      "cycles": 18,
+      "path": "<LPU_WORKSPACE>/learn/sxm_01_03_20261104/cases/t8_independent_m1_32",
+      "compat": 0,
+      "migration": "unchanged golden"
+    },
+    {
+      "name": "t8_independent_m2_16",
+      "T": 8,
+      "cycles": 18,
+      "path": "<LPU_WORKSPACE>/learn/sxm_01_03_20261104/cases/t8_independent_m2_16",
+      "compat": 0,
+      "migration": "unchanged golden"
+    },
+    {
+      "name": "t8_independent_m2_32",
+      "T": 8,
+      "cycles": 18,
+      "path": "<LPU_WORKSPACE>/learn/sxm_01_03_20261104/cases/t8_independent_m2_32",
+      "compat": 0,
+      "migration": "unchanged golden"
+    },
+    {
+      "name": "t8_negative_occupied_reserve",
+      "T": 8,
+      "cycles": 14,
+      "path": "<LPU_WORKSPACE>/learn/sxm_01_03_20261104/cases/t8_negative_occupied_reserve",
+      "compat": 0,
+      "migration": "unchanged golden"
+    },
+    {
+      "name": "t8_negative_live_config",
+      "T": 8,
+      "cycles": 14,
+      "path": "<LPU_WORKSPACE>/learn/sxm_01_03_20261104/cases/t8_negative_live_config",
+      "compat": 0,
+      "migration": "unchanged golden"
+    },
+    {
+      "name": "t8_negative_missing_plane",
+      "T": 8,
+      "cycles": 14,
+      "path": "<LPU_WORKSPACE>/learn/sxm_01_03_20261104/cases/t8_negative_missing_plane",
+      "compat": 0,
+      "migration": "unchanged golden"
+    },
+    {
+      "name": "t8_negative_fp32_block",
+      "T": 8,
+      "cycles": 14,
+      "path": "<LPU_WORKSPACE>/learn/sxm_01_03_20261104/cases/t8_negative_fp32_block",
+      "compat": 0,
+      "migration": "unchanged golden"
+    },
+    {
+      "name": "t8_negative_early_p",
+      "T": 8,
+      "cycles": 14,
+      "path": "<LPU_WORKSPACE>/learn/sxm_01_03_20261104/cases/t8_negative_early_p",
+      "compat": 0,
+      "migration": "unchanged golden"
+    },
+    {
+      "name": "t8_negative_odd_pair",
+      "T": 8,
+      "cycles": 22,
+      "path": "<LPU_WORKSPACE>/learn/sxm_01_03_20261104/cases/t8_negative_odd_pair",
+      "compat": 0,
+      "migration": "unchanged golden"
+    },
+    {
+      "name": "t8_negative_missing_pair",
+      "T": 8,
+      "cycles": 15,
+      "path": "<LPU_WORKSPACE>/learn/sxm_01_03_20261104/cases/t8_negative_missing_pair",
+      "compat": 0,
+      "migration": "unchanged golden"
+    },
+    {
+      "name": "t8_negative_sequence_overflow",
+      "T": 8,
+      "cycles": 14,
+      "path": "<LPU_WORKSPACE>/learn/sxm_01_03_20261104/cases/t8_negative_sequence_overflow",
+      "compat": 0,
+      "migration": "unchanged golden"
+    },
+    {
+      "name": "t8_negative_zero_count",
+      "T": 8,
+      "cycles": 14,
+      "path": "<LPU_WORKSPACE>/learn/sxm_01_03_20261104/cases/t8_negative_zero_count",
+      "compat": 0,
+      "migration": "unchanged golden"
+    },
+    {
+      "name": "t8_negative_zero_interval",
+      "T": 8,
+      "cycles": 14,
+      "path": "<LPU_WORKSPACE>/learn/sxm_01_03_20261104/cases/t8_negative_zero_interval",
+      "compat": 0,
+      "migration": "unchanged golden"
+    },
+    {
+      "name": "t8_negative_illegal_ctrl",
+      "T": 8,
+      "cycles": 14,
+      "path": "<LPU_WORKSPACE>/learn/sxm_01_03_20261104/cases/t8_negative_illegal_ctrl",
+      "compat": 0,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_block_block_dir0",
+      "cycles": 6,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_block_block_dir0",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_block_rows_dir0",
+      "cycles": 13,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_block_rows_dir0",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_block_consume_dir0",
+      "cycles": 6,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_block_consume_dir0",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_rows_block_dir0",
+      "cycles": 13,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_rows_block_dir0",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_rows_rows_dir0",
+      "cycles": 20,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_rows_rows_dir0",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_rows_consume_dir0",
+      "cycles": 13,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_rows_consume_dir0",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_broadcast_block_dir0",
+      "cycles": 6,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_broadcast_block_dir0",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_broadcast_rows_dir0",
+      "cycles": 13,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_broadcast_rows_dir0",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_broadcast_consume_dir0",
+      "cycles": 6,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_broadcast_consume_dir0",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_block_block_dir1",
+      "cycles": 6,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_block_block_dir1",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_block_rows_dir1",
+      "cycles": 13,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_block_rows_dir1",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_block_consume_dir1",
+      "cycles": 6,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_block_consume_dir1",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_rows_block_dir1",
+      "cycles": 13,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_rows_block_dir1",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_rows_rows_dir1",
+      "cycles": 20,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_rows_rows_dir1",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_rows_consume_dir1",
+      "cycles": 13,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_rows_consume_dir1",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_broadcast_block_dir1",
+      "cycles": 6,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_broadcast_block_dir1",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_broadcast_rows_dir1",
+      "cycles": 13,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_broadcast_rows_dir1",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_broadcast_consume_dir1",
+      "cycles": 6,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_broadcast_consume_dir1",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_read_old_write_new",
+      "cycles": 8,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_read_old_write_new",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_private_wave",
+      "cycles": 7,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_private_wave",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_diagonal",
+      "cycles": 8,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_diagonal",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_rewrite_partial",
+      "cycles": 14,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_rewrite_partial",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_last_row_no_bypass",
+      "cycles": 13,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_last_row_no_bypass",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_consume9",
+      "cycles": 7,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_consume9",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_consume10",
+      "cycles": 7,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_consume10",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_consume11",
+      "cycles": 7,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_consume11",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_consume12",
+      "cycles": 7,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_consume12",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_consume13",
+      "cycles": 7,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_consume13",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_consume14",
+      "cycles": 7,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_consume14",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_consume15",
+      "cycles": 7,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_consume15",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_reject_fanout",
+      "cycles": 7,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_reject_fanout",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_reject_mixed_tile",
+      "cycles": 7,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_reject_mixed_tile",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_reject_metadata",
+      "cycles": 7,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_reject_metadata",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_reject_raw_broadcast",
+      "cycles": 7,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_reject_raw_broadcast",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_reject_raw_consume",
+      "cycles": 7,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_reject_raw_consume",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_reject_count",
+      "cycles": 7,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_reject_count",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_reject_duplicate_selector",
+      "cycles": 7,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_reject_duplicate_selector",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_reject_mixed_direction",
+      "cycles": 7,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_reject_mixed_direction",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_reject_padding",
+      "cycles": 7,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_reject_padding",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_reject_unsupported",
+      "cycles": 7,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_reject_unsupported",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_reject_tile_range",
+      "cycles": 7,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_reject_tile_range",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_missing_plane",
+      "cycles": 6,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_missing_plane",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_occupied",
+      "cycles": 8,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_occupied",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_cross_destination_lock",
+      "cycles": 8,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_cross_destination_lock",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_arbitration_and_reset",
+      "cycles": 8,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_arbitration_and_reset",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_legacy_row_legacy",
+      "cycles": 146,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/full07/cases/t2_compat_legacy_row_legacy",
+      "compat": 1,
+      "migration": "only embedded old fixed-pool ROW calendar rescheduled; raw timing unchanged"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_block_block_dir0",
+      "cycles": 8,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_block_block_dir0",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_block_rows_dir0",
+      "cycles": 15,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_block_rows_dir0",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_block_consume_dir0",
+      "cycles": 8,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_block_consume_dir0",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_rows_block_dir0",
+      "cycles": 15,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_rows_block_dir0",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_rows_rows_dir0",
+      "cycles": 22,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_rows_rows_dir0",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_rows_consume_dir0",
+      "cycles": 15,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_rows_consume_dir0",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_broadcast_block_dir0",
+      "cycles": 8,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_broadcast_block_dir0",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_broadcast_rows_dir0",
+      "cycles": 15,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_broadcast_rows_dir0",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_broadcast_consume_dir0",
+      "cycles": 8,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_broadcast_consume_dir0",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_block_block_dir1",
+      "cycles": 8,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_block_block_dir1",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_block_rows_dir1",
+      "cycles": 15,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_block_rows_dir1",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_block_consume_dir1",
+      "cycles": 8,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_block_consume_dir1",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_rows_block_dir1",
+      "cycles": 15,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_rows_block_dir1",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_rows_rows_dir1",
+      "cycles": 22,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_rows_rows_dir1",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_rows_consume_dir1",
+      "cycles": 15,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_rows_consume_dir1",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_broadcast_block_dir1",
+      "cycles": 8,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_broadcast_block_dir1",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_broadcast_rows_dir1",
+      "cycles": 15,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_broadcast_rows_dir1",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_broadcast_consume_dir1",
+      "cycles": 8,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_broadcast_consume_dir1",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_read_old_write_new",
+      "cycles": 12,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_read_old_write_new",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_private_wave",
+      "cycles": 9,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_private_wave",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_diagonal",
+      "cycles": 10,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_diagonal",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_rewrite_partial",
+      "cycles": 16,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_rewrite_partial",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_last_row_no_bypass",
+      "cycles": 15,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_last_row_no_bypass",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_consume9",
+      "cycles": 11,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_consume9",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_consume10",
+      "cycles": 11,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_consume10",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_consume11",
+      "cycles": 11,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_consume11",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_consume12",
+      "cycles": 11,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_consume12",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_consume13",
+      "cycles": 11,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_consume13",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_consume14",
+      "cycles": 11,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_consume14",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_consume15",
+      "cycles": 11,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_consume15",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_reject_fanout",
+      "cycles": 9,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_reject_fanout",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_reject_mixed_tile",
+      "cycles": 9,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_reject_mixed_tile",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_reject_metadata",
+      "cycles": 9,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_reject_metadata",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_reject_raw_broadcast",
+      "cycles": 9,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_reject_raw_broadcast",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_reject_raw_consume",
+      "cycles": 9,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_reject_raw_consume",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_reject_count",
+      "cycles": 9,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_reject_count",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_reject_duplicate_selector",
+      "cycles": 9,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_reject_duplicate_selector",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_reject_mixed_direction",
+      "cycles": 9,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_reject_mixed_direction",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_reject_padding",
+      "cycles": 9,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_reject_padding",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_reject_unsupported",
+      "cycles": 9,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_reject_unsupported",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_reject_tile_range",
+      "cycles": 9,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_reject_tile_range",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_missing_plane",
+      "cycles": 8,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_missing_plane",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_occupied",
+      "cycles": 12,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_occupied",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_cross_destination_lock",
+      "cycles": 10,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_cross_destination_lock",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_arbitration_and_reset",
+      "cycles": 10,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_arbitration_and_reset",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_vmodel416_all",
+      "cycles": 8,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_vmodel416_all",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_vmodel416_selected",
+      "cycles": 11,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_vmodel416_selected",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_legacy_row_legacy",
+      "cycles": 538,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/full07/cases/t4_compat_legacy_row_legacy",
+      "compat": 1,
+      "migration": "only embedded old fixed-pool ROW calendar rescheduled; raw timing unchanged"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_block_block_dir0",
+      "cycles": 12,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_block_block_dir0",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_block_rows_dir0",
+      "cycles": 19,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_block_rows_dir0",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_block_consume_dir0",
+      "cycles": 12,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_block_consume_dir0",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_rows_block_dir0",
+      "cycles": 19,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_rows_block_dir0",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_rows_rows_dir0",
+      "cycles": 26,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_rows_rows_dir0",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_rows_consume_dir0",
+      "cycles": 19,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_rows_consume_dir0",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_broadcast_block_dir0",
+      "cycles": 12,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_broadcast_block_dir0",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_broadcast_rows_dir0",
+      "cycles": 19,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_broadcast_rows_dir0",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_broadcast_consume_dir0",
+      "cycles": 12,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_broadcast_consume_dir0",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_block_block_dir1",
+      "cycles": 12,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_block_block_dir1",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_block_rows_dir1",
+      "cycles": 19,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_block_rows_dir1",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_block_consume_dir1",
+      "cycles": 12,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_block_consume_dir1",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_rows_block_dir1",
+      "cycles": 19,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_rows_block_dir1",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_rows_rows_dir1",
+      "cycles": 26,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_rows_rows_dir1",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_rows_consume_dir1",
+      "cycles": 19,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_rows_consume_dir1",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_broadcast_block_dir1",
+      "cycles": 12,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_broadcast_block_dir1",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_broadcast_rows_dir1",
+      "cycles": 19,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_broadcast_rows_dir1",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_broadcast_consume_dir1",
+      "cycles": 12,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_broadcast_consume_dir1",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_read_old_write_new",
+      "cycles": 20,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_read_old_write_new",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_private_wave",
+      "cycles": 13,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_private_wave",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_diagonal",
+      "cycles": 14,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_diagonal",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_rewrite_partial",
+      "cycles": 20,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_rewrite_partial",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_last_row_no_bypass",
+      "cycles": 19,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_last_row_no_bypass",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_consume9",
+      "cycles": 19,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_consume9",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_consume10",
+      "cycles": 19,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_consume10",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_consume11",
+      "cycles": 19,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_consume11",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_consume12",
+      "cycles": 19,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_consume12",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_consume13",
+      "cycles": 19,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_consume13",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_consume14",
+      "cycles": 19,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_consume14",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_consume15",
+      "cycles": 19,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_consume15",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_reject_fanout",
+      "cycles": 13,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_reject_fanout",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_reject_mixed_tile",
+      "cycles": 13,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_reject_mixed_tile",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_reject_metadata",
+      "cycles": 13,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_reject_metadata",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_reject_raw_broadcast",
+      "cycles": 13,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_reject_raw_broadcast",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_reject_raw_consume",
+      "cycles": 13,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_reject_raw_consume",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_reject_count",
+      "cycles": 13,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_reject_count",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_reject_duplicate_selector",
+      "cycles": 13,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_reject_duplicate_selector",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_reject_mixed_direction",
+      "cycles": 13,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_reject_mixed_direction",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_reject_padding",
+      "cycles": 13,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_reject_padding",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_reject_unsupported",
+      "cycles": 13,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_reject_unsupported",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_reject_tile_range",
+      "cycles": 13,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_reject_tile_range",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_missing_plane",
+      "cycles": 12,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_missing_plane",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_occupied",
+      "cycles": 20,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_occupied",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_cross_destination_lock",
+      "cycles": 14,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_cross_destination_lock",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_arbitration_and_reset",
+      "cycles": 14,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_arbitration_and_reset",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_legacy_row_legacy",
+      "cycles": 2090,
+      "path": "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/full07/cases/t8_compat_legacy_row_legacy",
+      "compat": 1,
+      "migration": "only embedded old fixed-pool ROW calendar rescheduled; raw timing unchanged"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_diff_phase0_dir0",
+      "cycles": 12,
+      "differential": "both",
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_diff_phase0_dir0",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_diff_phase1_dir0",
+      "cycles": 12,
+      "differential": "both",
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_diff_phase1_dir0",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_diff_phase2_dir0",
+      "cycles": 12,
+      "differential": "both",
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_diff_phase2_dir0",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_diff_phase3_dir0",
+      "cycles": 12,
+      "differential": "both",
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_diff_phase3_dir0",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_diff_general_dir0",
+      "cycles": 8,
+      "differential": "remote",
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_diff_general_dir0",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_diff_phase0_dir1",
+      "cycles": 12,
+      "differential": "both",
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_diff_phase0_dir1",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_diff_phase1_dir1",
+      "cycles": 12,
+      "differential": "both",
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_diff_phase1_dir1",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_diff_phase2_dir1",
+      "cycles": 12,
+      "differential": "both",
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_diff_phase2_dir1",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_diff_phase3_dir1",
+      "cycles": 12,
+      "differential": "both",
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_diff_phase3_dir1",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_diff_general_dir1",
+      "cycles": 8,
+      "differential": "remote",
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_diff_general_dir1",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_idle_entry_collision",
+      "cycles": 4,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_idle_entry_collision",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_bad_t_then_valid",
+      "cycles": 7,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_bad_t_then_valid",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_reject_lane_range",
+      "cycles": 7,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_reject_lane_range",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_reject_t_metadata",
+      "cycles": 14,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_reject_t_metadata",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_partial_p_keeps_rows",
+      "cycles": 13,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_partial_p_keeps_rows",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_reject_t_row",
+      "cycles": 7,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_reject_t_row",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 2,
+      "name": "t2_compat_reject_family_vm",
+      "cycles": 7,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t2_compat_reject_family_vm",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_idle_entry_collision",
+      "cycles": 4,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_idle_entry_collision",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_bad_t_then_valid",
+      "cycles": 9,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_bad_t_then_valid",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_vmodel_unready_selected",
+      "cycles": 4,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_vmodel_unready_selected",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_reject_t_metadata",
+      "cycles": 16,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_reject_t_metadata",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_partial_p_keeps_rows",
+      "cycles": 15,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_partial_p_keeps_rows",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 4,
+      "name": "t4_compat_reject_t_row",
+      "cycles": 9,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t4_compat_reject_t_row",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_idle_entry_collision",
+      "cycles": 4,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_idle_entry_collision",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_bad_t_then_valid",
+      "cycles": 13,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_bad_t_then_valid",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_reject_t_metadata",
+      "cycles": 20,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_reject_t_metadata",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_partial_p_keeps_rows",
+      "cycles": 19,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_partial_p_keeps_rows",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_reject_t_row",
+      "cycles": 13,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_reject_t_row",
+      "compat": 1,
+      "migration": "unchanged golden"
+    },
+    {
+      "T": 8,
+      "name": "t8_compat_reject_family_vm",
+      "cycles": 13,
+      "path": "<LPU_WORKSPACE>/learn/sxm_l3_compat_20261104/cases/t8_compat_reject_family_vm",
+      "compat": 1,
+      "migration": "unchanged golden"
+    }
+  ]
+}

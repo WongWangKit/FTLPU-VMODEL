@@ -1,0 +1,31 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2023.2 (win64) Build 4029153 Fri Oct 13 20:14:34 MDT 2023
+| Date         : Tue Nov 10 02:28:37 2026
+| Host         : <HOST> running 64-bit major release  (build 9200)
+| Command      : report_utilization -hierarchical -file <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/results/l5_queue04_adapter_t8_synth/synthesized/synth_hierarchical.rpt
+| Design       : lpu_sxm_writetap_shell
+| Device       : xcvu9p-flga2104-2L-e
+| Speed File   : -2L
+| Design State : Synthesized
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Utilization Design Information
+
+Table of Contents
+-----------------
+1. Utilization by Hierarchy
+
+1. Utilization by Hierarchy
+---------------------------
+
++----------------------------+------------------------------+------------+------------+---------+------+-----+--------+--------+------+------------+
+|          Instance          |            Module            | Total LUTs | Logic LUTs | LUTRAMs | SRLs | FFs | RAMB36 | RAMB18 | URAM | DSP Blocks |
++----------------------------+------------------------------+------------+------------+---------+------+-----+--------+--------+------+------------+
+| lpu_sxm_writetap_shell     |                        (top) |      14510 |      14510 |       0 |    0 | 623 |      0 |      0 |    0 |          0 |
+|   (lpu_sxm_writetap_shell) |                        (top) |          0 |          0 |       0 |    0 |   0 |      0 |      0 |    0 |          0 |
+|   u_completion             |  lpu_sxm_writetap_completion |       1051 |       1051 |       0 |    0 | 528 |      0 |      0 |    0 |          0 |
+|   u_writer                 | lpu_sxm_triangle_mem_adapter |      13459 |      13459 |       0 |    0 |  95 |      0 |      0 |    0 |          0 |
++----------------------------+------------------------------+------------+------------+---------+------+-----+--------+--------+------+------------+
+
+

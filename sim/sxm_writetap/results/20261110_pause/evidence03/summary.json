@@ -1,0 +1,431 @@
+{
+  "created": "2026-11-10T12:17:06.974540+08:00",
+  "script_sha256": "33edb8ee377a25cc99010f585a9b75ffca43f62816fbdb57811f61baf8a399f3",
+  "functional": [
+    {
+      "run": "model01",
+      "expected": 42,
+      "summary_sha256": "85781ac9be921ba6b8f404401238a4bbea21f9ab50fb96544b4616edb7fb406b",
+      "observed": 42,
+      "passed": 42,
+      "pass_": true,
+      "status": "pass"
+    },
+    {
+      "run": "full07",
+      "expected": 247,
+      "summary_sha256": "66954a59fb3600746051f9d797bb02db6451b0dcab41e96f85fffef15ae84ea1",
+      "observed": 247,
+      "passed": 247,
+      "pass_": true,
+      "status": "pass"
+    },
+    {
+      "run": "c814_04",
+      "expected": 1,
+      "summary_sha256": "e2a4ff700e4c2c5cb14eb41db2b1def597aea778389b3081ba7dc47fc931e39d",
+      "observed": 1,
+      "passed": 1,
+      "pass_": true,
+      "status": "pass"
+    },
+    {
+      "run": "wide04",
+      "expected": 51,
+      "summary_sha256": "c4f6c6fb92eb7309bbccfedf0fcd94d80177b49bb110e727f37820ddb36787d6",
+      "observed": 51,
+      "passed": 51,
+      "pass_": true,
+      "status": "pass"
+    },
+    {
+      "run": "core_reg03",
+      "expected": 111,
+      "summary_sha256": "b764883dfbda7e3ad883d7258cc2dd9ee152fb13e838ac5b74a5029a855def88",
+      "observed": 111,
+      "passed": 111,
+      "pass_": true,
+      "status": "pass"
+    },
+    {
+      "run": "switch03",
+      "expected": 3,
+      "summary_sha256": "e151c85389f9551c79a82c0038b9205e26b558af216e7ce99a5b3b5e19234224",
+      "observed": 3,
+      "passed": 3,
+      "pass_": true,
+      "status": "pass"
+    },
+    {
+      "run": "bounds01",
+      "expected": 3,
+      "summary_sha256": "e151c85389f9551c79a82c0038b9205e26b558af216e7ce99a5b3b5e19234224",
+      "observed": 3,
+      "passed": 3,
+      "pass_": true,
+      "status": "pass"
+    },
+    {
+      "run": "diff03",
+      "expected": 10,
+      "summary_sha256": "1f388041ab41d862c50cabcfdc1e18507223edd2d7df0fcdd42ab2d16ce75b6b",
+      "observed": 10,
+      "passed": 10,
+      "pass_": true,
+      "status": "pass"
+    },
+    {
+      "run": "cmodel01",
+      "expected": 105,
+      "summary_sha256": "7e49c76ddc88a109caaaee7bd406ed9486201468e22a343068eeb77ad901af78",
+      "observed": 105,
+      "passed": 105,
+      "pass_": true,
+      "status": "pass"
+    },
+    {
+      "run": "admission01",
+      "expected": 3,
+      "summary_sha256": "e151c85389f9551c79a82c0038b9205e26b558af216e7ce99a5b3b5e19234224",
+      "observed": 3,
+      "passed": 3,
+      "pass_": true,
+      "status": "pass"
+    },
+    {
+      "run": "sim_final02",
+      "expected": 45,
+      "summary_sha256": "14e2f399f3c005573dcf68dbeed54387515e3e7ed1cff91bd0971e8e9103a663",
+      "observed": 45,
+      "passed": 45,
+      "pass_": true,
+      "status": "pass"
+    },
+    {
+      "run": "full_geometry01",
+      "expected": 2,
+      "summary_sha256": "f191c8f59a8979819d4ce7b76cc1238aac642adb24a9156689c77edc4457ee16",
+      "observed": 2,
+      "passed": 2,
+      "pass_": true,
+      "status": "pass"
+    },
+    {
+      "run": "sim02",
+      "expected": 30,
+      "summary_sha256": "17052d7d1272814177285e6d423b6bc8afce071a2b9d343c643d48b250a17a6e",
+      "observed": 30,
+      "passed": 30,
+      "pass_": true,
+      "status": "pass"
+    },
+    {
+      "run": "latest_chain05",
+      "expected": 2,
+      "summary_sha256": "87cac675e3cb4be6b219ef3274e3e28e4aa7d82ab98e6e5ead81a1f232b766ed",
+      "observed": 2,
+      "passed": 2,
+      "pass_": true,
+      "status": "pass"
+    },
+    {
+      "run": "pack_eq04",
+      "expected": 12,
+      "summary_sha256": "3090f6fab2f8921664110d4c5890ac97c5bacf20fc19ac1b697172e34e726630",
+      "observed": 12,
+      "passed": 12,
+      "pass_": true,
+      "status": "pass"
+    },
+    {
+      "run": "count_eq02",
+      "expected": 3,
+      "summary_sha256": "e151c85389f9551c79a82c0038b9205e26b558af216e7ce99a5b3b5e19234224",
+      "observed": 3,
+      "passed": 3,
+      "pass_": true,
+      "status": "pass"
+    },
+    {
+      "run": "sim_smoke01",
+      "expected": 6,
+      "summary_sha256": "69c18a1e50fcf99ba6a3cd3f9ab364f4a225f8b721e22eaf692d3441a77cfd18",
+      "observed": 6,
+      "passed": 6,
+      "pass_": true,
+      "status": "pass"
+    },
+    {
+      "run": "sim_smoke02",
+      "expected": 2,
+      "summary_sha256": "7da0a696b21f13e1f2ac4d93bd1f1bfcd25d8ca3f7378c68961850dfa05b5241",
+      "observed": 2,
+      "passed": 2,
+      "pass_": true,
+      "status": "pass"
+    },
+    {
+      "run": "closure05",
+      "expected": 4,
+      "summary_sha256": "c5e1cb355babacb398bcfb2e61a71f0caee4285eaea28dbd1d82d3689dca7f0e",
+      "observed": 4,
+      "passed": 4,
+      "pass_": true,
+      "status": "pass"
+    }
+  ],
+  "physical": [
+    {
+      "T": 2,
+      "component": "core",
+      "synth_run": "l5_queue05_core_t2_synth",
+      "route_run": "l5_queue05_core_t2_route",
+      "synth": {
+        "LUT": 78688.0,
+        "FF": 9416.0,
+        "LUTRAM": 0.0,
+        "BRAM": 0.0,
+        "DSP": 0.0,
+        "latch": 0.0
+      },
+      "routed": {},
+      "acceptance": {
+        "pass_": false,
+        "status": "not_finished"
+      },
+      "synth_runtime": {
+        "clock": "QueryUnbiasedInterruptTime",
+        "timeout_awake_seconds": 43200,
+        "keep_awake": "ES_CONTINUOUS | ES_SYSTEM_REQUIRED",
+        "display_required": false,
+        "global_power_plan_changed": false,
+        "exit_code": 0,
+        "status": "completed",
+        "awake_seconds": 2434.274326,
+        "wall_seconds": 2434.266,
+        "excluded_sleep_seconds": 0,
+        "expired": false,
+        "started": 1794274913.5600033,
+        "finished": 1794277347.834329,
+        "keep_awake_previous": 2147483648,
+        "keep_awake_released": true
+      }
+    },
+    {
+      "T": 4,
+      "component": "core",
+      "synth_run": "l5_queue05_core_t4_synth",
+      "route_run": "l5_queue05_core_t4_route",
+      "synth": {
+        "LUT": 217787.0,
+        "FF": 26509.0,
+        "LUTRAM": 0.0,
+        "BRAM": 0.0,
+        "DSP": 0.0,
+        "latch": 0.0
+      },
+      "routed": {},
+      "acceptance": {
+        "pass_": false,
+        "status": "not_finished"
+      },
+      "synth_runtime": {
+        "clock": "QueryUnbiasedInterruptTime",
+        "timeout_awake_seconds": 43200,
+        "keep_awake": "ES_CONTINUOUS | ES_SYSTEM_REQUIRED",
+        "display_required": false,
+        "global_power_plan_changed": false,
+        "exit_code": 0,
+        "status": "completed",
+        "awake_seconds": 6634.592686,
+        "wall_seconds": 6634.594,
+        "excluded_sleep_seconds": 0.001314,
+        "expired": false,
+        "started": 1794277386.9894726,
+        "finished": 1794284021.582158,
+        "keep_awake_previous": 2147483648,
+        "keep_awake_released": true
+      }
+    },
+    {
+      "T": 8,
+      "component": "core",
+      "synth_run": "l5_queue05_core_t8_synth",
+      "route_run": "l5_queue05_core_t8_route",
+      "synth": {},
+      "routed": {},
+      "acceptance": {
+        "pass_": false,
+        "status": "not_finished"
+      }
+    },
+    {
+      "T": 2,
+      "component": "adapter",
+      "synth_run": "l5_queue05_adapter_t2_synth",
+      "route_run": "l5_queue05_adapter_t2_route",
+      "synth": {
+        "LUT": 3635.0,
+        "FF": 185.0,
+        "LUTRAM": 0.0,
+        "BRAM": 0.0,
+        "DSP": 0.0,
+        "latch": 0.0
+      },
+      "routed": {},
+      "acceptance": {
+        "pass_": false,
+        "status": "not_finished"
+      },
+      "synth_runtime": {
+        "clock": "QueryUnbiasedInterruptTime",
+        "timeout_awake_seconds": 43200,
+        "keep_awake": "ES_CONTINUOUS | ES_SYSTEM_REQUIRED",
+        "display_required": false,
+        "global_power_plan_changed": false,
+        "exit_code": 0,
+        "status": "completed",
+        "awake_seconds": 154.19214,
+        "wall_seconds": 154.187,
+        "excluded_sleep_seconds": 0,
+        "expired": false,
+        "started": 1794248411.8247044,
+        "finished": 1794248566.016844,
+        "keep_awake_previous": 2147483648,
+        "keep_awake_released": true
+      }
+    },
+    {
+      "T": 4,
+      "component": "adapter",
+      "synth_run": "l5_queue05_adapter_t4_synth",
+      "route_run": "l5_queue05_adapter_t4_route",
+      "synth": {
+        "LUT": 7159.0,
+        "FF": 318.0,
+        "LUTRAM": 0.0,
+        "BRAM": 0.0,
+        "DSP": 0.0,
+        "latch": 0.0
+      },
+      "routed": {},
+      "acceptance": {
+        "pass_": false,
+        "status": "not_finished"
+      },
+      "synth_runtime": {
+        "clock": "QueryUnbiasedInterruptTime",
+        "timeout_awake_seconds": 43200,
+        "keep_awake": "ES_CONTINUOUS | ES_SYSTEM_REQUIRED",
+        "display_required": false,
+        "global_power_plan_changed": false,
+        "exit_code": 0,
+        "status": "completed",
+        "awake_seconds": 171.624399,
+        "wall_seconds": 171.625,
+        "excluded_sleep_seconds": 0.000601,
+        "expired": false,
+        "started": 1794248567.5115666,
+        "finished": 1794248739.1359656,
+        "keep_awake_previous": 2147483648,
+        "keep_awake_released": true
+      }
+    },
+    {
+      "T": 8,
+      "component": "adapter",
+      "synth_run": "l5_queue05_adapter_t8_synth",
+      "route_run": "l5_queue05_adapter_t8_route",
+      "synth": {
+        "LUT": 14510.0,
+        "FF": 623.0,
+        "LUTRAM": 0.0,
+        "BRAM": 0.0,
+        "DSP": 0.0,
+        "latch": 0.0
+      },
+      "routed": {},
+      "acceptance": {
+        "pass_": false,
+        "status": "not_finished"
+      },
+      "synth_runtime": {
+        "clock": "QueryUnbiasedInterruptTime",
+        "timeout_awake_seconds": 43200,
+        "keep_awake": "ES_CONTINUOUS | ES_SYSTEM_REQUIRED",
+        "display_required": false,
+        "global_power_plan_changed": false,
+        "exit_code": 0,
+        "status": "completed",
+        "awake_seconds": 222.873193,
+        "wall_seconds": 222.875,
+        "excluded_sleep_seconds": 0.001807,
+        "expired": false,
+        "started": 1794248740.6133487,
+        "finished": 1794248963.4865415,
+        "keep_awake_previous": 2147483648,
+        "keep_awake_released": true
+      }
+    },
+    {
+      "T": 2,
+      "component": "combined",
+      "synth_run": "l5_queue05_combined_t2_synth",
+      "route_run": "l5_queue05_combined_t2_route",
+      "synth": {},
+      "routed": {},
+      "acceptance": {
+        "pass_": false,
+        "status": "not_finished"
+      }
+    },
+    {
+      "T": 4,
+      "component": "combined",
+      "synth_run": "l5_queue05_combined_t4_synth",
+      "route_run": "l5_queue05_combined_t4_route",
+      "synth": {},
+      "routed": {},
+      "acceptance": {
+        "pass_": false,
+        "status": "not_finished"
+      }
+    },
+    {
+      "T": 8,
+      "component": "combined",
+      "synth_run": "l5_queue05_combined_t8_synth",
+      "route_run": "l5_queue05_combined_t8_route",
+      "synth": {},
+      "routed": {},
+      "acceptance": {
+        "pass_": false,
+        "status": "not_finished"
+      }
+    }
+  ],
+  "post_synth": [
+    {
+      "T": 2,
+      "run": "gate_queue04_t2",
+      "observed": 0,
+      "passed": 0,
+      "pass_": false
+    },
+    {
+      "T": 4,
+      "run": "gate_queue04_t4",
+      "observed": 0,
+      "passed": 0,
+      "pass_": false
+    },
+    {
+      "T": 8,
+      "run": "gate_queue04_t8",
+      "observed": 0,
+      "passed": 0,
+      "pass_": false
+    }
+  ],
+  "l5_pass": false
+}

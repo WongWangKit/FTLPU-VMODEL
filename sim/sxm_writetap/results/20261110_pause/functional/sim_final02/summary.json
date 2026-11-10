@@ -1,0 +1,413 @@
+[
+  {
+    "T": 2,
+    "FP": 0,
+    "N": 2,
+    "MAP": 0,
+    "NEG": 0,
+    "pass_": true,
+    "output": "PASS WRITETAP T=2 FP=0 N=2 elements=512 commits=128 reads=128 payload_shell_bytes=0\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_final02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:114: Verilog $finish\n"
+  },
+  {
+    "T": 2,
+    "FP": 1,
+    "N": 2,
+    "MAP": 0,
+    "NEG": 0,
+    "pass_": true,
+    "output": "PASS WRITETAP T=2 FP=1 N=2 elements=512 commits=256 reads=256 payload_shell_bytes=0\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_final02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:114: Verilog $finish\n"
+  },
+  {
+    "T": 2,
+    "FP": 0,
+    "N": 3,
+    "MAP": 1,
+    "NEG": 0,
+    "pass_": true,
+    "output": "PASS WRITETAP T=2 FP=0 N=3 elements=768 commits=192 reads=192 payload_shell_bytes=0\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_final02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:114: Verilog $finish\n"
+  },
+  {
+    "T": 2,
+    "FP": 1,
+    "N": 3,
+    "MAP": 1,
+    "NEG": 0,
+    "pass_": true,
+    "output": "PASS WRITETAP T=2 FP=1 N=3 elements=768 commits=384 reads=384 payload_shell_bytes=0\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_final02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:114: Verilog $finish\n"
+  },
+  {
+    "T": 2,
+    "FP": 1,
+    "N": 2,
+    "MAP": 0,
+    "NEG": 1,
+    "pass_": true,
+    "output": "PASS WRITETAP NEG=1 T=2 first_fault=1\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_final02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:94: Verilog $finish\n"
+  },
+  {
+    "T": 2,
+    "FP": 1,
+    "N": 2,
+    "MAP": 0,
+    "NEG": 2,
+    "pass_": true,
+    "output": "PASS WRITETAP NEG=2 T=2 first_fault=1\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_final02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:94: Verilog $finish\n"
+  },
+  {
+    "T": 2,
+    "FP": 1,
+    "N": 2,
+    "MAP": 0,
+    "NEG": 3,
+    "pass_": true,
+    "output": "PASS WRITETAP NEG=3 T=2 first_fault=3\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_final02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:94: Verilog $finish\n"
+  },
+  {
+    "T": 2,
+    "FP": 1,
+    "N": 2,
+    "MAP": 0,
+    "NEG": 4,
+    "pass_": true,
+    "output": "PASS WRITETAP NEG=4 T=2 first_fault=12\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_final02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:94: Verilog $finish\n"
+  },
+  {
+    "T": 2,
+    "FP": 1,
+    "N": 2,
+    "MAP": 0,
+    "NEG": 5,
+    "pass_": true,
+    "output": "PASS WRITETAP NEG=5 T=2 first_fault=10\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_final02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:94: Verilog $finish\n"
+  },
+  {
+    "T": 2,
+    "FP": 1,
+    "N": 2,
+    "MAP": 0,
+    "NEG": 6,
+    "pass_": true,
+    "output": "PASS WRITETAP T=2 FP=1 N=2 elements=512 commits=256 reads=256 payload_shell_bytes=0\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_final02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:114: Verilog $finish\n"
+  },
+  {
+    "T": 2,
+    "FP": 1,
+    "N": 2,
+    "MAP": 0,
+    "NEG": 7,
+    "pass_": true,
+    "output": "PASS WRITETAP NEG=7 T=2 first_fault=1\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_final02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:94: Verilog $finish\n"
+  },
+  {
+    "T": 2,
+    "FP": 1,
+    "N": 2,
+    "MAP": 0,
+    "NEG": 8,
+    "pass_": true,
+    "output": "PASS WRITETAP NEG=8 T=2 first_fault=1\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_final02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:94: Verilog $finish\n"
+  },
+  {
+    "T": 2,
+    "FP": 1,
+    "N": 2,
+    "MAP": 0,
+    "NEG": 9,
+    "pass_": true,
+    "output": "PASS WRITETAP NEG=9 T=2 first_fault=3\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_final02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:94: Verilog $finish\n"
+  },
+  {
+    "T": 2,
+    "FP": 0,
+    "N": 2,
+    "MAP": 0,
+    "NEG": 0,
+    "SECOND": 1,
+    "pass_": true,
+    "output": "PASS WRITETAP T=2 FP=0 N=2 elements=512 commits=128 reads=128 payload_shell_bytes=0\nPASS WRITETAP T=2 FP=1 N=2 elements=512 commits=256 reads=256 payload_shell_bytes=0\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_final02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:114: Verilog $finish\n"
+  },
+  {
+    "T": 2,
+    "FP": 1,
+    "N": 3,
+    "MAP": 1,
+    "NEG": 0,
+    "SCRAMBLE": 1,
+    "pass_": true,
+    "output": "PASS WRITETAP T=2 FP=1 N=3 elements=768 commits=384 reads=384 payload_shell_bytes=0\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_final02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:114: Verilog $finish\n"
+  },
+  {
+    "T": 4,
+    "FP": 0,
+    "N": 2,
+    "MAP": 0,
+    "NEG": 0,
+    "pass_": true,
+    "output": "PASS WRITETAP T=4 FP=0 N=2 elements=2048 commits=512 reads=512 payload_shell_bytes=0\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_final02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:114: Verilog $finish\n"
+  },
+  {
+    "T": 4,
+    "FP": 1,
+    "N": 2,
+    "MAP": 0,
+    "NEG": 0,
+    "pass_": true,
+    "output": "PASS WRITETAP T=4 FP=1 N=2 elements=2048 commits=1024 reads=1024 payload_shell_bytes=0\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_final02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:114: Verilog $finish\n"
+  },
+  {
+    "T": 4,
+    "FP": 0,
+    "N": 3,
+    "MAP": 1,
+    "NEG": 0,
+    "pass_": true,
+    "output": "PASS WRITETAP T=4 FP=0 N=3 elements=3072 commits=768 reads=768 payload_shell_bytes=0\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_final02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:114: Verilog $finish\n"
+  },
+  {
+    "T": 4,
+    "FP": 1,
+    "N": 3,
+    "MAP": 1,
+    "NEG": 0,
+    "pass_": true,
+    "output": "PASS WRITETAP T=4 FP=1 N=3 elements=3072 commits=1536 reads=1536 payload_shell_bytes=0\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_final02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:114: Verilog $finish\n"
+  },
+  {
+    "T": 4,
+    "FP": 1,
+    "N": 2,
+    "MAP": 0,
+    "NEG": 1,
+    "pass_": true,
+    "output": "PASS WRITETAP NEG=1 T=4 first_fault=1\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_final02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:94: Verilog $finish\n"
+  },
+  {
+    "T": 4,
+    "FP": 1,
+    "N": 2,
+    "MAP": 0,
+    "NEG": 2,
+    "pass_": true,
+    "output": "PASS WRITETAP NEG=2 T=4 first_fault=1\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_final02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:94: Verilog $finish\n"
+  },
+  {
+    "T": 4,
+    "FP": 1,
+    "N": 2,
+    "MAP": 0,
+    "NEG": 3,
+    "pass_": true,
+    "output": "PASS WRITETAP NEG=3 T=4 first_fault=3\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_final02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:94: Verilog $finish\n"
+  },
+  {
+    "T": 4,
+    "FP": 1,
+    "N": 2,
+    "MAP": 0,
+    "NEG": 4,
+    "pass_": true,
+    "output": "PASS WRITETAP NEG=4 T=4 first_fault=12\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_final02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:94: Verilog $finish\n"
+  },
+  {
+    "T": 4,
+    "FP": 1,
+    "N": 2,
+    "MAP": 0,
+    "NEG": 5,
+    "pass_": true,
+    "output": "PASS WRITETAP NEG=5 T=4 first_fault=10\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_final02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:94: Verilog $finish\n"
+  },
+  {
+    "T": 4,
+    "FP": 1,
+    "N": 2,
+    "MAP": 0,
+    "NEG": 6,
+    "pass_": true,
+    "output": "PASS WRITETAP T=4 FP=1 N=2 elements=2048 commits=1024 reads=1024 payload_shell_bytes=0\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_final02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:114: Verilog $finish\n"
+  },
+  {
+    "T": 4,
+    "FP": 1,
+    "N": 2,
+    "MAP": 0,
+    "NEG": 7,
+    "pass_": true,
+    "output": "PASS WRITETAP NEG=7 T=4 first_fault=1\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_final02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:94: Verilog $finish\n"
+  },
+  {
+    "T": 4,
+    "FP": 1,
+    "N": 2,
+    "MAP": 0,
+    "NEG": 8,
+    "pass_": true,
+    "output": "PASS WRITETAP NEG=8 T=4 first_fault=1\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_final02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:94: Verilog $finish\n"
+  },
+  {
+    "T": 4,
+    "FP": 1,
+    "N": 2,
+    "MAP": 0,
+    "NEG": 9,
+    "pass_": true,
+    "output": "PASS WRITETAP NEG=9 T=4 first_fault=3\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_final02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:94: Verilog $finish\n"
+  },
+  {
+    "T": 4,
+    "FP": 0,
+    "N": 2,
+    "MAP": 0,
+    "NEG": 0,
+    "SECOND": 1,
+    "pass_": true,
+    "output": "PASS WRITETAP T=4 FP=0 N=2 elements=2048 commits=512 reads=512 payload_shell_bytes=0\nPASS WRITETAP T=4 FP=1 N=2 elements=2048 commits=1024 reads=1024 payload_shell_bytes=0\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_final02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:114: Verilog $finish\n"
+  },
+  {
+    "T": 4,
+    "FP": 1,
+    "N": 3,
+    "MAP": 1,
+    "NEG": 0,
+    "SCRAMBLE": 1,
+    "pass_": true,
+    "output": "PASS WRITETAP T=4 FP=1 N=3 elements=3072 commits=1536 reads=1536 payload_shell_bytes=0\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_final02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:114: Verilog $finish\n"
+  },
+  {
+    "T": 8,
+    "FP": 0,
+    "N": 2,
+    "MAP": 0,
+    "NEG": 0,
+    "pass_": true,
+    "output": "PASS WRITETAP T=8 FP=0 N=2 elements=8192 commits=2048 reads=2048 payload_shell_bytes=0\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_final02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:114: Verilog $finish\n"
+  },
+  {
+    "T": 8,
+    "FP": 1,
+    "N": 2,
+    "MAP": 0,
+    "NEG": 0,
+    "pass_": true,
+    "output": "PASS WRITETAP T=8 FP=1 N=2 elements=8192 commits=4096 reads=4096 payload_shell_bytes=0\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_final02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:114: Verilog $finish\n"
+  },
+  {
+    "T": 8,
+    "FP": 0,
+    "N": 3,
+    "MAP": 1,
+    "NEG": 0,
+    "pass_": true,
+    "output": "PASS WRITETAP T=8 FP=0 N=3 elements=12288 commits=3072 reads=3072 payload_shell_bytes=0\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_final02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:114: Verilog $finish\n"
+  },
+  {
+    "T": 8,
+    "FP": 1,
+    "N": 3,
+    "MAP": 1,
+    "NEG": 0,
+    "pass_": true,
+    "output": "PASS WRITETAP T=8 FP=1 N=3 elements=12288 commits=6144 reads=6144 payload_shell_bytes=0\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_final02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:114: Verilog $finish\n"
+  },
+  {
+    "T": 8,
+    "FP": 1,
+    "N": 2,
+    "MAP": 0,
+    "NEG": 1,
+    "pass_": true,
+    "output": "PASS WRITETAP NEG=1 T=8 first_fault=1\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_final02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:94: Verilog $finish\n"
+  },
+  {
+    "T": 8,
+    "FP": 1,
+    "N": 2,
+    "MAP": 0,
+    "NEG": 2,
+    "pass_": true,
+    "output": "PASS WRITETAP NEG=2 T=8 first_fault=1\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_final02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:94: Verilog $finish\n"
+  },
+  {
+    "T": 8,
+    "FP": 1,
+    "N": 2,
+    "MAP": 0,
+    "NEG": 3,
+    "pass_": true,
+    "output": "PASS WRITETAP NEG=3 T=8 first_fault=3\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_final02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:94: Verilog $finish\n"
+  },
+  {
+    "T": 8,
+    "FP": 1,
+    "N": 2,
+    "MAP": 0,
+    "NEG": 4,
+    "pass_": true,
+    "output": "PASS WRITETAP NEG=4 T=8 first_fault=12\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_final02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:94: Verilog $finish\n"
+  },
+  {
+    "T": 8,
+    "FP": 1,
+    "N": 2,
+    "MAP": 0,
+    "NEG": 5,
+    "pass_": true,
+    "output": "PASS WRITETAP NEG=5 T=8 first_fault=10\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_final02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:94: Verilog $finish\n"
+  },
+  {
+    "T": 8,
+    "FP": 1,
+    "N": 2,
+    "MAP": 0,
+    "NEG": 6,
+    "pass_": true,
+    "output": "PASS WRITETAP T=8 FP=1 N=2 elements=8192 commits=4096 reads=4096 payload_shell_bytes=0\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_final02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:114: Verilog $finish\n"
+  },
+  {
+    "T": 8,
+    "FP": 1,
+    "N": 2,
+    "MAP": 0,
+    "NEG": 7,
+    "pass_": true,
+    "output": "PASS WRITETAP NEG=7 T=8 first_fault=1\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_final02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:94: Verilog $finish\n"
+  },
+  {
+    "T": 8,
+    "FP": 1,
+    "N": 2,
+    "MAP": 0,
+    "NEG": 8,
+    "pass_": true,
+    "output": "PASS WRITETAP NEG=8 T=8 first_fault=1\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_final02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:94: Verilog $finish\n"
+  },
+  {
+    "T": 8,
+    "FP": 1,
+    "N": 2,
+    "MAP": 0,
+    "NEG": 9,
+    "pass_": true,
+    "output": "PASS WRITETAP NEG=9 T=8 first_fault=3\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_final02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:94: Verilog $finish\n"
+  },
+  {
+    "T": 8,
+    "FP": 0,
+    "N": 2,
+    "MAP": 0,
+    "NEG": 0,
+    "SECOND": 1,
+    "pass_": true,
+    "output": "PASS WRITETAP T=8 FP=0 N=2 elements=8192 commits=2048 reads=2048 payload_shell_bytes=0\nPASS WRITETAP T=8 FP=1 N=2 elements=8192 commits=4096 reads=4096 payload_shell_bytes=0\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_final02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:114: Verilog $finish\n"
+  },
+  {
+    "T": 8,
+    "FP": 1,
+    "N": 3,
+    "MAP": 1,
+    "NEG": 0,
+    "SCRAMBLE": 1,
+    "pass_": true,
+    "output": "PASS WRITETAP T=8 FP=1 N=3 elements=12288 commits=6144 reads=6144 payload_shell_bytes=0\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_final02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:114: Verilog $finish\n"
+  }
+]

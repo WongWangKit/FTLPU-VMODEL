@@ -1,0 +1,2 @@
+PASS PACK_EQ T=8 FP=0 MAP=1 cycles=216
+- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/pack_eq04/pack_tb.sv:61: Verilog $finish

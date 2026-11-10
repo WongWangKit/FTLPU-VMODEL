@@ -1,0 +1,9 @@
+[
+  {
+    "stage": "synthesized",
+    "status": "completed",
+    "exit_code": 0,
+    "checkpoint": "<LPU_WORKSPACE>\\learn\\sxm_writetap_implementation_20261109\\results\\l5_queue04_adapter_t8_synth\\synthesized\\synthesized.dcp",
+    "completed": true
+  }
+]

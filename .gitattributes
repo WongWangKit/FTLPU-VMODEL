@@ -1,2 +1,7 @@
 * text=auto eol=lf
 
+# Published evidence has separate original/published SHA256 values. Preserve bytes.
+/sim/sxm_writetap/results/** -text -whitespace
+/sim/sxm_writetap/reference_scripts/** -text -whitespace
+/rtl/sxm_native/test/** -text -whitespace
+

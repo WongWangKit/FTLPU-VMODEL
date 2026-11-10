@@ -21,6 +21,10 @@ rtl/sxm_native/sxm_transpose_control_column.sv
 rtl/sxm_native/sxm_transpose_result_buffer_array.sv
 rtl/sxm_native/sxm_permute_engine.sv
 rtl/sxm_native/sxm_slice.sv
+rtl/sxm_native/sxm_row_core.sv
+rtl/sxm_native/sxm_compat_decode.sv
+rtl/sxm_native/sxm_compat_engine.sv
+rtl/sxm_native/sxm_compatible_core.sv
 rtl/integration/lpu_mem_command_adapter.sv
 rtl/integration/lpu_sxm_command_adapter.sv
 rtl/integration/lpu_sxm_srf_adapter.sv

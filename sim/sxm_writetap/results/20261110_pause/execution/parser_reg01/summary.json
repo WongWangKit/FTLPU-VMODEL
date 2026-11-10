@@ -1,0 +1,463 @@
+{
+  "total": 17,
+  "passed": 17,
+  "cases": [
+    {
+      "name": "anchored_clock_stub",
+      "pass_": true,
+      "observed": {
+        "setup_ns": 1.729,
+        "hold_ns": 0.01,
+        "counts": {
+          "blackbox_count": 0,
+          "latch_count": 0,
+          "no_clock": 0,
+          "constant_clock": 0,
+          "multiple_clock": 0,
+          "unconstrained_internal_endpoints": 0,
+          "loops": 0,
+          "latch_loops": 0,
+          "unexpected_clock_set": 0,
+          "drc": 0,
+          "unrouted_internal_nets": 0
+        },
+        "pass_": true,
+        "scope": "10ns internal reg-reg, IO separately budgeted",
+        "io_report": "<LPU_WORKSPACE>\\learn\\sxm_writetap_implementation_20261109\\results\\parser_reg01\\anchored_clock_stub\\routed\\io_budget_timing.rpt",
+        "ooc_clock_boundary_gaps": [
+          "clk_i"
+        ],
+        "internal_route_gaps": []
+      }
+    },
+    {
+      "name": "internal_data_gap",
+      "pass_": true,
+      "observed": {
+        "setup_ns": 1.729,
+        "hold_ns": 0.01,
+        "counts": {
+          "blackbox_count": 0,
+          "latch_count": 0,
+          "no_clock": 0,
+          "constant_clock": 0,
+          "multiple_clock": 0,
+          "unconstrained_internal_endpoints": 0,
+          "loops": 0,
+          "latch_loops": 0,
+          "unexpected_clock_set": 0,
+          "drc": 0,
+          "unrouted_internal_nets": 1
+        },
+        "pass_": false,
+        "scope": "10ns internal reg-reg, IO separately budgeted",
+        "io_report": "<LPU_WORKSPACE>\\learn\\sxm_writetap_implementation_20261109\\results\\parser_reg01\\internal_data_gap\\routed\\io_budget_timing.rpt",
+        "ooc_clock_boundary_gaps": [
+          "clk_i"
+        ],
+        "internal_route_gaps": [
+          "u_core/data"
+        ]
+      }
+    },
+    {
+      "name": "internal_partial_clock",
+      "pass_": true,
+      "observed": {
+        "setup_ns": 1.729,
+        "hold_ns": 0.01,
+        "counts": {
+          "blackbox_count": 0,
+          "latch_count": 0,
+          "no_clock": 0,
+          "constant_clock": 0,
+          "multiple_clock": 0,
+          "unconstrained_internal_endpoints": 0,
+          "loops": 0,
+          "latch_loops": 0,
+          "unexpected_clock_set": 0,
+          "drc": 0,
+          "unrouted_internal_nets": 1
+        },
+        "pass_": false,
+        "scope": "10ns internal reg-reg, IO separately budgeted",
+        "io_report": "<LPU_WORKSPACE>\\learn\\sxm_writetap_implementation_20261109\\results\\parser_reg01\\internal_partial_clock\\routed\\io_budget_timing.rpt",
+        "ooc_clock_boundary_gaps": [
+          "clk_i"
+        ],
+        "internal_route_gaps": [
+          "u_core/clk"
+        ]
+      }
+    },
+    {
+      "name": "unanchored_stub",
+      "pass_": true,
+      "observed": {
+        "setup_ns": 1.729,
+        "hold_ns": 0.01,
+        "counts": {
+          "blackbox_count": 0,
+          "latch_count": 0,
+          "no_clock": 0,
+          "constant_clock": 0,
+          "multiple_clock": 0,
+          "unconstrained_internal_endpoints": 0,
+          "loops": 0,
+          "latch_loops": 0,
+          "unexpected_clock_set": 0,
+          "drc": 0,
+          "unrouted_internal_nets": 1
+        },
+        "pass_": false,
+        "scope": "10ns internal reg-reg, IO separately budgeted",
+        "io_report": "<LPU_WORKSPACE>\\learn\\sxm_writetap_implementation_20261109\\results\\parser_reg01\\unanchored_stub\\routed\\io_budget_timing.rpt",
+        "ooc_clock_boundary_gaps": [],
+        "internal_route_gaps": [
+          "clk_i"
+        ]
+      }
+    },
+    {
+      "name": "negative_max",
+      "pass_": true,
+      "observed": {
+        "setup_ns": -0.001,
+        "hold_ns": 0.01,
+        "counts": {
+          "blackbox_count": 0,
+          "latch_count": 0,
+          "no_clock": 0,
+          "constant_clock": 0,
+          "multiple_clock": 0,
+          "unconstrained_internal_endpoints": 0,
+          "loops": 0,
+          "latch_loops": 0,
+          "unexpected_clock_set": 0,
+          "drc": 0,
+          "unrouted_internal_nets": 0
+        },
+        "pass_": false,
+        "scope": "10ns internal reg-reg, IO separately budgeted",
+        "io_report": "<LPU_WORKSPACE>\\learn\\sxm_writetap_implementation_20261109\\results\\parser_reg01\\negative_max\\routed\\io_budget_timing.rpt",
+        "ooc_clock_boundary_gaps": [
+          "clk_i"
+        ],
+        "internal_route_gaps": []
+      }
+    },
+    {
+      "name": "negative_min",
+      "pass_": true,
+      "observed": {
+        "setup_ns": 1.729,
+        "hold_ns": -0.001,
+        "counts": {
+          "blackbox_count": 0,
+          "latch_count": 0,
+          "no_clock": 0,
+          "constant_clock": 0,
+          "multiple_clock": 0,
+          "unconstrained_internal_endpoints": 0,
+          "loops": 0,
+          "latch_loops": 0,
+          "unexpected_clock_set": 0,
+          "drc": 0,
+          "unrouted_internal_nets": 0
+        },
+        "pass_": false,
+        "scope": "10ns internal reg-reg, IO separately budgeted",
+        "io_report": "<LPU_WORKSPACE>\\learn\\sxm_writetap_implementation_20261109\\results\\parser_reg01\\negative_min\\routed\\io_budget_timing.rpt",
+        "ooc_clock_boundary_gaps": [
+          "clk_i"
+        ],
+        "internal_route_gaps": []
+      }
+    },
+    {
+      "name": "blackbox_count",
+      "pass_": true,
+      "observed": {
+        "setup_ns": 1.729,
+        "hold_ns": 0.01,
+        "counts": {
+          "blackbox_count": 1,
+          "latch_count": 0,
+          "no_clock": 0,
+          "constant_clock": 0,
+          "multiple_clock": 0,
+          "unconstrained_internal_endpoints": 0,
+          "loops": 0,
+          "latch_loops": 0,
+          "unexpected_clock_set": 0,
+          "drc": 0,
+          "unrouted_internal_nets": 0
+        },
+        "pass_": false,
+        "scope": "10ns internal reg-reg, IO separately budgeted",
+        "io_report": "<LPU_WORKSPACE>\\learn\\sxm_writetap_implementation_20261109\\results\\parser_reg01\\blackbox_count\\routed\\io_budget_timing.rpt",
+        "ooc_clock_boundary_gaps": [
+          "clk_i"
+        ],
+        "internal_route_gaps": []
+      }
+    },
+    {
+      "name": "latch_count",
+      "pass_": true,
+      "observed": {
+        "setup_ns": 1.729,
+        "hold_ns": 0.01,
+        "counts": {
+          "blackbox_count": 0,
+          "latch_count": 1,
+          "no_clock": 0,
+          "constant_clock": 0,
+          "multiple_clock": 0,
+          "unconstrained_internal_endpoints": 0,
+          "loops": 0,
+          "latch_loops": 0,
+          "unexpected_clock_set": 0,
+          "drc": 0,
+          "unrouted_internal_nets": 0
+        },
+        "pass_": false,
+        "scope": "10ns internal reg-reg, IO separately budgeted",
+        "io_report": "<LPU_WORKSPACE>\\learn\\sxm_writetap_implementation_20261109\\results\\parser_reg01\\latch_count\\routed\\io_budget_timing.rpt",
+        "ooc_clock_boundary_gaps": [
+          "clk_i"
+        ],
+        "internal_route_gaps": []
+      }
+    },
+    {
+      "name": "extra_clock",
+      "pass_": true,
+      "observed": {
+        "setup_ns": 1.729,
+        "hold_ns": 0.01,
+        "counts": {
+          "blackbox_count": 0,
+          "latch_count": 0,
+          "no_clock": 0,
+          "constant_clock": 0,
+          "multiple_clock": 0,
+          "unconstrained_internal_endpoints": 0,
+          "loops": 0,
+          "latch_loops": 0,
+          "unexpected_clock_set": 1,
+          "drc": 0,
+          "unrouted_internal_nets": 0
+        },
+        "pass_": false,
+        "scope": "10ns internal reg-reg, IO separately budgeted",
+        "io_report": "<LPU_WORKSPACE>\\learn\\sxm_writetap_implementation_20261109\\results\\parser_reg01\\extra_clock\\routed\\io_budget_timing.rpt",
+        "ooc_clock_boundary_gaps": [
+          "clk_i"
+        ],
+        "internal_route_gaps": []
+      }
+    },
+    {
+      "name": "no_clock",
+      "pass_": true,
+      "observed": {
+        "setup_ns": 1.729,
+        "hold_ns": 0.01,
+        "counts": {
+          "blackbox_count": 0,
+          "latch_count": 0,
+          "no_clock": 1,
+          "constant_clock": 0,
+          "multiple_clock": 0,
+          "unconstrained_internal_endpoints": 0,
+          "loops": 0,
+          "latch_loops": 0,
+          "unexpected_clock_set": 0,
+          "drc": 0,
+          "unrouted_internal_nets": 0
+        },
+        "pass_": false,
+        "scope": "10ns internal reg-reg, IO separately budgeted",
+        "io_report": "<LPU_WORKSPACE>\\learn\\sxm_writetap_implementation_20261109\\results\\parser_reg01\\no_clock\\routed\\io_budget_timing.rpt",
+        "ooc_clock_boundary_gaps": [
+          "clk_i"
+        ],
+        "internal_route_gaps": []
+      }
+    },
+    {
+      "name": "constant_clock",
+      "pass_": true,
+      "observed": {
+        "setup_ns": 1.729,
+        "hold_ns": 0.01,
+        "counts": {
+          "blackbox_count": 0,
+          "latch_count": 0,
+          "no_clock": 0,
+          "constant_clock": 1,
+          "multiple_clock": 0,
+          "unconstrained_internal_endpoints": 0,
+          "loops": 0,
+          "latch_loops": 0,
+          "unexpected_clock_set": 0,
+          "drc": 0,
+          "unrouted_internal_nets": 0
+        },
+        "pass_": false,
+        "scope": "10ns internal reg-reg, IO separately budgeted",
+        "io_report": "<LPU_WORKSPACE>\\learn\\sxm_writetap_implementation_20261109\\results\\parser_reg01\\constant_clock\\routed\\io_budget_timing.rpt",
+        "ooc_clock_boundary_gaps": [
+          "clk_i"
+        ],
+        "internal_route_gaps": []
+      }
+    },
+    {
+      "name": "multiple_clock",
+      "pass_": true,
+      "observed": {
+        "setup_ns": 1.729,
+        "hold_ns": 0.01,
+        "counts": {
+          "blackbox_count": 0,
+          "latch_count": 0,
+          "no_clock": 0,
+          "constant_clock": 0,
+          "multiple_clock": 1,
+          "unconstrained_internal_endpoints": 0,
+          "loops": 0,
+          "latch_loops": 0,
+          "unexpected_clock_set": 0,
+          "drc": 0,
+          "unrouted_internal_nets": 0
+        },
+        "pass_": false,
+        "scope": "10ns internal reg-reg, IO separately budgeted",
+        "io_report": "<LPU_WORKSPACE>\\learn\\sxm_writetap_implementation_20261109\\results\\parser_reg01\\multiple_clock\\routed\\io_budget_timing.rpt",
+        "ooc_clock_boundary_gaps": [
+          "clk_i"
+        ],
+        "internal_route_gaps": []
+      }
+    },
+    {
+      "name": "unconstrained_internal_endpoints",
+      "pass_": true,
+      "observed": {
+        "setup_ns": 1.729,
+        "hold_ns": 0.01,
+        "counts": {
+          "blackbox_count": 0,
+          "latch_count": 0,
+          "no_clock": 0,
+          "constant_clock": 0,
+          "multiple_clock": 0,
+          "unconstrained_internal_endpoints": 1,
+          "loops": 0,
+          "latch_loops": 0,
+          "unexpected_clock_set": 0,
+          "drc": 0,
+          "unrouted_internal_nets": 0
+        },
+        "pass_": false,
+        "scope": "10ns internal reg-reg, IO separately budgeted",
+        "io_report": "<LPU_WORKSPACE>\\learn\\sxm_writetap_implementation_20261109\\results\\parser_reg01\\unconstrained_internal_endpoints\\routed\\io_budget_timing.rpt",
+        "ooc_clock_boundary_gaps": [
+          "clk_i"
+        ],
+        "internal_route_gaps": []
+      }
+    },
+    {
+      "name": "loops",
+      "pass_": true,
+      "observed": {
+        "setup_ns": 1.729,
+        "hold_ns": 0.01,
+        "counts": {
+          "blackbox_count": 0,
+          "latch_count": 0,
+          "no_clock": 0,
+          "constant_clock": 0,
+          "multiple_clock": 0,
+          "unconstrained_internal_endpoints": 0,
+          "loops": 1,
+          "latch_loops": 0,
+          "unexpected_clock_set": 0,
+          "drc": 0,
+          "unrouted_internal_nets": 0
+        },
+        "pass_": false,
+        "scope": "10ns internal reg-reg, IO separately budgeted",
+        "io_report": "<LPU_WORKSPACE>\\learn\\sxm_writetap_implementation_20261109\\results\\parser_reg01\\loops\\routed\\io_budget_timing.rpt",
+        "ooc_clock_boundary_gaps": [
+          "clk_i"
+        ],
+        "internal_route_gaps": []
+      }
+    },
+    {
+      "name": "latch_loops",
+      "pass_": true,
+      "observed": {
+        "setup_ns": 1.729,
+        "hold_ns": 0.01,
+        "counts": {
+          "blackbox_count": 0,
+          "latch_count": 0,
+          "no_clock": 0,
+          "constant_clock": 0,
+          "multiple_clock": 0,
+          "unconstrained_internal_endpoints": 0,
+          "loops": 0,
+          "latch_loops": 1,
+          "unexpected_clock_set": 0,
+          "drc": 0,
+          "unrouted_internal_nets": 0
+        },
+        "pass_": false,
+        "scope": "10ns internal reg-reg, IO separately budgeted",
+        "io_report": "<LPU_WORKSPACE>\\learn\\sxm_writetap_implementation_20261109\\results\\parser_reg01\\latch_loops\\routed\\io_budget_timing.rpt",
+        "ooc_clock_boundary_gaps": [
+          "clk_i"
+        ],
+        "internal_route_gaps": []
+      }
+    },
+    {
+      "name": "drc_violation",
+      "pass_": true,
+      "observed": {
+        "setup_ns": 1.729,
+        "hold_ns": 0.01,
+        "counts": {
+          "blackbox_count": 0,
+          "latch_count": 0,
+          "no_clock": 0,
+          "constant_clock": 0,
+          "multiple_clock": 0,
+          "unconstrained_internal_endpoints": 0,
+          "loops": 0,
+          "latch_loops": 0,
+          "unexpected_clock_set": 0,
+          "drc": 1,
+          "unrouted_internal_nets": 0
+        },
+        "pass_": false,
+        "scope": "10ns internal reg-reg, IO separately budgeted",
+        "io_report": "<LPU_WORKSPACE>\\learn\\sxm_writetap_implementation_20261109\\results\\parser_reg01\\drc_violation\\routed\\io_budget_timing.rpt",
+        "ooc_clock_boundary_gaps": [
+          "clk_i"
+        ],
+        "internal_route_gaps": []
+      }
+    },
+    {
+      "name": "missing_slack_field",
+      "pass_": true,
+      "observed": "AttributeError(\"'NoneType' object has no attribute 'group'\")"
+    }
+  ]
+}

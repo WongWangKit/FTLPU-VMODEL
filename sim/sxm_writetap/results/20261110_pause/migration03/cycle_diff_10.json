@@ -1,0 +1,45 @@
+{
+  "evidence": "diff03",
+  "rows": [
+    {
+      "name": "t4_compat_diff_phase0_dir0",
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_diff_phase1_dir0",
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_diff_phase2_dir0",
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_diff_phase3_dir0",
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_diff_general_dir0",
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_diff_phase0_dir1",
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_diff_phase1_dir1",
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_diff_phase2_dir1",
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_diff_phase3_dir1",
+      "pass_": true
+    },
+    {
+      "name": "t4_compat_diff_general_dir1",
+      "pass_": true
+    }
+  ]
+}

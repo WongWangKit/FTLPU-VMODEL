@@ -22,7 +22,12 @@ module lpu_mem_srf_sxm_turnaround_tb #(parameter integer PROFILE=0, ROW_BASE=0);
   logic mem_fault_valid_o,mem_busy_o,sxm_fault_valid_o,sxm_permute_phase_fault_o,sxm_permute_selector_fault_o,sxm_permute_buffer_not_ready_o,sxm_busy_o,sxm_command_fault_o;
   logic [SUPERLANES-1:0] sxm_transpose_input_invalid_o,sxm_transpose_buffer_full_o;
   integer errors,tile,stream,lane,group,local_slice,w,cap_cycle[0:3],buffer_cycle[0:3],perm_cycle[0:3],west_cycle[0:3];
-  lpu_mem_srf_sxm_turnaround_integration #(.P_LPU_PROFILE(PROFILE)) dut(.*);
+  lpu_mem_srf_sxm_turnaround_integration #(.P_LPU_PROFILE(PROFILE)) dut(.row_ctrl_valid_i(1'b0),.row_ctrl_op_i(2'b0),.row_ctrl_ctx_i(1'b0),.row_ctrl_index_i(3'b0),.row_ctrl_data_i(128'b0),
+    .row_cap_valid_i(1'b0),.row_cap_ctx_i(1'b0),.row_cap_tile_i(3'b0),.row_cap_group_i(3'b0),.row_cap_row_i(4'b0),
+    .row_p_valid_i(1'b0),.row_p_ctx_i(1'b0),.row_p_dest_i(3'b0),.row_p_source_i(3'b0),.row_p_row_i(4'b0),
+    .row_p_paired_i(1'b0),.row_p_branch_i(1'b0),.row_p_sequence_i(6'b0),
+    .row_run_valid_i('0),.row_run_ctx_i(1'b0),.row_run_delay_i(16'b0),.row_run_interval_i(16'b0),
+    .row_run_count_i(6'b0),.row_run_sequence_i(6'b0),.row_fault_o(),.*);
   always #5 clk_i=~clk_i;
   function automatic [46:0] mp(input [2:0] op,input west,input [4:0] s,input [14:0] row); begin mp='0;mp[2:0]=op;mp[8:3]={west,s};mp[30:15]=ROW_BASE+row;end endfunction
   function automatic [415:0] sp(input [1:0] op,input sw,input [4:0] sb,input dw,input [4:0] db,input [2:0] ot,input integer ph);

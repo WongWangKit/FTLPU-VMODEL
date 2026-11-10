@@ -7,6 +7,7 @@ module lpu_mem_srf_sxm_turnaround_integration #(
   parameter integer COLUMNS=16, SUPERLANES=4, STREAMS=32, SEGMENT_BITS=64,
   parameter integer LOCAL_PRODUCERS=2, LOCAL_CONSUMERS=2 ,
   parameter integer P_LPU_PROFILE=0,
+  parameter integer P_ROW_MODE=0,
   parameter integer MEM_ACTIVE_ROWS=MEM_DEPTH_ROWS,
   localparam integer T=P_LPU_PROFILE==0 ? SUPERLANES : lpu_native_config_pkg::tile_rows(P_LPU_PROFILE),
   localparam integer P=P_LPU_PROFILE==0 ? MEM_DEPTH_ROWS : lpu_native_config_pkg::mem_depth_rows(P_LPU_PROFILE),
@@ -15,6 +16,20 @@ module lpu_mem_srf_sxm_turnaround_integration #(
   localparam integer G=P_LPU_PROFILE==0 ? MEM_SLICES_PER_GROUP : 4
 ) (
   input logic clk_i, rst_ni,
+  // Optional SXM version-1 instruction-level entry; legacy remains default.
+  input logic row_ctrl_valid_i, input logic [1:0] row_ctrl_op_i,
+  input logic row_ctrl_ctx_i, input logic [2:0] row_ctrl_index_i,
+  input logic [127:0] row_ctrl_data_i,
+  input logic row_cap_valid_i, row_cap_ctx_i,
+  input logic [2:0] row_cap_tile_i, row_cap_group_i, input logic [3:0] row_cap_row_i,
+  input logic row_p_valid_i, row_p_ctx_i, input logic [2:0] row_p_dest_i, row_p_source_i,
+  input logic [3:0] row_p_row_i, input logic row_p_paired_i, row_p_branch_i,
+  input logic [5:0] row_p_sequence_i,
+  input logic [T-1:0] row_run_valid_i, input logic row_run_ctx_i,
+  input logic [15:0] row_run_delay_i, row_run_interval_i,
+  input logic [5:0] row_run_count_i, row_run_sequence_i,
+  output logic [3:0] row_fault_o,
+
   input logic [F*2-1:0] vmodel_mem_issue_valid_i,
   input logic [F*2*47-1:0] vmodel_mem_issue_instruction_i,
   output logic [F*2-1:0] native_mem_issue_valid_o, mem_command_fault_o,
@@ -43,7 +58,7 @@ module lpu_mem_srf_sxm_turnaround_integration #(
   localparam integer BOUNDARIES=GROUPS+1, PRODUCERS=F*2*T;
   localparam integer INJECT=2*COLUMNS*T*LOCAL_PRODUCERS*STREAMS;
   localparam integer CONSUME=2*COLUMNS*T*LOCAL_CONSUMERS*STREAMS;
-  localparam integer SXM_STREAMS=16;
+  localparam integer SXM_STREAMS=P_ROW_MODE ? 32 : 16;
   logic [F*2-1:0] native_mem_valid;
   logic [F*2*32-1:0] native_mem_cmd;
   logic [BOUNDARIES*(2*STREAMS*T)-1:0] mem_state_valid;
@@ -57,12 +72,13 @@ module lpu_mem_srf_sxm_turnaround_integration #(
   logic [INJECT-1:0] mem_inject_valid, mem_inject_data_valid, sxm_inject_valid, srf_inject_valid;
   logic [INJECT*SEGMENT_BITS-1:0] mem_inject_data, sxm_inject_data, srf_inject_data;
   logic [CONSUME-1:0] mem_consume, sxm_consume, srf_consume;
+  logic legacy_command_fault;
   logic native_t_valid, native_p_valid;
   logic [95:0] native_t_cmd, native_p_cmd;
   logic [T*SXM_STREAMS*6-1:0] sxm_read_req;
   logic [T*SXM_STREAMS-1:0] sxm_read_valid, sxm_consume_req, sxm_write_valid;
   logic [T*SXM_STREAMS*SEGMENT_BITS-1:0] sxm_read_data, sxm_write_data;
-  logic [SXM_STREAMS*6-1:0] sxm_write_sel;
+  logic [(P_ROW_MODE ? T : 1)*SXM_STREAMS*6-1:0] sxm_write_sel;
 
   assign native_mem_issue_valid_o=native_mem_valid;
   assign native_mem_issue_o=native_mem_cmd;
@@ -74,7 +90,7 @@ module lpu_mem_srf_sxm_turnaround_integration #(
   lpu_sxm_command_adapter u_sxm_cmd(.vmodel_transpose_valid_i,.vmodel_transpose_instruction_i,
     .vmodel_permute_valid_i,.vmodel_permute_instruction_i,.native_transpose_valid_o(native_t_valid),
     .native_transpose_command_o(native_t_cmd),.native_permute_valid_o(native_p_valid),
-    .native_permute_command_o(native_p_cmd),.command_fault_o(sxm_command_fault_o));
+    .native_permute_command_o(native_p_cmd),.command_fault_o(legacy_command_fault));
 
   integer bnd, dir, sl, str, prod, mc, sc, slot, tbnd, tdir, tstr, tsl;
   always_comb begin
@@ -106,7 +122,7 @@ module lpu_mem_srf_sxm_turnaround_integration #(
   end
   lpu_sxm_srf_adapter #(.COLUMNS(COLUMNS),.SUPERLANES(T),.STREAMS(STREAMS),
     .SEGMENT_BITS(SEGMENT_BITS),.LOCAL_PRODUCERS(LOCAL_PRODUCERS),.LOCAL_CONSUMERS(LOCAL_CONSUMERS),
-    .SXM_ACTIVE_STREAMS(SXM_STREAMS),.SXM_CONSUMER_SLOT(1),.SXM_PRODUCER_SLOT(1)) u_sxm_adapter(
+    .PRIVATE_TILE_SELECTORS(P_ROW_MODE),.SXM_ACTIVE_STREAMS(SXM_STREAMS),.SXM_CONSUMER_SLOT(1),.SXM_PRODUCER_SLOT(1)) u_sxm_adapter(
       .srf_state_valid_i(state_valid_o),.srf_state_data_i(state_data_o),.sxm_sr_read_req_i(sxm_read_req),
       .sxm_sr_read_valid_o(sxm_read_valid),.sxm_sr_read_data_o(sxm_read_data),.sxm_sr_consume_i(sxm_consume_req),
       .sxm_sr_write_valid_i(sxm_write_valid),.sxm_sr_write_sel_i(sxm_write_sel),.sxm_sr_write_data_i(sxm_write_data),
@@ -121,7 +137,7 @@ module lpu_mem_srf_sxm_turnaround_integration #(
   end
 `ifndef SYNTHESIS
   initial begin
-    if(!lpu_native_config_pkg::profile_valid(P_LPU_PROFILE) || T!=4 || COLUMNS!=16 || STREAMS!=32 || SEGMENT_BITS!=64 || BOUNDARIES>14 || LOCAL_PRODUCERS<2)
+    if(!lpu_native_config_pkg::profile_valid(P_LPU_PROFILE) || (!P_ROW_MODE && T!=4) || (P_ROW_MODE && T!=2 && T!=4 && T!=8) || COLUMNS!=16 || STREAMS!=32 || SEGMENT_BITS!=64 || BOUNDARIES>14 || LOCAL_PRODUCERS<2)
       $fatal(1,"SXM compatibility integration requires T4, MEM columns<=13 and two local candidates");
   end
   always @(posedge clk_i) if(rst_ni && |(mem_inject_valid&sxm_inject_valid))
@@ -132,5 +148,36 @@ module lpu_mem_srf_sxm_turnaround_integration #(
     .clk_i,.rst_ni,.boundary_valid_i,.boundary_data_i,.boundary_valid_o(),.boundary_data_o(),.inject_valid_i(srf_inject_valid),.inject_data_i(srf_inject_data),.consume_i(srf_consume),.collision_o(srf_collision_o),.invalid_consume_o(srf_invalid_consume_o),.state_valid_o,.state_data_o);
   mem_hemisphere #(.P_MEM_SLICES_PER_HEMI(F),.P_MEM_SLICES_PER_GROUP(G),.P_MEM_BANK_DEPTH_ROWS(P),.P_SLICE_FAULT_CODE_BITS(3),.P_TILE_ROWS(T),.P_MEM_ACTIVE_ROWS(E)) u_mem(
     .clk_i,.rst_ni,.bank_issue_valid_i(native_mem_valid),.bank_issue_i(native_mem_cmd),.boundary_state_valid_i(mem_state_valid),.boundary_state_data_i(mem_state_data),.external_producer_collision_i(mem_ext_collision),.boundary_consume_o(mem_boundary_consume_o),.producer_valid_o(mem_producer_valid_o),.producer_data_o(mem_producer_data_o),.producer_stream_dir_o(mem_producer_direction_o),.producer_stream_idx_o(mem_producer_stream_o),.producer_boundary_o(mem_producer_boundary_o),.internal_mem_collision_o(mem_internal_collision_o),.bank_fault_valid_o(mem_bank_fault_valid_o),.bank_fault_code_o(mem_fault_code),.bank_fault_tile_valid_o(mem_fault_tile_valid),.bank_fault_tile_id_o(mem_fault_tile_id),.bank_fault_row_o(mem_fault_row),.group_fault_valid_o(group_fault),.hemisphere_fault_valid_o(mem_fault_valid_o),.group_busy_o(group_busy),.hemisphere_busy_o(mem_busy_o));
+  generate if(P_ROW_MODE) begin:g_row
+    localparam integer RAW_BITS=((240+8*T*(T<4?5:$clog2(8*T))+8+(T<4?3:$clog2(T)+1)+31)/32)*32;
+    wire [3:0] compat_fault;
+    sxm_compatible_core #(.T(T),.PORT_STREAMS(SXM_STREAMS)) u_sxm(
+      .clk_i,.rst_ni,
+      .ctrl_valid_i(row_ctrl_valid_i),.ctrl_op_i(row_ctrl_op_i),.ctrl_ctx_i(row_ctrl_ctx_i),
+      .ctrl_index_i(row_ctrl_index_i),.ctrl_data_i(row_ctrl_data_i),
+      .cap_valid_i(row_cap_valid_i),.cap_ctx_i(row_cap_ctx_i),.cap_tile_i(row_cap_tile_i),
+      .cap_group_i(row_cap_group_i),.cap_row_i(row_cap_row_i),
+      .p_valid_i(row_p_valid_i),.p_ctx_i(row_p_ctx_i),.p_dest_i(row_p_dest_i),.p_source_i(row_p_source_i),
+      .p_row_i(row_p_row_i),.p_paired_i(row_p_paired_i),.p_branch_i(row_p_branch_i),.p_sequence_i(row_p_sequence_i),
+      .run_valid_i(row_run_valid_i),.run_ctx_i(row_run_ctx_i),.run_delay_i(row_run_delay_i),
+      .run_interval_i(row_run_interval_i),.run_count_i(row_run_count_i),.run_sequence_i(row_run_sequence_i),
+      .sr_read_req_o(sxm_read_req),.sr_read_valid_i(sxm_read_valid),.sr_read_data_i(sxm_read_data),
+      .sr_consume_o(sxm_consume_req),.sr_write_valid_o(sxm_write_valid),.sr_write_sel_o(sxm_write_sel),
+      .sr_write_data_o(sxm_write_data),.fault_o(row_fault_o),.busy_o(sxm_busy_o),
+      .compat_t_valid_i(vmodel_transpose_valid_i),.compat_p_valid_i(vmodel_permute_valid_i),
+      .compat_t_family_i(2'd0),.compat_p_family_i(2'd0),
+      .compat_t_raw_i(RAW_BITS'(vmodel_transpose_instruction_i)),
+      .compat_p_raw_i(RAW_BITS'(vmodel_permute_instruction_i)),.compat_fault_o(compat_fault));
+    assign sxm_fault_valid_o=(|row_fault_o) || (|compat_fault);
+    assign sxm_command_fault_o=|compat_fault;
+    assign sxm_transpose_input_invalid_o='0;
+    assign sxm_transpose_buffer_full_o='0;
+    assign sxm_permute_phase_fault_o=0;
+    assign sxm_permute_selector_fault_o=0;
+    assign sxm_permute_buffer_not_ready_o=0;
+  end else begin:g_legacy
+    assign sxm_command_fault_o=legacy_command_fault;
+    assign row_fault_o=0;
   sxm_slice u_sxm(.clk_i,.rst_ni,.transpose_cmd_valid_i(native_t_valid),.transpose_cmd_i(native_t_cmd),.permute_cmd_valid_i(native_p_valid),.permute_cmd_i(native_p_cmd),.sr_read_req_o(sxm_read_req),.sr_read_valid_i(sxm_read_valid),.sr_read_data_i(sxm_read_data),.sr_consume_o(sxm_consume_req),.sr_write_valid_o(sxm_write_valid),.sr_write_sel_o(sxm_write_sel),.sr_write_data_o(sxm_write_data),.fault_valid_o(sxm_fault_valid_o),.transpose_input_invalid_o(sxm_transpose_input_invalid_o),.transpose_buffer_full_o(sxm_transpose_buffer_full_o),.permute_phase_fault_o(sxm_permute_phase_fault_o),.permute_selector_fault_o(sxm_permute_selector_fault_o),.permute_buffer_not_ready_o(sxm_permute_buffer_not_ready_o),.busy_o(sxm_busy_o));
+  end endgenerate
 endmodule

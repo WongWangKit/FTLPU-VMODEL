@@ -1,0 +1,3 @@
+blackbox_count=0
+latch_count=0
+clocks=clk

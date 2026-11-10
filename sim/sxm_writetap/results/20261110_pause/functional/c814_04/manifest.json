@@ -1,0 +1,18 @@
+{
+  "command": [
+    "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/full07/t4/Vsxm_compatible_core_tb",
+    "+CASE=<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/c814_04",
+    "+CYCLES=792"
+  ],
+  "cycles": 792,
+  "original": "C814",
+  "gold_sha256": "9993d8ab9597e24d45f1a2b7dfc38701a7e89b88eda45a3c76f964e1800433ae",
+  "executable_sha256": "f6c8bd13dabfd9c6d490ee3e6eddc50a176fc574d24b801120f2c7d61af9e04f",
+  "hashes": {
+    "<VMODEL>/rtl/sxm_native/sxm_compat_decode.sv": "5cea05401aa5c208f622b81b6df7a32d5357b69cb97faa4e47d78da1a94f7f2d",
+    "<VMODEL>/rtl/sxm_native/sxm_compat_engine.sv": "b6230239c74e06a1e50489fdc12c8cdb0574d2267953a1d72ed400daaa468362",
+    "<VMODEL>/rtl/sxm_native/sxm_triangle_core.sv": "7f7e5c2083e49322f18aac3baa290fb3570b2d30ee6ce57870e11a07dcf73b05",
+    "<VMODEL>/rtl/sxm_native/sxm_triangle_full_core.sv": "c5c6e54d5b48313f934dbb30d629baab0f375e63da5a58323ee4df2a72783a38",
+    "<VMODEL>/rtl/sxm_native/sxm_triangle_row_frontend.sv": "1038b753ea348895e218bb78b9aefc47dbc5a22e54af8976829506be449ff5e6"
+  }
+}

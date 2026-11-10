@@ -1,0 +1,16 @@
+{
+  "T": 2,
+  "component": "adapter",
+  "top": "lpu_sxm_writetap_shell",
+  "hashes": {
+    "rtl/integration/lpu_sxm_triangle_mem_adapter.sv": "49677d0c49b18b32f84774289d40e937faa01be2f91e5962d166bc47ef6ccde8",
+    "rtl/integration/lpu_sxm_writetap_completion.sv": "18436cf4dd6fbc2ec898ad477d4268dbe51ad8db2d6419f9a4bb792401570508",
+    "rtl/integration/lpu_sxm_writetap_shell.sv": "73f0757f0f1968ff28d1ca1a968290eca90af9f38df66f7283f430b3e264dfd5"
+  },
+  "synth_mode": "structural",
+  "part": "xcvu9p-flga2104-2L-e",
+  "period_ns": 10,
+  "scope": "internal signoff; IO budget separate",
+  "clock": "QueryUnbiasedInterruptTime",
+  "display_required": false
+}

@@ -1,0 +1,890 @@
+[
+  {
+    "T": 2,
+    "MODE": 0,
+    "FP": 0,
+    "N": 1,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 2,
+    "MODE": 0,
+    "FP": 0,
+    "N": 2,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 2,
+    "MODE": 0,
+    "FP": 0,
+    "N": 32,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 2,
+    "MODE": 0,
+    "FP": 0,
+    "N": 100,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 2,
+    "MODE": 0,
+    "FP": 1,
+    "N": 1,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 2,
+    "MODE": 0,
+    "FP": 1,
+    "N": 2,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 2,
+    "MODE": 0,
+    "FP": 1,
+    "N": 32,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 2,
+    "MODE": 0,
+    "FP": 1,
+    "N": 100,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 2,
+    "MODE": 1,
+    "FP": 0,
+    "N": 1,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 2,
+    "MODE": 1,
+    "FP": 0,
+    "N": 2,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 2,
+    "MODE": 1,
+    "FP": 0,
+    "N": 32,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 2,
+    "MODE": 1,
+    "FP": 0,
+    "N": 100,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 2,
+    "MODE": 1,
+    "FP": 1,
+    "N": 1,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 2,
+    "MODE": 1,
+    "FP": 1,
+    "N": 2,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 2,
+    "MODE": 1,
+    "FP": 1,
+    "N": 32,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 2,
+    "MODE": 1,
+    "FP": 1,
+    "N": 100,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 2,
+    "MODE": 2,
+    "FP": 0,
+    "N": 1,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 2,
+    "MODE": 2,
+    "FP": 0,
+    "N": 2,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 2,
+    "MODE": 2,
+    "FP": 0,
+    "N": 32,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 2,
+    "MODE": 2,
+    "FP": 0,
+    "N": 100,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 2,
+    "MODE": 2,
+    "FP": 1,
+    "N": 1,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 2,
+    "MODE": 2,
+    "FP": 1,
+    "N": 2,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 2,
+    "MODE": 2,
+    "FP": 1,
+    "N": 32,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 2,
+    "MODE": 2,
+    "FP": 1,
+    "N": 100,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 2,
+    "MODE": 3,
+    "FP": 0,
+    "N": 1,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 2,
+    "MODE": 3,
+    "FP": 0,
+    "N": 2,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 2,
+    "MODE": 3,
+    "FP": 0,
+    "N": 32,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 2,
+    "MODE": 3,
+    "FP": 0,
+    "N": 100,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 2,
+    "MODE": 3,
+    "FP": 1,
+    "N": 1,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 2,
+    "MODE": 3,
+    "FP": 1,
+    "N": 2,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 2,
+    "MODE": 3,
+    "FP": 1,
+    "N": 32,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 2,
+    "MODE": 3,
+    "FP": 1,
+    "N": 100,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 2,
+    "MODE": 1,
+    "FP": 1,
+    "N": 1,
+    "NEG": 1,
+    "pass_": true
+  },
+  {
+    "T": 2,
+    "MODE": 1,
+    "FP": 1,
+    "N": 1,
+    "NEG": 2,
+    "pass_": true
+  },
+  {
+    "T": 2,
+    "MODE": 1,
+    "FP": 1,
+    "N": 1,
+    "NEG": 3,
+    "pass_": true
+  },
+  {
+    "T": 2,
+    "MODE": 1,
+    "FP": 1,
+    "N": 1,
+    "NEG": 4,
+    "pass_": true
+  },
+  {
+    "T": 2,
+    "MODE": 1,
+    "FP": 1,
+    "N": 1,
+    "NEG": 5,
+    "pass_": true
+  },
+  {
+    "T": 4,
+    "MODE": 0,
+    "FP": 0,
+    "N": 1,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 4,
+    "MODE": 0,
+    "FP": 0,
+    "N": 2,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 4,
+    "MODE": 0,
+    "FP": 0,
+    "N": 32,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 4,
+    "MODE": 0,
+    "FP": 0,
+    "N": 100,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 4,
+    "MODE": 0,
+    "FP": 1,
+    "N": 1,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 4,
+    "MODE": 0,
+    "FP": 1,
+    "N": 2,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 4,
+    "MODE": 0,
+    "FP": 1,
+    "N": 32,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 4,
+    "MODE": 0,
+    "FP": 1,
+    "N": 100,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 4,
+    "MODE": 1,
+    "FP": 0,
+    "N": 1,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 4,
+    "MODE": 1,
+    "FP": 0,
+    "N": 2,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 4,
+    "MODE": 1,
+    "FP": 0,
+    "N": 32,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 4,
+    "MODE": 1,
+    "FP": 0,
+    "N": 100,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 4,
+    "MODE": 1,
+    "FP": 1,
+    "N": 1,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 4,
+    "MODE": 1,
+    "FP": 1,
+    "N": 2,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 4,
+    "MODE": 1,
+    "FP": 1,
+    "N": 32,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 4,
+    "MODE": 1,
+    "FP": 1,
+    "N": 100,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 4,
+    "MODE": 2,
+    "FP": 0,
+    "N": 1,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 4,
+    "MODE": 2,
+    "FP": 0,
+    "N": 2,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 4,
+    "MODE": 2,
+    "FP": 0,
+    "N": 32,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 4,
+    "MODE": 2,
+    "FP": 0,
+    "N": 100,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 4,
+    "MODE": 2,
+    "FP": 1,
+    "N": 1,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 4,
+    "MODE": 2,
+    "FP": 1,
+    "N": 2,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 4,
+    "MODE": 2,
+    "FP": 1,
+    "N": 32,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 4,
+    "MODE": 2,
+    "FP": 1,
+    "N": 100,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 4,
+    "MODE": 3,
+    "FP": 0,
+    "N": 1,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 4,
+    "MODE": 3,
+    "FP": 0,
+    "N": 2,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 4,
+    "MODE": 3,
+    "FP": 0,
+    "N": 32,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 4,
+    "MODE": 3,
+    "FP": 0,
+    "N": 100,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 4,
+    "MODE": 3,
+    "FP": 1,
+    "N": 1,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 4,
+    "MODE": 3,
+    "FP": 1,
+    "N": 2,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 4,
+    "MODE": 3,
+    "FP": 1,
+    "N": 32,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 4,
+    "MODE": 3,
+    "FP": 1,
+    "N": 100,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 4,
+    "MODE": 1,
+    "FP": 1,
+    "N": 1,
+    "NEG": 1,
+    "pass_": true
+  },
+  {
+    "T": 4,
+    "MODE": 1,
+    "FP": 1,
+    "N": 1,
+    "NEG": 2,
+    "pass_": true
+  },
+  {
+    "T": 4,
+    "MODE": 1,
+    "FP": 1,
+    "N": 1,
+    "NEG": 3,
+    "pass_": true
+  },
+  {
+    "T": 4,
+    "MODE": 1,
+    "FP": 1,
+    "N": 1,
+    "NEG": 4,
+    "pass_": true
+  },
+  {
+    "T": 4,
+    "MODE": 1,
+    "FP": 1,
+    "N": 1,
+    "NEG": 5,
+    "pass_": true
+  },
+  {
+    "T": 8,
+    "MODE": 0,
+    "FP": 0,
+    "N": 1,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 8,
+    "MODE": 0,
+    "FP": 0,
+    "N": 2,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 8,
+    "MODE": 0,
+    "FP": 0,
+    "N": 32,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 8,
+    "MODE": 0,
+    "FP": 0,
+    "N": 100,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 8,
+    "MODE": 0,
+    "FP": 1,
+    "N": 1,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 8,
+    "MODE": 0,
+    "FP": 1,
+    "N": 2,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 8,
+    "MODE": 0,
+    "FP": 1,
+    "N": 32,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 8,
+    "MODE": 0,
+    "FP": 1,
+    "N": 100,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 8,
+    "MODE": 1,
+    "FP": 0,
+    "N": 1,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 8,
+    "MODE": 1,
+    "FP": 0,
+    "N": 2,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 8,
+    "MODE": 1,
+    "FP": 0,
+    "N": 32,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 8,
+    "MODE": 1,
+    "FP": 0,
+    "N": 100,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 8,
+    "MODE": 1,
+    "FP": 1,
+    "N": 1,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 8,
+    "MODE": 1,
+    "FP": 1,
+    "N": 2,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 8,
+    "MODE": 1,
+    "FP": 1,
+    "N": 32,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 8,
+    "MODE": 1,
+    "FP": 1,
+    "N": 100,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 8,
+    "MODE": 2,
+    "FP": 0,
+    "N": 1,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 8,
+    "MODE": 2,
+    "FP": 0,
+    "N": 2,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 8,
+    "MODE": 2,
+    "FP": 0,
+    "N": 32,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 8,
+    "MODE": 2,
+    "FP": 0,
+    "N": 100,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 8,
+    "MODE": 2,
+    "FP": 1,
+    "N": 1,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 8,
+    "MODE": 2,
+    "FP": 1,
+    "N": 2,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 8,
+    "MODE": 2,
+    "FP": 1,
+    "N": 32,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 8,
+    "MODE": 2,
+    "FP": 1,
+    "N": 100,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 8,
+    "MODE": 3,
+    "FP": 0,
+    "N": 1,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 8,
+    "MODE": 3,
+    "FP": 0,
+    "N": 2,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 8,
+    "MODE": 3,
+    "FP": 0,
+    "N": 32,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 8,
+    "MODE": 3,
+    "FP": 0,
+    "N": 100,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 8,
+    "MODE": 3,
+    "FP": 1,
+    "N": 1,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 8,
+    "MODE": 3,
+    "FP": 1,
+    "N": 2,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 8,
+    "MODE": 3,
+    "FP": 1,
+    "N": 32,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 8,
+    "MODE": 3,
+    "FP": 1,
+    "N": 100,
+    "NEG": 0,
+    "pass_": true
+  },
+  {
+    "T": 8,
+    "MODE": 1,
+    "FP": 1,
+    "N": 1,
+    "NEG": 1,
+    "pass_": true
+  },
+  {
+    "T": 8,
+    "MODE": 1,
+    "FP": 1,
+    "N": 1,
+    "NEG": 2,
+    "pass_": true
+  },
+  {
+    "T": 8,
+    "MODE": 1,
+    "FP": 1,
+    "N": 1,
+    "NEG": 3,
+    "pass_": true
+  },
+  {
+    "T": 8,
+    "MODE": 1,
+    "FP": 1,
+    "N": 1,
+    "NEG": 4,
+    "pass_": true
+  },
+  {
+    "T": 8,
+    "MODE": 1,
+    "FP": 1,
+    "N": 1,
+    "NEG": 5,
+    "pass_": true
+  }
+]

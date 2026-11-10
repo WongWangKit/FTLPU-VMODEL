@@ -1,0 +1,34 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2023.2 (win64) Build 4029153 Fri Oct 13 20:14:34 MDT 2023
+| Date         : Tue Nov 10 10:20:37 2026
+| Host         : <HOST> running 64-bit major release  (build 9200)
+| Command      : report_utilization -hierarchical -file <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/results/l5_queue05_core_t2_synth/synthesized/synth_hierarchical.rpt
+| Design       : sxm_triangle_full_core
+| Device       : xcvu9p-flga2104-2L-e
+| Speed File   : -2L
+| Design State : Synthesized
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Utilization Design Information
+
+Table of Contents
+-----------------
+1. Utilization by Hierarchy
+
+1. Utilization by Hierarchy
+---------------------------
+
++----------------------------+---------------------------+------------+------------+---------+------+------+--------+--------+------+------------+
+|          Instance          |           Module          | Total LUTs | Logic LUTs | LUTRAMs | SRLs |  FFs | RAMB36 | RAMB18 | URAM | DSP Blocks |
++----------------------------+---------------------------+------------+------------+---------+------+------+--------+--------+------+------------+
+| sxm_triangle_full_core     |                     (top) |      78688 |      78688 |       0 |    0 | 9416 |      0 |      0 |    0 |          0 |
+|   (sxm_triangle_full_core) |                     (top) |          0 |          0 |       0 |    0 |    0 |      0 |      0 |    0 |          0 |
+|   u_core                   | sxm_triangle_row_frontend |      24684 |      24684 |       0 |    0 | 2419 |      0 |      0 |    0 |          0 |
+|   u_legacy                 |         sxm_compat_engine |       3968 |       3968 |       0 |    0 |  417 |      0 |      0 |    0 |          0 |
+|     (u_legacy)             |         sxm_compat_engine |       2713 |       2713 |       0 |    0 |  417 |      0 |      0 |    0 |          0 |
+|     dt                     |         sxm_compat_decode |       1255 |       1255 |       0 |    0 |    0 |      0 |      0 |    0 |          0 |
+|   u_storage                |         sxm_triangle_core |      50036 |      50036 |       0 |    0 | 6580 |      0 |      0 |    0 |          0 |
++----------------------------+---------------------------+------------+------------+---------+------+------+--------+--------+------+------------+
+
+

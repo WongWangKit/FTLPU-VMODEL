@@ -1,0 +1,18 @@
+{
+  "T": 4,
+  "component": "core",
+  "top": "sxm_triangle_full_core",
+  "hashes": {
+    "rtl/sxm_native/sxm_triangle_core.sv": "7f7e5c2083e49322f18aac3baa290fb3570b2d30ee6ce57870e11a07dcf73b05",
+    "rtl/sxm_native/sxm_triangle_row_frontend.sv": "1038b753ea348895e218bb78b9aefc47dbc5a22e54af8976829506be449ff5e6",
+    "rtl/sxm_native/sxm_compat_decode.sv": "5cea05401aa5c208f622b81b6df7a32d5357b69cb97faa4e47d78da1a94f7f2d",
+    "rtl/sxm_native/sxm_compat_engine.sv": "b6230239c74e06a1e50489fdc12c8cdb0574d2267953a1d72ed400daaa468362",
+    "rtl/sxm_native/sxm_triangle_full_core.sv": "c5c6e54d5b48313f934dbb30d629baab0f375e63da5a58323ee4df2a72783a38"
+  },
+  "synth_mode": "structural",
+  "part": "xcvu9p-flga2104-2L-e",
+  "period_ns": 10,
+  "scope": "internal signoff; IO budget separate",
+  "clock": "QueryUnbiasedInterruptTime",
+  "display_required": false
+}

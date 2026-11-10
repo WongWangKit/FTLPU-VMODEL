@@ -11,7 +11,8 @@ module lpu_sxm_srf_adapter #(
   parameter integer LOCAL_CONSUMERS = 2,
   parameter integer SXM_ACTIVE_STREAMS = 16,
   parameter integer SXM_CONSUMER_SLOT = 1,
-  parameter integer SXM_PRODUCER_SLOT = 1
+  parameter integer SXM_PRODUCER_SLOT = 1,
+  parameter integer PRIVATE_TILE_SELECTORS = 0
 ) (
   input logic [2*COLUMNS*SUPERLANES*STREAMS-1:0] srf_state_valid_i,
   input logic [2*COLUMNS*SUPERLANES*STREAMS*SEGMENT_BITS-1:0] srf_state_data_i,
@@ -20,7 +21,7 @@ module lpu_sxm_srf_adapter #(
   output logic [SUPERLANES*SXM_ACTIVE_STREAMS*SEGMENT_BITS-1:0] sxm_sr_read_data_o,
   input logic [SUPERLANES*SXM_ACTIVE_STREAMS-1:0] sxm_sr_consume_i,
   input logic [SUPERLANES*SXM_ACTIVE_STREAMS-1:0] sxm_sr_write_valid_i,
-  input logic [SXM_ACTIVE_STREAMS*6-1:0] sxm_sr_write_sel_i,
+  input logic [(PRIVATE_TILE_SELECTORS ? SUPERLANES : 1)*SXM_ACTIVE_STREAMS*6-1:0] sxm_sr_write_sel_i,
   input logic [SUPERLANES*SXM_ACTIVE_STREAMS*SEGMENT_BITS-1:0] sxm_sr_write_data_i,
   output logic [2*COLUMNS*SUPERLANES*LOCAL_CONSUMERS*STREAMS-1:0] srf_consume_o,
   output logic [2*COLUMNS*SUPERLANES*LOCAL_PRODUCERS*STREAMS-1:0] srf_inject_valid_o,
@@ -82,7 +83,7 @@ module lpu_sxm_srf_adapter #(
       for (stream_slot = 0; stream_slot < SXM_ACTIVE_STREAMS;
            stream_slot = stream_slot + 1) begin
         sxm_index = tile*SXM_ACTIVE_STREAMS + stream_slot;
-        selector = sxm_sr_write_sel_i[stream_slot*6 +: 6];
+        selector = sxm_sr_write_sel_i[((PRIVATE_TILE_SELECTORS ? tile*SXM_ACTIVE_STREAMS : 0)+stream_slot)*6 +: 6];
         sxm_east = selector[5];
         direction = sxm_east ? 0 : 1;
         stream = selector[4:0];

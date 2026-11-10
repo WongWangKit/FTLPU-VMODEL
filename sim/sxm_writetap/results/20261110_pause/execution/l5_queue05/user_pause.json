@@ -1,0 +1,47 @@
+{
+  "verified_processes": [
+    {
+      "ProcessId": 9116,
+      "ParentProcessId": 12556,
+      "CreationDate": "2026-11-10T09:41:25.210177+08:00",
+      "Name": "python.exe",
+      "CommandLine": "\"<USER_HOME>\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe\" -X utf8 <LPU_WORKSPACE>\\learn\\sxm_writetap_implementation_20261109/scripts/gate_queue.py gate_queue04 l5_queue05 7284"
+    },
+    {
+      "ProcessId": 7284,
+      "ParentProcessId": 12556,
+      "CreationDate": "2026-11-10T09:41:25.187964+08:00",
+      "Name": "python.exe",
+      "CommandLine": "\"<USER_HOME>\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe\" -X utf8 <LPU_WORKSPACE>\\learn\\sxm_writetap_implementation_20261109/scripts/physical_queue.py l5_queue05"
+    },
+    {
+      "ProcessId": 27888,
+      "ParentProcessId": 7284,
+      "CreationDate": "2026-11-10T12:13:41.69832+08:00",
+      "Name": "python.exe",
+      "CommandLine": "<USER_HOME>\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe -X utf8 <LPU_WORKSPACE>\\learn\\sxm_writetap_implementation_20261109\\scripts\\run_physical.py l5_queue05_core_t8_synth 8 core --synth-only"
+    }
+  ],
+  "reason": "User requested pausing T8 because synthesis is too slow; stop automatic downstream queue, preserve all artifacts. No completed T8 checkpoint.",
+  "time": "2026-11-10T14:23:15.5895892+08:00",
+  "eda": [
+    {
+      "Id": 2820,
+      "CPU": 4209.78125,
+      "WorkingSet64": 25722679296,
+      "PrivateMemorySize64": 35654836224
+    },
+    {
+      "Id": 27032,
+      "CPU": 20.46875,
+      "WorkingSet64": 137478144,
+      "PrivateMemorySize64": 2278223872
+    }
+  ],
+  "host": {
+    "FreePhysicalMemory": 1173272,
+    "TotalVisibleMemorySize": 41660472,
+    "FreeVirtualMemory": 7190872,
+    "TotalVirtualMemorySize": 67870908
+  }
+}

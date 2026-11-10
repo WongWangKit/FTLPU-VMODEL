@@ -1,0 +1,74 @@
+[
+  {
+    "T": 2,
+    "FP": 0,
+    "MAP": 0,
+    "pass_": true
+  },
+  {
+    "T": 2,
+    "FP": 0,
+    "MAP": 1,
+    "pass_": true
+  },
+  {
+    "T": 2,
+    "FP": 1,
+    "MAP": 0,
+    "pass_": true
+  },
+  {
+    "T": 2,
+    "FP": 1,
+    "MAP": 1,
+    "pass_": true
+  },
+  {
+    "T": 4,
+    "FP": 0,
+    "MAP": 0,
+    "pass_": true
+  },
+  {
+    "T": 4,
+    "FP": 0,
+    "MAP": 1,
+    "pass_": true
+  },
+  {
+    "T": 4,
+    "FP": 1,
+    "MAP": 0,
+    "pass_": true
+  },
+  {
+    "T": 4,
+    "FP": 1,
+    "MAP": 1,
+    "pass_": true
+  },
+  {
+    "T": 8,
+    "FP": 0,
+    "MAP": 0,
+    "pass_": true
+  },
+  {
+    "T": 8,
+    "FP": 0,
+    "MAP": 1,
+    "pass_": true
+  },
+  {
+    "T": 8,
+    "FP": 1,
+    "MAP": 0,
+    "pass_": true
+  },
+  {
+    "T": 8,
+    "FP": 1,
+    "MAP": 1,
+    "pass_": true
+  }
+]

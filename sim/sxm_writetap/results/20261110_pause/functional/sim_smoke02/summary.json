@@ -1,0 +1,20 @@
+[
+  {
+    "T": 4,
+    "FP": 0,
+    "N": 2,
+    "MAP": 1,
+    "NEG": 0,
+    "pass_": true,
+    "output": "PASS WRITETAP T=4 FP=0 N=2 elements=2048 commits=512 reads=512 payload_shell_bytes=0\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_smoke02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:124: Verilog $finish\n"
+  },
+  {
+    "T": 4,
+    "FP": 1,
+    "N": 2,
+    "MAP": 1,
+    "NEG": 0,
+    "pass_": true,
+    "output": "PASS WRITETAP T=4 FP=1 N=2 elements=2048 commits=1024 reads=1024 payload_shell_bytes=0\n- <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/sim_smoke02/sim/tb/sxm_triangle/sxm_writetap_mem_tb.sv:124: Verilog $finish\n"
+  }
+]

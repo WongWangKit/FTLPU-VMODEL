@@ -1,0 +1,437 @@
+#-----------------------------------------------------------
+# Vivado v2023.2 (64-bit)
+# SW Build 4029153 on Fri Oct 13 20:14:34 MDT 2023
+# IP Build 4028589 on Sat Oct 14 00:45:43 MDT 2023
+# SharedData Build 4025554 on Tue Oct 10 17:18:54 MDT 2023
+# Start of session at: Tue Nov 10 02:22:50 2026
+# Process ID: 27880
+# Current directory: <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue04_adapter_t4_synth/synthesized
+# Command line: vivado.exe -mode batch -nojournal -log <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/results/l5_queue04_adapter_t4_synth/synthesized/vivado.log -source <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue04_adapter_t4_synth/src/physical.tcl -tclargs <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue04_adapter_t4_synth/src <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/results/l5_queue04_adapter_t4_synth/synthesized 4 <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue04_adapter_t4_synth/synthesized none structural synthesized BUFGCE_X0Y120 Default synthesized 1 internal lpu_sxm_writetap_shell
+# Log file: <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/results/l5_queue04_adapter_t4_synth/synthesized/vivado.log
+# Journal file: 
+# Running On: <HOST>, OS: Windows, CPU Frequency: 2918 MHz, CPU Physical cores: 14, Host memory: 42660 MB
+#-----------------------------------------------------------
+source <LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue04_adapter_t4_synth/src/physical.tcl
+# set src [lindex $argv 0]
+# set out [lindex $argv 1]
+# set tiles [lindex $argv 2]
+# set work [lindex $argv 3]
+# set resume [lindex $argv 4]
+# set synth_mode [lindex $argv 5]
+# set resume_stage [lindex $argv 6]
+# set clock_site [lindex $argv 7]
+# set route_directive [lindex $argv 8]
+# set stop_after [lindex $argv 9]
+# proc finish_stage {stage} {
+#   global stop_after
+#   if {$stop_after eq $stage} {puts "SXM_STAGE_FINISHED $stage";exit}
+# }
+# set top [lindex $argv 12]
+# set completed 0
+# puts "ENV_CHECK native=[exec cmd.exe /d /c cd] tcl=[pwd] normalized=[file normalize [pwd]] expected=$work"
+ENV_CHECK native=<LPU_WORKSPACE>\learn\sxm_writetap_implementation_20261109\tmp\l5_queue04_adapter_t4_synth\synthesized tcl=<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue04_adapter_t4_synth/synthesized normalized=<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue04_adapter_t4_synth/synthesized expected=<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue04_adapter_t4_synth/synthesized
+# if {[file normalize [pwd]] ne $work} {error "Unsafe Tcl cwd normalization; stop before synthesis"}
+# set threads 4
+# if {[llength $argv]>10} {set threads [lindex $argv 10]}
+# set_param general.maxThreads $threads
+# set timing_scope all
+# if {[llength $argv]>11} {set timing_scope [lindex $argv 11]}
+# if {$resume eq "none"} {
+#   create_project -in_memory -part xcvu9p-flga2104-2L-e
+#   set fh [open [file join $src rtl_files.txt] r]
+#   foreach name [split [string trim [read $fh]] "\n"] {read_verilog -sv [file join $src $name]}
+#   close $fh
+#   # Keep all constraints. Structural mapping may skip timing-driven synthesis;
+#   # implementation and final min/max STA retain the full 100 MHz contract.
+#   read_xdc [file join $src timing.xdc]
+#   foreach name {XILINX_PATH HRT_TCL_PATH SYNTH_COMMON} {
+#     if {[info exists env($name)]} {puts "SYNTH_ENV $name=$env($name)"}
+#   }
+#   set extra {}
+#   if {$synth_mode eq "structural"} {lappend extra -no_timing_driven}
+#   set generics [list T=$tiles]
+#   if {$top eq "sxm_triangle_full_core" || $top eq "sxm_triangle_writetap_core"} {lappend generics PORT_STREAMS=32 TIMER_BITS=16}
+#   synth_design -top $top -part xcvu9p-flga2104-2L-e -mode out_of_context -flatten_hierarchy rebuilt -generic $generics {*}$extra
+# } else {
+#   open_checkpoint $resume
+#   set completed [lsearch -exact {synthesized optimized placed physopt routed} $resume_stage]
+#   if {$completed < 0} {error "invalid resume stage"}
+# }
+create_project: Time (s): cpu = 00:00:04 ; elapsed = 00:00:08 . Memory (MB): peak = 568.301 ; gain = 182.262
+SYNTH_ENV XILINX_PATH=<LPU_WORKSPACE>/learn/sxm_gap10_20261104/tmp/vendor_overlay_01
+SYNTH_ENV HRT_TCL_PATH=<LPU_WORKSPACE>/learn/sxm_gap10_20261104/tmp/vendor_overlay_01/scripts/rt/fpga_tcl
+SYNTH_ENV SYNTH_COMMON=<LPU_WORKSPACE>/learn/sxm_gap10_20261104/tmp/vendor_overlay_01/scripts/rt/data
+Command: synth_design -top lpu_sxm_writetap_shell -part xcvu9p-flga2104-2L-e -mode out_of_context -flatten_hierarchy rebuilt -generic T=4 -no_timing_driven
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xcvu9p'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xcvu9p'
+INFO: [Device 21-403] Loading part xcvu9p-flga2104-2L-e
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 1 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 16088
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:03 ; elapsed = 00:00:05 . Memory (MB): peak = 2179.594 ; gain = 435.035
+---------------------------------------------------------------------------------
+INFO: [Synth 8-6157] synthesizing module 'lpu_sxm_writetap_shell' [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue04_adapter_t4_synth/src/lpu_sxm_writetap_shell.sv:3]
+	Parameter T bound to: 4 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'lpu_sxm_triangle_mem_adapter' [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue04_adapter_t4_synth/src/lpu_sxm_triangle_mem_adapter.sv:3]
+	Parameter T bound to: 4 - type: integer 
+	Parameter H bound to: 2 - type: integer 
+	Parameter DEPTH bound to: 4096 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'lpu_sxm_triangle_mem_adapter' (0#1) [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue04_adapter_t4_synth/src/lpu_sxm_triangle_mem_adapter.sv:3]
+INFO: [Synth 8-6157] synthesizing module 'lpu_sxm_writetap_completion' [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue04_adapter_t4_synth/src/lpu_sxm_writetap_completion.sv:4]
+	Parameter T bound to: 4 - type: integer 
+	Parameter DEPTH bound to: 4096 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'lpu_sxm_writetap_completion' (0#1) [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue04_adapter_t4_synth/src/lpu_sxm_writetap_completion.sv:4]
+INFO: [Synth 8-6155] done synthesizing module 'lpu_sxm_writetap_shell' (0#1) [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue04_adapter_t4_synth/src/lpu_sxm_writetap_shell.sv:3]
+WARNING: [Synth 8-3936] Found unconnected internal register 'command_reg' and it is trimmed from '32' to '30' bits. [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue04_adapter_t4_synth/src/lpu_sxm_writetap_completion.sv:56]
+WARNING: [Synth 8-7129] Port wi[31] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wi[30] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wi[29] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wi[28] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wi[27] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wi[26] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wi[25] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wi[23] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wi[22] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wi[21] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wi[20] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wi[19] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wi[18] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wi[17] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wi[15] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wi[14] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wi[13] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wi[12] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wi[11] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wi[10] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wi[9] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wi[7] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wi[6] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wi[5] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wi[4] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wi[3] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wi[2] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wi[1] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[1023] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[1022] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[1021] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[1020] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[1019] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[1018] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[1017] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[1016] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[1015] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[1014] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[1013] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[1012] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[1011] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[1010] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[1009] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[1008] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[1007] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[1006] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[1005] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[1004] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[1003] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[1002] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[1001] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[1000] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[999] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[998] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[997] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[996] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[995] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[994] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[993] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[992] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[991] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[990] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[989] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[988] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[987] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[986] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[985] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[984] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[983] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[982] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[981] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[980] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[979] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[978] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[977] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[976] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[975] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[974] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[973] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[972] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[971] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[970] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[969] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[968] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[967] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[966] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[965] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[964] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[963] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[962] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[961] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[960] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[959] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[958] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[957] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[956] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[955] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[954] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[953] in module lpu_sxm_writetap_completion is either unconnected or has no load
+WARNING: [Synth 8-7129] Port wc[952] in module lpu_sxm_writetap_completion is either unconnected or has no load
+INFO: [Common 17-14] Message 'Synth 8-7129' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:06 ; elapsed = 00:00:10 . Memory (MB): peak = 2411.469 ; gain = 666.910
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:06 ; elapsed = 00:00:11 . Memory (MB): peak = 2411.469 ; gain = 666.910
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:06 ; elapsed = 00:00:11 . Memory (MB): peak = 2411.469 ; gain = 666.910
+---------------------------------------------------------------------------------
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.305 . Memory (MB): peak = 2411.469 ; gain = 0.000
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Parsing XDC File [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue04_adapter_t4_synth/src/timing.xdc]
+Finished Parsing XDC File [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue04_adapter_t4_synth/src/timing.xdc]
+Completed Processing XDC Constraints
+
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.002 . Memory (MB): peak = 2532.484 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.115 . Memory (MB): peak = 2532.484 ; gain = 0.000
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:17 ; elapsed = 00:00:28 . Memory (MB): peak = 2532.484 ; gain = 787.926
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xcvu9p-flga2104-2L-e
+INFO: [Synth 8-6742] Reading net delay rules and data
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:17 ; elapsed = 00:00:28 . Memory (MB): peak = 2532.484 ; gain = 787.926
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying 'set_property' XDC Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:17 ; elapsed = 00:00:28 . Memory (MB): peak = 2532.484 ; gain = 787.926
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:19 ; elapsed = 00:00:31 . Memory (MB): peak = 2532.484 ; gain = 787.926
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input   32 Bit       Adders := 53    
+	   3 Input   32 Bit       Adders := 31    
+	   2 Input   15 Bit       Adders := 16    
+	   2 Input    7 Bit       Adders := 2     
+	   2 Input    6 Bit       Adders := 4     
+	   2 Input    5 Bit       Adders := 8     
+	   2 Input    4 Bit       Adders := 16    
+	   2 Input    3 Bit       Adders := 32    
+	   2 Input    2 Bit       Adders := 64    
++---Registers : 
+	               32 Bit    Registers := 14    
+	               27 Bit    Registers := 1     
+	               17 Bit    Registers := 1     
+	               16 Bit    Registers := 1     
+	               15 Bit    Registers := 1     
+	                8 Bit    Registers := 1     
+	                1 Bit    Registers := 16    
++---Muxes : 
+	   2 Input 1024 Bit        Muxes := 3     
+	   2 Input  512 Bit        Muxes := 1     
+	   2 Input  256 Bit        Muxes := 30    
+	   2 Input  240 Bit        Muxes := 3     
+	   2 Input  128 Bit        Muxes := 1     
+	   2 Input   32 Bit        Muxes := 33    
+	   2 Input   27 Bit        Muxes := 1     
+	   2 Input   16 Bit        Muxes := 4     
+	   2 Input   15 Bit        Muxes := 30    
+	   2 Input    8 Bit        Muxes := 988   
+	   2 Input    4 Bit        Muxes := 2     
+	   2 Input    1 Bit        Muxes := 60    
+	 144 Input    1 Bit        Muxes := 1     
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 6840 (col length:120)
+BRAMs: 4320 (col length: RAMB18 360 RAMB36 180)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-7080] Parallel synthesis criteria is not met
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:35 ; elapsed = 00:00:54 . Memory (MB): peak = 2632.656 ; gain = 888.098
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:00:35 ; elapsed = 00:00:55 . Memory (MB): peak = 2632.656 ; gain = 888.098
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:00:36 ; elapsed = 00:00:56 . Memory (MB): peak = 2632.656 ; gain = 888.098
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:00:40 ; elapsed = 00:01:01 . Memory (MB): peak = 2632.656 ; gain = 888.098
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:41 ; elapsed = 00:01:03 . Memory (MB): peak = 2632.656 ; gain = 888.098
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:41 ; elapsed = 00:01:03 . Memory (MB): peak = 2632.656 ; gain = 888.098
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:00:41 ; elapsed = 00:01:03 . Memory (MB): peak = 2632.656 ; gain = 888.098
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:41 ; elapsed = 00:01:03 . Memory (MB): peak = 2632.656 ; gain = 888.098
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:00:41 ; elapsed = 00:01:03 . Memory (MB): peak = 2632.656 ; gain = 888.098
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++-+--------------+----------+
+| |BlackBox name |Instances |
++-+--------------+----------+
++-+--------------+----------+
+
+Report Cell Usage: 
++------+-------+------+
+|      |Cell   |Count |
++------+-------+------+
+|1     |CARRY8 |   338|
+|2     |LUT1   |   549|
+|3     |LUT2   |  5137|
+|4     |LUT3   |  4894|
+|5     |LUT4   |   765|
+|6     |LUT5   |   178|
+|7     |LUT6   |   592|
+|8     |FDRE   |   318|
++------+-------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:41 ; elapsed = 00:01:03 . Memory (MB): peak = 2632.656 ; gain = 888.098
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 925 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:29 ; elapsed = 00:00:53 . Memory (MB): peak = 2632.656 ; gain = 767.082
+Synthesis Optimization Complete : Time (s): cpu = 00:00:41 ; elapsed = 00:01:03 . Memory (MB): peak = 2632.656 ; gain = 888.098
+INFO: [Project 1-571] Translating synthesized netlist
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.264 . Memory (MB): peak = 2632.656 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 338 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+WARNING: [Netlist 29-101] Netlist 'lpu_sxm_writetap_shell' is not ideal for floorplanning, since the cellview 'lpu_sxm_triangle_mem_adapter' contains a large number of primitives.  Please consider enabling hierarchy in synthesis if you want to do floorplanning.
+INFO: [Project 1-570] Preparing netlist for logic optimization
+Parsing XDC File [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue04_adapter_t4_synth/src/timing.xdc]
+create_clock: Time (s): cpu = 00:00:03 ; elapsed = 00:00:05 . Memory (MB): peak = 2632.656 ; gain = 0.000
+Finished Parsing XDC File [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue04_adapter_t4_synth/src/timing.xdc]
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.002 . Memory (MB): peak = 2632.656 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+Synth Design complete | Checksum: 94f380b
+INFO: [Common 17-83] Releasing license: Synthesis
+22 Infos, 103 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:00:54 ; elapsed = 00:01:28 . Memory (MB): peak = 2632.656 ; gain = 2064.355
+# if {[llength [get_sites -quiet $clock_site]] != 1} {error "Invalid OOC clock source site: $clock_site"}
+# reset_timing
+# read_xdc [file join $src timing.xdc]
+WARNING: [filemgmt 56-128] File '<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue04_adapter_t4_synth/src/timing.xdc' is already in the project and will not be added again
+Parsing XDC File [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue04_adapter_t4_synth/src/timing.xdc]
+Finished Parsing XDC File [<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/l5_queue04_adapter_t4_synth/src/timing.xdc]
+# set_property HD.CLK_SRC $clock_site [get_ports clk_i]
+INFO: [Vivado 12-4761] HD.CLK_SRC property is set on port clk_i. The net connecting to the port drives either clock PIN or hierarchical black box. Use the create_clock constraint to create a clock on this port prior to setting HD.CLK_SRC. 
+# puts "OOC_CLOCK_CONTEXT HD.CLK_SRC=$clock_site (evaluation assumption, not system floorplan)"
+OOC_CLOCK_CONTEXT HD.CLK_SRC=BUFGCE_X0Y120 (evaluation assumption, not system floorplan)
+# if {$timing_scope eq "internal"} {
+#   set_false_path -from [get_ports -filter {DIRECTION == IN && NAME != clk_i && NAME != rst_ni}]
+#   set_false_path -to [all_outputs]
+#   puts "TIMING_SCOPE internal: user-approved core signoff; IO budget reported separately after routing"
+# }
+TIMING_SCOPE internal: user-approved core signoff; IO budget reported separately after routing
+# if {$completed == 0} {
+# write_checkpoint -force [file join $out synthesized.dcp]
+# write_verilog -force -mode funcsim [file join $out synthesized.v]
+# report_utilization -hierarchical -file [file join $out synth_hierarchical.rpt]
+# report_utilization -file [file join $out synth_utilization.rpt]
+# report_timing_summary -delay_type min_max -max_paths 10 -report_unconstrained -file [file join $out synth_timing.rpt]
+# set fd [open [file join $out checks.txt] w]
+# puts $fd "blackbox_count=[llength [get_cells -hier -quiet -filter {IS_BLACKBOX == 1}]]"
+# puts $fd "latch_count=[llength [get_cells -hier -quiet -filter {REF_NAME =~ LD*}]]"
+# puts $fd "clocks=[get_clocks]"
+# close $fd
+# puts "SXM_STAGE_DONE synth T=$tiles"
+# finish_stage synthesized
+# }
+INFO: [Timing 38-35] Done setting XDC timing constraints.
+INFO: [Timing 38-480] Writing timing data to binary archive.
+Write ShapeDB Complete: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.063 . Memory (MB): peak = 2632.656 ; gain = 0.000
+INFO: [Common 17-1381] The checkpoint '<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/results/l5_queue04_adapter_t4_synth/synthesized/synthesized.dcp' has been generated.
+write_checkpoint: Time (s): cpu = 00:00:02 ; elapsed = 00:00:07 . Memory (MB): peak = 2632.656 ; gain = 0.000
+INFO: [Timing 38-91] UpdateTimingParams: Speed grade: -2L, Temperature grade: E, Delay Type: min_max.
+report_timing_summary: Time (s): cpu = 00:00:28 ; elapsed = 00:00:53 . Memory (MB): peak = 3791.789 ; gain = 1159.133
+SXM_STAGE_DONE synth T=4
+SXM_STAGE_FINISHED synthesized
+INFO: [Common 17-206] Exiting Vivado at Tue Nov 10 02:25:37 2026...

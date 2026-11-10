@@ -36,5 +36,10 @@ module lpu_mem_srf_sxm_roundtrip_integration #(
   output logic sxm_permute_phase_fault_o,sxm_permute_selector_fault_o,
   output logic sxm_permute_buffer_not_ready_o,sxm_busy_o,sxm_command_fault_o
 );
-  lpu_mem_srf_sxm_turnaround_integration #(.MEM_SLICES(F),.MEM_SLICES_PER_GROUP(G),.MEM_DEPTH_ROWS(P),.COLUMNS(COLUMNS),.SUPERLANES(T),.STREAMS(STREAMS),.SEGMENT_BITS(SEGMENT_BITS),.LOCAL_PRODUCERS(LOCAL_PRODUCERS),.LOCAL_CONSUMERS(LOCAL_CONSUMERS),.P_LPU_PROFILE(P_LPU_PROFILE),.MEM_ACTIVE_ROWS(E)) u_turnaround (.*);
+  lpu_mem_srf_sxm_turnaround_integration #(.MEM_SLICES(F),.MEM_SLICES_PER_GROUP(G),.MEM_DEPTH_ROWS(P),.COLUMNS(COLUMNS),.SUPERLANES(T),.STREAMS(STREAMS),.SEGMENT_BITS(SEGMENT_BITS),.LOCAL_PRODUCERS(LOCAL_PRODUCERS),.LOCAL_CONSUMERS(LOCAL_CONSUMERS),.P_LPU_PROFILE(P_LPU_PROFILE),.MEM_ACTIVE_ROWS(E)) u_turnaround (.row_ctrl_valid_i(1'b0),.row_ctrl_op_i(2'b0),.row_ctrl_ctx_i(1'b0),.row_ctrl_index_i(3'b0),.row_ctrl_data_i(128'b0),
+    .row_cap_valid_i(1'b0),.row_cap_ctx_i(1'b0),.row_cap_tile_i(3'b0),.row_cap_group_i(3'b0),.row_cap_row_i(4'b0),
+    .row_p_valid_i(1'b0),.row_p_ctx_i(1'b0),.row_p_dest_i(3'b0),.row_p_source_i(3'b0),.row_p_row_i(4'b0),
+    .row_p_paired_i(1'b0),.row_p_branch_i(1'b0),.row_p_sequence_i(6'b0),
+    .row_run_valid_i('0),.row_run_ctx_i(1'b0),.row_run_delay_i(16'b0),.row_run_interval_i(16'b0),
+    .row_run_count_i(6'b0),.row_run_sequence_i(6'b0),.row_fault_o(),.*);
 endmodule

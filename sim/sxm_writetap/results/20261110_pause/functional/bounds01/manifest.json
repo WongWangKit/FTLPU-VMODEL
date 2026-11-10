@@ -1,0 +1,8 @@
+{
+  "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/bounds01/sxm_triangle_core.sv": "941246a1a760707321e9c95efb6b7bb671e856bd3ad69a20b52fc368e5c52af0",
+  "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/bounds01/sxm_triangle_row_frontend.sv": "c630596874175e9166b4ff0732196e5002d65623e3a6c5f693d0ad818968ef1e",
+  "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/bounds01/sxm_compat_decode.sv": "5cea05401aa5c208f622b81b6df7a32d5357b69cb97faa4e47d78da1a94f7f2d",
+  "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/bounds01/sxm_compat_engine.sv": "b6230239c74e06a1e50489fdc12c8cdb0574d2267953a1d72ed400daaa468362",
+  "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/bounds01/sxm_triangle_full_core.sv": "c5c6e54d5b48313f934dbb30d629baab0f375e63da5a58323ee4df2a72783a38",
+  "<LPU_WORKSPACE>/learn/sxm_writetap_implementation_20261109/tmp/bounds01/sxm_row_bounds_tb.sv": "9e734928eacd966263b6494e233316f597b559c0b627a4750b0745497abccddd"
+}
