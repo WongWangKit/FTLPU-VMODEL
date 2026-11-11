@@ -72,9 +72,7 @@ module lpu_mxm_fp32_add_pipe #(
     magnitude_d = a1_subtract_q ?
       {1'b0,a1_big_q} - {1'b0,a1_small_q} :
       {1'b0,a1_big_q} + {1'b0,a1_small_q};
-    leading_d = 0;
-    for (integer bit_index=0; bit_index<28; bit_index++)
-      if (magnitude_d[bit_index]) leading_d = bit_index;
+    leading_d = leading_one64({36'b0,magnitude_d});
     normalized_d = {36'b0,a2_magnitude_q} << a2_shift_q;
   end
 

@@ -15,6 +15,7 @@ module lpu_mxm_bf16_dot_csa #(
   output logic alignment_lost_o
 );
   import lpu_mxm_supercell_math_pkg::*;
+  localparam integer EXP_LEAVES=1 << $clog2(TERMS);
   localparam integer WIDTH = lpu_mxm_config_pkg::DOT_INTERNAL_BITS;
   localparam integer GROWTH = TERMS > 1 ? $clog2(TERMS) : 0;
   localparam integer ALIGNED_BITS = WIDTH - 1 - GROWTH;
@@ -130,14 +131,18 @@ module lpu_mxm_bf16_dot_csa #(
     end
   end
 
-  always_comb begin : common_exponent
-    common_d=-11'sd1023;
-    for (integer term=0; term<TERMS; term++)
-      if ((|m2_product_q[term*16 +: 16]) &&
-          $signed(m2_exponent_q[term*11 +: 11]) > common_d)
-        common_d=$signed(m2_exponent_q[term*11 +: 11]);
-    if (common_d == -11'sd1023) common_d=0;
+  // Balanced maximum selection: ceil(log2(TERMS)) comparator levels.
+  wire signed [10:0] exponent_tree[0:2*EXP_LEAVES-2];
+  for(genvar leaf=0;leaf<EXP_LEAVES;leaf++) begin : g_exp_leaf
+    if(leaf<TERMS) assign exponent_tree[EXP_LEAVES-1+leaf]=
+      (|m2_product_q[leaf*16+:16])?$signed(m2_exponent_q[leaf*11+:11]):-11'sd1023;
+    else assign exponent_tree[EXP_LEAVES-1+leaf]=-11'sd1023;
   end
+  for(genvar node=0;node<EXP_LEAVES-1;node++) begin : g_exp_node
+    assign exponent_tree[node]=exponent_tree[2*node+1]>exponent_tree[2*node+2]?
+      exponent_tree[2*node+1]:exponent_tree[2*node+2];
+  end
+  assign common_d=exponent_tree[0] == -11'sd1023 ? 11'sd0 : exponent_tree[0];
 
   always_comb begin : align_products
     logic [63:0] unshifted, magnitude;
@@ -160,9 +165,7 @@ module lpu_mxm_bf16_dot_csa #(
     // Shifting avoids an out-of-range part select for TERMS=1.
     if (TERMS > 1) final_sum_d=final_sum_d+64'(r4_words_q >> 64);
     magnitude_d=r5_sum_q[63] ? (~$unsigned(r5_sum_q)+64'd1) : $unsigned(r5_sum_q);
-    leading_d=0;
-    for (integer bit_index=0; bit_index<64; bit_index++)
-      if (magnitude_d[bit_index]) leading_d=bit_index;
+    leading_d=leading_one64(magnitude_d);
     normalized_sum_d=magnitude_d << (63-leading_d);
   end
 

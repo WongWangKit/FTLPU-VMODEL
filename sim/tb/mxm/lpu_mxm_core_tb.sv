@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-// Three independent instruction streams, real 4x4 array, real dual-bank backend.
+// Five independent instruction streams, real 4x4 array, real dual-bank backend.
 module lpu_mxm_core_tb #(parameter integer SCENARIO=0);
   localparam integer R=4,C=4,K=8,N=8,LIMIT=SCENARIO==8?5000:400;
   // 0: earliest first compute, continuous reuse of two loaded tiles.
@@ -21,6 +21,16 @@ module lpu_mxm_core_tb #(parameter integer SCENARIO=0);
   localparam integer AB=lpu_mxm_backend_isa_pkg::BACKEND_ADDRESS_BITS;
   localparam integer IB=lpu_mxm_backend_isa_pkg::BACKEND_INSTRUCTION_BITS;
   logic [IB-1:0] bi=0;
+  localparam integer WS=lpu_mxm_config_pkg::WEIGHT_STREAM_COUNT;
+  localparam integer Q=lpu_mxm_config_pkg::WEIGHT_Q_STREAM,SL=lpu_mxm_config_pkg::WEIGHT_SCALE_LO_STREAM;
+  localparam integer SH=lpu_mxm_config_pkg::WEIGHT_SCALE_HI_STREAM,Z=lpu_mxm_config_pkg::WEIGHT_ZERO_STREAM;
+  logic [R*WS*K*8-1:0] weight_streams;
+  logic [R*WS*K-1:0] weight_stream_valid='1;
+  wire [R*WS*K-1:0] weight_consumed;
+  integer row_load_seq[0:R-1],row_param_seq[0:R-1];
+  logic pe=0,pl=0,de=0,dl=0,pi=0,di=0;
+  wire per,plr,der,dlr;
+  wire [R-1:0] prv,drv,pri,dri;
   wire cr,clr,lr,llr,br,blr,fault,frontend_fault,backend_fault;
   wire [R-1:0] cv,lv;
   wire [R*CB-1:0] cp;
@@ -47,7 +57,7 @@ module lpu_mxm_core_tb #(parameter integer SCENARIO=0);
   wire [C*2*9-1:0] bank_addresses;
   logic [C*2-1:0] serviced_requests,serviced_writes;
   logic [C*2*9-1:0] serviced_addresses;
-  logic [R*K*16-1:0] activation,weights;
+  logic [R*K*16-1:0] activation;
   integer trace_fd=0;
   logic [R-1:0] accepted_activation,accepted_weight;
   logic [R*16-1:0] accepted_compute_index,accepted_load_index;
@@ -60,7 +70,7 @@ module lpu_mxm_core_tb #(parameter integer SCENARIO=0);
       $fdisplay(trace_fd,"sample_ns,reset_n,run,compute_launch,backend_launch,column,partial_valid,partial_tag,partial_lane0,result_valid,result_tag,result_address,result_lane0,fault,load_launch,compute_row_valid,compute_row_buffer,compute_row_tag,load_row_valid,load_row_buffer,load_row_index,activation_accepted,activation_buffer,activation_tag,activation_lane0,weight_accepted,weight_buffer,weight_index,weight_lane0,backend_slot_valid,backend_operation,backend_address,bank0_valid,bank0_write,bank0_address,bank1_valid,bank1_write,bank1_address,frontend_fault,backend_fault,result_bf16,backend_bf16,issue_valid,issue_operation,issue_address,issue_bf16,partial_accepted,accepted_partial_tag,accepted_partial_lane0,alu_valid,alu_tag,alu_address,operand_a0,operand_b0,cell_weight_accepted,cell_weight_buffer,cell_activation_accepted,cell_activation_buffer,returned_valid,returned_tag,returned_lane0");
     end
     if($value$plusargs("vcd_path=%s",vcd_path)) begin
-      $dumpfile(vcd_path);$dumpvars(0,clk,rst_n,run,cl,ll,bl,cv,lv,cp,lp,cx,lx,activation,weights,pv,pd,pt,returned_valid,returned_data,returned_tag,rv,rd,rt,ra,slots,ops,slot_bf16,result_bf16,slot_address,issue_valid,issue_address,issue_operation,issue_bf16,alu_valid,operand_a,operand_b,alu_address,alu_tag,bank_requests,bank_writes,bank_addresses,fault,frontend_fault,backend_fault);
+      $dumpfile(vcd_path);$dumpvars(0,clk,rst_n,run,cl,ll,bl,cv,lv,cp,lp,cx,lx,activation,weight_streams,pv,pd,pt,returned_valid,returned_data,returned_tag,rv,rd,rt,ra,slots,ops,slot_bf16,result_bf16,slot_address,issue_valid,issue_address,issue_operation,issue_bf16,alu_valid,operand_a,operand_b,alu_address,alu_tag,bank_requests,bank_writes,bank_addresses,fault,frontend_fault,backend_fault);
     end
   end
   always @(posedge clk) begin
@@ -74,7 +84,7 @@ module lpu_mxm_core_tb #(parameter integer SCENARIO=0);
     for(integer r=0;r<R;r++) begin
       accepted_compute_buffer[r]=cp[r*CB];accepted_load_buffer[r]=lp[r*LB+1];
       sampled_activation_lane0[r*16+:16]=activation[r*K*16+:16];
-      sampled_weight_lane0[r*16+:16]=weights[r*K*16+:16];
+      sampled_weight_lane0[r*16+:16]={8'b0,weight_streams[(r*WS*K+Q*K)*8+:8]};
     end
     #2;
     if(trace_fd) for(integer c=0;c<C;c++)
@@ -91,13 +101,30 @@ module lpu_mxm_core_tb #(parameter integer SCENARIO=0);
         sampled_cell_wv[c],sampled_cell_wb[c],sampled_cell_av[c],sampled_cell_ab[c],returned_valid[c],returned_tag[c*16+:16],returned_data[c*N*32+:32]);
   end
   final if(trace_fd) $fclose(trace_fd);
+  always @(posedge clk) if(rst_n && run) begin
+    logic [R*WS*K-1:0] expected_consume;
+    expected_consume=0;
+    for(integer r=0;r<R;r++) for(integer k=0;k<K;k++) begin
+      expected_consume[(r*WS+Q)*K+k]=lv[r];
+      expected_consume[(r*WS+SL)*K+k]=prv[r];
+      expected_consume[(r*WS+SH)*K+k]=prv[r];
+      expected_consume[(r*WS+Z)*K+k]=prv[r];
+    end
+    if(weight_consumed!==expected_consume || drv!==lv) $fatal(1,"parameter/weight stream consume or instruction phase mismatch");
+  end
   always #5 clk=~clk;
   lpu_mxm_core dut (
     .clk_i(clk),.rst_ni(rst_n),.run_i(run),
     .compute_enqueue_valid_i(ce),.compute_launch_i(cl),.compute_instruction_i(ci),.compute_enqueue_ready_o(cr),.compute_launch_ready_o(clr),
     .load_enqueue_valid_i(le),.load_launch_i(ll),.load_instruction_i(li),.load_enqueue_ready_o(lr),.load_launch_ready_o(llr),
     .backend_enqueue_valid_i(be),.backend_launch_i(bl),.backend_instruction_i(bi),.backend_enqueue_ready_o(br),.backend_launch_ready_o(blr),
-    .activation_valid_i(cv),.weight_valid_i(lv),.activation_i(activation),.weight_i(weights),
+    .param_load_enqueue_valid_i(pe),.param_load_launch_i(pl),.param_load_instruction_i(pi),
+    .param_load_enqueue_ready_o(per),.param_load_launch_ready_o(plr),
+    .dequant_enqueue_valid_i(de),.dequant_launch_i(dl),.dequant_instruction_i(di),
+    .dequant_enqueue_ready_o(der),.dequant_launch_ready_o(dlr),
+    .param_load_row_valid_o(prv),.param_load_row_instruction_o(pri),
+    .dequant_row_valid_o(drv),.dequant_row_instruction_o(dri),
+    .activation_valid_i(cv),.activation_i(activation),.weight_stream_valid_i(weight_stream_valid),.weight_stream_i(weight_streams),.weight_stream_consume_o(weight_consumed),
     .compute_row_valid_o(cv),.load_row_valid_o(lv),.compute_row_instruction_o(cp),.load_row_instruction_o(lp),
     .compute_row_tag_o(cx),.load_row_index_o(lx),.partial_valid_o(pv),.partial_o(pd),.partial_tag_o(pt),
     .returned_valid_o(returned_valid),.returned_o(returned_data),.returned_tag_o(returned_tag),
@@ -132,7 +159,7 @@ module lpu_mxm_core_tb #(parameter integer SCENARIO=0);
     compute_word=CB'(seq%2);
   endfunction
   function automatic integer compute_start(input integer seq);
-    compute_start=32+seq*BATCH+(SCENARIO==3 && seq>=2?3:0)-(SCENARIO==2?1:0);
+    compute_start=34+seq*BATCH+(SCENARIO==3 && seq>=2?3:0)-(SCENARIO==2?1:0);
   endfunction
   function automatic integer load_start(input integer seq);
     load_start=seq<2?32*seq:32+(seq-1)*BATCH;
@@ -154,24 +181,40 @@ module lpu_mxm_core_tb #(parameter integer SCENARIO=0);
       backend_word=(IB'(quantized)<<(IB-1)) | (IB'(beat%BATCH)<<2) | IB'(op);
     end
   endfunction
+  always @(posedge clk) for(integer r=0;r<R;r++) begin
+    if(!rst_n) row_load_seq[r]<=-1;
+    else if(run && lv[r] && lx[r*16+:16]==0) row_load_seq[r]<=row_load_seq[r]+1;
+  end
+  always @(posedge clk) for(integer r=0;r<R;r++) begin
+    if(!rst_n) row_param_seq[r]<=-1;
+    else if(run && prv[r]) row_param_seq[r]<=row_param_seq[r]+1;
+  end
   always_comb begin
-    activation=0;weights=0;
+    activation=0;weight_streams='1;
     for(integer r=0;r<R;r++) begin
-      logic [31:0] a,w;
+      logic [31:0] a,scale_bits;
+      integer load_id;
+      load_id=row_load_seq[r]+(lv[r] && lx[r*16+:16]==0?1:0);
       a=fp32_integer((int'(cx[r*16+:16])%BATCH)%3+r+1);
-      w=fp32_integer((32-int'(lx[r*16+:16]))*(int'(lp[r*LB+2+:STREAM_BITS])+1));
-      for(integer k=0;k<K;k++) begin activation[(r*K+k)*16+:16]=a[31:16];weights[(r*K+k)*16+:16]=w[31:16];end
+      scale_bits=fp32_integer(row_param_seq[r]+(prv[r]?1:0)+1);
+      for(integer k=0;k<K;k++) begin
+        activation[(r*K+k)*16+:16]=a[31:16];
+        weight_streams[(r*WS*K+Q*K+k)*8+:8]=8'(32-int'(lx[r*16+:16]));
+        weight_streams[(r*WS*K+SL*K+k)*8+:8]=scale_bits[23:16];
+        weight_streams[(r*WS*K+SH*K+k)*8+:8]=scale_bits[31:24];
+        weight_streams[(r*WS*K+Z*K+k)*8+:8]=0;
+      end
     end
   end
   bit expected_partial[0:C-1][0:LIMIT],expected_result[0:C-1][0:LIMIT];
   integer partial_tag[0:C-1][0:LIMIT],result_tag[0:C-1][0:LIMIT];
   integer cycle=0,compute_seq=0,backend_seq=0,partials=0,outputs=0;
   integer loaded_beats[0:R-1][0:1],last_activation_edge[0:R-1][0:1];
-  integer load_seq=0,first_load_cycle=-1,overlap_edges=0;
+  integer load_seq=0,first_load_cycle=-1,overlap_edges=0,dequant_seq=0;
   always @(posedge clk) begin
     if(!rst_n) begin
       cycle=0;compute_seq=0;backend_seq=0;partials=0;outputs=0;
-      load_seq=0;first_load_cycle=-1;overlap_edges=0;
+      load_seq=0;first_load_cycle=-1;overlap_edges=0;dequant_seq=0;
       for(integer r=0;r<R;r++) for(integer b=0;b<2;b++) begin loaded_beats[r][b]=0;last_activation_edge[r][b]=-1000;end
       for(integer c=0;c<C;c++) for(integer t=0;t<=LIMIT;t++) begin expected_partial[c][t]=0;expected_result[c][t]=0;end
     end else if(run) begin
@@ -201,6 +244,11 @@ module lpu_mxm_core_tb #(parameter integer SCENARIO=0);
         end
         backend_seq=backend_seq+1;
       end
+      if(dl) begin
+        if(!dlr || (de && !der)) $fatal(1,"dequant queue unavailable");
+        dequant_seq=dequant_seq+1;
+      end
+      if(pl && !plr) $fatal(1,"parameter queue unavailable");
       if(ll && !llr) $fatal(1,"core load launch not ready");
       for(integer c=0;c<C;c++) begin
         bit expected_add;
@@ -222,14 +270,14 @@ module lpu_mxm_core_tb #(parameter integer SCENARIO=0);
         if(cv[r]) begin
           integer b;
           b=int'(cp[r*CB]);
-          if(SCENARIO!=2 && loaded_beats[r][b]!=32) $fatal(1,"activation before complete weight tile row=%0d",r);
+          // INT8 input may prefetch the retiring Buffer two cycles before
+          // its first BF16 write. Read/write ownership is checked below at
+          // every cell's actual M1/write interface, not at source acceptance.
           last_activation_edge[r][b]=cycle;
         end
         if(lv[r]) begin
           integer b;
           b=int'(lp[r*LB+1]);
-          if(SCENARIO!=2 && cycle<=last_activation_edge[r][b])
-            $fatal(1,"refill overlaps local activation row=%0d",r);
           if(lx[r*16+:16]==0) loaded_beats[r][b]=0;
           loaded_beats[r][b]=loaded_beats[r][b]+1;
         end
@@ -249,8 +297,8 @@ module lpu_mxm_core_tb #(parameter integer SCENARIO=0);
         end
         for(integer s=0;s<(REFILL?4:2);s++) begin
           integer start_w,end_w;
-          start_w=load_start(s)+1+3*r+(s<2?c*(N+1):c);
-          end_w=load_start(s)+32+3*r+c;
+          start_w=load_start(s)+3+3*r+(s<2?c*(N+1):c);
+          end_w=load_start(s)+34+3*r+c;
           if(relative_edge>=start_w && relative_edge<=end_w) begin expected_w=1;expected_wb=1'(s%2);end
         end
         if(cell_av[r*C+c]!==expected_a || (expected_a && cell_ab[r*C+c]!==expected_ab))
@@ -262,7 +310,7 @@ module lpu_mxm_core_tb #(parameter integer SCENARIO=0);
       end
       #1;
       if(fault && (SCENARIO==2 || SCENARIO==3 || SCENARIO==6 || SCENARIO==9)) begin
-        if(cycle-first_load_cycle!=(SCENARIO==2?32:(SCENARIO==3?119+R:(SCENARIO==9?backend_start(2)+1:54+R)))) $fatal(1,"fault at unexpected edge");
+        if(cycle-first_load_cycle!=(SCENARIO==2?34:(SCENARIO==3?121+R:(SCENARIO==9?backend_start(2)+1:56+R)))) $fatal(1,"fault at unexpected edge");
         if(frontend_fault!==(SCENARIO==2) || backend_fault!==(SCENARIO!=2)) $fatal(1,"unexpected fault source");
         $display("MXM_CORE_NEGATIVE_PASS scenario=%0d fault_edge=%0d frontend_fault=%0d backend_fault=%0d",SCENARIO,cycle-first_load_cycle,frontend_fault,backend_fault);
         // Let the public-port trace process record the faulting edge too.
@@ -318,27 +366,33 @@ module lpu_mxm_core_tb #(parameter integer SCENARIO=0);
   end
   initial begin
     repeat(3) @(negedge clk);rst_n=1;
-    // Independently preload all three queues; no per-compute backend fields.
+    // Independently preload all five queues; no per-compute backend fields.
     for(integer s=0;s<5;s++) begin
       @(negedge clk);ce=s==0;ci=compute_word(0);le=s<(REFILL?4:2);
-      li=(LB'(s%2)<<1) | (LB'(s)<<2);
+      li=LB'(s%2)<<1;
       be=s==0;bi=backend_word(0);
+      pe=s<(REFILL?4:2);pi=~1'(s%2);de=s==0;di=1;
     end
-    @(negedge clk);ce=0;le=0;be=0;run=1;
+    @(negedge clk);ce=0;le=0;be=0;pe=0;de=0;run=1;pl=1;
     for(integer t=0;t<(SCENARIO==8?4*BATCH+100:280);t++) begin
       @(negedge clk);
       ll=t==load_start(0) || t==load_start(1) || (REFILL && (t==load_start(2) || t==load_start(3)));
-      cl=0;bl=0;ce=0;be=0;
+      cl=0;bl=0;ce=0;be=0;pl=0;dl=0;de=0;
+      for(integer s=0;s<(REFILL?4:2);s++) begin
+        if(s>0 && t==load_start(s)-1) pl=1;
+        if(t>=load_start(s) && t<load_start(s)+32) dl=1;
+      end
+      if(dl && dequant_seq+1<(REFILL?4:2)*32) begin de=1;di=~1'((dequant_seq+1)/32);end
       for(integer s=0;s<4;s++) if(t>=compute_start(s) && t<compute_start(s)+BATCH) cl=1;
       for(integer s=0;s<5;s++) if(t>=backend_start(s) && t<backend_start(s)+(s==0?BATCH/2:(s==1?BATCH-BATCH/2:BATCH))) bl=1;
       if(cl && compute_seq+1<4*BATCH) begin ce=1;ci=compute_word((compute_seq+1)/BATCH);end
       if(bl && backend_seq+1<4*BATCH) begin be=1;bi=backend_word(backend_seq+1);end
     end
-    @(negedge clk);ll=0;cl=0;bl=0;ce=0;be=0;
+    @(negedge clk);ll=0;cl=0;bl=0;ce=0;be=0;pl=0;dl=0;de=0;
     if(SCENARIO==2 || SCENARIO==3 || SCENARIO==6 || SCENARIO==9) $fatal(1,"unsafe schedule did not fault");
-    if(partials!=4*BATCH*C*N || outputs!=2*BATCH*C*N || compute_seq!=4*BATCH || backend_seq!=4*BATCH || load_seq!=(REFILL?4:2) || overlap_edges==0)
+    if(partials!=4*BATCH*C*N || outputs!=2*BATCH*C*N || compute_seq!=4*BATCH || backend_seq!=4*BATCH || load_seq!=(REFILL?4:2) || overlap_edges==0 || dequant_seq!=(REFILL?4:2)*32)
       $fatal(1,"core missing results partials=%0d outputs=%0d",partials,outputs);
-    $display("MXM_CORE_PASS scenario=%0d batch_size=%0d compute_beats=%0d backend_beats=%0d partial_fp32=%0d output_elements=%0d output_latency=6 returned_to_output=4 top_to_output=%0d return_stages=%0d direct_A=1 count_free=1 overlap_edges=%0d",SCENARIO,BATCH,compute_seq,backend_seq,partials,outputs,R+4,R,overlap_edges);
+    $display("MXM_CORE_PASS scenario=%0d batch_size=%0d compute_beats=%0d backend_beats=%0d partial_fp32=%0d output_elements=%0d dequant_write=3 output_latency=6 returned_to_output=4 top_to_output=%0d return_stages=%0d direct_A=1 count_free=1 overlap_edges=%0d",SCENARIO,BATCH,compute_seq,backend_seq,partials,outputs,R+4,R,overlap_edges);
     $finish;
   end
   initial begin #100000;$fatal(1,"core timeout");end

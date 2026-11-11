@@ -3,7 +3,8 @@ set -euo pipefail
 repo_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 cd "$repo_dir"
 python3 sim/cmodel/generate_mxm_supercell_vectors.py
-for top in lpu_mxm_bf16_dot_csa_tb lpu_mxm_fp32_add_pipe_tb lpu_mxm_output_pipe_tb lpu_mxm_supercell_tb lpu_mxm_supercell_chain_tb lpu_mxm_control_tb lpu_mxm_compact_isa_tb lpu_mxm_frontend_tb lpu_mxm_weight_shift_tb lpu_mxm_backend_tb lpu_mxm_backend_config_tb lpu_mxm_result_return_tb lpu_mxm_core_tb; do
+python3 sim/cmodel/generate_mxm_dequant_vectors.py
+for top in lpu_mxm_dequant_control_tb lpu_mxm_weight_dequant_tb lpu_mxm_bf16_dot_csa_tb lpu_mxm_fp32_add_pipe_tb lpu_mxm_output_pipe_tb lpu_mxm_supercell_tb lpu_mxm_supercell_chain_tb lpu_mxm_control_tb lpu_mxm_compact_isa_tb lpu_mxm_frontend_tb lpu_mxm_weight_shift_tb lpu_mxm_backend_tb lpu_mxm_backend_config_tb lpu_mxm_result_return_tb lpu_mxm_core_tb; do
   target="build/vcs/$top"
   mkdir -p "$target"
   vcs -full64 -sverilog -timescale=1ns/1ps -top "$top" \
@@ -11,6 +12,8 @@ for top in lpu_mxm_bf16_dot_csa_tb lpu_mxm_fp32_add_pipe_tb lpu_mxm_output_pipe_
     -Mdir="$target/csrc" -o "$target/simv" -l "$target/compile.log"
   args=()
   case "$top" in
+    lpu_mxm_weight_dequant_tb)
+      args=(+vectors=build/mxm_supercell/vectors/weight_dequant.hex) ;;
     lpu_mxm_bf16_dot_csa_tb)
       args=(+vectors=build/mxm_supercell/vectors/dot_k8.hex +count=2048) ;;
     lpu_mxm_fp32_add_pipe_tb)

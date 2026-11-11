@@ -36,6 +36,17 @@ def run(command, log):
     return result.stdout.strip()
 
 
+def dequant_trace(iverilog,vvp,sources):
+    top='lpu_mxm_weight_dequant_tb'
+    name=top+'_trace'
+    output=BUILD/(name+'.vvp')
+    run([iverilog,'-g2012','-s',top,'-o',str(output),*sources,f'sim/tb/mxm/{top}.sv'],name+'_compile.log')
+    trace_dir=BUILD/'traces';trace_dir.mkdir(parents=True,exist_ok=True)
+    return run([vvp,str(output),'+count=512',f'+vectors={(BUILD/"vectors/weight_dequant.hex").as_posix()}',
+                f'+trace_path={(trace_dir/(name+".csv")).as_posix()}',
+                f'+vcd_path={(trace_dir/(name+".vcd")).as_posix()}'],name+'_run.log')
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--compile-only', action='store_true')
@@ -44,7 +55,7 @@ def main():
     parser.add_argument('--core-scenarios', help='Comma-separated core scenario numbers; defaults to all')
     args = parser.parse_args()
     BUILD.mkdir(parents=True, exist_ok=True)
-    tops = ['lpu_mxm_bf16_dot_csa_tb', 'lpu_mxm_fp32_add_pipe_tb', 'lpu_mxm_output_pipe_tb',
+    tops = ['lpu_mxm_dequant_control_tb', 'lpu_mxm_weight_dequant_tb', 'lpu_mxm_bf16_dot_csa_tb', 'lpu_mxm_fp32_add_pipe_tb', 'lpu_mxm_output_pipe_tb',
             'lpu_mxm_supercell_tb', 'lpu_mxm_supercell_chain_tb',
             'lpu_mxm_control_tb', 'lpu_mxm_compact_isa_tb', 'lpu_mxm_frontend_tb', 'lpu_mxm_weight_shift_tb', 'lpu_mxm_backend_tb',
             'lpu_mxm_backend_config_tb', 'lpu_mxm_result_return_tb', 'lpu_mxm_core_tb']
@@ -82,6 +93,11 @@ def main():
     reference = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(reference)
     dot_count, add_count = reference.generate(BUILD/'vectors')
+    if 'lpu_mxm_weight_dequant_tb' in tops:
+        spec_dq=importlib.util.spec_from_file_location('dequant_reference',ROOT/'sim/cmodel/generate_mxm_dequant_vectors.py')
+        dequant_reference=importlib.util.module_from_spec(spec_dq)
+        spec_dq.loader.exec_module(dequant_reference)
+        assert dequant_reference.generate(BUILD/'vectors')==524288
     iverilog, vvp = tool('iverilog'), tool('vvp')
     for top in tops:
         sizes = [1,3,8,16] if top == 'lpu_mxm_bf16_dot_csa_tb' else (
@@ -90,10 +106,14 @@ def main():
             [(1,1),(1,3),(4,8)] if top == 'lpu_mxm_backend_tb' else (
             [(1,1),(2,3),(3,1),(4,8),(8,3)] if top == 'lpu_mxm_result_return_tb' else (
             list(range(11)) if top == 'lpu_mxm_core_tb' else [None])))))
+        if top == 'lpu_mxm_dequant_control_tb':
+            sizes = [(1,1),(2,3),(4,1),(4,3)]
         if top == 'lpu_mxm_backend_config_tb':
             sizes = [2,6,1000,1024,2048,65536]
         if top == 'lpu_mxm_weight_shift_tb':
             sizes = [3,1]
+        if top == 'lpu_mxm_weight_dequant_tb':
+            sizes = [(1,1),(3,1),(8,1),(8,0)]
         if top == 'lpu_mxm_core_tb' and args.core_scenarios:
             sizes = [int(value) for value in args.core_scenarios.split(',')]
         for size in sizes:
@@ -109,9 +129,10 @@ def main():
             output = BUILD / (name+'.vvp')
             command = [iverilog, '-g2012', '-s', top, '-o', str(output)]
             if isinstance(size,tuple):
-                fields = (('ROWS','QUEUE_DEPTH') if top == 'lpu_mxm_control_tb' else (
+                fields = (('LANES','ZERO_ENABLE') if top == 'lpu_mxm_weight_dequant_tb' else (
+                          ('ROWS','QUEUE_DEPTH') if top in ('lpu_mxm_control_tb','lpu_mxm_dequant_control_tb') else (
                           ('COLS','LANES') if top == 'lpu_mxm_backend_tb' else (
-                          ('ROWS','LANES') if top == 'lpu_mxm_result_return_tb' else ('TERMS','OUTPUTS'))))
+                          ('ROWS','LANES') if top == 'lpu_mxm_result_return_tb' else ('TERMS','OUTPUTS')))))
                 command += ['-P', f'{top}.{fields[0]}={size[0]}', '-P', f'{top}.{fields[1]}={size[1]}']
             elif top == 'lpu_mxm_core_tb':
                 command += ['-P', f'{top}.SCENARIO={size}']
@@ -138,7 +159,11 @@ def main():
                             f'+output_vectors={(BUILD/"vectors/backend_output.hex").as_posix()}']
             elif top == 'lpu_mxm_output_pipe_tb':
                 command += [f'+vectors={(BUILD/"vectors/output.hex").as_posix()}']
+            elif top == 'lpu_mxm_weight_dequant_tb':
+                command += [f'+vectors={(BUILD/"vectors/weight_dequant.hex").as_posix()}']
             print(run(command, name+'_run.log'), flush=True)
+        if top == 'lpu_mxm_weight_dequant_tb' and args.trace:
+            print(dequant_trace(iverilog,vvp,sources),flush=True)
         if top == 'lpu_mxm_result_return_tb':
             invalid = BUILD / 'lpu_mxm_result_return_rectangle.vvp'
             run([iverilog,'-g2012','-s',top,'-o',str(invalid),

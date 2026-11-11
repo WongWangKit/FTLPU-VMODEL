@@ -23,7 +23,7 @@ module lpu_mxm_control_tb #(parameter integer ROWS=4,QUEUE_DEPTH=3);
     compute_word=CB'(((n/32)%64)*2+(n/32)%2);
   endfunction
   function automatic logic [LB-1:0] load_word(input integer n);
-    load_word=(LB'(n)<<2) | (LB'(n%2)<<1) | LB'(n>=2 && n<=4);
+    load_word=(LB'(n%2)<<1) | LB'(n>=2 && n<=4);
   endfunction
   bit ec[0:ROWS-1][0:LIMIT],el[0:ROWS-1][0:LIMIT],eu[0:ROWS-1][0:LIMIT];
   integer et[0:ROWS-1][0:LIMIT],ew[0:ROWS-1][0:LIMIT],ei[0:ROWS-1][0:LIMIT];

@@ -159,7 +159,7 @@ group writes are removed; the input sequence determines placement. See
 [`mxm_supercell.md`](mxm_supercell.md) for ports, numerical rules, cycle
 conventions and executable regressions. The new `lpu_mxm_frontend` now connects
 the physical array to count-free queue-specific instructions: 7-bit compute
-(6-bit activation stream, 1-bit weight buffer), 8-bit load (stream, buffer, mode),
+(6-bit activation stream, 1-bit weight buffer), 2-bit load (buffer, mode; byte sources fixed in configuration),
 and a default 13-bit independent backend word (BF16 format, 10-bit explicit
 address, 2-bit operation). Backend width is 3+clog2(DEPTH), with even DEPTH in
 2..65536. Every compute/backend launch describes one beat; repeated equal words
@@ -170,7 +170,7 @@ complete in-place accumulation passes, including the specified bank phase.
 Both frontend streams relay through two intermediate registers plus the next
 local register per Superlane: three-cycle latency with II=1. Valid bubbles and
 16-bit per-beat transaction tags travel with the word; no forwarding timers remain.
-MATRIX retains its fixed MATRIX_N-beat loading controller (32 by default),
+MATRIX retains its fixed MATRIX_N-beat INT8 loading controller (32 by default),
 COLUMN one beat; consecutive COLUMN launches are supported. A third independent
 queue in `lpu_mxm_backend` relays one beat per cycle, one cycle between Superlanes.
 It controls DIRECT_OUT/STORE/ACC_STORE/ACC_OUT, two 1RW 512x256-bit banks per
@@ -193,12 +193,18 @@ final stream packing/routing and the legacy `lpu_top` migration remain separate.
 [`mxm_instructions.md`](mxm_instructions.md).
 
 New frontend modules are `lpu_mxm_isa_pkg`, `lpu_mxm_command_queue`,
-`lpu_mxm_instruction_wave`, `lpu_mxm_control`, and `lpu_mxm_frontend`;
+`lpu_mxm_instruction_wave`, `lpu_mxm_control`, `lpu_mxm_dequant_control`,
+`lpu_mxm_weight_dequant_pipe`, and `lpu_mxm_frontend`;
 new backend modules are `lpu_mxm_backend_isa_pkg`, `lpu_mxm_accumulator_bank`,
 `lpu_mxm_backend_column`, `lpu_mxm_output_pipe`, `lpu_mxm_backend`,
 `lpu_mxm_result_return`, and `lpu_mxm_core`.
-No dequantization, Block8, per-cycle vertical instruction shift or result
-feedback path exists in this new frontend. The following table describes the
+The new frontend dequantizes INT8 once at each row ingress. Independent one-bit
+parameter-load and dequant-execute queues select paired scale/zero ping-pong
+registers; D1 snapshots their values and the existing D3 weight register captures
+BF16. The five queue payload widths are 7/2/1/1/13 by default. All four frontend
+streams retain the three-cycle row interval. See [mxm_weight_ingress.md](mxm_weight_ingress.md).
+No Block8 mode, per-cycle vertical instruction shift or result-feedback path
+exists in the new frontend. The following table describes the
 legacy compatibility datapath only; its old control is explicitly isolated
 under `rtl/mxm/legacy/` because `lpu_top` and existing C-model schedules still
 use it. Shared control pipelines used by MEM/SXM/VXM are not removed.

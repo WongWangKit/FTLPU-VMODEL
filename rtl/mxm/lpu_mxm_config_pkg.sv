@@ -21,6 +21,18 @@ package lpu_mxm_config_pkg;
 
   // Ping-pong weight storage, matching the current two-buffer layout.
   parameter integer WEIGHT_BUFFER_COUNT = 2;
+  // Paired scale/zero registers, independent of the BF16 weight buffers.
+  parameter integer WEIGHT_PARAMETER_BUFFER_COUNT = 2;
+  // Per-Lane byte streams, fixed at elaboration, independent of load words.
+  parameter integer WEIGHT_STREAM_COUNT = 32;
+  parameter integer WEIGHT_Q_STREAM = 0;
+  parameter integer WEIGHT_SCALE_LO_STREAM = 1;
+  parameter integer WEIGHT_SCALE_HI_STREAM = 2;
+  parameter integer WEIGHT_ZERO_STREAM = 3;
+  parameter bit WEIGHT_ZERO_POINT_ENABLE = 1'b1;
+  localparam integer WEIGHT_EXTERNAL_BITS = 8;
+  localparam integer WEIGHT_DEQUANT_STAGES = 3; // D3 is the destination weight register.
+  localparam integer WEIGHT_DEQUANT_EXTRA_CYCLES = WEIGHT_DEQUANT_STAGES-1;
 
   // Accumulator shape: LENGTH FP32 elements per result, DEPTH results.
   // Default: 32 elements x 1024 results x 4 bytes = 128 KiB per MXM.
@@ -79,7 +91,8 @@ package lpu_mxm_config_pkg;
   localparam bit SUPPORT_FP16 = 1'b0;
   localparam bit SUPPORT_BF16 = 1'b1;
   localparam bit SUPPORT_FP32 = 1'b0;
-  localparam bit SUPPORT_INT8 = 1'b0;
+  localparam bit SUPPORT_INT8 = 1'b0; // Compute operands remain BF16, not integer MACs.
+  localparam bit SUPPORT_INT8_WEIGHT_LOAD = 1'b1;
   localparam integer OPERAND_BITS = 16;
   localparam integer ACCUMULATOR_BITS = 32;
 
@@ -102,7 +115,11 @@ package lpu_mxm_config_pkg;
   // ---------- New MXM weight-load instruction semantics ----------
   // W[k][n]: a load beat contains all MATRIX_K weights of one output column
   // n, split across SC_ROWS parallel row inputs (CELL_K values per row).
-  // Default: 32 BF16 values / 512 bits per beat, four 128-bit row inputs.
+  // External default: 32 INT8 values / 256 weight bits per beat, plus
+  // per-Lane BF16 scales and optional INT8 zero points loaded separately
+  // into paired parameter ping-pong registers through fixed byte streams.
+  // D1/D2 dequantize once at ingress; D3 is the BF16 weight-buffer write.
+  // Internally all shift links and both buffers still carry BF16.
   // A MATRIX load supplies MATRIX_N consecutive beats to the selected buffer
   // using the horizontal shift chains. Tail data/valid/buffer ID cross ONE
   // register per cell, matching activation. Last-cell completion is later
@@ -114,8 +131,12 @@ package lpu_mxm_config_pkg;
   // lpu_mxm_isa_pkg defines separate compact compute/load instruction formats.
   localparam integer WEIGHT_LOAD_ELEMENTS_PER_BEAT = MATRIX_K;
   localparam integer WEIGHT_LOAD_BEAT_BITS =
-    WEIGHT_LOAD_ELEMENTS_PER_BEAT * OPERAND_BITS;
-  localparam integer WEIGHT_LOAD_ROW_BEAT_BITS = CELL_K * OPERAND_BITS;
+    WEIGHT_LOAD_ELEMENTS_PER_BEAT * WEIGHT_EXTERNAL_BITS;
+  localparam integer WEIGHT_LOAD_ROW_BEAT_BITS = CELL_K * WEIGHT_EXTERNAL_BITS;
+  localparam integer WEIGHT_BF16_ROW_BITS = CELL_K * OPERAND_BITS;
+  localparam integer WEIGHT_PARAMETER_BITS_PER_LANE = 16 + (WEIGHT_ZERO_POINT_ENABLE ? 8 : 0);
+  localparam integer WEIGHT_PARAMETER_STORAGE_BITS =
+    SC_ROWS * WEIGHT_PARAMETER_BUFFER_COUNT * CELL_K * WEIGHT_PARAMETER_BITS_PER_LANE;
   localparam integer WEIGHT_LOAD_MATRIX_CYCLES = MATRIX_N;
   localparam integer WEIGHT_LOAD_COLUMN_CYCLES = 1;
   localparam integer WEIGHT_LOAD_BUFFER_ADDRESS_BITS =
@@ -213,6 +234,7 @@ package lpu_mxm_config_pkg;
     (SC_ROWS > 0) && (SC_COLS > 0) && (CELL_K > 0) && (CELL_N > 0) &&
     (DATA_TYPE == MXM_DTYPE_BF16) &&
     (WEIGHT_BUFFER_COUNT == 2) &&
+    (WEIGHT_PARAMETER_BUFFER_COUNT == 2) &&
     (DOT_ALIGNED_PRODUCT_BITS >= 16) &&
     (ACCUMULATOR_RESULT_LENGTH == MATRIX_N) &&
     (ACCUMULATOR_DEPTH >= 2) && (ACCUMULATOR_DEPTH <= 65536) &&

@@ -141,6 +141,16 @@ read-to-write contract are recorded in [mxm_accumulator.md](mxm_accumulator.md).
   Inf/NaN and overflow. Intermediate FP32 partials retain the previously
   accepted range/rounding limitations between Supercells.
 
+INT8 affine dequantization now occurs once at each Superlane ingress; this
+standalone cell's write/forward ports and both buffers remain BF16. The D3
+normalization/RNE result is captured directly by the cell's existing weight
+register, avoiding a separate dequant output register and an extra write cycle.
+Paired scale/zero values are loaded into independent parameter ping-pong
+registers. D1 snapshots both parameters; subsequent stages never reread those
+registers. Parameter-load and per-beat dequant-execute commands have separate
+queues, with the same three-cycle row spacing as weight-load commands.
+See [mxm_weight_ingress.md](mxm_weight_ingress.md) for byte packing and load timing.
+
 ## Registered timing
 
 Every stage has II=1 and fixed latency, including zero, cancellation and
@@ -162,9 +172,13 @@ combinational calculation followed by an artificial output delay.
 | A2 | FP32 significand addition/subtraction and exact leading-zero detection |
 | A3 | Normalization, RNE, range and special-case selection |
 
-The cross-cell adder currently uses exact leading-zero detection, not LZA.
+The R1 maximum-exponent selector uses a balanced comparator tree (three levels
+for eight terms), padded with an inactive sentinel for non-power-of-two sizes.
+R6 and FP32 A2 use explicit hierarchical half-word leading-one detection.
+No visible stage or rounding rule changes. The cross-cell adder still uses exact
+leading-zero detection, not LZA.
 Its A2 path includes add/subtract followed by detection. Timing/area at 2 ns or
-3 ns has not been synthesized or closed; LZA and register rebalancing remain
+3 ns has not been synthesized or closed; LZA and further register rebalancing remain
 possible optimizations without changing the numerical contract.
 
 If upstream registers launch a vector at edge E0, every group's M1 captures

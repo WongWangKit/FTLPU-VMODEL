@@ -2,6 +2,23 @@
 package lpu_mxm_supercell_math_pkg;
   localparam logic [31:0] FP32_QNAN = 32'h7fc00000;
 
+  // Explicit hierarchical leading-one detection: six fixed half-word tests,
+  // rather than a serial 64-way priority update. Zero maps to index zero.
+  function automatic integer leading_one64(input logic [63:0] value);
+    logic [63:0] candidate;
+    integer position;
+    begin
+      candidate=value;position=0;
+      if(|candidate[63:32]) begin position=position+32;candidate=candidate>>32;end
+      if(|candidate[31:16]) begin position=position+16;candidate=candidate>>16;end
+      if(|candidate[15:8]) begin position=position+8;candidate=candidate>>8;end
+      if(|candidate[7:4]) begin position=position+4;candidate=candidate>>4;end
+      if(|candidate[3:2]) begin position=position+2;candidate=candidate>>2;end
+      if(candidate[1]) position=position+1;
+      leading_one64=position;
+    end
+  endfunction
+
   function automatic logic [63:0] shift_right_sticky64(
     input logic [63:0] value, input integer distance
   );

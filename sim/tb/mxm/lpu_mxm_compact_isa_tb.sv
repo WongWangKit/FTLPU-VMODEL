@@ -21,7 +21,7 @@ module lpu_mxm_compact_isa_tb;
   lpu_mxm_control dut (
     .clk_i(clk),.rst_ni(rst_n),.run_i(run),.compute_enqueue_valid_i(enq),.compute_enqueue_ready_o(ready),
     .compute_instruction_i(word),.compute_launch_i(launch),.compute_launch_ready_o(launch_ready),
-    .load_enqueue_valid_i(1'b0),.load_enqueue_ready_o(),.load_instruction_i(8'b0),.load_launch_i(1'b0),.load_launch_ready_o(),
+    .load_enqueue_valid_i(1'b0),.load_enqueue_ready_o(),.load_instruction_i(2'b0),.load_launch_i(1'b0),.load_launch_ready_o(),
     .compute_row_valid_o(valid),.compute_row_update_o(update),.compute_row_instruction_o(commands),.compute_row_tag_o(tags),
     .load_row_valid_o(),.load_row_update_o(),.load_row_instruction_o(),.load_row_index_o(),.fault_o(fault));
   always @(posedge clk) if(run && scoring) begin
@@ -45,14 +45,14 @@ module lpu_mxm_compact_isa_tb;
   compute_instruction_t probe;
   load_instruction_t load_probe;
   initial begin
-    if(CB!=7 || LOAD_INSTRUCTION_BITS!=8 || $bits(probe)!=7 || $bits(load_probe)!=8) $fatal(1,"count field still present");
+    if(CB!=7 || LOAD_INSTRUCTION_BITS!=2 || $bits(probe)!=7 || $bits(load_probe)!=2) $fatal(1,"count field still present");
     for(integer n=0;n<128;n++) begin
       probe=7'(n);
       if(probe.activation_stream!==6'(n>>1) || probe.weight_buffer!==1'(n)) $fatal(1,"compute fields misplaced");
     end
-    for(integer n=0;n<256;n++) begin
-      load_probe=8'(n);
-      if(load_probe.weight_stream!==6'(n>>2) || load_probe.weight_buffer!==1'(n>>1) || load_probe.column_mode!==1'(n))
+    for(integer n=0;n<4;n++) begin
+      load_probe=2'(n);
+      if(load_probe.weight_buffer!==1'(n>>1) || load_probe.column_mode!==1'(n))
         $fatal(1,"load fields misplaced");
     end
     for(integer r=0;r<R;r++) for(integer t=0;t<=LIMIT;t++) expected[r][t]=0;
@@ -66,7 +66,7 @@ module lpu_mxm_compact_isa_tb;
     end
     @(negedge clk);launch=0;enq=0;
     if(checked!=BEATS*R || issued!=BEATS) $fatal(1,"missing count-free relay checks");
-    $display("MXM_COMPACT_ISA_PASS compute_bits=7 load_bits=8 encodings=384 compute_beats=%0d row_checks=%0d tag_wrap=1 compiler_group=32",issued,checked);
+    $display("MXM_COMPACT_ISA_PASS compute_bits=7 load_bits=2 encodings=132 compute_beats=%0d row_checks=%0d tag_wrap=1 compiler_group=32",issued,checked);
     // Cancel a command in flight; no residual valid may appear on restart.
     scoring=0;enq=1;word=raw_word(0);
     @(negedge clk);enq=0;launch=1;
