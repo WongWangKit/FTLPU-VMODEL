@@ -111,13 +111,20 @@ for rel in selected:
     records.append(dict(path=rel, bytes=len(raw), sha256=hashlib.sha256(raw).hexdigest()))
 
 publication = 'sim/sxm_writetap/results/20261110_pause/publication_manifest.json'
+# Historical reports remain immutable. A newer reviewed export owns the
+# current-source check; never require today's RTL to equal every old snapshot.
+try:
+    current_export = json.loads(read('sim/sxm_prune/publication_manifest.json'))
+except FileNotFoundError:
+    current_export = None
 try:
     m = json.loads(read(publication))
     for x in m['files']:
         raw = read(x['published'])
         if hashlib.sha256(raw).hexdigest() != x['published_sha256']:
             errors.append(dict(path=x['published'], rule='published_evidence_hash_changed'))
-    for rel, expected in m['source_rtl_lf_sha256'].items():
+    active_sources = (current_export if current_export is not None else m)['source_rtl_lf_sha256']
+    for rel, expected in active_sources.items():
         if hashlib.sha256(read(rel).replace(b'\r\n', b'\n')).hexdigest() != expected:
             errors.append(dict(path=rel, rule='RTL_changed_since_evidence_export'))
     if len(m['local_only_artifacts']) != 10 or m['completed_syntheses'] != 5 or m['routed_checkpoints'] != 0:
@@ -125,16 +132,30 @@ try:
 except (FileNotFoundError, subprocess.CalledProcessError, KeyError) as exc:
     errors.append(dict(path=publication, rule='missing_evidence_or_source', detail=type(exc).__name__))
 
+if current_export is not None:
+    for item in current_export['files']:
+        try:
+            actual = hashlib.sha256(read(item['path']).replace(b'\r\n', b'\n')).hexdigest()
+            if actual != item['lf_sha256']:
+                errors.append(dict(path=item['path'], rule='current_export_hash_changed'))
+        except FileNotFoundError:
+            errors.append(dict(path=item['path'], rule='missing_current_export'))
+
 # Check ignore behavior without creating dummy secrets or modifying the index.
 ignored = ['.env', '.aws/credentials', 'config/tools.local.json', 'tmp/compile.o',
            'build/synthesized.v', 'sim/sxm_writetap/results/test/a.dcp',
            'sim/sxm_writetap/results/test/synthesized.v',
            'sim/sxm_writetap/results/test/credentials.json',
            'spec_new_c7ae225/archive/test/backup.md']
+ignored += ['sim/sxm_prune/results/test/raw.log', 'sim/sxm_prune/tmp/a.o',
+            'sim/sxm_prune/results/20261111_ppa/synthesized.dcp',
+            'sim/sxm_prune/results/20261111_ppa/synthesized.v']
 allowed = ['spec_new_c7ae225/sxm设计与参数化方案.md',
            'spec_new_c7ae225/SXM三角主设计回归测试清单.md',
            'sim/sxm_writetap/results/test/synth_utilization.rpt',
            'sim/sxm_writetap/results/test/vivado.log', 'sim/vectors/test.hex']
+allowed += ['sim/sxm_prune/cases/example/input.hex',
+            'sim/sxm_prune/results/20261111_ppa/summary.json']
 for path, expected in [(p, True) for p in ignored] + [(p, False) for p in allowed]:
     proc = subprocess.run(['git', '-c', f'safe.directory={ROOT.as_posix()}', '-C', str(ROOT),
                            'check-ignore', '--no-index', '-q', '--', path])

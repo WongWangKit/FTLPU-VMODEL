@@ -19,3 +19,5 @@ sim/tb/lpu_mem_srf_sxm_turnaround_tb.sv
 sim/tb/sxm_row
 sim/tb/sxm_triangle
 sim/sxm_writetap
+scripts/run_sxm_prune.py
+sim/sxm_prune

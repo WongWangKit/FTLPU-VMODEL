@@ -1,0 +1,175 @@
+{
+  "stage": "Synthesized",
+  "period_ns": 10,
+  "tool": "Vivado 2023.2",
+  "part": "xcvu9p-flga2104-2L-e",
+  "top": "sxm_triangle_full_core",
+  "rows": [
+    {
+      "T": 2,
+      "LPU": 16,
+      "resource": {
+        "LUT": {
+          "old": 78688.0,
+          "new": 71096.0,
+          "delta": -7592.0,
+          "percent": -9.648230988206588
+        },
+        "LUTRAM": {
+          "old": 0.0,
+          "new": 0.0,
+          "delta": 0.0,
+          "percent": null
+        },
+        "FF": {
+          "old": 9416.0,
+          "new": 9280.0,
+          "delta": -136.0,
+          "percent": -1.4443500424808835
+        },
+        "latch": {
+          "old": 0.0,
+          "new": 0.0,
+          "delta": 0.0,
+          "percent": null
+        },
+        "BRAM": {
+          "old": 0.0,
+          "new": 0.0,
+          "delta": 0.0,
+          "percent": null
+        },
+        "DSP": {
+          "old": 0.0,
+          "new": 0.0,
+          "delta": 0.0,
+          "percent": null
+        }
+      },
+      "old_sta": {
+        "WNS": 5.298,
+        "TNS": 0.0,
+        "setup_failing": 0,
+        "WHS": 0.071,
+        "THS": 0.0,
+        "hold_failing": 0
+      },
+      "new_sta": {
+        "WNS": 5.918,
+        "TNS": 0.0,
+        "setup_failing": 0,
+        "WHS": 0.071,
+        "THS": 0.0,
+        "hold_failing": 0
+      },
+      "scope": "post-synthesis estimates only; internal paths; IO budget separate",
+      "post_sta": {
+        "stage": "Synthesized: existing report_timing_summary",
+        "internal.max.slack_ns": 5.918,
+        "internal.min.slack_ns": 0.071,
+        "io.status": "Not evaluated this round; core report excludes IO paths"
+      },
+      "manifest": {
+        "T": 2,
+        "component": "core",
+        "top": "sxm_triangle_full_core",
+        "hashes": {
+          "rtl/sxm_native/sxm_triangle_core.sv": "c94a78de699236180de9972250510c5839169cd809f115605929b08835a1b380",
+          "rtl/sxm_native/sxm_triangle_row_frontend.sv": "ef33ca9a07cb84f6e4935ba464d4b18b60b2066e7f8998ba9bdbce191429027a",
+          "rtl/sxm_native/sxm_compat_decode.sv": "a656fa2728aa2973e6b41f7fcf9740dcb550dfe328ef5e62594d1f8053831fe1",
+          "rtl/sxm_native/sxm_compat_engine.sv": "22cde90fa0853feda79d2c15e6efd45e6429a4ad89b7ed910bc3052151dcc811",
+          "rtl/sxm_native/sxm_triangle_full_core.sv": "c5c6e54d5b48313f934dbb30d629baab0f375e63da5a58323ee4df2a72783a38"
+        },
+        "synth_mode": "structural",
+        "part": "xcvu9p-flga2104-2L-e",
+        "period_ns": 10,
+        "scope": "internal signoff; IO budget separate",
+        "clock": "QueryUnbiasedInterruptTime",
+        "display_required": false
+      }
+    },
+    {
+      "T": 4,
+      "LPU": 32,
+      "resource": {
+        "LUT": {
+          "old": 217787.0,
+          "new": 197654.0,
+          "delta": -20133.0,
+          "percent": -9.244353427890553
+        },
+        "LUTRAM": {
+          "old": 0.0,
+          "new": 0.0,
+          "delta": 0.0,
+          "percent": null
+        },
+        "FF": {
+          "old": 26509.0,
+          "new": 26486.0,
+          "delta": -23.0,
+          "percent": -0.08676298615564525
+        },
+        "latch": {
+          "old": 0.0,
+          "new": 0.0,
+          "delta": 0.0,
+          "percent": null
+        },
+        "BRAM": {
+          "old": 0.0,
+          "new": 0.0,
+          "delta": 0.0,
+          "percent": null
+        },
+        "DSP": {
+          "old": 0.0,
+          "new": 0.0,
+          "delta": 0.0,
+          "percent": null
+        }
+      },
+      "old_sta": {
+        "WNS": 5.464,
+        "TNS": 0.0,
+        "setup_failing": 0,
+        "WHS": 0.071,
+        "THS": 0.0,
+        "hold_failing": 0
+      },
+      "new_sta": {
+        "WNS": 4.689,
+        "TNS": 0.0,
+        "setup_failing": 0,
+        "WHS": 0.071,
+        "THS": 0.0,
+        "hold_failing": 0
+      },
+      "scope": "post-synthesis estimates only; internal paths; IO budget separate",
+      "post_sta": {
+        "stage": "Synthesized: existing report_timing_summary",
+        "internal.max.slack_ns": 4.689,
+        "internal.min.slack_ns": 0.071,
+        "io.status": "Not evaluated this round; core report excludes IO paths"
+      },
+      "manifest": {
+        "T": 4,
+        "component": "core",
+        "top": "sxm_triangle_full_core",
+        "hashes": {
+          "rtl/sxm_native/sxm_triangle_core.sv": "c94a78de699236180de9972250510c5839169cd809f115605929b08835a1b380",
+          "rtl/sxm_native/sxm_triangle_row_frontend.sv": "ef33ca9a07cb84f6e4935ba464d4b18b60b2066e7f8998ba9bdbce191429027a",
+          "rtl/sxm_native/sxm_compat_decode.sv": "a656fa2728aa2973e6b41f7fcf9740dcb550dfe328ef5e62594d1f8053831fe1",
+          "rtl/sxm_native/sxm_compat_engine.sv": "22cde90fa0853feda79d2c15e6efd45e6429a4ad89b7ed910bc3052151dcc811",
+          "rtl/sxm_native/sxm_triangle_full_core.sv": "c5c6e54d5b48313f934dbb30d629baab0f375e63da5a58323ee4df2a72783a38"
+        },
+        "synth_mode": "structural",
+        "part": "xcvu9p-flga2104-2L-e",
+        "period_ns": 10,
+        "scope": "internal signoff; IO budget separate",
+        "clock": "QueryUnbiasedInterruptTime",
+        "display_required": false
+      }
+    }
+  ]
+}

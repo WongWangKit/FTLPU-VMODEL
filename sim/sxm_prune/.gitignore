@@ -1,0 +1,28 @@
+# Test inputs and curated summaries are source/evidence, not build outputs.
+/runs/
+/obj*/
+/build*/
+/tmp/
+*.log
+*.rpt
+*.dcp
+*.vcd
+*.fst
+*.wdb
+*.jou
+*.pb
+*.o
+*.a
+*.exe
+synthesized.v
+routed.v
+
+# Only the reviewed functional and synthesis summaries are published.
+/results/*
+!/results/20261111/
+!/results/20261111_ppa/
+/results/20261111/*
+!/results/20261111/*.json
+/results/20261111_ppa/*
+!/results/20261111_ppa/*.json
+!/results/20261111_ppa/*.md

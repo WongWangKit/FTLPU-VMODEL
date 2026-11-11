@@ -1,0 +1,956 @@
+[
+  {
+    "name": "t2_m0_16_row_row_triangle",
+    "T": 2,
+    "cycles": 137,
+    "port": 32,
+    "compat": 0,
+    "compare": true,
+    "origin": "wide04 unchanged"
+  },
+  {
+    "name": "t2_m0_16_row_block_triangle",
+    "T": 2,
+    "cycles": 45,
+    "port": 32,
+    "compat": 0,
+    "compare": true,
+    "origin": "wide04 unchanged"
+  },
+  {
+    "name": "t2_m1_16_row_row_triangle",
+    "T": 2,
+    "cycles": 25,
+    "port": 32,
+    "compat": 0,
+    "compare": true,
+    "origin": "wide04 unchanged"
+  },
+  {
+    "name": "t2_vector_tail_16",
+    "T": 2,
+    "cycles": 42,
+    "port": 32,
+    "compat": 0,
+    "compare": true,
+    "origin": "wide04 unchanged"
+  },
+  {
+    "name": "t2_m0_32_row_row_triangle",
+    "T": 2,
+    "cycles": 137,
+    "port": 32,
+    "compat": 0,
+    "compare": true,
+    "origin": "wide04 unchanged"
+  },
+  {
+    "name": "t2_m0_32_row_block_triangle",
+    "T": 2,
+    "cycles": 45,
+    "port": 32,
+    "compat": 0,
+    "compare": true,
+    "origin": "wide04 unchanged"
+  },
+  {
+    "name": "t2_m1_32_row_row_triangle",
+    "T": 2,
+    "cycles": 25,
+    "port": 32,
+    "compat": 0,
+    "compare": true,
+    "origin": "wide04 unchanged"
+  },
+  {
+    "name": "t2_vector_tail_32",
+    "T": 2,
+    "cycles": 42,
+    "port": 32,
+    "compat": 0,
+    "compare": true,
+    "origin": "wide04 unchanged"
+  },
+  {
+    "name": "t4_m0_16_row_row_triangle",
+    "T": 4,
+    "cycles": 525,
+    "port": 32,
+    "compat": 0,
+    "compare": true,
+    "origin": "wide04 unchanged"
+  },
+  {
+    "name": "t4_m0_16_row_block_triangle",
+    "T": 4,
+    "cycles": 157,
+    "port": 32,
+    "compat": 0,
+    "compare": true,
+    "origin": "wide04 unchanged"
+  },
+  {
+    "name": "t4_m1_16_row_row_triangle",
+    "T": 4,
+    "cycles": 77,
+    "port": 32,
+    "compat": 0,
+    "compare": true,
+    "origin": "wide04 unchanged"
+  },
+  {
+    "name": "t4_vector_tail_16",
+    "T": 4,
+    "cycles": 74,
+    "port": 32,
+    "compat": 0,
+    "compare": true,
+    "origin": "wide04 unchanged"
+  },
+  {
+    "name": "t4_m0_32_row_row_triangle",
+    "T": 4,
+    "cycles": 525,
+    "port": 32,
+    "compat": 0,
+    "compare": true,
+    "origin": "wide04 unchanged"
+  },
+  {
+    "name": "t4_m0_32_row_block_triangle",
+    "T": 4,
+    "cycles": 157,
+    "port": 32,
+    "compat": 0,
+    "compare": true,
+    "origin": "wide04 unchanged"
+  },
+  {
+    "name": "t4_m1_32_row_row_triangle",
+    "T": 4,
+    "cycles": 77,
+    "port": 32,
+    "compat": 0,
+    "compare": true,
+    "origin": "wide04 unchanged"
+  },
+  {
+    "name": "t4_vector_tail_32",
+    "T": 4,
+    "cycles": 74,
+    "port": 32,
+    "compat": 0,
+    "compare": true,
+    "origin": "wide04 unchanged"
+  },
+  {
+    "name": "t8_m0_16_row_row_triangle",
+    "T": 8,
+    "cycles": 2069,
+    "port": 32,
+    "compat": 0,
+    "compare": true,
+    "origin": "wide04 unchanged"
+  },
+  {
+    "name": "t8_m0_16_row_block_triangle",
+    "T": 8,
+    "cycles": 597,
+    "port": 32,
+    "compat": 0,
+    "compare": true,
+    "origin": "wide04 unchanged"
+  },
+  {
+    "name": "t8_m1_16_row_row_triangle",
+    "T": 8,
+    "cycles": 277,
+    "port": 32,
+    "compat": 0,
+    "compare": true,
+    "origin": "wide04 unchanged"
+  },
+  {
+    "name": "t8_vector_tail_16",
+    "T": 8,
+    "cycles": 138,
+    "port": 32,
+    "compat": 0,
+    "compare": true,
+    "origin": "wide04 unchanged"
+  },
+  {
+    "name": "t8_m0_32_row_row_triangle",
+    "T": 8,
+    "cycles": 2069,
+    "port": 32,
+    "compat": 0,
+    "compare": true,
+    "origin": "wide04 unchanged"
+  },
+  {
+    "name": "t8_m0_32_row_block_triangle",
+    "T": 8,
+    "cycles": 597,
+    "port": 32,
+    "compat": 0,
+    "compare": true,
+    "origin": "wide04 unchanged"
+  },
+  {
+    "name": "t8_m1_32_row_row_triangle",
+    "T": 8,
+    "cycles": 277,
+    "port": 32,
+    "compat": 0,
+    "compare": true,
+    "origin": "wide04 unchanged"
+  },
+  {
+    "name": "t8_vector_tail_32",
+    "T": 8,
+    "cycles": 138,
+    "port": 32,
+    "compat": 0,
+    "compare": true,
+    "origin": "wide04 unchanged"
+  },
+  {
+    "name": "t2_independent_m1_16",
+    "T": 2,
+    "cycles": 12,
+    "port": 16,
+    "compat": 0,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t2_independent_m1_32",
+    "T": 2,
+    "cycles": 12,
+    "port": 16,
+    "compat": 0,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t2_negative_occupied_reserve",
+    "T": 2,
+    "cycles": 8,
+    "port": 16,
+    "compat": 0,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t2_negative_live_config",
+    "T": 2,
+    "cycles": 8,
+    "port": 16,
+    "compat": 0,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t2_negative_missing_plane",
+    "T": 2,
+    "cycles": 8,
+    "port": 16,
+    "compat": 0,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t2_negative_fp32_block",
+    "T": 2,
+    "cycles": 8,
+    "port": 16,
+    "compat": 0,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t2_negative_early_p",
+    "T": 2,
+    "cycles": 8,
+    "port": 16,
+    "compat": 0,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t2_negative_odd_pair",
+    "T": 2,
+    "cycles": 16,
+    "port": 16,
+    "compat": 0,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t2_negative_missing_pair",
+    "T": 2,
+    "cycles": 9,
+    "port": 16,
+    "compat": 0,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t2_negative_sequence_overflow",
+    "T": 2,
+    "cycles": 8,
+    "port": 16,
+    "compat": 0,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t2_negative_zero_count",
+    "T": 2,
+    "cycles": 8,
+    "port": 16,
+    "compat": 0,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t2_negative_zero_interval",
+    "T": 2,
+    "cycles": 8,
+    "port": 16,
+    "compat": 0,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t2_negative_illegal_ctrl",
+    "T": 2,
+    "cycles": 8,
+    "port": 16,
+    "compat": 0,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t2_compat_rows_block_dir0",
+    "T": 2,
+    "cycles": 13,
+    "port": 16,
+    "compat": 1,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t2_compat_rows_rows_dir0",
+    "T": 2,
+    "cycles": 20,
+    "port": 16,
+    "compat": 1,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t2_compat_rows_consume_dir0",
+    "T": 2,
+    "cycles": 13,
+    "port": 16,
+    "compat": 1,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t2_compat_rows_block_dir1",
+    "T": 2,
+    "cycles": 13,
+    "port": 16,
+    "compat": 1,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t2_compat_rows_rows_dir1",
+    "T": 2,
+    "cycles": 20,
+    "port": 16,
+    "compat": 1,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t2_compat_rows_consume_dir1",
+    "T": 2,
+    "cycles": 13,
+    "port": 16,
+    "compat": 1,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t2_compat_last_row_no_bypass",
+    "T": 2,
+    "cycles": 13,
+    "port": 16,
+    "compat": 1,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t4_independent_m1_16",
+    "T": 4,
+    "cycles": 14,
+    "port": 16,
+    "compat": 0,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t4_independent_m1_32",
+    "T": 4,
+    "cycles": 14,
+    "port": 16,
+    "compat": 0,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t4_negative_occupied_reserve",
+    "T": 4,
+    "cycles": 10,
+    "port": 16,
+    "compat": 0,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t4_negative_live_config",
+    "T": 4,
+    "cycles": 10,
+    "port": 16,
+    "compat": 0,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t4_negative_missing_plane",
+    "T": 4,
+    "cycles": 10,
+    "port": 16,
+    "compat": 0,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t4_negative_fp32_block",
+    "T": 4,
+    "cycles": 10,
+    "port": 16,
+    "compat": 0,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t4_negative_early_p",
+    "T": 4,
+    "cycles": 10,
+    "port": 16,
+    "compat": 0,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t4_negative_odd_pair",
+    "T": 4,
+    "cycles": 18,
+    "port": 16,
+    "compat": 0,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t4_negative_missing_pair",
+    "T": 4,
+    "cycles": 11,
+    "port": 16,
+    "compat": 0,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t4_negative_sequence_overflow",
+    "T": 4,
+    "cycles": 10,
+    "port": 16,
+    "compat": 0,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t4_negative_zero_count",
+    "T": 4,
+    "cycles": 10,
+    "port": 16,
+    "compat": 0,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t4_negative_zero_interval",
+    "T": 4,
+    "cycles": 10,
+    "port": 16,
+    "compat": 0,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t4_negative_illegal_ctrl",
+    "T": 4,
+    "cycles": 10,
+    "port": 16,
+    "compat": 0,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t4_compat_rows_block_dir0",
+    "T": 4,
+    "cycles": 15,
+    "port": 16,
+    "compat": 1,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t4_compat_rows_rows_dir0",
+    "T": 4,
+    "cycles": 22,
+    "port": 16,
+    "compat": 1,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t4_compat_rows_consume_dir0",
+    "T": 4,
+    "cycles": 15,
+    "port": 16,
+    "compat": 1,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t4_compat_rows_block_dir1",
+    "T": 4,
+    "cycles": 15,
+    "port": 16,
+    "compat": 1,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t4_compat_rows_rows_dir1",
+    "T": 4,
+    "cycles": 22,
+    "port": 16,
+    "compat": 1,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t4_compat_rows_consume_dir1",
+    "T": 4,
+    "cycles": 15,
+    "port": 16,
+    "compat": 1,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t4_compat_last_row_no_bypass",
+    "T": 4,
+    "cycles": 15,
+    "port": 16,
+    "compat": 1,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t8_independent_m1_16",
+    "T": 8,
+    "cycles": 18,
+    "port": 16,
+    "compat": 0,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t8_independent_m1_32",
+    "T": 8,
+    "cycles": 18,
+    "port": 16,
+    "compat": 0,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t8_negative_occupied_reserve",
+    "T": 8,
+    "cycles": 14,
+    "port": 16,
+    "compat": 0,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t8_negative_live_config",
+    "T": 8,
+    "cycles": 14,
+    "port": 16,
+    "compat": 0,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t8_negative_missing_plane",
+    "T": 8,
+    "cycles": 14,
+    "port": 16,
+    "compat": 0,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t8_negative_fp32_block",
+    "T": 8,
+    "cycles": 14,
+    "port": 16,
+    "compat": 0,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t8_negative_early_p",
+    "T": 8,
+    "cycles": 14,
+    "port": 16,
+    "compat": 0,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t8_negative_odd_pair",
+    "T": 8,
+    "cycles": 22,
+    "port": 16,
+    "compat": 0,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t8_negative_missing_pair",
+    "T": 8,
+    "cycles": 15,
+    "port": 16,
+    "compat": 0,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t8_negative_sequence_overflow",
+    "T": 8,
+    "cycles": 14,
+    "port": 16,
+    "compat": 0,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t8_negative_zero_count",
+    "T": 8,
+    "cycles": 14,
+    "port": 16,
+    "compat": 0,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t8_negative_zero_interval",
+    "T": 8,
+    "cycles": 14,
+    "port": 16,
+    "compat": 0,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t8_negative_illegal_ctrl",
+    "T": 8,
+    "cycles": 14,
+    "port": 16,
+    "compat": 0,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t8_compat_rows_block_dir0",
+    "T": 8,
+    "cycles": 19,
+    "port": 16,
+    "compat": 1,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t8_compat_rows_rows_dir0",
+    "T": 8,
+    "cycles": 26,
+    "port": 16,
+    "compat": 1,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t8_compat_rows_consume_dir0",
+    "T": 8,
+    "cycles": 19,
+    "port": 16,
+    "compat": 1,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t8_compat_rows_block_dir1",
+    "T": 8,
+    "cycles": 19,
+    "port": 16,
+    "compat": 1,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t8_compat_rows_rows_dir1",
+    "T": 8,
+    "cycles": 26,
+    "port": 16,
+    "compat": 1,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t8_compat_rows_consume_dir1",
+    "T": 8,
+    "cycles": 19,
+    "port": 16,
+    "compat": 1,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "t8_compat_last_row_no_bypass",
+    "T": 8,
+    "cycles": 19,
+    "port": 16,
+    "compat": 1,
+    "compare": true,
+    "origin": "full07 unchanged"
+  },
+  {
+    "name": "c814_triangle_calendar",
+    "T": 4,
+    "cycles": 792,
+    "port": 16,
+    "compat": 0,
+    "compare": true,
+    "origin": "c814_04 unchanged 792-cycle dual-matrix calendar"
+  },
+  {
+    "name": "t2_reject_cfg_mode2",
+    "T": 2,
+    "cycles": 7,
+    "port": 32,
+    "compat": 0,
+    "compare": false,
+    "origin": "new retired-mode rejection"
+  },
+  {
+    "name": "t2_reject_cfg_mode3",
+    "T": 2,
+    "cycles": 7,
+    "port": 32,
+    "compat": 0,
+    "compare": false,
+    "origin": "new retired-mode rejection"
+  },
+  {
+    "name": "t2_reject_cap_row8",
+    "T": 2,
+    "cycles": 12,
+    "port": 32,
+    "compat": 0,
+    "compare": false,
+    "origin": "new retired-mode rejection"
+  },
+  {
+    "name": "t2_reject_cap_row9",
+    "T": 2,
+    "cycles": 12,
+    "port": 32,
+    "compat": 0,
+    "compare": false,
+    "origin": "new retired-mode rejection"
+  },
+  {
+    "name": "t2_reject_raw_f0_row8",
+    "T": 2,
+    "cycles": 9,
+    "port": 32,
+    "compat": 1,
+    "compare": false,
+    "origin": "new retired-mode rejection"
+  },
+  {
+    "name": "t2_reject_raw_f1_row8",
+    "T": 2,
+    "cycles": 9,
+    "port": 32,
+    "compat": 1,
+    "compare": false,
+    "origin": "new retired-mode rejection"
+  },
+  {
+    "name": "t2_reject_raw_f2_row9",
+    "T": 2,
+    "cycles": 9,
+    "port": 32,
+    "compat": 1,
+    "compare": false,
+    "origin": "new retired-mode rejection"
+  },
+  {
+    "name": "t4_reject_cfg_mode2",
+    "T": 4,
+    "cycles": 7,
+    "port": 32,
+    "compat": 0,
+    "compare": false,
+    "origin": "new retired-mode rejection"
+  },
+  {
+    "name": "t4_reject_cfg_mode3",
+    "T": 4,
+    "cycles": 7,
+    "port": 32,
+    "compat": 0,
+    "compare": false,
+    "origin": "new retired-mode rejection"
+  },
+  {
+    "name": "t4_reject_cap_row8",
+    "T": 4,
+    "cycles": 14,
+    "port": 32,
+    "compat": 0,
+    "compare": false,
+    "origin": "new retired-mode rejection"
+  },
+  {
+    "name": "t4_reject_cap_row9",
+    "T": 4,
+    "cycles": 14,
+    "port": 32,
+    "compat": 0,
+    "compare": false,
+    "origin": "new retired-mode rejection"
+  },
+  {
+    "name": "t4_reject_raw_f0_row8",
+    "T": 4,
+    "cycles": 11,
+    "port": 32,
+    "compat": 1,
+    "compare": false,
+    "origin": "new retired-mode rejection"
+  },
+  {
+    "name": "t4_reject_raw_f1_row8",
+    "T": 4,
+    "cycles": 11,
+    "port": 32,
+    "compat": 1,
+    "compare": false,
+    "origin": "new retired-mode rejection"
+  },
+  {
+    "name": "t4_reject_raw_f2_row9",
+    "T": 4,
+    "cycles": 11,
+    "port": 32,
+    "compat": 1,
+    "compare": false,
+    "origin": "new retired-mode rejection"
+  },
+  {
+    "name": "t8_reject_cfg_mode2",
+    "T": 8,
+    "cycles": 7,
+    "port": 32,
+    "compat": 0,
+    "compare": false,
+    "origin": "new retired-mode rejection"
+  },
+  {
+    "name": "t8_reject_cfg_mode3",
+    "T": 8,
+    "cycles": 7,
+    "port": 32,
+    "compat": 0,
+    "compare": false,
+    "origin": "new retired-mode rejection"
+  },
+  {
+    "name": "t8_reject_cap_row8",
+    "T": 8,
+    "cycles": 18,
+    "port": 32,
+    "compat": 0,
+    "compare": false,
+    "origin": "new retired-mode rejection"
+  },
+  {
+    "name": "t8_reject_cap_row9",
+    "T": 8,
+    "cycles": 18,
+    "port": 32,
+    "compat": 0,
+    "compare": false,
+    "origin": "new retired-mode rejection"
+  },
+  {
+    "name": "t8_reject_raw_f0_row8",
+    "T": 8,
+    "cycles": 15,
+    "port": 32,
+    "compat": 1,
+    "compare": false,
+    "origin": "new retired-mode rejection"
+  },
+  {
+    "name": "t8_reject_raw_f1_row8",
+    "T": 8,
+    "cycles": 15,
+    "port": 32,
+    "compat": 1,
+    "compare": false,
+    "origin": "new retired-mode rejection"
+  },
+  {
+    "name": "t8_reject_raw_f2_row9",
+    "T": 8,
+    "cycles": 15,
+    "port": 32,
+    "compat": 1,
+    "compare": false,
+    "origin": "new retired-mode rejection"
+  }
+]

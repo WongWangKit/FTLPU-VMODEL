@@ -1,8 +1,9 @@
 `timescale 1ns/1ps
 // Typed module-level batch interface; not an ICU encoding. Existing ABI cores
 // remain available until their full compatibility migration is verified.
-// mode: 0 matrix ROW->BLOCK8; 1 vector ROW->ROW; 2 broadcast ROW->BLOCK8;
-// 3 typed BLOCK8->BLOCK8. dtype: 0 BF16, 1 FP32, 2/3 rejected.
+// mode: 0 matrix ROW->BLOCK8; 1 vector ROW->ROW; 2/3 rejected.
+// dtype: 0 BF16, 1 FP32, 2/3 rejected. Existing port/encoding is unchanged;
+// only the low 256 bits per source of cap_data_i are consumed (one ROW).
 module sxm_triangle_core #(
  parameter integer T=4, TIMER_BITS=16, COMPAT_STORAGE=0, SHARED_ROW=0,
  localparam integer TW=$clog2(T), SLOTS=T*(T+1)/2
@@ -55,7 +56,7 @@ module sxm_triangle_core #(
      if(source_valid[ci] && source_valid[cj] && source_dest[ci*TW+:TW]==source_dest[cj*TW+:TW])collision_now=1;
  end
  always @* begin
-   config_ok=(dtype_i<=1 && count_i!=0);
+   config_ok=(mode_i<=1 && dtype_i<=1 && count_i!=0);
    for(i=0;i<T;i=i+1) begin
      if(int'(tile_map_i[i*TW+:TW])>=T)config_ok=0;
      for(j=0;j<i;j=j+1)if(tile_map_i[i*TW+:TW]==tile_map_i[j*TW+:TW])config_ok=0;
@@ -117,7 +118,7 @@ module sxm_triangle_core #(
        wire [2:0] g=lane_q[int'(dest_q[rd_q])*24+l*3+:3];
        assign source_data[s*2048+(q*8+l)*32+:32]=
          (mode_q==1)?((q==0)?data_q[rd_q][0][g]:32'b0):
-         (mode_q==2)?data_q[rd_q][0][q]:data_q[rd_q][g][q];
+         data_q[rd_q][g][q];
      end
    end
    integer k,r,l;
@@ -144,9 +145,9 @@ module sxm_triangle_core #(
        if(cap_accept_o[s])begin
          received_q<=received_q+1;
          if(row_now==0)begin occupied_q[wr_q]<=1;dest_q[wr_q]<=dest_now;matrix_q[wr_q]<=matrix_now;end
-         for(r=0;r<8;r=r+1)if(mode_q==3 || r==int'(row_now))begin
+         for(r=0;r<8;r=r+1)if(r==int'(row_now))begin
            for(l=0;l<8;l=l+1)begin
-             word_in=cap_data_i[s*2048+((mode_q==3)?r*8+l:l)*32+:32];
+             word_in=cap_data_i[s*2048+l*32+:32];
              data_q[wr_q][r][l]<=fp32_q?word_in:{16'b0,word_in[15:0]};
            end
          end

@@ -103,7 +103,7 @@ module sxm_compat_engine #(
     // Release old object and capture replacement at the SAME edge is legal.
     // P reads pre-edge storage, so last-row T has no same-edge bypass to P.
     for(k=0;k<T;k=k+1) if(tv[k]) begin
-      row=int'(tc[k][195:192]); ninputs=row==8 ? 16 : 2;
+      row=int'(tc[k][195:192]); ninputs=2;
       present=1;
       for(j=0;j<16;j=j+1) if(j<ninputs && !read_valid_i[k*16+j]) present=0;
       capture_ok[k]=present && (rows_q[k]!=255 || release_mask[k]) &&
@@ -112,10 +112,10 @@ module sxm_compat_engine #(
       if(!capture_ok[k]) fault_o[1]=1;
       else begin
         for(j=0;j<16;j=j+1) if(j<ninputs) consume_o[k*16+j]=1;
-        for(q=0;q<8;q=q+1) if(row>=8 || row==q) begin
+        for(q=0;q<8;q=q+1) if(row==q) begin
           bank_write_rows_o[k*8+q]=1;
           for(b=0;b<2;b=b+1)
-            bank_write_data_o[(k*16+q*2+b)*64+:64]=read_data_i[(k*16+(row==8?q*2:0)+b)*64+:64];
+            bank_write_data_o[(k*16+q*2+b)*64+:64]=read_data_i[(k*16+b)*64+:64];
         end
       end
     end

@@ -45,7 +45,9 @@ module sxm_compat_decode #(
     if(int'(tile_o)>T || input_row_o>9) ok_o=0;
     if(permute_i) begin
       if(ns!=16) ok_o=0;
-    end else if(ns!=(input_row_o==8 ? 16 : 2)) ok_o=0;
+    end else if(input_row_o>=8 || ns!=2) ok_o=0;
+    // Product profile accepts ROW capture only. Keep P encodings and timing;
+    // reject legacy block T and API broadcast T, never serialize them silently.
     // Reject aliases in stream lists: the target cannot consume/produce twice
     // at one physical selector. Arbitrary unique, non-contiguous lists work.
     for(n=0;n<16;n=n+1) begin
