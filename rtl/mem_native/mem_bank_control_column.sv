@@ -1,11 +1,11 @@
 `timescale 1ns/1ps
 
 // One independent south-to-north command pipeline for a logical MEM bank.
-// tile0 sees the current south command combinationally. Registered state is
-// used only for tile1..T-1 and the north trace output.
+// Native command bit 30 selects a one-cycle (0) or three-cycle (1) hop.
+// tile0 sees the current south command combinationally. Each later tile has
+// one execution register and two extra registers used only by long commands.
 module mem_bank_control_column #(
-    parameter P_TILE_ROWS = 4,
-    parameter P_MEM_CONTROL_HOP_CYCLES = 1
+    parameter P_TILE_ROWS = 4
 ) (
     input  wire                         clk_i,
     input  wire                         rst_ni,
@@ -27,14 +27,13 @@ module mem_bank_control_column #(
 );
 
     wire [P_TILE_ROWS*32-1:0] leaf_cmd_raw;
+    wire [P_TILE_ROWS-1:0] relay_busy;
+    assign relay_busy[0] = 1'b0;
 
 `ifndef SYNTHESIS
     initial begin
         if (P_TILE_ROWS != 2 && P_TILE_ROWS != 4 && P_TILE_ROWS != 8) begin
             $fatal(1, "mem_bank_control_column supports P_TILE_ROWS=2/4/8 only");
-        end
-        if (P_MEM_CONTROL_HOP_CYCLES != 1) begin
-            $fatal(1, "mem_bank_control_column supports one-cycle hops only");
         end
     end
 `endif
@@ -45,24 +44,53 @@ module mem_bank_control_column #(
     assign leaf_cmd_raw[0*32 +: 32] = south_cmd_i;
 
     for (genvar hop = 1; hop < P_TILE_ROWS; hop = hop + 1) begin : gen_hop
+        wire source_valid = leaf_cmd_valid_o[hop-1];
+        wire [31:0] source_command = leaf_cmd_raw[(hop-1)*32 +: 32];
+        wire short_valid = source_valid && !source_command[30];
+        wire long_valid = source_valid && source_command[30];
+        reg delay1_valid_q, delay2_valid_q;
+        reg [31:0] delay1_command_q, delay2_command_q;
         reg valid_q;
         reg [31:0] command_q;
         always @(posedge clk_i or negedge rst_ni) begin
             if (!rst_ni) begin
+                delay1_valid_q <= 1'b0;
+                delay2_valid_q <= 1'b0;
+                delay1_command_q <= 32'b0;
+                delay2_command_q <= 32'b0;
                 valid_q <= 1'b0;
                 command_q <= 32'b0;
             end else begin
-                valid_q <= leaf_cmd_valid_o[hop-1];
-                command_q <= leaf_cmd_raw[(hop-1)*32 +: 32];
+                // Short commands never leave effective copies in the extra
+                // stages. Each slot is replaced by the next token or a bubble.
+                delay1_valid_q <= long_valid;
+                delay2_valid_q <= delay1_valid_q;
+                if (long_valid) delay1_command_q <= source_command;
+                if (delay1_valid_q) delay2_command_q <= delay1_command_q;
+                valid_q <= short_valid || delay2_valid_q;
+                // Preserve the short-path invalid payload convention; only
+                // valid_q enables execution. A long tail uses the same endpoint.
+                command_q <= delay2_valid_q ? delay2_command_q : source_command;
             end
         end
         assign leaf_cmd_valid_o[hop] = valid_q;
         assign leaf_cmd_raw[hop*32 +: 32] = command_q;
+        assign relay_busy[hop] = delay1_valid_q || delay2_valid_q;
+
+`ifndef SYNTHESIS
+        // There is no arbitration, replay, or backpressure. The compiler must
+        // space a 3-to-1 transition so a short command cannot pass an older
+        // long command or contend with it for this hop's execution register.
+        always @(posedge clk_i) begin
+            if (rst_ni && short_valid && (delay1_valid_q || delay2_valid_q))
+                $fatal(1, "%m unsafe MEM 3-to-1 schedule: short command overtakes pending long command");
+        end
+`endif
     end
 
-    // Busy describes commands currently executing at tile0..T-1. The north
-    // trace register is observational and does not extend functional busy.
-    assign pipeline_busy_o = |leaf_cmd_valid_o;
+    // Include commands between execution endpoints, even when every leaf has
+    // a bubble. The observational north trace does not extend functional busy.
+    assign pipeline_busy_o = (|leaf_cmd_valid_o) || (|relay_busy);
 
     genvar tile;
     generate

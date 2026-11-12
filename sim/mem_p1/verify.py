@@ -130,7 +130,7 @@ def parameters(out, tag):
         'active_nonpower':'illegal MEM physical/active depth',
         'active_large':'illegal MEM physical/active depth',
         'latency':'unsupported MEM leaf profile',
-        'hop':'supports one-cycle hops only','bank_count':'supports the FTLPU_DEFAULT_4T8L profile only',
+        'bank_count':'supports the FTLPU_DEFAULT_4T8L profile only',
         'group_count':'unsupported MEM group profile','hemisphere_count':'invalid slice/group topology',
         'c7_legacy_depth':'illegal c7 MEM physical/active depth','c7_active':'illegal c7 MEM physical/active depth'}
     results = []

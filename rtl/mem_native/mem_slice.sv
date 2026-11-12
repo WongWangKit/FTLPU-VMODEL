@@ -113,7 +113,6 @@ module mem_slice #(
             assign issue_legal[bank] = supported_opcode &&
                                        !read_preserve_illegal &&
                                        (issue_command[14:9] == 6'b0) &&
-                                       !issue_command[30] &&
                                        (issue_command[29:15] < P_MEM_BANK_DEPTH_ROWS) &&
                                        (issue_command[29:15] < P_MEM_ACTIVE_ROWS);
             assign issue_fault[bank] = bank_issue_valid_i[bank] &&
@@ -125,7 +124,6 @@ module mem_slice #(
                 .P_MEM_ELEMENT_BITS(8),
                 .P_MEM_BANK_DEPTH_ROWS(P_MEM_BANK_DEPTH_ROWS),
                 .P_MEM_ACTIVE_ROWS(P_MEM_ACTIVE_ROWS),
-                .P_MEM_CONTROL_HOP_CYCLES(1),
                 .P_MEM_READ_TO_SR_CYCLES(1),
                 .P_MEM_FAULT_BITS(P_MEM_FAULT_BITS)
             ) u_logical_bank (

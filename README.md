@@ -70,6 +70,17 @@ PowerShell:
 ./scripts/smoke.ps1
 ```
 
+Verify the native MEM per-command 1/3-cycle Superlane hops:
+
+```powershell
+python scripts/test_mem_timing.py
+python scripts/test_mem_parameterized_ingress.py
+```
+
+See the [native MEM instruction format](docs/mem_instructions.md) and
+[MEM scheduling contract](docs/mem_scheduling_contract.md) for mode selection,
+compiler-controlled transition bubbles, and valid handling.
+
 VCS (the local O-2018.09 installation needs the linker compatibility flag
 already included by the script):
 

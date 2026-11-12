@@ -85,7 +85,7 @@ module mem_profiles_collision_tb #(parameter integer PROFILE=16);
           issue_valid=1;
           case(bad_case)
             0: issue[31:0]=(lpu_native_config_pkg::mem_depth_rows(PROFILE)<<15)|(7<<3);
-            1: issue[31:0]=32'h40000000|(7<<3);
+            1: issue[31:0]=32'h80000000|(7<<3); // preserve is illegal on Read
             2: issue[31:0]=(1<<9)|(7<<3);
           endcase
           #1;if(!dut.mem_bank_fault_valid_o[0])$fatal(1,"malformed native issue not rejected");

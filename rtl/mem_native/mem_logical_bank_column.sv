@@ -1,15 +1,14 @@
 `timescale 1ns/1ps
 
 // IMPLEMENTATION CHOICE / INTERNAL INTEGRATION INTERFACE:
-// one logical bank composed of four independent single-port SRAM leaves and
-// one independent command pipeline. This wrapper adds no storage beyond those
-// five child blocks and performs no bank-global arbitration.
+// one logical bank composed of independent single-port SRAM leaves and a
+// command pipeline with per-command one/three-cycle hops (native bit 30).
+// This wrapper adds no storage and performs no bank-global arbitration.
 module mem_logical_bank_column #(
     parameter P_TILE_ROWS               = 4,
     parameter P_LANES_PER_TILE          = 8,
     parameter P_MEM_ELEMENT_BITS        = 8,
     parameter P_MEM_BANK_DEPTH_ROWS     = 32768,
-    parameter P_MEM_CONTROL_HOP_CYCLES  = 1,
     parameter P_MEM_READ_TO_SR_CYCLES   = 1,
     parameter P_MEM_FAULT_BITS          = 2,
     parameter P_MEM_ACTIVE_ROWS         = P_MEM_BANK_DEPTH_ROWS
@@ -62,8 +61,7 @@ module mem_logical_bank_column #(
     assign current_cmd_preserve_o   = leaf_cmd_preserve;
 
     mem_bank_control_column #(
-        .P_TILE_ROWS(P_TILE_ROWS),
-        .P_MEM_CONTROL_HOP_CYCLES(P_MEM_CONTROL_HOP_CYCLES)
+        .P_TILE_ROWS(P_TILE_ROWS)
     ) u_control_column (
         .clk_i(clk_i),
         .rst_ni(rst_ni),

@@ -28,10 +28,6 @@ module mem_bad_latency;
   mem_bank_superlane_leaf #(.P_MEM_BANK_DEPTH_ROWS(64),.P_MEM_READ_TO_SR_CYCLES(2)) dut(.clk_i(1'b0),.rst_ni(1'b0));
   initial begin #10;$fatal(1,"UNEXPECTED_PARAMETER_SUCCESS");end
 endmodule
-module mem_bad_hop;
-  mem_bank_control_column #(.P_MEM_CONTROL_HOP_CYCLES(2)) dut(.clk_i(1'b0),.rst_ni(1'b0));
-  initial begin #10;$fatal(1,"UNEXPECTED_PARAMETER_SUCCESS");end
-endmodule
 module mem_bad_bank_count;
   mem_slice #(.P_BANKS(3),.P_MEM_BANK_DEPTH_ROWS(64)) dut(.clk_i(1'b0),.rst_ni(1'b0));
   initial begin #10;$fatal(1,"UNEXPECTED_PARAMETER_SUCCESS");end

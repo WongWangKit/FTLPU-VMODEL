@@ -43,12 +43,12 @@ module mem_p1_entry_tb;
     if(which!=0)begin
       case(which)
         1:direct_valid[0]=1'bx;
-        2:begin direct_valid=1;direct_command[31:0]='x;direct_command[30]=1;end
+        2:begin direct_valid=1;direct_command[31:0]='x;direct_command[9]=1;end
         3:begin gv=1;tick();gv=0;feedback[0]=1'bx;end
         4:begin raw_valid=1;raw_word='x;end
         5:raw_valid=1'bx;
         6:direct_valid[0]=1'bz;
-        7:begin direct_valid=1;direct_command[31:0]='z;direct_command[30]=1;end
+        7:begin direct_valid=1;direct_command[31:0]='z;direct_command[9]=1;end
         8:begin gv=1;tick();gv=0;feedback[0]=1'bz;end
       endcase
       tick();$fatal(1,"UNEXPECTED_ENTRY_SUCCESS case=%0d",which);

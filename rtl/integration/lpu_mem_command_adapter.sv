@@ -30,8 +30,10 @@ module lpu_mem_command_adapter (
         native_command_o[2:0] = issue_instruction_i[2:0];
         native_command_o[8:3] = issue_instruction_i[8:3];
         native_command_o[29:15] = issue_instruction_i[29:15];
-        // Native [14:9] is reserved and [31] is preserve.  VMODEL Read/Write
-        // have no equivalent preserve bit, so both are fixed to zero.
+        // Native [14:9] is reserved, [31] is preserve, and [30] is delay3.
+        // Legacy VMODEL Read/Write have neither preserve nor hop selection:
+        // retain preserve=0 and one-cycle hops (delay3=0). VMODEL bit 30 is
+        // an address bit and must keep the range check above.
       end else begin
         command_fault_o = 1'b1;
       end

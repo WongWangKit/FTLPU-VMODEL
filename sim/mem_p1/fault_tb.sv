@@ -45,7 +45,7 @@ module mem_p1_fault_tb;
 
   function automatic bit legal(input logic[31:0] word);
     legal=(word[2:0]<2) && !(word[2:0]==0 && word[31]) &&
-          word[14:9]==0 && !word[30] && word[29:15]<32;
+          word[14:9]==0 && word[29:15]<32;
   endfunction
   function automatic [31:0] cmd(input integer op,row,s,tap);
     cmd=(tap<<31)|(row<<15)|(s<<3)|op;
@@ -135,7 +135,7 @@ module mem_p1_fault_tb;
     for(integer n=0;n<1;n=n+1)for(integer b=0;b<2;b=b+1)for(integer t=0;t<4;t=t+1)
       for(integer r=0;r<64;r=r+1)memory[n][b][t][r]=0;
     for(integer b=0;b<2;b=b+1)for(integer t=1;t<4;t=t+1)begin pipeline[b][t]=0;pipe_valid[b][t]=0;end
-    tick();rst_n=1;
+    rst_n=1;#1;rst_n=0;#1;tick();rst_n=1;
     state_valid='1;
     for(integer c=0;c<256;c=c+1)state_data[c*64+:64]=64'hf0e1d2c3b4a59687^(64'h102030405060708*c);
     // Seed all tile memories, then mix reads/writes, missing data, new bad
@@ -147,7 +147,7 @@ module mem_p1_fault_tb;
       if(c>=12 && c%4==0)begin command[31:0]=cmd(1,32,c%64,c%2);feedback='1;end
       if(c>=12 && c%7==0)begin command[63:32]=cmd(2,5,0,0);feedback='1;end
       if(c>=12 && c%9==0)command[31:0]=cmd(0,1,0,1);
-      if(c>=12 && c%11==0)command[31:0]=cmd(0,1,0,0)|32'h40000000;
+      if(c>=12 && c%11==0)command[31:0]=cmd(0,1,0,0)|32'h00004000;
       if(c>=12 && c%13==0)command[31:0]=cmd(0,1,0,0)|32'h00000200;
       if(c>=12 && c%3==0)begin state_valid=0;state_data='x;end
       else for(integer q=0;q<256;q=q+1)state_data[q*64+:64]=64'h13579bdf02468ace^(64'h102030405060708*(q+c));

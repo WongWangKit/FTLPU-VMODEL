@@ -14,7 +14,8 @@ module mem_p1_adapter_tb;
   for(genvar n=0;n<4;n=n+1)begin:gen_adapter
     localparam integer P=n==0?64:n==2?32768:8192;
     localparam integer E=n==3?64:P;
-    mem_c7_primitive_adapter #(.P_MEM_BANK_DEPTH_ROWS(P),.P_MEM_ACTIVE_ROWS(E)) dut(
+    // This fixture checks the frozen c7 codec, before the delay3 extension.
+    mem_c7_primitive_adapter #(.P_MEM_BANK_DEPTH_ROWS(P),.P_MEM_ACTIVE_ROWS(E),.P_ALLOW_DELAY3(0)) dut(
       .issue_valid_i(valid),.issue_instruction_i(word),.native_valid_o(native_valid[n]),
       .native_command_o(native_word[n]),.command_fault_o(fault[n]));
   end

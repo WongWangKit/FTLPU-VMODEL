@@ -4,7 +4,8 @@ module mem_profiles_codec_tb #(parameter integer DEPTH=1024,ACTIVE=DEPTH);
   logic [31:0] word=0;
   wire native_valid,fault;
   wire [31:0] native_word;
-  mem_c7_primitive_adapter #(.P_MEM_BANK_DEPTH_ROWS(DEPTH),.P_MEM_ACTIVE_ROWS(ACTIVE)) dut(
+  // The original CModel codec vectors retain their original ABI and goldens.
+  mem_c7_primitive_adapter #(.P_MEM_BANK_DEPTH_ROWS(DEPTH),.P_MEM_ACTIVE_ROWS(ACTIVE),.P_ALLOW_DELAY3(0)) dut(
     .issue_valid_i(valid),.issue_instruction_i(word),.native_valid_o(native_valid),
     .native_command_o(native_word),.command_fault_o(fault));
   integer fd,rc,version,p,e,expected,count=0;
