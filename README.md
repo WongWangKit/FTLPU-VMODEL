@@ -1,34 +1,33 @@
 # FTLPU-VMODEL
 
 SystemVerilog implementation and verification workspace for the FTLPU LPU.
-The architecture is aligned with the sibling `FTLPU-CMODEL` repository's
-`refactor/cmodel-architecture` branch.
+The active public top builds on the Program Load implementation pinned to upstream
+`56c7adf30d58eace0dd30df862db1a3ffbb582ab`, integrated onto local `2ec0824`.
+Existing local native MEM and MXM core work is retained, not replaced.
 
 ## Current status
 
-The repository now contains the first functional RTL baseline rather than an
-empty shell:
+- `lpu_top`: descriptor -> AXI4 program read -> byte reassembly -> hemisphere
+  routing -> FU-local iMEM -> macro decoder/scheduler -> timed queue. A reload
+  request can wait for segment retirement and physical drain before re-arming.
+- MEM uses the local native **32-bit** command directly, including the bit-30
+  one/three-cycle hop mode; there is no 47/64-bit translation in this path.
+- MEM and the three source-version MXM streams have program frontends. QCTL
+  adds a shared control pool and independent queue-local scheduling time.
+- The old top-level `schedule_*`, host peek/poke and mode-select ports were
+  removed. Existing module-level tests remain; historical top injection benches
+  are not the active API and are excluded from the main filelist.
+- The integrated MXM execution path still uses `lpu_mxm_slice`, as the pre-merge
+  local top did. The independently developed count-free `lpu_mxm_core` is
+  preserved and separately tested, but is **not connected to Program Load**.
+- The program port is read-only AXI4, single-beat/single-outstanding. This is not
+  the final program/data shared Master, a global program SRAM, or a data-DMA SoC.
+  SXM/VXM program loading and full LPU16/64 top parameterization are not present.
 
-- exact C-model hardware constants and ISA field layouts;
-- 131 independent, runtime-refillable ICU queues in a 138-slot address map,
-  with NOP, Repeat, interval,
-  and MEM row stride;
-- 4-tile northbound control-wave pipelines;
-- byte-stream next-state stages with broadcast consumption;
-- tile-local, four-tile, and dual-hemisphere MEM blocks with Read, Write, and
-  ReadWrite;
-- 14-boundary East/West MEM stream fabrics with passive propagation;
-- physical SXM Transpose banks and block-Permute datapaths in both hemispheres;
-- shared VXM boundary bridge, compact control, and standalone FP16 ALUs;
-- four MXM datapaths with Direct16/INT8 weight buffers, BF16/FP16 Vector and
-  Block8 compute, narrow and wide accumulator SRAMs, and stream output/readback;
-- top-level `MXM_ACCUMULATOR_BLOCK_COUNT` sizing for complete 32x32 FP32
-  partial-sum blocks (32 blocks / 128 KiB per MXM by default);
-- C-model-generated golden vectors and VCS end-to-end comparison;
-- smoke and functional architecture testbenches.
-
-See [docs/architecture.md](docs/architecture.md) for the queue map, topology,
-cycle rules, and remaining datapath work.
+See [Program Load integration](docs/program_load_integration.md) for the exact
+interfaces, queue map, tests and known limits. The older
+[architecture description](docs/architecture.md) is historical where it describes
+138-slot injection; it must not be used as the current top-level contract.
 
 ## Layout
 
@@ -39,7 +38,8 @@ rtl/mem/          MEM tile, four-tile column, and dual-hemisphere fabric
 rtl/mxm/          MXM control, weight storage, vector compute, and routing
 rtl/sxm/          Transpose/Permute control and byte datapath
 rtl/vxm/          VXM control, operand orchestration, ALU, math, and routing
-rtl/lpu_top.sv    Static-schedule loading and architectural dispatch top
+rtl/program_load/ Program descriptor, DMA transport and byte reassembly
+rtl/lpu_top.sv    Program-only public top (no schedule injection)
 sim/tb/           Smoke and functional architecture tests
 sim/cmodel/       C-model golden-vector generators
 sim/vectors/      Checked-in differential-test vectors
@@ -49,7 +49,8 @@ docs/             Architecture and implementation boundary
 
 ## Prerequisites
 
-Install at least one supported open-source tool:
+Program Load regression uses Verilator with timing support and a C++ toolchain.
+Native MEM/MXM module regressions use Icarus Verilog:
 
 - [Verilator](https://verilator.org/) for lint
 - [Icarus Verilog](https://steveicarus.github.io/iverilog/) for simulation
@@ -60,14 +61,14 @@ Linux/macOS:
 
 ```bash
 ./scripts/lint.sh
-./scripts/smoke.sh
+./scripts/smoke.sh  # program read/lifecycle + transport/MEM/MXM/QCTL; --system adds MEM/MXM top test
 ```
 
 PowerShell:
 
 ```powershell
 ./scripts/lint.ps1
-./scripts/smoke.ps1
+./scripts/smoke.ps1 # WSL; -FullSystem adds MEM/MXM top test
 ```
 
 Verify the native MEM per-command 1/3-cycle Superlane hops:
@@ -81,12 +82,9 @@ See the [native MEM instruction format](docs/mem_instructions.md) and
 [MEM scheduling contract](docs/mem_scheduling_contract.md) for mode selection,
 compiler-controlled transition bubbles, and valid handling.
 
-VCS (the local O-2018.09 installation needs the linker compatibility flag
-already included by the script):
-
-```bash
-./scripts/vcs.sh
-```
+The historical `scripts/vcs.sh` / CModel top-level golden-vector flow still
+uses the removed injection API; it needs a Program Load stimulus migration.
+It is not part of the passing integration regression.
 
 Regenerate only the C-model golden vectors:
 

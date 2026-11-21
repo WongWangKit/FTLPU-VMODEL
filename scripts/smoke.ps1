@@ -1,44 +1,20 @@
 [CmdletBinding()]
-param()
-
+param(
+  [string]$Distribution = 'Ubuntu-22.04',
+  [string]$Verilator = 'verilator',
+  [switch]$FullSystem
+)
 $ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
-$buildDir = Join-Path $repoRoot 'build'
-$repoTmpDir = Join-Path $buildDir 'tmp'
-$simPath = Join-Path $buildDir 'lpu_smoke.vvp'
-$archSimPath = Join-Path $buildDir 'lpu_arch.vvp'
-
-if (-not (Get-Command iverilog -ErrorAction SilentlyContinue)) {
-  throw 'iverilog was not found on PATH. Install Icarus Verilog before running the smoke test.'
+$linuxRoot = (& wsl.exe -d $Distribution -- wslpath -a -u $repoRoot).Trim()
+if ($LASTEXITCODE -ne 0) { throw 'Unable to resolve the repository in WSL.' }
+$stamp = Get-Date -Format 'yyyyMMdd_HHmmss'
+$stages = @('axi_read', 'epoch', 'prime_window', 'transport', 'mem_native', 'frontends', 'qctl')
+if ($FullSystem) { $stages += 'system' }
+foreach ($stage in $stages) {
+  & wsl.exe -d $Distribution --cd $linuxRoot -- python3 sim/program_load/run.py `
+    --stage $stage --out "$linuxRoot/build/program_load/results/$stamp/$stage" `
+    --build-root "$linuxRoot/build/program_load/tmp/$stamp/$stage" --verilator $Verilator
+  if ($LASTEXITCODE -ne 0) { throw "Program Load $stage failed; inspect build/program_load/results/$stamp." }
 }
-
-New-Item -ItemType Directory -Force -Path $buildDir, $repoTmpDir | Out-Null
-$env:TEMP = $repoTmpDir
-$env:TMP = $repoTmpDir
-
-Push-Location $repoRoot
-try {
-  & iverilog -g2012 -s lpu_smoke_tb -o $simPath -f sim/filelist.f
-  if ($LASTEXITCODE -ne 0) {
-    throw "Icarus Verilog compilation failed with exit code $LASTEXITCODE."
-  }
-
-  & vvp $simPath
-  if ($LASTEXITCODE -ne 0) {
-    throw "Smoke test failed with exit code $LASTEXITCODE."
-  }
-
-  & iverilog -g2012 -s lpu_arch_tb -o $archSimPath -f sim/filelist.f
-  if ($LASTEXITCODE -ne 0) {
-    throw "Icarus Verilog architecture-test compilation failed with exit code $LASTEXITCODE."
-  }
-
-  & vvp $archSimPath
-  if ($LASTEXITCODE -ne 0) {
-    throw "Architecture test failed with exit code $LASTEXITCODE."
-  }
-
-}
-finally {
-  Pop-Location
-}
+Write-Host "Program Load results: $repoRoot/build/program_load/results/$stamp"

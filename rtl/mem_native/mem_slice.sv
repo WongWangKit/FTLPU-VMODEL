@@ -113,8 +113,8 @@ module mem_slice #(
             assign issue_legal[bank] = supported_opcode &&
                                        !read_preserve_illegal &&
                                        (issue_command[14:9] == 6'b0) &&
-                                       (issue_command[29:15] < P_MEM_BANK_DEPTH_ROWS) &&
-                                       (issue_command[29:15] < P_MEM_ACTIVE_ROWS);
+                                       ({17'b0, issue_command[29:15]} < P_MEM_BANK_DEPTH_ROWS) &&
+                                       ({17'b0, issue_command[29:15]} < P_MEM_ACTIVE_ROWS);
             assign issue_fault[bank] = bank_issue_valid_i[bank] &&
                                        !issue_legal[bank];
 
@@ -174,9 +174,10 @@ module mem_slice #(
                  select_tile = select_tile + 1) begin : gen_select_tile
                 localparam ENTRY = select_bank*P_TILE_ROWS + select_tile;
                 wire [$clog2(P_SR_CELLS)-1:0] sr_cell_index;
-                assign sr_cell_index =
-                    (current_cmd_stream_dir[ENTRY]*P_STREAMS_PER_DIRECTION +
-                     current_cmd_stream_idx[ENTRY*5 +: 5])*P_TILE_ROWS + select_tile;
+                // T is a power of two (2/4/8), with 32 streams per direction.
+                assign sr_cell_index = {current_cmd_stream_dir[ENTRY],
+                                        current_cmd_stream_idx[ENTRY*5 +: 5],
+                                        P_TILE_ID_BITS'(select_tile)};
                 assign selected_stream_valid[ENTRY] =
                     sr_state_valid_i[sr_cell_index];
                 assign selected_stream_data[ENTRY*P_SEGMENT_BITS +: P_SEGMENT_BITS] =
@@ -225,6 +226,8 @@ module mem_slice #(
     integer consume_index;
     always @* begin
         sr_consume_o = {P_BANKS*P_SR_CELLS{1'b0}};
+        consume_entry = 0;
+        consume_index = 0;
         if (rst_ni) begin
             for (consume_bank = 0; consume_bank < P_BANKS;
                  consume_bank = consume_bank + 1) begin
@@ -239,8 +242,8 @@ module mem_slice #(
                     if (current_cmd_valid[consume_entry] &&
                         (current_cmd_opcode[consume_entry*3 +: 3] == 3'b001) &&
                         !current_cmd_preserve[consume_entry] &&
-                        (current_cmd_row[consume_entry*15 +: 15] < P_MEM_BANK_DEPTH_ROWS) &&
-                        (current_cmd_row[consume_entry*15 +: 15] < P_MEM_ACTIVE_ROWS) &&
+                        ({17'b0, current_cmd_row[consume_entry*15 +: 15]} < P_MEM_BANK_DEPTH_ROWS) &&
+                        ({17'b0, current_cmd_row[consume_entry*15 +: 15]} < P_MEM_ACTIVE_ROWS) &&
                         selected_stream_valid[consume_entry]) begin
                         sr_consume_o[consume_index] = 1'b1;
                     end
@@ -286,7 +289,7 @@ module mem_slice #(
                                      P_SLICE_FAULT_CODE_BITS] =
                         SLICE_FAULT_COLLISION;
                     mem_fault_tile_valid_o[fault_bank] = 1'b1;
-                    mem_fault_tile_id_o[fault_bank*P_TILE_ID_BITS +: P_TILE_ID_BITS] = fault_tile;
+                    mem_fault_tile_id_o[fault_bank*P_TILE_ID_BITS +: P_TILE_ID_BITS] = P_TILE_ID_BITS'(fault_tile);
                     mem_fault_row_o[fault_bank*15 +: 15] =
                         response_row_q[fault_entry*15 +: 15];
                 end
@@ -301,7 +304,7 @@ module mem_slice #(
                     mem_fault_code_o[fault_bank*P_SLICE_FAULT_CODE_BITS +:
                                      P_SLICE_FAULT_CODE_BITS] = SLICE_FAULT_LEAF;
                     mem_fault_tile_valid_o[fault_bank] = 1'b1;
-                    mem_fault_tile_id_o[fault_bank*P_TILE_ID_BITS +: P_TILE_ID_BITS] = fault_tile;
+                    mem_fault_tile_id_o[fault_bank*P_TILE_ID_BITS +: P_TILE_ID_BITS] = P_TILE_ID_BITS'(fault_tile);
                     mem_fault_row_o[fault_bank*15 +: 15] =
                         response_row_q[fault_entry*15 +: 15];
                 end

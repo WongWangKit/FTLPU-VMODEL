@@ -16,7 +16,8 @@ module lpu_mxm_accumulator #(
   input  logic [4*48-1:0] read_row_instruction_i,
   output logic [4*32-1:0] west_valid_o,
   output logic [4*32*64-1:0] west_data_o,
-  output logic fault_o
+  output logic fault_o,
+  output wire pending_o
 );
   import lpu_vxm_math_pkg::*;
 
@@ -30,6 +31,7 @@ module lpu_mxm_accumulator #(
   logic segment_valid_q [0:BLOCKS-1][0:DEPTH-1];
 
   logic pending_valid_q;
+  assign pending_o = pending_valid_q;
   logic [1:0] pending_block_q;
   logic [32*32-1:0] pending_values_q;
   logic [12:0] pending_address_q;

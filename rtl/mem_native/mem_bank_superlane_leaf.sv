@@ -30,7 +30,7 @@ module mem_bank_superlane_leaf #(
     output reg                              stream_consume_o,
 
     output reg                              read_valid_o,
-    output reg  [P_LANES_PER_TILE*P_MEM_ELEMENT_BITS-1:0] read_data_o,
+    output wire [P_LANES_PER_TILE*P_MEM_ELEMENT_BITS-1:0] read_data_o,
     output reg                              read_stream_dir_o,
     output reg  [4:0]                       read_stream_idx_o,
 
@@ -39,6 +39,7 @@ module mem_bank_superlane_leaf #(
 );
 
     localparam P_ROW_BITS = P_LANES_PER_TILE * P_MEM_ELEMENT_BITS;
+    localparam P_ADDR_BITS = $clog2(P_MEM_BANK_DEPTH_ROWS);
 
     localparam [2:0] MEM_OPCODE_READ  = 3'b000;
     localparam [2:0] MEM_OPCODE_WRITE = 3'b001;
@@ -56,6 +57,37 @@ module mem_bank_superlane_leaf #(
     // Behavioral model of one 32768 x 64-bit SRAM in the default profile.
     // Do not add this array to the reset branch.
     reg [P_ROW_BITS-1:0] mem_array [0:P_MEM_BANK_DEPTH_ROWS-1];
+    wire [P_ADDR_BITS-1:0] array_addr = cmd_row_i[P_ADDR_BITS-1:0];
+    wire row_out_of_range = ({17'b0, cmd_row_i} >= P_MEM_BANK_DEPTH_ROWS) ||
+                            ({17'b0, cmd_row_i} >= P_MEM_ACTIVE_ROWS);
+    reg [P_ROW_BITS-1:0] ram_read_data_q;
+    reg read_seen_q;
+    reg ram_read_en, ram_write_en;
+
+    // Decode before narrowing the address. Put the RAM and its synchronous
+    // read port in a clock-only block so Vivado can infer single-port BRAM.
+    always @* begin
+        ram_read_en = 1'b0;
+        ram_write_en = 1'b0;
+        if (rst_ni && cmd_valid_i && !row_out_of_range) begin
+            case (cmd_opcode_i)
+                MEM_OPCODE_READ:  ram_read_en = !cmd_preserve_i;
+                MEM_OPCODE_WRITE: ram_write_en = stream_valid_i;
+                default: begin end
+            endcase
+        end
+    end
+
+    always @(posedge clk_i) begin
+        if (ram_write_en)
+            mem_array[array_addr] <= stream_data_i;
+        else if (ram_read_en)
+            ram_read_data_q <= mem_array[array_addr];
+    end
+
+    // Preserve the old reset/hold behavior at the port without resetting
+    // the BRAM output register or inserting another data pipeline stage.
+    assign read_data_o = read_seen_q ? ram_read_data_q : {P_ROW_BITS{1'b0}};
 
     // Cold behavioral storage epoch only. Execution reset never clears SRAM.
     // A future physical macro must separately provide this observable policy.
@@ -86,7 +118,7 @@ module mem_bank_superlane_leaf #(
         if (!rst_ni) begin
             stream_consume_o  <= 1'b0;
             read_valid_o      <= 1'b0;
-            read_data_o       <= {P_ROW_BITS{1'b0}};
+            read_seen_q       <= 1'b0;
             read_stream_dir_o <= 1'b0;
             read_stream_idx_o <= 5'b0;
             fault_valid_o     <= 1'b0;
@@ -101,7 +133,7 @@ module mem_bank_superlane_leaf #(
             if (cmd_valid_i &&
                 (cmd_opcode_i == MEM_OPCODE_READ || cmd_opcode_i == MEM_OPCODE_WRITE) &&
                 !(cmd_opcode_i == MEM_OPCODE_READ && cmd_preserve_i) &&
-                (cmd_row_i >= P_MEM_BANK_DEPTH_ROWS || cmd_row_i >= P_MEM_ACTIVE_ROWS)) begin
+                row_out_of_range) begin
                 // Reject before any array access, even for a missing Tap.
                 fault_valid_o <= 1'b1;
                 fault_code_o  <= MEM_FAULT_INVALID_ADDRESS;
@@ -113,7 +145,7 @@ module mem_bank_superlane_leaf #(
                             fault_valid_o <= 1'b1;
                             fault_code_o  <= MEM_FAULT_READ_PRESERVE;
                         end else begin
-                            read_data_o       <= mem_array[cmd_row_i];
+                            read_seen_q       <= 1'b1;
                             read_stream_dir_o <= cmd_stream_dir_i;
                             read_stream_idx_o <= cmd_stream_idx_i;
                             read_valid_o      <= 1'b1;
@@ -122,13 +154,9 @@ module mem_bank_superlane_leaf #(
 
                     MEM_OPCODE_WRITE: begin
                         if (cmd_preserve_i) begin
-                            // WriteTap: invalid input is a tile-local no-op.
-                            if (stream_valid_i) begin
-                                mem_array[cmd_row_i] <= stream_data_i;
-                            end
+                            // WriteTap writes through the RAM port but does not consume.
                         end else if (stream_valid_i) begin
                             // Normal Write consumes the selected stream.
-                            mem_array[cmd_row_i] <= stream_data_i;
                             stream_consume_o     <= 1'b1;
                         end else begin
                             // Missing data is a scheduling fault, not a write.

@@ -1,5 +1,10 @@
 # FTLPU VMODEL architecture
 
+> Historical architecture note. For the active Program Load top, see
+> [program_load_integration.md](program_load_integration.md). The 138-slot
+> injection API below is no longer exposed by `lpu_top`.
+
+
 This RTL derives its architectural constants, instruction encodings, and
 cycle contracts from the sibling `FTLPU-CMODEL` repository's
 `refactor/cmodel-architecture` branch.

@@ -17,7 +17,8 @@ module lpu_mxm_shared_accumulator #(
   input  logic [4*48-1:0] read_row_instruction_i,
   output logic [4*32-1:0] west_valid_o,
   output logic [4*32*64-1:0] west_data_o,
-  output logic fault_o
+  output logic fault_o,
+  output wire pending_o
 );
 `ifdef FTLPU_USE_SRAM128X512_MACRO
   lpu_mxm_shared_accumulator_macro #(
@@ -34,6 +35,8 @@ module lpu_mxm_shared_accumulator #(
   logic [4*32*64-1:0] block_west_data;
   logic vector_fault;
   logic block_fault;
+  logic vector_pending, block_pending;
+  assign pending_o = vector_pending || block_pending;
 
   always_comb begin
     for (integer tile = 0; tile < 4; tile++) begin
@@ -69,7 +72,7 @@ module lpu_mxm_shared_accumulator #(
     .write_ready_o(vector_write_ready),
     .read_row_valid_i(vector_read_valid), .read_row_instruction_i,
     .west_valid_o(vector_west_valid), .west_data_o(vector_west_data),
-    .fault_o(vector_fault)
+    .fault_o(vector_fault), .pending_o(vector_pending)
   );
 
   lpu_mxm_block_accumulator #(
@@ -82,7 +85,7 @@ module lpu_mxm_shared_accumulator #(
     .write_ready_o(block_write_ready),
     .read_row_valid_i(block_read_valid), .read_row_instruction_i,
     .west_valid_o(block_west_valid), .west_data_o(block_west_data),
-    .fault_o(block_fault)
+    .fault_o(block_fault), .pending_o(block_pending)
   );
 `endif
 endmodule
@@ -106,7 +109,8 @@ module lpu_mxm_shared_accumulator_macro #(
   input  logic [4*48-1:0] read_row_instruction_i,
   output logic [4*32-1:0] west_valid_o,
   output logic [4*32*64-1:0] west_data_o,
-  output logic fault_o
+  output logic fault_o,
+  output wire pending_o
 );
   import lpu_vxm_math_pkg::*;
 
@@ -158,6 +162,7 @@ module lpu_mxm_shared_accumulator_macro #(
   logic [31:0] lane_sum;
   logic [7:0] lane_sum_status;
   logic output_active;
+  assign pending_o = state_q != STATE_IDLE;
   logic [255:0] output_values;
 
   function automatic logic [8:0] vector_physical_address(

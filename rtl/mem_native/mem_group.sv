@@ -193,6 +193,8 @@ module mem_group #(
     integer producer_b_tile;
     always @* begin
         internal_mem_collision = {P_CANDIDATES{1'b0}};
+        producer_a_tile = 0;
+        producer_b_tile = 0;
         for (producer_a = 0; producer_a < P_CANDIDATES;
              producer_a = producer_a + 1) begin
             producer_a_tile = producer_a % P_TILE_ROWS;

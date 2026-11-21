@@ -11,6 +11,11 @@ package lpu_pkg;
 
   localparam integer MEM_SLICES_PER_HEMISPHERE = 52;
   localparam integer MEM_SLICE_COUNT            = 104;
+  localparam integer MEM_BANKS_PER_SLICE = 2;
+  localparam integer MEM_BANKS_PER_HEMISPHERE = MEM_SLICES_PER_HEMISPHERE * MEM_BANKS_PER_SLICE;
+  localparam integer MEM_BANK_COUNT = HEMISPHERES * MEM_BANKS_PER_HEMISPHERE;
+  localparam integer MEM_NATIVE_COMMAND_WIDTH = 32;
+  localparam integer MEM_ADDRESS_WIDTH = 15;
   localparam integer MEM_SLICES_PER_GROUP       = 4;
   localparam integer MEM_GROUPS                 = 13;
   localparam integer STREAM_REGISTER_COLUMNS    = 15;
@@ -136,7 +141,7 @@ package lpu_pkg;
   localparam integer VXM_SPECIAL_EXP         = 1;
   localparam integer VXM_SPECIAL_RECIP_RSQRT = 2;
 
-  localparam integer MEM_INSTRUCTION_WIDTH = 47;
+  localparam integer MEM_INSTRUCTION_WIDTH = 32;
   localparam integer MXM_INSTRUCTION_WIDTH = 48;
   localparam integer VXM_INSTRUCTION_WIDTH = 128;
   localparam integer SXM_INSTRUCTION_WIDTH = 416;

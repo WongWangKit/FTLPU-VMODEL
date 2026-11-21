@@ -21,7 +21,8 @@ module lpu_mxm_slice #(
   output logic [4*32-1:0] west_to_sxm_valid_o,
   output logic [4*32*64-1:0] west_to_sxm_data_o,
   output logic fault_o,
-  output logic conflict_o
+  output logic conflict_o,
+  output logic execution_busy_o
 );
   logic [3:0] load_row_valid;
   logic [4*48-1:0] load_row_instruction;
@@ -46,6 +47,7 @@ module lpu_mxm_slice #(
   logic load_fault;
   logic compute_fault;
   logic accumulator_fault;
+  logic accumulator_pending;
   logic conflict_d;
 
   // Legacy datapath cannot consume overlapping batch commands. Keep its
@@ -127,7 +129,7 @@ module lpu_mxm_slice #(
     .read_row_instruction_i(compute_row_instruction),
     .west_valid_o(accumulator_produced_valid),
     .west_data_o(accumulator_produced_data),
-    .fault_o(accumulator_fault)
+    .fault_o(accumulator_fault), .pending_o(accumulator_pending)
   );
 
   always_comb begin
@@ -162,4 +164,8 @@ module lpu_mxm_slice #(
   end
 
   assign fault_o = load_fault | compute_fault | accumulator_fault;
+  assign execution_busy_o = load_issue_valid_i || dequant_issue_valid_i ||
+    compute_issue_valid_i || (|load_row_valid) || (|dequant_row_valid) ||
+    (|compute_row_valid) || result_valid || accumulator_pending ||
+    (|accumulator_produced_valid);
 endmodule

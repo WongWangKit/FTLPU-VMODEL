@@ -1,16 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
-
 repo_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
-build_dir="$repo_dir/build"
-repo_tmp_dir="$build_dir/tmp"
-mkdir -p "$build_dir" "$repo_tmp_dir"
-export TMPDIR="$repo_tmp_dir"
-export TEMP="$repo_tmp_dir"
-export TMP="$repo_tmp_dir"
 cd "$repo_dir"
-
-iverilog -g2012 -s lpu_smoke_tb -o "$build_dir/lpu_smoke.vvp" -f sim/filelist.f
-vvp "$build_dir/lpu_smoke.vvp"
-iverilog -g2012 -s lpu_arch_tb -o "$build_dir/lpu_arch.vvp" -f sim/filelist.f
-vvp "$build_dir/lpu_arch.vvp"
+stamp=$(date +%Y%m%d_%H%M%S)
+out="$repo_dir/build/program_load/results/$stamp"
+obj="$repo_dir/build/program_load/tmp/$stamp"
+stages=(axi_read epoch prime_window transport mem_native frontends qctl)
+if [[ ${1:-} == --system ]]; then stages+=(system); fi
+for stage in "${stages[@]}"; do
+  python3 sim/program_load/run.py --stage "$stage" --out "$out/$stage" --build-root "$obj/$stage" --verilator "${VERILATOR:-verilator}"
+done
+printf 'Program Load results: %s\n' "$out"
