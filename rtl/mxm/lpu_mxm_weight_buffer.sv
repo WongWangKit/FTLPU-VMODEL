@@ -56,18 +56,20 @@ module lpu_mxm_weight_buffer #(
       (((buffer*TILES+tile)*BLOCKS+block)*LANES+column);
   endfunction
 
-  function automatic logic instruction_supported(input logic [47:0] instruction);
-    instruction_supported =
-      (instruction[1:0] == 2'd0) &&
-      (instruction[47:10] == '0) &&
-      (instruction[5] || (instruction[8:6] == '0));
-  endfunction
-
   function automatic integer input_stream_count(input logic [47:0] instruction);
     if (instruction[9])
       input_stream_count = instruction[5] ? 2 : 16;
     else
       input_stream_count = instruction[5] ? 1 : 8;
+  endfunction
+
+  function automatic logic instruction_supported(input logic [47:0] instruction);
+    // Canonical IW payload from the packed frontend; the program selects
+    // the east stream range. Do not derive it from the physical MXM index.
+    instruction_supported =
+      (instruction[1:0] == 2'd0) && (instruction[47:16] == '0) &&
+      (instruction[5] || (instruction[8:6] == '0)) &&
+      (int'({1'b0,instruction[15:10]}) + input_stream_count(instruction) <= STREAMS);
   endfunction
 
   always_comb begin
@@ -81,7 +83,7 @@ module lpu_mxm_weight_buffer #(
       integer stream_base;
       instruction = load_row_instruction_i[tile*48 +: 48];
       stream_count = input_stream_count(instruction);
-      stream_base = LOCAL_MXM_INDEX * (instruction[9] ? 16 : 8);
+      stream_base = int'({1'b0,instruction[15:10]});
       inputs_valid = 1'b1;
       for (integer stream = 0; stream < 16; stream++)
         if (stream < stream_count)
@@ -136,7 +138,7 @@ module lpu_mxm_weight_buffer #(
           block = instruction[4:3];
           selected_column = instruction[8:6];
           stream_count = input_stream_count(instruction);
-          stream_base = LOCAL_MXM_INDEX * (instruction[9] ? 16 : 8);
+          stream_base = int'({1'b0,instruction[15:10]});
           inputs_valid = 1'b1;
           for (integer stream = 0; stream < 16; stream++)
             if (stream < stream_count)

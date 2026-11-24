@@ -5,13 +5,16 @@ module lpu_top #(
 	parameter integer PROGRAM_COMMAND_DEPTH = 32,
 	parameter integer PROGRAM_DMA_DATA_WIDTH = 256,
 	parameter integer DMA_VECTOR_BYTES=32,
-	parameter integer DMA_RT=128,
-	parameter integer DMA_Q=(DMA_VECTOR_BYTES==16?832:384),
+    parameter integer PROGRAM_MXMS_PER_HEMISPHERE=(DMA_VECTOR_BYTES==16?1:2),
+	// Packed image ABI is independent of reduced physical test SRAM depth.
+	parameter integer PACKED_MEM_ROW_BITS=(DMA_VECTOR_BYTES==16?10:13),
+	parameter integer DMA_RT=lpu_pkg::dma_mixed_rt(DMA_VECTOR_BYTES),
+	parameter integer DMA_Q=lpu_pkg::dma_mixed_q(DMA_VECTOR_BYTES),
 	// Number of entries on the ordered program-response interface, not AXI beats.
-	parameter integer PROGRAM_DMA_RX_FIFO_DEPTH = (DMA_VECTOR_BYTES==16?112:192),
+	parameter integer PROGRAM_DMA_RX_FIFO_DEPTH = lpu_pkg::dma_mixed_program_response(DMA_VECTOR_BYTES),
 	parameter integer PROGRAM_DMA_OUTSTANDING_DEPTH = 16,
-	parameter integer PROGRAM_MEM_IMEM_DEPTH = 131072,
-	parameter integer PROGRAM_MXM_IMEM_DEPTH = 65536,
+	parameter integer PROGRAM_MEM_IMEM_DEPTH = lpu_pkg::dma_mixed_mem_imem_depth(DMA_VECTOR_BYTES),
+	parameter integer PROGRAM_MXM_IMEM_DEPTH = lpu_pkg::dma_mixed_mxm_imem_depth(DMA_VECTOR_BYTES),
 	parameter integer PROGRAM_ACTIVE_CONTEXTS = 4,
 	parameter bit ENABLE_QCTL = 1'b0,
 	parameter bit ENABLE_SXM_VXM_EXECUTION = 1'b1,
@@ -23,6 +26,8 @@ module lpu_top #(
 	// A reload request may be queued while running. ACK follows segment end
 	// and physical drain; clk_i/rst_ni are shared with the AXI controller port.
 	input logic program_reset_i,
+	input logic program_cancel_valid_i,
+	output logic program_cancel_ready_o,
 	output logic program_reload_ready_o,
 	output logic program_reload_ack_o,
 	input logic program_command_write_valid_i,
@@ -44,6 +49,12 @@ module lpu_top #(
 	output logic program_load_start_ready_o,
 	input logic [PROGRAM_COMMAND_ADDRESS_WIDTH:0] program_load_start_command_count_i,
 	// One transport descriptor owns the MEM window; accepted results are tagged.
+    // Page metadata belongs to the last LOAD descriptor of an ordered group.
+    // Configure QCTL partitions for the generation before marking the descriptor.
+    input logic dma_page_last_i,
+    input logic [31:0] dma_page_event_tag_i,
+    input logic [63:0] dma_page_generation_i,
+    input logic [QCTL_QUEUE_COUNT-1:0] dma_page_mask_i,
 	input logic dma_desc_valid_i,output logic dma_desc_ready_o,input logic dma_store_i,dma_hem_i,
 	input logic [6:0] dma_bank_i,input logic [2:0] dma_lane_i,input logic [14:0] dma_row_i,
 	input logic [63:0] dma_addr_i,input logic [31:0] dma_count_i,dma_stride_i,dma_tag_i,
@@ -91,9 +102,17 @@ module lpu_top #(
 	output logic qctl_load_ready_o,
 	input logic [8:0] qctl_load_address_i,
 	input logic [95:0] qctl_load_data_i,
-	input logic [QCTL_QUEUE_COUNT-1:0] qctl_event_valid_i,
-	output logic [QCTL_QUEUE_COUNT-1:0] qctl_event_ready_o,
-	input logic [QCTL_QUEUE_COUNT*32-1:0] qctl_event_tag_i,
+	input logic qctl_event_valid_i,
+	output logic qctl_event_ready_o,
+	input logic [31:0] qctl_event_tag_i,
+	input logic [QCTL_QUEUE_COUNT-1:0] qctl_event_mask_i,
+	input logic [64-1:0] qctl_event_generation_i,
+	input logic qctl_event_phase_i,
+	output logic qctl_receipt_valid_o,
+	input logic qctl_receipt_ready_i,
+	output logic [31:0] qctl_receipt_tag_o,
+	output logic [64-1:0] qctl_receipt_generation_o,
+	output logic [63:0] qctl_receipt_cycle_o,
 	input logic [QCTL_QUEUE_COUNT-1:0] qctl_sync_valid_i,
 	output logic [QCTL_QUEUE_COUNT-1:0] qctl_sync_ready_o,
 	output logic [QCTL_QUEUE_COUNT-1:0] qctl_notify_valid_o,
@@ -176,6 +195,36 @@ module lpu_top #(
 	logic mem_req,mem_ready,mem_write,mem_hem,mem_ret,mem_err;
 	logic [6:0] mem_bank;logic [2:0] mem_lane;logic [14:0] mem_row;logic [W-1:0] mem_data,mem_q;
 	logic start_wait,desc_failed;
+    logic page_pending, page_armed, fabric_ready, pick_page, lock_valid, lock_page;
+    logic [QCTL_QUEUE_COUNT-1:0] page_mask;
+    logic [31:0] page_tag;
+    logic [63:0] page_generation;
+    // Both sources obey VALID/READY; hold the selected source until accepted.
+    assign pick_page=ENABLE_QCTL && (lock_valid ? lock_page : page_pending);
+    assign qctl_event_ready_o=fabric_ready && !pick_page;
+    always_ff @(posedge clk_i or negedge rst_ni) begin
+      if(!rst_ni)begin page_pending<=0;page_armed<=0;lock_valid<=0;lock_page<=0;
+        page_mask<='0;page_tag<='0;page_generation<='0;end
+      else if(program_reload_ack_o)begin page_pending<=0;page_armed<=0;lock_valid<=0;end
+      else begin
+        if((pick_page || qctl_event_valid_i) && !fabric_ready)begin
+          lock_valid<=1;lock_page<=pick_page;
+        end else lock_valid<=0;
+        if(pick_page && fabric_ready)page_pending<=0;
+        if(dma_desc_valid_i && dma_desc_ready_o)begin
+          page_armed<=ENABLE_QCTL && dma_page_last_i && !dma_store_i;
+          page_mask<=dma_page_mask_i;page_tag<=dma_page_event_tag_i;
+          page_generation<=dma_page_generation_i;
+        end
+        // Result VALID follows the final mem_ret (not RLAST or descriptor issue).
+        // Disarm on first observation, independently of the host result READY.
+        if(page_armed && dma_result_valid_o)begin
+          page_armed<=0;
+          if(!dma_result_error_o && !desc_failed && !dma_isolated_o && !program_fault_o && !cancel_transport)
+            page_pending<=1;
+        end
+      end
+    end
 	assign axi_idle=pidle && !dma_busy_o && !dma_isolated_o;
 	always_ff @(posedge clk_i or negedge rst_ni)
 	  if(!rst_ni)begin start_wait<=0;desc_failed<=0;end
@@ -187,7 +236,7 @@ module lpu_top #(
 	  end
 	lpu_dma_data_channel #(.W(W),.Q(DMA_Q),.RT(DMA_RT),.ROWS(MEM_DEPTH_ROWS),.BANKS(2*ACTIVE_MEM_COLUMNS)) u_data (
 	  .clk_i,.rst_ni,.isolated_i(dma_isolated_o),
-	  .enable_i(admit_epoch && !start_wait && !program_start_request_i && !program_running_o && endpoint_execution_drained && !program_fault_o),
+	  .enable_i(admit_epoch && !page_pending && !page_armed && !start_wait && !program_start_request_i && !program_running_o && endpoint_execution_drained && !program_fault_o),
 	  .desc_valid_i(dma_desc_valid_i),.desc_ready_o(dma_desc_ready_o),.store_i(dma_store_i),.hem_i(dma_hem_i),
 	  .bank_i(dma_bank_i),.lane_i(dma_lane_i),.row_i(dma_row_i),.addr_i(dma_addr_i),.count_i(dma_count_i),.stride_i(dma_stride_i),.tag_i(dma_tag_i),
 	  .busy_o(dma_busy_o),.result_valid_o(dma_result_valid_o),.result_ready_i(dma_result_ready_i),.result_error_o(dma_result_error_o),.result_tag_o(dma_result_tag_o),
@@ -211,6 +260,7 @@ module lpu_top #(
 
 	lpu_program_epoch_control u_epoch (
 		.clk_i, .rst_ni, .reload_valid_i(program_reset_i),
+		.cancel_valid_i(program_cancel_valid_i),.cancel_ready_o(program_cancel_ready_o),
 		.reload_ready_o(program_reload_ready_o), .reload_ack_o(program_reload_ack_o),
 		.load_fire_i(program_load_start_valid_i && program_load_start_ready_o),
 		.start_fire_i(program_start_ack_o), .load_complete_i(program_load_complete_o),
@@ -231,6 +281,7 @@ module lpu_top #(
 	);
 
 	lpu_program_control_system #(
+        .MXMS_PER_HEMISPHERE(PROGRAM_MXMS_PER_HEMISPHERE),
 		.COMMAND_DEPTH(PROGRAM_COMMAND_DEPTH), .DMA_DATA_WIDTH(PROGRAM_DMA_DATA_WIDTH),
 		.DMA_RX_FIFO_DEPTH(PROGRAM_DMA_RX_FIFO_DEPTH),
 		.DMA_OUTSTANDING_DEPTH(PROGRAM_DMA_OUTSTANDING_DEPTH),
@@ -286,6 +337,7 @@ module lpu_top #(
 		end
 	end
 	lpu_fu_subsystem_cluster #(
+		.PACKED_MEM_ROW_BITS(PACKED_MEM_ROW_BITS),
 		.DMA_TILES(DMA_VECTOR_BYTES/8),
 		.MEM_IMEM_DEPTH(PROGRAM_MEM_IMEM_DEPTH), .MXM_IMEM_DEPTH(PROGRAM_MXM_IMEM_DEPTH),
 		.ACTIVE_CONTEXTS(PROGRAM_ACTIVE_CONTEXTS), .MEM_DEPTH_ROWS(MEM_DEPTH_ROWS),
@@ -313,7 +365,9 @@ module lpu_top #(
 		.qctl_load_mode_i, .qctl_partition_valid_i, .qctl_partition_ready_o, .qctl_partition_queue_i,
 		.qctl_partition_base_i, .qctl_partition_count_i, .qctl_partition_generation_i,
 		.qctl_load_valid_i, .qctl_load_ready_o, .qctl_load_address_i, .qctl_load_data_i,
-		.qctl_event_valid_i, .qctl_event_ready_o, .qctl_event_tag_i, .qctl_sync_valid_i, .qctl_sync_ready_o,
+		.qctl_event_valid_i(pick_page || qctl_event_valid_i), .qctl_event_ready_o(fabric_ready),
+        .qctl_event_tag_i(pick_page?page_tag:qctl_event_tag_i),.qctl_event_mask_i(pick_page?page_mask:qctl_event_mask_i),
+        .qctl_event_generation_i(pick_page?page_generation:qctl_event_generation_i),.qctl_event_phase_i(pick_page || qctl_event_phase_i),.qctl_receipt_valid_o,.qctl_receipt_ready_i,.qctl_receipt_tag_o,.qctl_receipt_generation_o,.qctl_receipt_cycle_o, .qctl_sync_valid_i, .qctl_sync_ready_o,
 		.qctl_notify_valid_o, .qctl_notify_ready_i, .qctl_mem_packet_valid_o, .qctl_mem_packet_ordinal_o,
 		.qctl_mem_packet_retired_i, .qctl_queue_active_o, .qctl_wait_event_blocked_o, .qctl_wait_event_tag_o,
 		.qctl_primed_o, .qctl_done_o, .qctl_fault_o, .qctl_fault_code_o,

@@ -50,6 +50,7 @@ for(genvar k=0;k<3;k++)begin:g
   .issue_valid_o(issue[k]),.issue_ready_i(1'b1),.issue_instruction_o(issued[k]),.issue_cycle_o(issued_cycle[k]),.level_o(),.fault_o(qfault[k]));
 end
 always @(posedge clk)if(rst)begin
+ if($test$plusargs("TRACE") && ticks<60)$display("EDGE t=%0d run=%b cycle=%0d ready=%b tail=%b next0=%0d next1=%0d valid=%b%b due=%0d look=%0d enq=%b issued=%b",ticks,run,cycle,ready,g[0].u_frontend.gen_load_frontend.u_frontend.prime_tail,g[0].u_frontend.gen_load_frontend.u_frontend.u_scheduler.active_next_cycle_q[0],g[0].u_frontend.gen_load_frontend.u_frontend.u_scheduler.active_next_cycle_q[1],g[0].u_frontend.gen_load_frontend.u_frontend.u_scheduler.active_valid_q[0],g[0].u_frontend.gen_load_frontend.u_frontend.u_scheduler.active_valid_q[1],g[0].u_frontend.gen_load_frontend.u_frontend.u_scheduler.due_count_w,g[0].u_frontend.gen_load_frontend.u_frontend.u_scheduler.lookahead_cycle_w,enqueue,issue);
  ticks++;if(ticks>500)$fatal(1,"frontend timeout");
  for(integer k=0;k<3;k++)begin
   if(fault[k]||qfault[k])$fatal(1,"frontend %0d fault=%0d q=%0b dequant_detail=%0d",k,codes[k],qfault[k],g[1].u_frontend.frontend_fault_code);
@@ -76,7 +77,8 @@ initial begin
  @(negedge clk);load=0;prime=1;
  do @(posedge clk);while(!(&prime_ready));
  @(negedge clk);prime=0;
- wait(&ready);@(negedge clk);
+ // START is sampled on a clock edge; a combinational delta during PRIME is not acceptance.
+ do @(posedge clk); while ((&ready) !== 1'b1); @(negedge clk);
  if (mode==1 && (g[0].u_frontend.decoder_done || g[1].u_frontend.decoder_done || g[2].u_frontend.decoder_done))
    $fatal(1,"oversized MXM context window was fully decoded before START");
  run=1;
@@ -93,3 +95,5 @@ initial begin
  $display("PASS MXM Load/Dequant/Compute: %0d contexts each, cycle-one prime/refill, local-time pause",seen[0]);$finish;
 end
 endmodule
+
+

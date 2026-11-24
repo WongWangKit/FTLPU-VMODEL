@@ -1,5 +1,6 @@
 module lpu_mxm_load_macro_frontend #(
 	parameter integer ACTIVE_CONTEXTS = 4,
+    parameter integer WEIGHT_BLOCKS = 4,
 	parameter integer WORD_FIFO_DEPTH = 4,
 	parameter integer CONTEXT_FIFO_DEPTH = 4,
 	parameter integer ISSUE_FIFO_DEPTH = 4
@@ -163,6 +164,7 @@ module lpu_mxm_load_macro_frontend #(
 	);
 
 	lpu_mxm_load_macro_scheduler #(
+            .WEIGHT_BLOCKS(WEIGHT_BLOCKS),
 		.ACTIVE_CONTEXTS(ACTIVE_CONTEXTS),
 		.ISSUE_FIFO_DEPTH(ISSUE_FIFO_DEPTH),
 		.ISSUE_LOOKAHEAD(2)

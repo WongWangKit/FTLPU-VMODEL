@@ -7,33 +7,33 @@ module lpu_instruction_dma #(
 	input logic clk_i,
 	input logic rst_ni,
 
-	input logic command_valid_i,
-	output logic command_ready_o,
-	input logic [63:0] command_address_i,
-	input logic [31:0] command_length_i,
-	input logic [DMA_ID_WIDTH-1:0] command_id_i,
+	input logic ctrl_dma_cmd_valid_i,
+	output logic ctrl_dma_cmd_ready_o,
+	input logic [63:0] ctrl_dma_cmd_address_i,
+	input logic [31:0] ctrl_dma_cmd_length_i,
+	input logic [DMA_ID_WIDTH-1:0] ctrl_dma_cmd_id_i,
 
-	output logic dma_cmd_valid_o,
-	input logic dma_cmd_ready_i,
-	output logic [63:0] dma_cmd_address_o,
-	output logic [31:0] dma_cmd_length_o,
-	output logic [DMA_ID_WIDTH-1:0] dma_cmd_id_o,
+	output logic ddr_read_req_valid_o,
+	input logic ddr_read_req_ready_i,
+	output logic [63:0] ddr_read_req_address_o,
+	output logic [31:0] ddr_read_req_length_o,
+	output logic [DMA_ID_WIDTH-1:0] ddr_read_req_id_o,
 
-	input logic dma_rsp_valid_i,
-	output logic dma_rsp_ready_o,
-	input logic [DMA_DATA_WIDTH-1:0] dma_rsp_data_i,
-	input logic [DMA_DATA_WIDTH/8-1:0] dma_rsp_keep_i,
-	input logic dma_rsp_last_i,
-	input logic [DMA_ID_WIDTH-1:0] dma_rsp_id_i,
-	input logic dma_rsp_error_i,
+	input logic ddr_read_rsp_valid_i,
+	output logic ddr_read_rsp_ready_o,
+	input logic [DMA_DATA_WIDTH-1:0] ddr_read_rsp_data_i,
+	input logic [DMA_DATA_WIDTH/8-1:0] ddr_read_rsp_keep_i,
+	input logic ddr_read_rsp_last_i,
+	input logic [DMA_ID_WIDTH-1:0] ddr_read_rsp_id_i,
+	input logic ddr_read_rsp_error_i,
 
-	output logic response_valid_o,
-	input logic response_ready_i,
-	output logic [DMA_DATA_WIDTH-1:0] response_data_o,
-	output logic [DMA_DATA_WIDTH/8-1:0] response_keep_o,
-	output logic response_last_o,
-	output logic [DMA_ID_WIDTH-1:0] response_id_o,
-	output logic response_error_o,
+	output logic reasm_rsp_valid_o,
+	input logic reasm_rsp_ready_i,
+	output logic [DMA_DATA_WIDTH-1:0] reasm_rsp_data_o,
+	output logic [DMA_DATA_WIDTH/8-1:0] reasm_rsp_keep_o,
+	output logic reasm_rsp_last_o,
+	output logic [DMA_ID_WIDTH-1:0] reasm_rsp_id_o,
+	output logic reasm_rsp_error_o,
 
 	output logic [$clog2(OUTSTANDING_DEPTH+1)-1:0] outstanding_o,
 	output logic idle_o,
@@ -72,35 +72,35 @@ module lpu_instruction_dma #(
 	end
 
 	// Command acceptance reserves an ordered outstanding slot before the external DMA sees valid.
-	assign dma_cmd_valid_o = command_valid_i && outstanding_enqueue_ready && !fault_q;
-	assign dma_cmd_address_o = command_address_i;
-	assign dma_cmd_length_o = command_length_i;
-	assign dma_cmd_id_o = command_id_i;
-	assign command_ready_o = dma_cmd_ready_i && outstanding_enqueue_ready && !fault_q;
-	assign command_fire = command_valid_i && command_ready_o;
+	assign ddr_read_req_valid_o = ctrl_dma_cmd_valid_i && outstanding_enqueue_ready && !fault_q;
+	assign ddr_read_req_address_o = ctrl_dma_cmd_address_i;
+	assign ddr_read_req_length_o = ctrl_dma_cmd_length_i;
+	assign ddr_read_req_id_o = ctrl_dma_cmd_id_i;
+	assign ctrl_dma_cmd_ready_o = ddr_read_req_ready_i && outstanding_enqueue_ready && !fault_q;
+	assign command_fire = ctrl_dma_cmd_valid_i && ctrl_dma_cmd_ready_o;
 
 	assign response_enqueue_data = {
-		dma_rsp_error_i,
-		dma_rsp_id_i,
-		dma_rsp_last_i,
-		dma_rsp_keep_i,
-		dma_rsp_data_i
+		ddr_read_rsp_error_i,
+		ddr_read_rsp_id_i,
+		ddr_read_rsp_last_i,
+		ddr_read_rsp_keep_i,
+		ddr_read_rsp_data_i
 	};
-	assign dma_rsp_ready_o = response_enqueue_ready && !fault_q;
-	assign response_input_fire = dma_rsp_valid_i && dma_rsp_ready_o;
-	assign outstanding_dequeue_ready = response_input_fire && dma_rsp_last_i;
+	assign ddr_read_rsp_ready_o = response_enqueue_ready && !fault_q;
+	assign response_input_fire = ddr_read_rsp_valid_i && ddr_read_rsp_ready_o;
+	assign outstanding_dequeue_ready = response_input_fire && ddr_read_rsp_last_i;
 
 	assign {
-		response_error_o,
-		response_id_o,
-		response_last_o,
-		response_keep_o,
-		response_data_o
+		reasm_rsp_error_o,
+		reasm_rsp_id_o,
+		reasm_rsp_last_o,
+		reasm_rsp_keep_o,
+		reasm_rsp_data_o
 	} = response_dequeue_data;
 
 	assign response_id_invalid_w = response_input_fire &&
-		(!outstanding_dequeue_valid || (dma_rsp_id_i != outstanding_head_id));
-	assign response_error_w = response_input_fire && dma_rsp_error_i;
+		(!outstanding_dequeue_valid || (ddr_read_rsp_id_i != outstanding_head_id));
+	assign response_error_w = response_input_fire && ddr_read_rsp_error_i;
 	assign outstanding_o = outstanding_level;
 	assign idle_o = (outstanding_level == '0) && (response_level == '0);
 	assign fault_o = fault_q || response_id_invalid_w || response_error_w;
@@ -116,7 +116,7 @@ module lpu_instruction_dma #(
 		.rst_ni,
 		.enqueue_valid_i(command_fire),
 		.enqueue_ready_o(outstanding_enqueue_ready),
-		.enqueue_data_i(command_id_i),
+		.enqueue_data_i(ctrl_dma_cmd_id_i),
 		.dequeue_valid_o(outstanding_dequeue_valid),
 		.dequeue_ready_i(outstanding_dequeue_ready),
 		.dequeue_data_o(outstanding_head_id),
@@ -129,11 +129,11 @@ module lpu_instruction_dma #(
 	) u_response_fifo (
 		.clk_i,
 		.rst_ni,
-		.enqueue_valid_i(dma_rsp_valid_i && !fault_q),
+		.enqueue_valid_i(ddr_read_rsp_valid_i && !fault_q),
 		.enqueue_ready_o(response_enqueue_ready),
 		.enqueue_data_i(response_enqueue_data),
-		.dequeue_valid_o(response_valid_o),
-		.dequeue_ready_i(response_ready_i),
+		.dequeue_valid_o(reasm_rsp_valid_o),
+		.dequeue_ready_i(reasm_rsp_ready_i),
 		.dequeue_data_o(response_dequeue_data),
 		.level_o(response_level)
 	);

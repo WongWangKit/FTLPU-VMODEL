@@ -4,7 +4,7 @@ module program_epoch_tb;
   always #5 clk_i=~clk_i;
   logic reload_valid_i=0,reload_ready_o,reload_ack_o,load_fire_i=0,start_fire_i=0;
   logic load_complete_i=0,segment_done_i=0,fault_i=0,axi_idle_i=1,execution_drained_i=1;
-  logic admit_o,cancel_transport_o;
+  logic admit_o,cancel_transport_o,cancel_valid_i=0,cancel_ready_o;
   lpu_program_epoch_control dut(.*);
   task automatic step(); @(posedge clk_i); @(negedge clk_i); endtask
   task automatic ck(input logic ok,input string name); if(!ok)$fatal(1,"%s",name); endtask

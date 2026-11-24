@@ -1,4 +1,4 @@
-module lpu_mem_macro_decoder (
+module lpu_mem_macro_decoder #(parameter integer PACKED_MEM_ROW_BITS = 13) (
 	input  logic        clk_i,
 	input  logic        rst_ni,
 
@@ -28,6 +28,7 @@ module lpu_mem_macro_decoder (
 	output logic [3:0]  fault_code_o
 );
 	localparam integer RESERVOIR_BITS = 288;
+	initial if(PACKED_MEM_ROW_BITS<1 || PACKED_MEM_ROW_BITS>13) $fatal(1,"unsupported packed MEM row field");
 	localparam logic [1:0] MEM_ADDRESS_TARGET = 2'd1;
 
 	localparam logic [3:0] FAULT_NONE = 4'd0;
@@ -56,7 +57,8 @@ module lpu_mem_macro_decoder (
 		STATE_APPLY_DELTA,
 		STATE_OUTPUT,
 		STATE_DONE,
-		STATE_FAULT
+		STATE_FAULT,
+		STATE_SKIP_DISABLED
 	} state_t;
 
 	state_t state_q;
@@ -170,7 +172,7 @@ module lpu_mem_macro_decoder (
 
 	// Do not accept another word while a Context is pending. This prevents one
 	// cycle from accepting input while also replaying an already-consumed Context.
-	assign word_ready_o = !done_q && !fault_q && ((state_q == STATE_CONTROL) ||
+	assign word_ready_o = !done_q && !fault_q && ((state_q == STATE_CONTROL) || (state_q == STATE_SKIP_DISABLED) ||
 		((state_q != STATE_OUTPUT) && !input_last_q && (reservoir_bits_q <= 9'd192)));
 	assign word_fire = word_valid_i && word_ready_o;
 
@@ -338,7 +340,7 @@ module lpu_mem_macro_decoder (
 		set_fault = 1'b0;
 		fault_code_d = FAULT_NONE;
 
-		if(!(word_fire && state_q != STATE_CONTROL))begin
+		if(!(word_fire && state_q != STATE_CONTROL && state_q != STATE_SKIP_DISABLED))begin
 			case(state_q)
 				// Control Word, Dictionary, Initial State and Run decoding.
 				STATE_CONTROL: begin
@@ -356,8 +358,8 @@ module lpu_mem_macro_decoder (
 						else begin
 							load_control = 1'b1;
 							if(!word_i[1] || word_i[27:4] == 24'd0)begin
-								set_done = 1'b1;
-								state_d = STATE_DONE;
+								set_done = word_last_i;
+								state_d = word_last_i ? STATE_DONE : STATE_SKIP_DISABLED;
 							end
 							else begin
 								state_d = STATE_DICTIONARY_COUNT;
@@ -397,9 +399,9 @@ module lpu_mem_macro_decoder (
 				end
 
 				STATE_INITIAL_STATE: begin
-					if(reservoir_bits_q >= 9'd45)begin
+					if(reservoir_bits_q >= 32+PACKED_MEM_ROW_BITS)begin
 						consume_bits = 1'b1;
-						consume_width = 9'd45;
+						consume_width = 9'(32+PACKED_MEM_ROW_BITS);
 						load_initial_state = 1'b1;
 						state_d = STATE_RUN_PREFIX;
 					end
@@ -565,7 +567,7 @@ module lpu_mem_macro_decoder (
 				end
 
 				STATE_APPLY_DELTA: begin
-					if(delta_start_sum_w[32] || delta_operand_sum_w < 0 || delta_operand_sum_w > 34'sd8191)begin
+					if(delta_start_sum_w[32] || delta_operand_sum_w < 0 || delta_operand_sum_w >= (34'sd1 << PACKED_MEM_ROW_BITS))begin
 						set_fault = 1'b1;
 						fault_code_d = FAULT_DELTA;
 						state_d = STATE_FAULT;
@@ -592,6 +594,14 @@ module lpu_mem_macro_decoder (
 					end
 				end
 
+				STATE_SKIP_DISABLED: begin
+					// Fetch still owns the rest of this sealed image. Drain it
+					// without decoding or occupying the bit reservoir.
+					if(word_fire && word_last_i)begin
+						set_done = 1'b1;
+						state_d = STATE_DONE;
+					end
+				end
 				STATE_DONE: begin
 					set_done = 1'b1;
 				end
@@ -627,7 +637,7 @@ module lpu_mem_macro_decoder (
 		end
 		else begin
 			if(word_fire)begin
-				if(state_q == STATE_CONTROL)begin
+				if(state_q == STATE_CONTROL || state_q == STATE_SKIP_DISABLED)begin
 					input_last_q <= word_last_i;
 				end
 				else begin
@@ -689,7 +699,7 @@ module lpu_mem_macro_decoder (
 		else begin
 			if(load_initial_state)begin
 				current_start_q <= reservoir_q[31:0];
-				current_operand_q <= reservoir_q[44:32];
+				current_operand_q <= 13'(reservoir_q[32+:PACKED_MEM_ROW_BITS]);
 			end
 			else if(emit_delta_context)begin
 				current_start_q <= delta_start_sum_w[31:0];

@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-module program_system_tb;
+module program_system_tb #(parameter bit PHASE_TEST=0);
 import lpu_program_load_pkg::*;
 
 localparam PROGRAM_COMMAND_DEPTH=16, PROGRAM_COMMAND_ADDRESS_WIDTH=4, PROGRAM_DMA_DATA_WIDTH=256;
@@ -7,7 +7,7 @@ localparam QCTL_QUEUE_COUNT=220;
 
 logic clk_i;
 logic rst_ni;
-logic program_reset_i;
+logic program_reset_i,program_cancel_valid_i=0,program_cancel_ready_o;
 logic program_reload_ready_o, program_reload_ack_o;
 logic program_command_write_valid_i;
 logic program_command_write_ready_o;
@@ -54,9 +54,17 @@ logic qctl_load_valid_i;
 logic qctl_load_ready_o;
 logic [8:0] qctl_load_address_i;
 logic [95:0] qctl_load_data_i;
-logic [QCTL_QUEUE_COUNT-1:0] qctl_event_valid_i;
-logic [QCTL_QUEUE_COUNT-1:0] qctl_event_ready_o;
-logic [QCTL_QUEUE_COUNT*32-1:0] qctl_event_tag_i;
+logic qctl_event_valid_i;
+	logic qctl_event_ready_o;
+	logic [31:0] qctl_event_tag_i;
+	logic [QCTL_QUEUE_COUNT-1:0] qctl_event_mask_i;
+	logic [64-1:0] qctl_event_generation_i;
+	logic qctl_event_phase_i;
+	logic qctl_receipt_valid_o;
+	logic qctl_receipt_ready_i;
+	logic [31:0] qctl_receipt_tag_o;
+	logic [64-1:0] qctl_receipt_generation_o;
+	logic [63:0] qctl_receipt_cycle_o;
 logic [QCTL_QUEUE_COUNT-1:0] qctl_sync_valid_i;
 logic [QCTL_QUEUE_COUNT-1:0] qctl_sync_ready_o;
 logic [QCTL_QUEUE_COUNT-1:0] qctl_notify_valid_o;
@@ -85,11 +93,11 @@ logic [1:0] sxm_fault_o;
 logic vxm_fault_o;
 logic [1:0] stream_conflict_o;
 lpu_top #(
-.PROGRAM_COMMAND_DEPTH(16), .PROGRAM_MEM_IMEM_DEPTH(16),
+.ENABLE_QCTL(PHASE_TEST), .PROGRAM_COMMAND_DEPTH(16), .PROGRAM_MEM_IMEM_DEPTH(16),
 .PROGRAM_MXM_IMEM_DEPTH(16), .MEM_DEPTH_ROWS(32), .ACTIVE_MEM_COLUMNS(4),
 .ENABLE_SXM_VXM_EXECUTION(1'b0), .PROGRAM_ACTIVE_CONTEXTS(2),
 .MXM_ACCUMULATOR_BLOCK_COUNT(1)
-) dut (.dma_desc_valid_i(1'b0),.dma_desc_ready_o(),.dma_store_i(1'b0),.dma_hem_i(1'b0),
+) dut (.dma_page_last_i(1'b0),.dma_page_event_tag_i('0),.dma_page_generation_i('0),.dma_page_mask_i('0),.dma_desc_valid_i(1'b0),.dma_desc_ready_o(),.dma_store_i(1'b0),.dma_hem_i(1'b0),
  .dma_bank_i('0),.dma_lane_i('0),.dma_row_i('0),.dma_addr_i('0),.dma_count_i('0),.dma_stride_i('0),.dma_tag_i('0),
  .dma_busy_o(),.dma_result_valid_o(),.dma_result_error_o(),.dma_result_ready_i(1'b1),.dma_result_tag_o(),.dma_isolated_o(),
  .m_axi_awaddr_o(),.m_axi_awid_o(),.m_axi_awlen_o(),.m_axi_awsize_o(),.m_axi_awburst_o(),
@@ -112,7 +120,28 @@ localparam integer A0='hff5, A1='h2013, AX='h3000;
 integer cycles=0,seen0=0,seen1=0,page=0,ar_count=0;
 integer issue_last=0, done_at=0;
 logic [31:0] retired_cycle;
-integer mode=0;
+integer mode=0,phase_edge=-1;localparam MQ=lpu_pkg::MEM_BANK_COUNT+8;
+always @(posedge clk_i)if(rst_ni && PHASE_TEST && (qctl_wait_event_blocked_o[0] || qctl_wait_event_blocked_o[MQ]))begin
+ if(dut.u_fu_subsystems.qctl_scheduler_enable[0] && qctl_wait_event_blocked_o[0])begin
+   if(!qctl_wait_event_blocked_o[MQ]||!dut.u_fu_subsystems.qctl_scheduler_enable[MQ])$fatal(1,"half phase");
+   // $time is independent of simulator ordering between posedge monitors.
+   phase_edge=$time/10;
+ end
+end
+task automatic setup_phase(input int gen);
+ qctl_load_mode_i=1;
+ for(int q=0;q<2;q++)begin
+   @(negedge clk_i);qctl_partition_queue_i=q?MQ:0;qctl_partition_base_i=q;qctl_partition_count_i=1;qctl_partition_generation_i=gen;qctl_partition_valid_i=1;
+   do @(posedge clk_i);while(!qctl_partition_ready_o);@(negedge clk_i);qctl_partition_valid_i=0;
+   qctl_load_address_i=q;qctl_load_data_i=lpu_qctl_pkg::qctl_pack_record(q?2:0,lpu_qctl_pkg::QCTL_OPCODE_WAIT_EVENT,63);qctl_load_valid_i=1;
+   do @(posedge clk_i);while(!qctl_load_ready_o);@(negedge clk_i);qctl_load_valid_i=0;
+ end
+ qctl_load_mode_i=0;phase_edge=-1;
+endtask
+task automatic phase_event(input int gen);
+ @(negedge clk_i);qctl_event_mask_i='0;qctl_event_mask_i[0]=1;qctl_event_mask_i[MQ]=1;qctl_event_generation_i=gen;qctl_event_tag_i=63;qctl_event_phase_i=1;qctl_event_valid_i=1;
+ do @(posedge clk_i);while(!qctl_event_ready_o);@(negedge clk_i);qctl_event_valid_i=0;
+endtask
 logic expect_stale_fault=0;
 integer mxm_seen=0, mxm_rows=0;
 localparam logic [48:0] MXM_RD=49'h0000000002802; // legacy accumulator read, stream 20
@@ -143,13 +172,13 @@ always @(posedge clk_i)if(rst_ni)begin
  if(!expect_stale_fault) ck(!program_fault_o,"program fault");
  else ck(!m_axi_arvalid_o,"old command escaped re-arm");
  if(dut.local_mem_issue_valid[0])begin
-   ck(program_schedule_cycle_o==((mode==1 && page==0)?1+seen0*12:5) &&
+   ck((PHASE_TEST ? ($time/10-phase_edge) : program_schedule_cycle_o)==((mode==1 && page==0)?1+seen0*12:5) &&
       dut.local_mem_issue_instruction[0+:32]==native0,"bank0 issue");
    seen0++;issue_last=cycles;
  end
  if(dut.local_mem_issue_valid[1])begin ck(program_schedule_cycle_o==5&&dut.local_mem_issue_instruction[32+:32]==native1,"bank1 issue");seen1++;issue_last=cycles;end
  if(dut.local_mxm_compute_issue_valid[0]) begin
-   ck(program_schedule_cycle_o==40 && dut.local_mxm_compute_issue_instruction[0+:49]==MXM_RD,"MXM compute queue issue");
+   ck((PHASE_TEST ? ($time/10-phase_edge+2) : program_schedule_cycle_o)==40 && dut.local_mxm_compute_issue_instruction[0+:49]==MXM_RD,"MXM compute queue issue");
    mxm_seen++;issue_last=cycles;
  end
  if (|dut.u_fu_subsystems.gen_hemisphere[0].gen_mxm[0].u_mxm_subsystem.u_execution.accumulator_produced_valid) begin
@@ -229,7 +258,7 @@ qctl_partition_generation_i='0;
 qctl_load_valid_i='0;
 qctl_load_address_i='0;
 qctl_load_data_i='0;
-qctl_event_valid_i='0;
+qctl_event_valid_i='0;qctl_event_mask_i='0;qctl_event_generation_i=0;qctl_event_phase_i=0;qctl_receipt_ready_i=1;
 qctl_event_tag_i='0;
 qctl_sync_valid_i='0;
 qctl_notify_ready_i='0;
@@ -241,6 +270,7 @@ mem_west_edge_data_i='0;
  repeat(4)@(negedge clk_i);rst_ni=1;
  if ($value$plusargs("CASE=%d",mode)) begin end
  for(page=0;page<3;page++) begin
+   if(PHASE_TEST)setup_phase(100+page);
    native0=32'((3+page)<<15);
    native1=32'h40000008 | 32'((4+page)<<15);
    image0=(mode==1&&page==0)?mem_long_image(native0):mem_image(native0); image1=mem_image(native1);
@@ -263,6 +293,14 @@ mem_west_edge_data_i='0;
    ck(!program_running_o&&program_schedule_cycle_o==0,"dependency gate");
    program_dependencies_ready_i=1;
    while(!program_running_o) @(negedge clk_i);
+   if(PHASE_TEST)begin
+     while(!qctl_wait_event_blocked_o[0])@(negedge clk_i);
+     phase_event(99+page);repeat(6)@(negedge clk_i);
+     ck(phase_edge<0 && qctl_wait_event_blocked_o[MQ] && seen1==page+1,"old gen or unrelated MEM bank did not progress");
+     qctl_receipt_ready_i=0;phase_event(100+page);while(!qctl_receipt_valid_o)@(negedge clk_i);
+     ck(phase_edge>=0 && qctl_receipt_generation_o==100+page && qctl_receipt_tag_o==63,"missing phase receipt");
+     qctl_receipt_ready_i=1;
+   end
    if (mode==1 && page==0)
      ck(!dut.u_fu_subsystems.gen_hemisphere[0].u_mem_subsystem.gen_bank_frontend[0].u_frontend.decoder_done,
         "long image unexpectedly fully decoded at START");

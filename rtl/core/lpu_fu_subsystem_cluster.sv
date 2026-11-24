@@ -1,4 +1,5 @@
 module lpu_fu_subsystem_cluster #(
+	parameter integer PACKED_MEM_ROW_BITS = 13,
 	parameter integer DMA_TILES=4,
 	parameter integer MEM_IMEM_DEPTH = 131072,
 	parameter integer MXM_IMEM_DEPTH = 65536,
@@ -56,9 +57,17 @@ module lpu_fu_subsystem_cluster #(
 	output logic qctl_load_ready_o,
 	input logic [8:0] qctl_load_address_i,
 	input logic [95:0] qctl_load_data_i,
-	input logic [QCTL_QUEUE_COUNT-1:0] qctl_event_valid_i,
-	output logic [QCTL_QUEUE_COUNT-1:0] qctl_event_ready_o,
-	input logic [QCTL_QUEUE_COUNT*32-1:0] qctl_event_tag_i,
+	input logic qctl_event_valid_i,
+	output logic qctl_event_ready_o,
+	input logic [31:0] qctl_event_tag_i,
+	input logic [QCTL_QUEUE_COUNT-1:0] qctl_event_mask_i,
+	input logic [64-1:0] qctl_event_generation_i,
+	input logic qctl_event_phase_i,
+	output logic qctl_receipt_valid_o,
+	input logic qctl_receipt_ready_i,
+	output logic [31:0] qctl_receipt_tag_o,
+	output logic [64-1:0] qctl_receipt_generation_o,
+	output logic [63:0] qctl_receipt_cycle_o,
 	input logic [QCTL_QUEUE_COUNT-1:0] qctl_sync_valid_i,
 	output logic [QCTL_QUEUE_COUNT-1:0] qctl_sync_ready_o,
 	output logic [QCTL_QUEUE_COUNT-1:0] qctl_notify_valid_o,
@@ -210,6 +219,15 @@ module lpu_fu_subsystem_cluster #(
 				.load_address_i(qctl_load_address_i),
 				.load_data_i(qctl_load_data_i),
 				.event_valid_i(qctl_event_valid_i),
+				.event_mask_i(qctl_event_mask_i),
+				.event_generation_i(qctl_event_generation_i),
+				.event_phase_i(qctl_event_phase_i),
+				.receipt_valid_o(qctl_receipt_valid_o),
+				.receipt_ready_i(qctl_receipt_ready_i),
+				.receipt_tag_o(qctl_receipt_tag_o),
+				.receipt_generation_o(qctl_receipt_generation_o),
+				.receipt_cycle_o(qctl_receipt_cycle_o),
+
 				.event_ready_o(qctl_event_ready_o),
 				.event_tag_i(qctl_event_tag_i),
 				.sync_valid_i(qctl_sync_valid_i),
@@ -236,6 +254,11 @@ module lpu_fu_subsystem_cluster #(
 			assign qctl_partition_ready_o = 1'b0;
 			assign qctl_load_ready_o = 1'b0;
 			assign qctl_event_ready_o = '0;
+			assign qctl_receipt_valid_o='0;
+			assign qctl_receipt_tag_o='0;
+			assign qctl_receipt_generation_o='0;
+			assign qctl_receipt_cycle_o='0;
+
 			assign qctl_sync_ready_o = '0;
 			assign qctl_notify_valid_o = '0;
 			assign qctl_mem_packet_valid_o = '0;
@@ -427,6 +450,7 @@ module lpu_fu_subsystem_cluster #(
 			logic mxm_fault;
 
 			lpu_mem_subsystem #(
+		.PACKED_MEM_ROW_BITS(PACKED_MEM_ROW_BITS),
 				.DMA_TILES(DMA_TILES),
 				.IMEM_DEPTH(MEM_IMEM_DEPTH),
 				.ACTIVE_CONTEXTS(ACTIVE_CONTEXTS),
@@ -518,6 +542,7 @@ module lpu_fu_subsystem_cluster #(
 			for(genvar local_mxm_gen = 0; local_mxm_gen < 2; local_mxm_gen = local_mxm_gen + 1)begin : gen_mxm
 				localparam integer MXM_INDEX = HEMISPHERE_INDEX*2 + local_mxm_gen;
 				lpu_mxm_subsystem #(
+                    .WEIGHT_BLOCKS(DMA_TILES),
 					.LOCAL_MXM_INDEX(local_mxm_gen),
 					.IMEM_DEPTH(MXM_IMEM_DEPTH),
 					.ACTIVE_CONTEXTS(ACTIVE_CONTEXTS),

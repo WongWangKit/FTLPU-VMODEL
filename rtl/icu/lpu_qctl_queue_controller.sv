@@ -72,11 +72,7 @@ module lpu_qctl_queue_controller #(
 	logic [CACHE_COUNT_WIDTH-1:0] inflight_count_q;
 	logic [lpu_qctl_pkg::QCTL_RECORD_WIDTH-1:0] cache_q [0:CACHE_DEPTH-1];
 
-	logic event_token_valid_q [0:EVENT_TOKEN_DEPTH-1];
-	logic [lpu_qctl_pkg::QCTL_OPERAND_WIDTH-1:0] event_token_tag_q [0:EVENT_TOKEN_DEPTH-1];
-	logic [EVENT_TOKEN_DEPTH-1:0] event_token_consume_w;
-	logic event_insert_valid_w;
-	logic [((EVENT_TOKEN_DEPTH <= 1) ? 1 : $clog2(EVENT_TOKEN_DEPTH))-1:0] event_insert_index_w;
+
 
 	logic [TOKEN_COUNT_WIDTH-1:0] sync_token_count_q;
 	logic sync_token_consume_w;
@@ -139,13 +135,10 @@ module lpu_qctl_queue_controller #(
 	// SYNC, NOTIFY and MEM_PACKET consume the boundary cycle and stop the scan.
 	always_comb begin
 		retire_count_w = '0;
-		event_token_consume_w = '0;
 		sync_token_consume_w = 1'b0;
 		notify_valid_o = 1'b0;
 		mem_packet_valid_o = 1'b0;
 		mem_packet_ordinal_o = '0;
-		wait_event_blocked_o = 1'b0;
-		wait_event_tag_o = '0;
 		scheduler_block_w = 1'b0;
 		cache_underflow_w = 1'b0;
 		boundary_missed_w = 1'b0;
@@ -174,22 +167,11 @@ module lpu_qctl_queue_controller #(
 					else begin
 						case(control_opcode)
 							lpu_qctl_pkg::QCTL_OPCODE_WAIT_EVENT: begin
-								logic token_found;
-								token_found = 1'b0;
-								for(integer token_index = 0; token_index < EVENT_TOKEN_DEPTH; token_index++)begin
-									if(!token_found && event_token_valid_q[token_index] &&
-										!event_token_consume_w[token_index] &&
-										event_token_tag_q[token_index] == control_operand)begin
-										token_found = 1'b1;
-										event_token_consume_w[token_index] = 1'b1;
-									end
-								end
-								if(token_found)begin
+								// Only the selected event can retire the head WAIT on this edge.
+								if(control_index==0 && event_fire)begin
 									retire_count_w = retire_count_w + 1'b1;
 								end
 								else begin
-									wait_event_blocked_o = 1'b1;
-									wait_event_tag_o = control_operand;
 									scheduler_block_w = 1'b1;
 									scan_active = 1'b0;
 								end
@@ -252,19 +234,12 @@ module lpu_qctl_queue_controller #(
 	assign scheduler_enable_o = run_i && configured_q && primed_o && !fault_q &&
 		!scheduler_block_w && !cache_underflow_w && !boundary_missed_w && !invalid_record_w;
 
-	// A consumed token slot may accept a replacement token on the same edge.
-	always_comb begin
-		event_insert_valid_w = 1'b0;
-		event_insert_index_w = '0;
-		for(integer token_index = 0; token_index < EVENT_TOKEN_DEPTH; token_index++)begin
-			if(!event_insert_valid_w && (!event_token_valid_q[token_index] ||
-				event_token_consume_w[token_index]))begin
-				event_insert_valid_w = 1'b1;
-				event_insert_index_w = token_index;
-			end
-		end
-	end
-	assign event_ready_o = configured_q && !fault_q && event_insert_valid_w;
+	// Head eligibility is independent of this cycle's arbitration (no ready/valid loop).
+	assign wait_event_blocked_o = run_i && configured_q && primed_o && !fault_q && !done_o &&
+		cache_level_q!=0 && lpu_qctl_pkg::qctl_record_cycle(cache_q[0])==queue_cycle_q &&
+		lpu_qctl_pkg::qctl_record_opcode(cache_q[0])==lpu_qctl_pkg::QCTL_OPCODE_WAIT_EVENT;
+	assign wait_event_tag_o = lpu_qctl_pkg::qctl_record_operand(cache_q[0]);
+	assign event_ready_o = wait_event_blocked_o && event_tag_i==wait_event_tag_o;
 	assign sync_ready_o = configured_q && !fault_q &&
 		((sync_token_count_q < SYNC_TOKEN_DEPTH) || sync_token_consume_w);
 
@@ -386,32 +361,6 @@ module lpu_qctl_queue_controller #(
 		end
 	end
 
-	// Tagged event tokens remain distinct; WAIT_EVENT consumes one matching token.
-	always_ff @(posedge clk_i or negedge rst_ni) begin
-		if(!rst_ni)begin
-			for(integer token_index = 0; token_index < EVENT_TOKEN_DEPTH; token_index++)begin
-				event_token_valid_q[token_index] <= 1'b0;
-				event_token_tag_q[token_index] <= '0;
-			end
-		end
-		else if(clear_i || configure_valid_i)begin
-			for(integer token_index = 0; token_index < EVENT_TOKEN_DEPTH; token_index++)begin
-				event_token_valid_q[token_index] <= 1'b0;
-				event_token_tag_q[token_index] <= '0;
-			end
-		end
-		else begin
-			for(integer token_index = 0; token_index < EVENT_TOKEN_DEPTH; token_index++)begin
-				if(event_token_consume_w[token_index])begin
-					event_token_valid_q[token_index] <= 1'b0;
-				end
-			end
-			if(event_fire)begin
-				event_token_valid_q[event_insert_index_w] <= 1'b1;
-				event_token_tag_q[event_insert_index_w] <= event_tag_i;
-			end
-		end
-	end
 
 	always_ff @(posedge clk_i or negedge rst_ni) begin
 		if(!rst_ni)begin

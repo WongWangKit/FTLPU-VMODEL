@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-module shared_dma_system_tb #(parameter V=32);
+module shared_dma_system_tb #(parameter V=32, parameter bit PAGE_TEST=0);
  import lpu_program_load_pkg::*;
  localparam W=8*V,N=21, SRC=4096-2*V,DST=16384-V;
  bit clk_i=0,rst_ni=0;always #5 clk_i=~clk_i;
@@ -8,11 +8,28 @@ module shared_dma_system_tb #(parameter V=32);
  logic [63:0] addr,araddr,awaddr;logic [7:0] arid,arlen,awid,awlen,rid,bid;
  logic [2:0] arsize,awsize;logic [1:0] arb,awb,rresp,bresp;
  logic arv,arr,awv,awr,wv,wr,wl,bv,br,rv,rr,rl;logic [W-1:0] wd,rd;logic [V-1:0] ws;
- logic cmdv,cmdr,ldv,ldr;logic [2:0] op,idx;logic reload,reloaded;
- lpu_top #(.PROGRAM_COMMAND_DEPTH(8),.PROGRAM_MEM_IMEM_DEPTH(8),.PROGRAM_MXM_IMEM_DEPTH(8),
+ logic cmdv,cmdr,ldv,ldr;logic [2:0] op,idx;logic reload,reloaded;bit cancel=0,stall_ar=0;logic cancel_ready;
+ bit page_last=0,part=0,load_rec=0,cfg=0;
+ logic part_ready,rec_ready,receipt;
+ logic [31:0] receipt_tag;
+ logic [63:0] receipt_gen;
+ integer ncommit=0, nev=0, nreceipt=0, lastcommit=-1, eventtick=-1;
+ always @(posedge clk_i)if(rst_ni && PAGE_TEST)begin
+   if(dut.mem_ret && dut.page_armed)begin ncommit++;lastcommit=$time/10;end
+   if(dut.pick_page && dut.fabric_ready)begin
+     if(ncommit!=N || lastcommit >= $time/10 || nev!=0)$fatal(1,"page event before final physical retirement or duplicated: commits=%0d",ncommit);
+     nev++;eventtick=$time/10;
+   end
+   if(receipt)begin
+     if(nev!=1 || receipt_tag!==63 || receipt_gen!==11 || nreceipt!=0)$fatal(1,"incorrect page release receipt");
+     nreceipt++;
+   end
+ end
+ lpu_top #(.ENABLE_QCTL(PAGE_TEST),.PROGRAM_COMMAND_DEPTH(8),.PROGRAM_MEM_IMEM_DEPTH(8),.PROGRAM_MXM_IMEM_DEPTH(8),
     .DMA_VECTOR_BYTES(V),.MEM_DEPTH_ROWS(64),.ACTIVE_MEM_COLUMNS(4),.ENABLE_SXM_VXM_EXECUTION(0),
     .PROGRAM_ACTIVE_CONTEXTS(2),.MXM_ACCUMULATOR_BLOCK_COUNT(1)) dut (
-    .clk_i,.rst_ni,.dma_desc_valid_i(dv),.dma_desc_ready_o(dr),.dma_store_i(store),.dma_hem_i(hem),
+    .clk_i,.rst_ni,.dma_page_last_i(page_last),.dma_page_generation_i(64'd11),
+    .dma_page_event_tag_i(32'd63),.dma_page_mask_i(220'd1),.dma_desc_valid_i(dv),.dma_desc_ready_o(dr),.dma_store_i(store),.dma_hem_i(hem),
     .dma_bank_i(bank),.dma_lane_i(lane),.dma_row_i(row),.dma_addr_i(addr),.dma_count_i(count),.dma_stride_i(stride),
     .dma_tag_i(tag),.dma_busy_o(busy),.dma_result_valid_o(done),.dma_result_error_o(err),.dma_result_tag_o(rtag),
     .dma_result_ready_i(ack),.dma_isolated_o(isolate),
@@ -23,7 +40,7 @@ module shared_dma_system_tb #(parameter V=32);
     .m_axi_awburst_o(awb),.m_axi_awvalid_o(awv),.m_axi_awready_i(awr),.m_axi_wdata_o(wd),
     .m_axi_wstrb_o(ws),.m_axi_wlast_o(wl),.m_axi_wvalid_o(wv),.m_axi_wready_i(wr),
     .m_axi_bvalid_i(bv),.m_axi_bid_i(bid),.m_axi_bresp_i(bresp),.m_axi_bready_o(br),
-    .program_reset_i(reload),.program_reload_ack_o(reloaded),.program_start_request_i(pgstart),
+    .program_cancel_valid_i(cancel),.program_cancel_ready_o(cancel_ready),.program_reset_i(reload),.program_reload_ack_o(reloaded),.program_start_request_i(pgstart),
     .program_start_ack_o(pgack),.program_ready_o(progready),.program_done_o(pgdone),.program_fault_o(fault),
     .program_dependencies_ready_i(1'b1),.program_command_write_valid_i(cmdv),.program_command_write_ready_o(cmdr),
     .program_command_write_address_i(idx),.program_command_write_opcode_i(op),.program_command_write_source_address_i(64'h8005),
@@ -33,7 +50,11 @@ module shared_dma_system_tb #(parameter V=32);
     .program_command_write_image_first_i(1'b1),.program_command_write_image_last_i(1'b1),
     .program_command_write_expected_word_count_i(4),.program_command_write_jump_address_i(0),
     .program_load_start_valid_i(ldv),.program_load_start_ready_o(ldr),.program_load_start_command_count_i(4),
-    .qctl_load_mode_i(0),.qctl_partition_valid_i(0),.qctl_load_valid_i(0),.qctl_event_valid_i('0),.qctl_sync_valid_i('0),
+    .qctl_load_mode_i(cfg),.qctl_partition_valid_i(part),.qctl_partition_ready_o(part_ready),
+    .qctl_partition_queue_i(0),.qctl_partition_base_i(0),.qctl_partition_count_i(1),.qctl_partition_generation_i(64'd11),
+    .qctl_load_valid_i(load_rec),.qctl_load_ready_o(rec_ready),.qctl_load_address_i(0),
+    .qctl_load_data_i(lpu_qctl_pkg::qctl_pack_record(0,lpu_qctl_pkg::QCTL_OPCODE_WAIT_EVENT,63)),
+    .qctl_receipt_valid_o(receipt),.qctl_receipt_tag_o(receipt_tag),.qctl_receipt_generation_o(receipt_gen),.qctl_event_valid_i(1'b0),.qctl_event_mask_i('0),.qctl_event_generation_i(64'b0),.qctl_event_phase_i(1'b0),.qctl_receipt_ready_i(1'b1),.qctl_sync_valid_i('0),
     .qctl_notify_ready_i('0),.qctl_mem_packet_retired_i('0),.mem_east_edge_valid_i('0),.mem_east_edge_data_i('0),
     .mem_west_edge_valid_i('0),.mem_west_edge_data_i('0));
 
@@ -43,7 +64,7 @@ module shared_dma_system_tb #(parameter V=32);
  integer qbeats=0; bit [7:0] read_ids,write_ids;
  logic [7:0] mem[65536],gold[2*N*V];integer t=0,np=0,nr=0,nw=0,nb=0,pending=0,iss=0,prog_overlap=0;
  integer mode=0;bit inject=0,hold_b=0,hold_r=0,hold_aw=0,hold_w=0,multibeat=0;string golden;
- assign arr=rst_ni && (t%7>=2);assign awr=rst_ni && !hold_aw && (t%13>=6);assign wr=rst_ni && !hold_w && (t%9>=3);
+ assign arr=rst_ni && !stall_ar && (t%7>=2);assign awr=rst_ni && !hold_aw && (t%13>=6);assign wr=rst_ni && !hold_w && (t%9>=3);
  always @(posedge clk_i)if(rst_ni) begin
    t++;if(t>12000)$fatal(1,"timeout busy=%b wait=%b memrow=%0d memret=%b ar=%d b=%d",
          busy,dut.u_data.waiting,dut.mem_row,dut.mem_ret,nr,nb);
@@ -96,7 +117,7 @@ module shared_dma_system_tb #(parameter V=32);
  for(genvar h=0;h<2;h++)begin: g_oracle_hem
    localparam S=h?3:1, B=h?1:0;
    for(genvar k=0;k<V/8;k++)begin: g_oracle_tile
-     always @(negedge clk_i)if(rst_ni && done && !err && !store && hem==h)begin
+     always @(negedge clk_i)if(rst_ni && done && !err && !store && mode!=8 && hem==h)begin
        for(int v=0;v<N;v++)for(int b=0;b<8;b++)
          if(dut.u_fu_subsystems.gen_hemisphere[h].u_mem_subsystem.u_native_mem.u_mem.gen_group[0].u_group.gen_slice[S].u_slice.gen_bank[B].u_logical_bank.gen_leaf[k].u_leaf.mem_array[3+v][8*b+:8]
              !==gold[(h*N+v)*V+8*k+b])$fatal(1,"physical MEM mismatch h=%0d slice=%0d bank=%0d row=%0d tile=%0d byte=%0d",h,S,B,3+v,k,b);
@@ -126,9 +147,59 @@ module shared_dma_system_tb #(parameter V=32);
       mem[SRC+h*8192+v*(h+1)*V+b]=8'(h*97+v*37+b*11+5);
    body=0;body[3+:32]=5;body[35+:13]=3;body[49]=1;body[50+:32]=32'h00018000;
    body[82+:32]=1;body[114+:32]=1;body[178+:32]=1;body[210+:32]=1;body[274+:2]=1;
+   // Same native instruction; the compact initial row consumes only ten bits on LPU16.
+   if(V==16) body={3'b0,body[287:48],body[44:0]};
    img={body,96'h17};for(int b=0;b<48;b++)mem['h8005+b]=img[8*b+:8];
    repeat(5)@(negedge clk_i);rst_ni=1;
-   if(mode==6)begin
+   if(mode==11 || mode==12)begin
+     if(!PAGE_TEST)$fatal(1,"enable page producer");
+     cfg=1;@(negedge clk_i);part=1;do @(posedge clk_i);while(!part_ready);
+     @(negedge clk_i);part=0;load_rec=1;do @(posedge clk_i);while(!rec_ready);
+     @(negedge clk_i);load_rec=0;cfg=0;
+     command(0,PROGRAM_LOADER_LOAD_IMEM);command(1,PROGRAM_LOADER_WAIT_DMA);
+     command(2,PROGRAM_LOADER_COMMIT_QUEUE);command(3,PROGRAM_LOADER_END);
+     page_last=1;inject=mode==12;submit(0,0,SRC,V,101);page_last=0;
+     if(mode==12)begin
+       result(101,1);repeat(12)@(negedge clk_i);
+       if(nev||nreceipt||iss||pgack)$fatal(1,"failed page published");
+     end else begin
+       result(101,0);
+       @(negedge clk_i);ldv=1;pgstart=1;do @(posedge clk_i);while(!ldr);
+       @(negedge clk_i);ldv=0;pgstart=0;while(!pgdone)@(negedge clk_i);
+       if(iss!=1 || nev!=1 || nreceipt!=1 || fault)$fatal(1,"missing execution/event/receipt %d %d %d",iss,nev,nreceipt);
+       submit(1,0,DST,V,102);result(102,0);
+       for(int b=0;b<N*V;b++)if(mem[DST+b]!==gold[b])$fatal(1,"page roundtrip byte=%0d",b);
+       $display("PAGE commit=%0d event=%0d receipt=%0d MEM_issue=%0d DDR_bytes=%0d",lastcommit,eventtick,nreceipt,iss,N*V);
+     end
+   end else if(mode==9 || mode==10)begin
+     command(0,PROGRAM_LOADER_LOAD_IMEM);command(1,PROGRAM_LOADER_WAIT_DMA);command(2,PROGRAM_LOADER_COMMIT_QUEUE);command(3,PROGRAM_LOADER_END);
+     hold_r=1;stall_ar=mode==10;@(negedge clk_i);ldv=1;
+     do @(posedge clk_i);while(!ldr);@(negedge clk_i);ldv=0;
+     if(stall_ar)begin while(!arv)@(negedge clk_i);end
+     else begin while(pq.size()==0)@(negedge clk_i);end
+     cancel=1;@(posedge clk_i);if(!cancel_ready)$fatal(1,"cancel not accepted");
+     @(negedge clk_i);cancel=0;reload=1;@(negedge clk_i);reload=0;
+     repeat(9)begin @(negedge clk_i);if(reloaded||iss||pgack||(stall_ar&&!arv))$fatal(1,"lost old obligation");end
+     stall_ar=0;while(pq.size()==0)@(negedge clk_i);
+     repeat(12)begin @(negedge clk_i);if(reloaded||iss)$fatal(1,"R owner reused before return");end
+     hold_r=0;while(!reloaded)@(negedge clk_i);if(pq.size()||iss||np!=1)$fatal(1,"cancel did not drain exactly one request");
+     @(negedge clk_i);command(0,PROGRAM_LOADER_LOAD_IMEM);command(1,PROGRAM_LOADER_WAIT_DMA);command(2,PROGRAM_LOADER_COMMIT_QUEUE);command(3,PROGRAM_LOADER_END);
+     @(negedge clk_i);ldv=1;pgstart=1;do @(posedge clk_i);while(!ldr);
+     @(negedge clk_i);ldv=0;pgstart=0;while(!pgdone)@(negedge clk_i);
+     if(iss!=1||fault||np!=3)$fatal(1,"fresh epoch did not execute exactly once");
+   end else if(mode==8)begin
+     // One shared descriptor engine. Cover both hemispheres x eight streams;
+     // interleave LOAD(l+1) / STORE(l) while retaining distinct resident rows.
+     for(int l=0;l<16;l++)for(int b=0;b<V;b++)mem[24576+l*V+b]=8'(37*l+11*b+5);
+     for(int j=0;j<32;j++)begin
+       int l;bit st;st=(j==31 || (j>=2 && j%2==0));l=st?(j==31?15:(j-2)/2):(j==0?0:(j+1)/2);
+       @(negedge clk_i);store=st;hem=l/8;lane=l%8;bank=l%8;row=32+l;
+       addr=(st?28672:24576)+l*V;count=1;stride=V;tag=300+j;dv=1;
+       do @(posedge clk_i);while(!dr);@(negedge clk_i);dv=0;result(300+j,0);
+     end
+     for(int l=0;l<16;l++)for(int b=0;b<V;b++)
+       if(mem[28672+l*V+b]!==8'(37*l+11*b+5))$fatal(1,"lane %0d byte %0d",l,b);
+   end else if(mode==6)begin
      for(int i=0;i<4;i++)begin
        @(negedge clk_i);store=i[0];hem=0;lane=1;bank=0;row=(i==1)?60:0;
        addr=(i==0)?1:(i==2)?64'hffffffffffffff00:SRC;count=(i==3)?0:N;stride=V;tag=200+i;dv=1;

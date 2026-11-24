@@ -16,6 +16,7 @@ rtl/program_load/lpu_program_load_distributor.sv
 rtl/program_load/lpu_program_load_subsystem.sv
 rtl/program_load/lpu_program_control_system.sv
 rtl/icu/lpu_qctl_pkg.sv
+rtl/icu/lpu_qctl_event_buffer.sv
 rtl/icu/lpu_qctl_shared_pool.sv
 rtl/icu/lpu_qctl_queue_controller.sv
 rtl/icu/lpu_qctl_fabric.sv

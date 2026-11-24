@@ -1,4 +1,5 @@
 module lpu_mem_local_imem_frontend #(
+	parameter integer PACKED_MEM_ROW_BITS = 13,
 	parameter integer IMEM_DEPTH = 131072,
 	parameter integer ADDRESS_WIDTH = IMEM_DEPTH <= 1 ? 1 : $clog2(IMEM_DEPTH),
 	parameter integer ACTIVE_CONTEXTS = 4,
@@ -168,6 +169,7 @@ module lpu_mem_local_imem_frontend #(
 	);
 
 	lpu_mem_macro_frontend #(
+		.PACKED_MEM_ROW_BITS(PACKED_MEM_ROW_BITS),
 		.ACTIVE_CONTEXTS(ACTIVE_CONTEXTS),
 		.WORD_FIFO_DEPTH(WORD_FIFO_DEPTH),
 		.CONTEXT_FIFO_DEPTH(CONTEXT_FIFO_DEPTH),

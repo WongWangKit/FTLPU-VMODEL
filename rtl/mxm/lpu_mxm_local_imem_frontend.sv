@@ -3,6 +3,7 @@ module lpu_mxm_local_imem_frontend #(
 	parameter integer IMEM_DEPTH = 65536,
 	parameter integer ADDRESS_WIDTH = IMEM_DEPTH <= 1 ? 1 : $clog2(IMEM_DEPTH),
 	parameter integer ACTIVE_CONTEXTS = 4,
+    parameter integer WEIGHT_BLOCKS = 4,
 	parameter integer ACCUMULATOR_ROWS = 8192,
 	parameter integer WORD_FIFO_DEPTH = 4,
 	parameter integer CONTEXT_FIFO_DEPTH = 4,
@@ -177,6 +178,7 @@ module lpu_mxm_local_imem_frontend #(
 	generate
 		if(TARGET_KIND == 1)begin : gen_load_frontend
 			lpu_mxm_load_macro_frontend #(
+            .WEIGHT_BLOCKS(WEIGHT_BLOCKS),
 				.ACTIVE_CONTEXTS(ACTIVE_CONTEXTS),
 				.WORD_FIFO_DEPTH(WORD_FIFO_DEPTH),
 				.CONTEXT_FIFO_DEPTH(CONTEXT_FIFO_DEPTH),

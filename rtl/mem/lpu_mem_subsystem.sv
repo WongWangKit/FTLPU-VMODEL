@@ -1,4 +1,5 @@
 module lpu_mem_subsystem #(
+	parameter integer PACKED_MEM_ROW_BITS = 13,
 	parameter integer DMA_TILES = 4,
 	parameter integer IMEM_DEPTH = 131072,
 	parameter integer ACTIVE_CONTEXTS = 4,
@@ -134,6 +135,7 @@ module lpu_mem_subsystem #(
 				qctl_schedule_cycle_i[queue_gen*32+:32] : schedule_cycle_i;
 
 			lpu_mem_local_imem_frontend #(
+		.PACKED_MEM_ROW_BITS(PACKED_MEM_ROW_BITS),
 				.IMEM_DEPTH(IMEM_DEPTH),
 				.ACTIVE_CONTEXTS(ACTIVE_CONTEXTS)
 			) u_frontend (

@@ -1,4 +1,41 @@
 package lpu_pkg;
+  // BEGIN generated DMA mixed iMEM defaults
+  function automatic integer dma_mixed_mem_imem_depth(input integer vector_bytes);
+    case (vector_bytes)
+      16: dma_mixed_mem_imem_depth = 320;
+      32: dma_mixed_mem_imem_depth = 3136;
+      default: dma_mixed_mem_imem_depth = 131072;
+    endcase
+  endfunction
+  function automatic integer dma_mixed_mxm_imem_depth(input integer vector_bytes);
+    case (vector_bytes)
+      16: dma_mixed_mxm_imem_depth = 16384;
+      32: dma_mixed_mxm_imem_depth = 8192;
+      default: dma_mixed_mxm_imem_depth = 65536;
+    endcase
+  endfunction
+  function automatic integer dma_mixed_program_response(input integer vector_bytes);
+    case (vector_bytes)
+      16: dma_mixed_program_response = 112;
+      32: dma_mixed_program_response = 192;
+      default: dma_mixed_program_response = 192;
+    endcase
+  endfunction
+  function automatic integer dma_mixed_rt(input integer vector_bytes);
+    case (vector_bytes)
+      16: dma_mixed_rt = 128;
+      32: dma_mixed_rt = 128;
+      default: dma_mixed_rt = 128;
+    endcase
+  endfunction
+  function automatic integer dma_mixed_q(input integer vector_bytes);
+    case (vector_bytes)
+      16: dma_mixed_q = 832;
+      32: dma_mixed_q = 384;
+      default: dma_mixed_q = 384;
+    endcase
+  endfunction
+  // END generated DMA mixed iMEM defaults
   // Keep these values aligned with FTLPU-CMODEL/core/hardware_params.hpp.
   localparam integer TILE_ROWS             = 4;
   localparam integer LANES_PER_TILE        = 8;

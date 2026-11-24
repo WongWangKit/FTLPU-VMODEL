@@ -1,5 +1,6 @@
 module lpu_mxm_load_macro_scheduler #(
 	parameter integer ACTIVE_CONTEXTS = 4,
+    parameter integer WEIGHT_BLOCKS = 4,
 	// Compatibility parameter; base instructions are stored only in the FU-local Timed Queue.
 	parameter integer ISSUE_FIFO_DEPTH = 4,
 	parameter integer ISSUE_LOOKAHEAD = 2
@@ -67,14 +68,14 @@ module lpu_mxm_load_macro_scheduler #(
 	// Active slots retain the immutable Load template and current induced Weight Column.
 	logic active_valid_q [0:ACTIVE_CONTEXTS-1];
 	logic [28:0] active_instruction_q [0:ACTIVE_CONTEXTS-1];
-	logic [1:0] active_operand_q [0:ACTIVE_CONTEXTS-1];
+	logic [4:0] active_operand_q [0:ACTIVE_CONTEXTS-1];
 	logic [31:0] active_inner_count_q [0:ACTIVE_CONTEXTS-1];
 	logic [31:0] active_inner_remaining_q [0:ACTIVE_CONTEXTS-1];
 	logic [31:0] active_outer_remaining_q [0:ACTIVE_CONTEXTS-1];
 	logic [31:0] active_inner_interval_q [0:ACTIVE_CONTEXTS-1];
 	logic [31:0] active_outer_residual_q [0:ACTIVE_CONTEXTS-1];
-	logic signed [3:0] active_inner_step_q [0:ACTIVE_CONTEXTS-1];
-	logic signed [3:0] active_row_transition_q [0:ACTIVE_CONTEXTS-1];
+	logic signed [5:0] active_inner_step_q [0:ACTIVE_CONTEXTS-1];
+	logic signed [5:0] active_row_transition_q [0:ACTIVE_CONTEXTS-1];
 	logic [31:0] active_next_cycle_q [0:ACTIVE_CONTEXTS-1];
 
 	logic context_fire;
@@ -93,6 +94,12 @@ module lpu_mxm_load_macro_scheduler #(
 	logic signed [64:0] operand_corner_w [0:3];
 	logic context_invalid_w;
 	logic operand_invalid_w;
+    // The physical dictionary stores the block. Vector IW induction spans
+    // (block, inner lane), while full-block IW walks blocks only.
+    wire linear_iw_w=(ingress_instruction_q[1:0]==0 && ingress_instruction_q[5]);
+    wire [4:0] first_column_w=linear_iw_w ?
+        {ingress_operand_q,ingress_instruction_q[8:6]} : {3'b0,ingress_operand_q};
+    wire signed [64:0] column_limit_w=linear_iw_w ? 65'(WEIGHT_BLOCKS*8-1) : 65'(WEIGHT_BLOCKS-1);
 	logic ingress_late_w;
 	logic [32:0] ingress_min_start_w;
 
@@ -128,10 +135,13 @@ module lpu_mxm_load_macro_scheduler #(
 		end
 	end
 
-	function automatic [28:0] apply_weight_column(input logic [28:0] instruction, input logic [1:0] operand);
+	function automatic [28:0] apply_weight_column(input logic [28:0] instruction, input logic [4:0] operand);
 		apply_weight_column = instruction;
 		if(instruction[1:0] == 2'd0)begin
-			apply_weight_column[4:3] = operand;
+			if (instruction[5]) begin
+                apply_weight_column[4:3] = operand[4:3];
+                apply_weight_column[8:6] = operand[2:0];
+            end else apply_weight_column[4:3] = operand[1:0];
 		end
 	endfunction
 
@@ -165,16 +175,16 @@ module lpu_mxm_load_macro_scheduler #(
 
 	// Four affine corners prove that every generated Weight Column remains in [0,3].
 	always_comb begin
-		operand_corner_w[0] = $signed({63'd0, ingress_operand_q});
+		operand_corner_w[0] = $signed({60'd0, first_column_w});
 		operand_corner_w[1] = operand_corner_w[0] + inner_operand_span_w;
 		operand_corner_w[2] = operand_corner_w[0] +
 			($signed({1'b0, outer_steps_w}) * $signed(ingress_outer_stride_q));
 		operand_corner_w[3] = operand_corner_w[1] +
 			($signed({1'b0, outer_steps_w}) * $signed(ingress_outer_stride_q));
-		operand_invalid_w = (operand_corner_w[0] < 0) || (operand_corner_w[0] > 3) ||
-			(operand_corner_w[1] < 0) || (operand_corner_w[1] > 3) ||
-			(operand_corner_w[2] < 0) || (operand_corner_w[2] > 3) ||
-			(operand_corner_w[3] < 0) || (operand_corner_w[3] > 3);
+		operand_invalid_w = (operand_corner_w[0] < 0) || (operand_corner_w[0] > column_limit_w) ||
+			(operand_corner_w[1] < 0) || (operand_corner_w[1] > column_limit_w) ||
+			(operand_corner_w[2] < 0) || (operand_corner_w[2] > column_limit_w) ||
+			(operand_corner_w[3] < 0) || (operand_corner_w[3] > column_limit_w);
 	end
 
 	// Runtime admission reserves enough lead for admission, Select and Issue FIFO visibility.
@@ -190,8 +200,8 @@ module lpu_mxm_load_macro_scheduler #(
 			(ingress_induction_target_q != TARGET_WEIGHT_COLUMN)) ||
 			((ingress_induction_target_q == TARGET_NONE) &&
 			((ingress_inner_stride_q != 0) || (ingress_outer_stride_q != 0))) ||
-			(effective_inner_step_w < -65'sd3) || (effective_inner_step_w > 65'sd3) ||
-			(row_transition_w < -65'sd3) || (row_transition_w > 65'sd3);
+			(effective_inner_step_w < -column_limit_w) || (effective_inner_step_w > column_limit_w) ||
+			(row_transition_w < -column_limit_w) || (row_transition_w > column_limit_w);
 	end
 
 	// The lowest invalid slot wins Context admission.
@@ -345,14 +355,14 @@ module lpu_mxm_load_macro_scheduler #(
 			if(ingress_admit_fire)begin
 				active_valid_q[free_slot_index_w] <= 1'b1;
 				active_instruction_q[free_slot_index_w] <= ingress_instruction_q;
-				active_operand_q[free_slot_index_w] <= ingress_operand_q;
+				active_operand_q[free_slot_index_w] <= first_column_w;
 				active_inner_count_q[free_slot_index_w] <= ingress_inner_count_q;
 				active_inner_remaining_q[free_slot_index_w] <= ingress_inner_count_q;
 				active_outer_remaining_q[free_slot_index_w] <= ingress_outer_count_q;
 				active_inner_interval_q[free_slot_index_w] <= effective_inner_interval_w;
 				active_outer_residual_q[free_slot_index_w] <= outer_residual_w;
-				active_inner_step_q[free_slot_index_w] <= effective_inner_step_w[3:0];
-				active_row_transition_q[free_slot_index_w] <= row_transition_w[3:0];
+				active_inner_step_q[free_slot_index_w] <= effective_inner_step_w[5:0];
+				active_row_transition_q[free_slot_index_w] <= row_transition_w[5:0];
 				active_next_cycle_q[free_slot_index_w] <= ingress_start_cycle_q;
 			end
 		end

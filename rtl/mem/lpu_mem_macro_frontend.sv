@@ -1,4 +1,5 @@
 module lpu_mem_macro_frontend #(
+	parameter integer PACKED_MEM_ROW_BITS = 13,
 	parameter integer ACTIVE_CONTEXTS = 4,
 	parameter integer WORD_FIFO_DEPTH = 4,
 	parameter integer CONTEXT_FIFO_DEPTH = 4,
@@ -107,7 +108,7 @@ module lpu_mem_macro_frontend #(
 		.level_o(word_fifo_level_o)
 	);
 
-	lpu_mem_macro_decoder u_decoder (
+	lpu_mem_macro_decoder #(.PACKED_MEM_ROW_BITS(PACKED_MEM_ROW_BITS)) u_decoder (
 		.clk_i,
 		.rst_ni,
 		.word_valid_i(word_fifo_valid),

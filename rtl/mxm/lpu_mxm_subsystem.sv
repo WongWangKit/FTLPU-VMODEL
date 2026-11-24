@@ -2,6 +2,7 @@ module lpu_mxm_subsystem #(
 	parameter integer LOCAL_MXM_INDEX = 0,
 	parameter integer IMEM_DEPTH = 65536,
 	parameter integer ACTIVE_CONTEXTS = 4,
+    parameter integer WEIGHT_BLOCKS = 4,
 	parameter integer FU_QUEUE_DEPTH = 16,
 	parameter integer ACCUMULATOR_BLOCK_COUNT = lpu_pkg::MXM_ACCUMULATOR_BLOCK_COUNT,
 	parameter bit PAIR_LOAD_DEQUANT = 1'b0
@@ -174,6 +175,7 @@ module lpu_mxm_subsystem #(
 	end
 
 	lpu_mxm_local_imem_frontend #(
+        .WEIGHT_BLOCKS(WEIGHT_BLOCKS),
 		.TARGET_KIND(PROGRAM_TARGET_MXM_LOAD),
 		.IMEM_DEPTH(IMEM_DEPTH),
 		.ACTIVE_CONTEXTS(ACTIVE_CONTEXTS)
@@ -191,6 +193,7 @@ module lpu_mxm_subsystem #(
 	);
 
 	lpu_mxm_local_imem_frontend #(
+        .WEIGHT_BLOCKS(WEIGHT_BLOCKS),
 		.TARGET_KIND(PROGRAM_TARGET_MXM_DEQUANT),
 		.IMEM_DEPTH(IMEM_DEPTH),
 		.ACTIVE_CONTEXTS(ACTIVE_CONTEXTS)
@@ -208,6 +211,7 @@ module lpu_mxm_subsystem #(
 	);
 
 	lpu_mxm_local_imem_frontend #(
+        .WEIGHT_BLOCKS(WEIGHT_BLOCKS),
 		.TARGET_KIND(PROGRAM_TARGET_MXM_COMPUTE),
 		.IMEM_DEPTH(IMEM_DEPTH),
 		.ACTIVE_CONTEXTS(ACTIVE_CONTEXTS)

@@ -3,7 +3,8 @@
 // can now be reused. Each segment has an independently rebased schedule.
 module lpu_program_epoch_control (
   input logic clk_i, rst_ni,
-  input logic reload_valid_i,
+  input logic reload_valid_i, cancel_valid_i,
+  output logic cancel_ready_o,
   output logic reload_ready_o,
   output logic reload_ack_o,
   input logic load_fire_i, start_fire_i,
@@ -14,7 +15,8 @@ module lpu_program_epoch_control (
   logic reload_pending_q, load_active_q, executed_q, cancel_q, reload_ack_q;
   logic clear_epoch_w;
   assign reload_ready_o = !reload_pending_q && !reload_ack_q;
-  assign admit_o = rst_ni && !reload_pending_q && !reload_ack_q && !reload_valid_i && !cancel_q;
+  assign cancel_ready_o = rst_ni && load_active_q && !executed_q && !cancel_q && !reload_pending_q && !reload_ack_q;
+  assign admit_o = !(cancel_ready_o && cancel_valid_i) && rst_ni && !reload_pending_q && !reload_ack_q && !reload_valid_i && !cancel_q;
   assign clear_epoch_w = reload_pending_q && axi_idle_i && execution_drained_i &&
       (executed_q ? (segment_done_i && !fault_i) : (!load_active_q || load_complete_i || cancel_q));
   // Registered fault feedback avoids depending combinationally on the DMA
@@ -33,7 +35,7 @@ module lpu_program_epoch_control (
       reload_ack_q <= clear_epoch_w;
       if (load_fire_i) load_active_q <= 1'b1;
       if (start_fire_i) executed_q <= 1'b1;
-      if (fault_i && !reload_ack_q) cancel_q <= 1'b1;
+      if ((fault_i && !reload_ack_q) || (cancel_valid_i && cancel_ready_o)) cancel_q <= 1'b1;
       if (reload_ready_o && reload_valid_i) reload_pending_q <= 1'b1;
       if (clear_epoch_w) begin
         reload_pending_q <= 1'b0;

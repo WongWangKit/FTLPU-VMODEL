@@ -6,6 +6,7 @@ module lpu_program_control_system #(
 	parameter integer MEM_IMEM_DEPTH = 131072,
 	parameter integer MXM_IMEM_DEPTH = 65536,
 	parameter integer ACTIVE_CONTEXTS = 4,
+    parameter integer MXMS_PER_HEMISPHERE = 2,
 	parameter integer COMMAND_ADDRESS_WIDTH = COMMAND_DEPTH <= 1 ? 1 : $clog2(COMMAND_DEPTH)
 ) (
 	input logic clk_i,
@@ -188,13 +189,13 @@ module lpu_program_control_system #(
 			PROGRAM_TARGET_MXM_LOAD,
 			PROGRAM_TARGET_MXM_DEQUANT,
 			PROGRAM_TARGET_MXM_COMPUTE: begin
-				if(command_write_global_queue_id_i < 8'd4)begin
+				if(command_write_global_queue_id_i < 2*MXMS_PER_HEMISPHERE)begin
 					command_target_valid_w = 1'b1;
-					command_hemisphere_w = command_write_global_queue_id_i < 8'd2 ?
+					command_hemisphere_w = command_write_global_queue_id_i < MXMS_PER_HEMISPHERE ?
 						PROGRAM_HEMISPHERE_EAST : PROGRAM_HEMISPHERE_WEST;
 					command_local_queue_w = command_write_global_queue_id_i[1:0];
-					if(command_write_global_queue_id_i >= 8'd2)begin
-						command_local_queue_w = command_write_global_queue_id_i - 8'd2;
+					if(command_write_global_queue_id_i >= MXMS_PER_HEMISPHERE)begin
+						command_local_queue_w = command_write_global_queue_id_i - MXMS_PER_HEMISPHERE;
 					end
 				end
 			end
