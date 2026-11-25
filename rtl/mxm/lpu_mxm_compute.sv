@@ -1,10 +1,13 @@
 module lpu_mxm_compute #(
+  parameter integer TILES=4,
   parameter integer ACCUMULATOR_BLOCK_COUNT =
     lpu_pkg::MXM_ACCUMULATOR_BLOCK_COUNT
 ) (
   input  logic clk_i,
   input  logic rst_ni,
   input  logic run_i,
+  input  logic [3:0] row_bf16_i,
+  output logic result_bf16_o,
   input  logic [3:0] compute_row_valid_i,
   input  logic [4*48-1:0] compute_row_instruction_i,
   input  logic [4*32-1:0] east_valid_i,
@@ -24,8 +27,7 @@ module lpu_mxm_compute #(
 );
   import lpu_vxm_math_pkg::*;
 
-  localparam integer TILES = 4;
-  localparam integer BLOCKS = 4;
+  localparam integer BLOCKS = TILES;
   localparam integer LANES = 8;
   localparam integer STREAMS = 32;
 `ifdef FTLPU_DISABLE_BLOCK8
@@ -223,6 +225,7 @@ module lpu_mxm_compute #(
     result_stream_destination_o = active_instruction[44];
     result_clear_o = !active_instruction[47];
     result_block_mode_o = active_instruction[46];
+    result_bf16_o = row_bf16_i[active_tile];
 
     if (active_transaction_valid) begin
       for (integer stream_offset = 0; stream_offset < 16; stream_offset++)

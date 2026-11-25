@@ -1,4 +1,5 @@
 module lpu_mxm_accumulator #(
+  parameter integer BLOCKS=4,
   parameter integer ACCUMULATOR_BLOCK_COUNT =
     lpu_pkg::MXM_ACCUMULATOR_BLOCK_COUNT
 ) (
@@ -11,6 +12,8 @@ module lpu_mxm_accumulator #(
   input  logic [5:0] write_stream_base_i,
   input  logic write_stream_destination_i,
   input  logic write_clear_i,
+  input  logic write_bf16_i,
+  input  logic [3:0] read_bf16_i,
   output logic write_ready_o,
   input  logic [3:0] read_row_valid_i,
   input  logic [4*48-1:0] read_row_instruction_i,
@@ -21,7 +24,6 @@ module lpu_mxm_accumulator #(
 );
   import lpu_vxm_math_pkg::*;
 
-  localparam integer BLOCKS = 4;
   localparam integer LANES = 8;
   localparam integer STREAMS = 32;
   localparam integer DEPTH = ACCUMULATOR_BLOCK_COUNT * 32;
@@ -37,7 +39,7 @@ module lpu_mxm_accumulator #(
   logic [12:0] pending_address_q;
   logic [5:0] pending_stream_base_q;
   logic pending_stream_destination_q;
-  logic pending_clear_q;
+  logic pending_clear_q, pending_bf16_q, operation_bf16;
 
   logic [3:0] read_opcode_valid;
   logic read_overlapping;
@@ -98,6 +100,7 @@ module lpu_mxm_accumulator #(
     operation_stream_base = '0;
     operation_stream_destination = 1'b0;
     operation_clear = 1'b0;
+    operation_bf16 = 1'b0;
     operation_values = '0;
 
     if (pending_valid_q) begin
@@ -108,6 +111,7 @@ module lpu_mxm_accumulator #(
       operation_stream_base = pending_stream_base_q;
       operation_stream_destination = pending_stream_destination_q;
       operation_clear = pending_clear_q;
+      operation_bf16 = pending_bf16_q;
       operation_values = pending_values_q[
         pending_block_q*SEGMENT_WIDTH +: SEGMENT_WIDTH];
     end else if (write_valid_i && write_ready_o && write_address_i < DEPTH) begin
@@ -118,6 +122,7 @@ module lpu_mxm_accumulator #(
       operation_stream_base = write_stream_base_i;
       operation_stream_destination = write_stream_destination_i;
       operation_clear = write_clear_i;
+      operation_bf16 = write_bf16_i;
       operation_values = write_values_i[0 +: SEGMENT_WIDTH];
     end else if (run_i && read_active && !read_overlapping &&
                  read_supported && !write_valid_i) begin
@@ -126,6 +131,7 @@ module lpu_mxm_accumulator #(
       operation_address = read_instruction[27:15];
       operation_stream_base = read_instruction[14:9];
       operation_clear = read_instruction[28];
+      operation_bf16 = read_bf16_i[read_block];
     end
   end
 
@@ -150,13 +156,14 @@ module lpu_mxm_accumulator #(
     west_data_o = '0;
     if (operation_valid && operation_address < DEPTH &&
         (!operation_write || operation_stream_destination)) begin
-      for (integer byte_index = 0; byte_index < 4; byte_index++) begin
+      for (integer byte_index = 0; byte_index < 4; byte_index++) if(!operation_bf16 || byte_index<2) begin
         west_valid_o[
           operation_block*STREAMS+operation_stream_base+byte_index] = 1'b1;
         for (integer lane = 0; lane < LANES; lane++) begin
           west_data_o[
             (operation_block*STREAMS+operation_stream_base+byte_index)*64+
-            lane*8 +: 8] = operation_write
+            lane*8 +: 8] = operation_bf16 ?
+              (fp32_to_bf16(accumulated_values[lane*32+:32]) >> (byte_index*8)) : operation_write
               ? accumulated_values[lane*32+byte_index*8 +: 8]
               : stored_values[lane*32+byte_index*8 +: 8];
         end
@@ -205,7 +212,7 @@ module lpu_mxm_accumulator #(
       end
 
       if (pending_valid_q) begin
-        if (pending_block_q == 2'd3) begin
+        if (pending_block_q == BLOCKS-1) begin
           pending_valid_q <= 1'b0;
         end else begin
           pending_block_q <= pending_block_q + 1'b1;
@@ -218,6 +225,7 @@ module lpu_mxm_accumulator #(
         pending_stream_base_q <= write_stream_base_i;
         pending_stream_destination_q <= write_stream_destination_i;
         pending_clear_q <= write_clear_i;
+        pending_bf16_q <= write_bf16_i;
       end
     end
   end

@@ -1,12 +1,14 @@
 module lpu_fu_subsystem_cluster #(
 	parameter integer PACKED_MEM_ROW_BITS = 13,
 	parameter integer DMA_TILES=4,
+	localparam integer ACTIVE_MXMS=lpu_pkg::mxms_per_hemisphere(DMA_TILES),
 	parameter integer MEM_IMEM_DEPTH = 131072,
 	parameter integer MXM_IMEM_DEPTH = 65536,
 	parameter integer ACTIVE_CONTEXTS = 4,
 	parameter integer MEM_DEPTH_ROWS = lpu_pkg::SRAM_DEPTH_ROWS,
 	parameter integer ACTIVE_MEM_COLUMNS = 52,
 	parameter integer MXM_ACCUMULATOR_BLOCK_COUNT = lpu_pkg::MXM_ACCUMULATOR_BLOCK_COUNT,
+	parameter bit LEGACY_MXM=0, LEGACY_VECTOR_ARRAY=1,
 	parameter bit ENABLE_QCTL = 1'b0,
 	parameter bit ENABLE_SXM_VXM_EXECUTION = 1'b1,
 	parameter integer QCTL_QUEUE_COUNT = 220,
@@ -16,10 +18,11 @@ module lpu_fu_subsystem_cluster #(
 ) (
 	input logic clk_i,
 	input logic rst_ni,
-	input logic dma_req_i,dma_write_i,dma_hem_i,input logic [6:0] dma_bank_i,input logic [2:0] dma_lane_i,
+	input logic dma_req_i,dma_write_i,dma_hem_i,input logic [6:0] dma_bank_i,input logic [4:0] dma_stream_i,
 	input logic [14:0] dma_row_i,input logic [DMA_TILES*64-1:0] dma_wdata_i,
 	output logic dma_ready_o,dma_ret_o,dma_err_o,output logic [DMA_TILES*64-1:0] dma_rdata_o,
 	input logic program_reset_i,
+	input logic discard_partial_sums_i,
 	input logic segment_retired_i,
 	input logic [1:0] endpoint_load_valid_i,
 	output logic [1:0] endpoint_load_ready_o,
@@ -83,14 +86,7 @@ module lpu_fu_subsystem_cluster #(
 	output logic qctl_fault_o,
 	output logic [7:0] qctl_fault_code_o,
 
-	input logic [1:0] external_sxm_transpose_issue_valid_i,
-	input logic [2*416-1:0] external_sxm_transpose_issue_instruction_i,
-	input logic [1:0] external_sxm_permute_issue_valid_i,
-	input logic [2*416-1:0] external_sxm_permute_issue_instruction_i,
-	input logic [7:0] external_vxm_local_issue_valid_i,
-	input logic [8*lpu_pkg::VXM_LOCAL_MAX_INSTRUCTION_WIDTH-1:0] external_vxm_local_issue_instruction_i,
-	input logic external_vxm_global_issue_valid_i,
-	input logic [lpu_pkg::VXM_GLOBAL_CONFIG_WIDTH-1:0] external_vxm_global_issue_instruction_i,
+
 
 	output logic [lpu_pkg::MEM_BANK_COUNT-1:0] local_mem_issue_valid_o,
 	output logic [lpu_pkg::MEM_BANK_COUNT*lpu_pkg::MEM_INSTRUCTION_WIDTH-1:0] local_mem_issue_instruction_o,
@@ -105,14 +101,14 @@ module lpu_fu_subsystem_cluster #(
 	output logic [4*49-1:0] local_mxm_compute_issue_instruction_o,
 	output logic [4*32-1:0] local_mxm_compute_issue_cycle_o,
 
-	input logic [2*4*32-1:0] mem_east_edge_valid_i,
-	input logic [2*4*32*64-1:0] mem_east_edge_data_i,
-	output logic [2*4*32-1:0] mem_east_edge_valid_o,
-	output logic [2*4*32*64-1:0] mem_east_edge_data_o,
-	input logic [2*4*32-1:0] mem_west_edge_valid_i,
-	input logic [2*4*32*64-1:0] mem_west_edge_data_i,
-	output logic [2*4*32-1:0] mem_west_edge_valid_o,
-	output logic [2*4*32*64-1:0] mem_west_edge_data_o,
+	input logic [2*DMA_TILES*32-1:0] mem_east_edge_valid_i,
+	input logic [2*DMA_TILES*32*64-1:0] mem_east_edge_data_i,
+	output logic [2*DMA_TILES*32-1:0] mem_east_edge_valid_o,
+	output logic [2*DMA_TILES*32*64-1:0] mem_east_edge_data_o,
+	input logic [2*DMA_TILES*32-1:0] mem_west_edge_valid_i,
+	input logic [2*DMA_TILES*32*64-1:0] mem_west_edge_data_i,
+	output logic [2*DMA_TILES*32-1:0] mem_west_edge_valid_o,
+	output logic [2*DMA_TILES*32*64-1:0] mem_west_edge_data_o,
 	output logic [lpu_pkg::MEM_BANK_COUNT-1:0] mem_fault_o,
 	output logic [1:0] mxm_fault_o,
 	output logic [1:0] sxm_fault_o,
@@ -165,11 +161,39 @@ module lpu_fu_subsystem_cluster #(
 	logic [3:0] mxm_frontend_fault;
 	logic [23:0] mxm_frontend_fault_code;
 
-	logic [2*4*32-1:0] mem_to_vxm_west_valid;
-	logic [2*4*32*64-1:0] mem_to_vxm_west_data;
-	logic [2*4*32-1:0] vxm_to_mem_east_valid;
-	logic [2*4*32*64-1:0] vxm_to_mem_east_data;
+	logic [2*DMA_TILES*32-1:0] mem_to_vxm_west_valid;
+	logic [2*DMA_TILES*32*64-1:0] mem_to_vxm_west_data;
+	logic [2*DMA_TILES*32-1:0] vxm_to_mem_east_valid;
+	logic [2*DMA_TILES*32*64-1:0] vxm_to_mem_east_data;
 	logic vxm_stream_conflict;
+	wire [12:0] launch[2],enqueue[2],lr[2],er[2],cal_ready[2],cal_idle[2],cal_fault[2];
+	wire [127:0] word_q[2][13]; wire [31:0] aux_q[2][13];
+	wire [1:0] sxm_busy; wire vxm_busy;
+	for(genvar h=0;h<2;h++)begin:g_native_sched
+	  for(genvar q=0;q<13;q++)begin:g_queue
+	    localparam K=q==0?5:q==1?6:q==2?4:7+(q-3)%5;
+	    localparam ID=q<3?0:(q-3)/5;
+	    wire addressed=endpoint_load_target_kind_i[h*4+:4]==K && endpoint_load_queue_id_i[h*8+:8]==ID;
+	    wire fire=endpoint_load_valid_i[h] && endpoint_load_ready_o[h];
+	    wire [2:0] ctl=endpoint_load_control_i[h*3+:3];
+	    if(q<3)begin assign lr[h][q]=1;assign er[h][q]=1;end
+	    localparam WIDTH=q==0?128:q==1?81:q==2?80:
+	        K==PROGRAM_NATIVE_WEIGHT?lpu_mxm_isa_pkg::LOAD_INSTRUCTION_BITS:
+	        K==PROGRAM_NATIVE_PARAM?lpu_mxm_isa_pkg::PARAM_LOAD_INSTRUCTION_BITS:
+	        K==PROGRAM_NATIVE_DEQUANT?lpu_mxm_isa_pkg::DEQUANT_INSTRUCTION_BITS:
+	        K==PROGRAM_NATIVE_COMPUTE?lpu_mxm_isa_pkg::COMPUTE_INSTRUCTION_BITS:
+	        lpu_mxm_backend_isa_pkg::BACKEND_INSTRUCTION_BITS;
+	    lpu_native_issue_calendar #(.QUEUED(q>=3),.PAYLOAD_BITS(WIDTH),.AUX_BITS(q==0?6:0)) u_calendar(
+	      .clk_i,.rst_ni,.clear_i(program_reset_i || (fire && (ctl==PROGRAM_LOAD_CLEAR || ctl==PROGRAM_LOAD_ABORT))),
+	      .write_i(fire && addressed && ctl==PROGRAM_LOAD_WRITE),.prime_i(fire && addressed && ctl==PROGRAM_LOAD_PRIME),
+	      .addr_i(endpoint_load_imem_address_i[h*17+:17]),.data_i(endpoint_load_data_i[h*128+:128]),
+	      .strb_i(endpoint_load_strb_i[h*4+:4]),.last_i(endpoint_load_last_i[h]),
+	      .start_i(program_start_i && program_start_ready_o),.run_i(execution_run),
+	      .cycle_i(schedule_cycle_q),.enqueue_ready_i(er[h][q]),.launch_ready_i(lr[h][q]),
+	      .payload_o(word_q[h][q]),.aux_o(aux_q[h][q]),.enqueue_o(enqueue[h][q]),.launch_o(launch[h][q]),
+	      .ready_o(cal_ready[h][q]),.idle_o(cal_idle[h][q]),.fault_o(cal_fault[h][q]));
+	  end
+	end
 	logic [QCTL_QUEUE_COUNT-1:0] qctl_scheduler_enable;
 	logic [QCTL_QUEUE_COUNT*32-1:0] qctl_queue_cycle;
 	logic qctl_all_primed;
@@ -180,17 +204,17 @@ module lpu_fu_subsystem_cluster #(
 	assign schedule_cycle_o = schedule_cycle_q;
 	assign endpoint_commit_valid_o = commit_valid_q;
 	assign endpoint_commit_error_o = commit_error_q;
-	assign all_frontends_ready_o = (&mem_frontends_ready) && (&mxm_frontends_ready) &&
+	assign all_frontends_ready_o = (&mem_frontends_ready) && (&mxm_frontends_ready) && (&cal_ready[0]) && (&cal_ready[1]) &&
 		(!ENABLE_QCTL || qctl_all_primed) && !(|commit_valid_q) && !frontend_fault_o;
-	assign all_frontends_idle_o = (&mem_frontends_idle) && (&mxm_frontends_idle) &&
+	assign all_frontends_idle_o = (&mem_frontends_idle) && (&mxm_frontends_idle) && (&cal_idle[0]) && (&cal_idle[1]) &&
 		(!ENABLE_QCTL || qctl_all_done) && !(|commit_valid_q);
-	assign execution_drained_o = !(|mem_execution_busy) && !(|mxm_execution_busy) &&
+	assign execution_drained_o = !(|sxm_busy) && !vxm_busy && !(|mem_execution_busy) && !(|mxm_execution_busy) &&
 		!(|edge_execution_busy) && !(|mem_east_edge_valid_i) && !(|mem_west_edge_valid_i);
 	assign program_start_ready_o = all_frontends_ready_o && !started_q;
-	assign frontend_fault_o = route_fault_q || (|mem_frontend_fault) ||
+	assign frontend_fault_o = (|cal_fault[0]) || (|cal_fault[1]) || route_fault_q || (|mem_frontend_fault) ||
 		(|mxm_frontend_fault) || (ENABLE_QCTL && qctl_fault_o);
 	assign frontend_fault_code_o = route_fault_q ? FAULT_ROUTE :
-		(((|mem_frontend_fault) || (|mxm_frontend_fault)) ? FAULT_FRONTEND :
+		(((|cal_fault[0]) || (|cal_fault[1]) || (|mem_frontend_fault) || (|mxm_frontend_fault)) ? FAULT_FRONTEND :
 		((ENABLE_QCTL && qctl_fault_o) ? FAULT_QCTL : FAULT_NONE));
 
 	// Shared storage is global, while every generated Controller owns exactly one
@@ -300,12 +324,17 @@ module lpu_fu_subsystem_cluster #(
 				PROGRAM_TARGET_MXM_LOAD,
 				PROGRAM_TARGET_MXM_DEQUANT,
 				PROGRAM_TARGET_MXM_COMPUTE: begin
-					if(endpoint_load_queue_id_i[hemisphere*8+:8] < 2)begin
+					if(LEGACY_MXM && endpoint_load_queue_id_i[hemisphere*8+:8] < 2)begin
 						selected_valid_w[hemisphere] = 1'b1;
 						selected_ready_w[hemisphere] = mxm_program_ready[
 							hemisphere*2 + endpoint_load_queue_id_i[hemisphere*8+:8]];
 					end
 				end
+				PROGRAM_TARGET_VXM: selected_valid_w[hemisphere]=ENABLE_SXM_VXM_EXECUTION && hemisphere==0 && endpoint_load_queue_id_i[hemisphere*8+:8]==0;
+				PROGRAM_TARGET_SXM_TRANSPOSE,PROGRAM_TARGET_SXM_PERMUTE:
+				  selected_valid_w[hemisphere]=ENABLE_SXM_VXM_EXECUTION && endpoint_load_queue_id_i[hemisphere*8+:8]==0;
+				PROGRAM_NATIVE_WEIGHT,PROGRAM_NATIVE_PARAM,PROGRAM_NATIVE_DEQUANT,PROGRAM_NATIVE_COMPUTE,PROGRAM_NATIVE_BACKEND:
+				  selected_valid_w[hemisphere]=!LEGACY_MXM && endpoint_load_queue_id_i[hemisphere*8+:8]<ACTIVE_MXMS;
 				default: selected_valid_w[hemisphere] = 1'b0;
 			endcase
 
@@ -425,22 +454,22 @@ module lpu_fu_subsystem_cluster #(
 	generate
 		for(genvar hemisphere_gen = 0; hemisphere_gen < 2; hemisphere_gen = hemisphere_gen + 1)begin : gen_hemisphere
 			localparam integer HEMISPHERE_INDEX = hemisphere_gen;
-			logic [4*32-1:0] mem_east_valid;
-			logic [4*32*64-1:0] mem_east_data;
-			logic [4*32-1:0] mem_west_valid;
-			logic [4*32*64-1:0] mem_west_data;
-			logic [4*32-1:0] sxm_east_valid;
-			logic [4*32*64-1:0] sxm_east_data;
-			logic [4*32-1:0] sxm_west_valid;
-			logic [4*32*64-1:0] sxm_west_data;
-			logic [4*32-1:0] mxm_west_valid;
-			logic [4*32*64-1:0] mxm_west_data;
-			logic [4*32-1:0] mxm_east_valid;
-			logic [4*32*64-1:0] mxm_east_data;
-			logic [2*4*32-1:0] local_mxm_west_valid;
-			logic [2*4*32*64-1:0] local_mxm_west_data;
-			logic [2*4*32-1:0] local_mxm_east_valid;
-			logic [2*4*32*64-1:0] local_mxm_east_data;
+			logic [DMA_TILES*32-1:0] mem_east_valid;
+			logic [DMA_TILES*32*64-1:0] mem_east_data;
+			logic [DMA_TILES*32-1:0] mem_west_valid;
+			logic [DMA_TILES*32*64-1:0] mem_west_data;
+			logic [DMA_TILES*32-1:0] sxm_east_valid;
+			logic [DMA_TILES*32*64-1:0] sxm_east_data;
+			logic [DMA_TILES*32-1:0] sxm_west_valid;
+			logic [DMA_TILES*32*64-1:0] sxm_west_data;
+			logic [DMA_TILES*32-1:0] mxm_west_valid;
+			logic [DMA_TILES*32*64-1:0] mxm_west_data;
+			logic [DMA_TILES*32-1:0] mxm_east_valid;
+			logic [DMA_TILES*32*64-1:0] mxm_east_data;
+			logic [2*DMA_TILES*32-1:0] local_mxm_west_valid;
+			logic [2*DMA_TILES*32*64-1:0] local_mxm_west_data;
+			logic [2*DMA_TILES*32-1:0] local_mxm_east_valid;
+			logic [2*DMA_TILES*32*64-1:0] local_mxm_east_data;
 			logic [1:0] local_mxm_fault;
 			logic [1:0] local_mxm_conflict;
 			logic mem_stream_conflict;
@@ -457,7 +486,7 @@ module lpu_fu_subsystem_cluster #(
 				.DEPTH_ROWS(MEM_DEPTH_ROWS),
 				.ACTIVE_COLUMNS(ACTIVE_MEM_COLUMNS)
 			) u_mem_subsystem (
-				.dma_req_i(dma_req_i && dma_hem_i==HEMISPHERE_INDEX),.dma_write_i,.dma_lane_i,.dma_bank_i,
+				.dma_req_i(dma_req_i && dma_hem_i==HEMISPHERE_INDEX),.dma_write_i,.dma_stream_i,.dma_bank_i,
 				.dma_row_i,.dma_wdata_i,.dma_ready_o(dm_ready[HEMISPHERE_INDEX]),.dma_ret_o(dm_ret[HEMISPHERE_INDEX]),
 				.dma_err_o(dm_err[HEMISPHERE_INDEX]),.dma_rdata_o(dm_data[HEMISPHERE_INDEX]),
                 .clk_i, .rst_ni, .program_reset_i,
@@ -494,8 +523,8 @@ module lpu_fu_subsystem_cluster #(
 				.execution_busy_o(mem_execution_busy[HEMISPHERE_INDEX]),
 				.frontend_fault_o(mem_frontend_fault[HEMISPHERE_INDEX]),
 				.frontend_fault_code_o(mem_frontend_fault_code[HEMISPHERE_INDEX*6+:6]),
-				.east_edge_valid_i(vxm_to_mem_east_valid[HEMISPHERE_INDEX*4*32+:4*32]),
-				.east_edge_data_i(vxm_to_mem_east_data[HEMISPHERE_INDEX*4*32*64+:4*32*64]),
+				.east_edge_valid_i(vxm_to_mem_east_valid[HEMISPHERE_INDEX*DMA_TILES*32+:DMA_TILES*32]),
+				.east_edge_data_i(vxm_to_mem_east_data[HEMISPHERE_INDEX*DMA_TILES*32*64+:DMA_TILES*32*64]),
 				.east_edge_valid_o(mem_east_valid), .east_edge_data_o(mem_east_data),
 				.west_edge_valid_i(sxm_west_valid), .west_edge_data_i(sxm_west_data),
 				.west_edge_valid_o(mem_west_valid), .west_edge_data_o(mem_west_data),
@@ -506,12 +535,11 @@ module lpu_fu_subsystem_cluster #(
 			);
 
 			if (ENABLE_SXM_VXM_EXECUTION) begin : gen_sxm_execution
-			lpu_sxm_subsystem u_sxm_subsystem (
-				.clk_i, .rst_ni, .run_i(execution_run),
-				.transpose_issue_valid_i(external_sxm_transpose_issue_valid_i[HEMISPHERE_INDEX]),
-				.transpose_issue_instruction_i(external_sxm_transpose_issue_instruction_i[HEMISPHERE_INDEX*416+:416]),
-				.permute_issue_valid_i(external_sxm_permute_issue_valid_i[HEMISPHERE_INDEX]),
-				.permute_issue_instruction_i(external_sxm_permute_issue_instruction_i[HEMISPHERE_INDEX*416+:416]),
+			lpu_sxm_subsystem #(.T(DMA_TILES)) u_sxm_subsystem (
+				.clk_i, .rst_ni(rst_ni && !program_reset_i), .run_i(execution_run),
+				.ctrl_issue_i(launch[HEMISPHERE_INDEX][0]),.exec_issue_i(launch[HEMISPHERE_INDEX][1]),
+				.ctrl_word_i(word_q[HEMISPHERE_INDEX][0]),.ctrl_aux_i(aux_q[HEMISPHERE_INDEX][0]),
+				.exec_word_i(word_q[HEMISPHERE_INDEX][1]),.busy_o(sxm_busy[HEMISPHERE_INDEX]),
 				.east_inner_valid_i(mem_east_valid), .east_inner_data_i(mem_east_data),
 				.east_outer_valid_o(sxm_east_valid), .east_outer_data_o(sxm_east_data),
 				.west_outer_valid_i(mxm_west_valid), .west_outer_data_i(mxm_west_data),
@@ -519,6 +547,7 @@ module lpu_fu_subsystem_cluster #(
 				.fault_o(sxm_fault), .conflict_o(sxm_stream_conflict)
 			);
 			end else begin : gen_sxm_passive
+				assign sxm_busy[HEMISPHERE_INDEX]=0;
 				// Match the one-cycle pass-through of SXM with no issued work.
 				always_ff @(posedge clk_i or negedge rst_ni) begin
 					if (!rst_ni) begin
@@ -541,14 +570,48 @@ module lpu_fu_subsystem_cluster #(
 			end
 			for(genvar local_mxm_gen = 0; local_mxm_gen < 2; local_mxm_gen = local_mxm_gen + 1)begin : gen_mxm
 				localparam integer MXM_INDEX = HEMISPHERE_INDEX*2 + local_mxm_gen;
+				localparam Q=3+5*local_mxm_gen;
+				  if (!LEGACY_MXM && local_mxm_gen >= ACTIVE_MXMS) begin : g_unused
+                    assign er[HEMISPHERE_INDEX][Q+:5]='0;
+                    assign lr[HEMISPHERE_INDEX][Q+:5]='0;
+                    assign local_mxm_east_valid[local_mxm_gen*DMA_TILES*32+:DMA_TILES*32]=sxm_east_valid;
+                    assign {local_mxm_west_valid[local_mxm_gen*DMA_TILES*32+:DMA_TILES*32],
+                            local_mxm_west_data[local_mxm_gen*DMA_TILES*2048+:DMA_TILES*2048],
+                            local_mxm_east_data[local_mxm_gen*DMA_TILES*2048+:DMA_TILES*2048],
+                            local_mxm_fault[local_mxm_gen],local_mxm_conflict[local_mxm_gen],mxm_execution_busy[MXM_INDEX]}='0;
+                  end
+                  if (!LEGACY_MXM && local_mxm_gen < ACTIVE_MXMS) begin : g_native
+                    wire [639:0] payload;
+				  for(genvar j=0;j<5;j++)assign payload[j*128+:128]=word_q[HEMISPHERE_INDEX][Q+j];
+				  
+                    lpu_mxm_native_stream #(.T(DMA_TILES)) u_execution(
+				    .clk_i,.rst_ni(rst_ni && !discard_partial_sums_i),.run_i(datapath_enabled_q),
+				    .enqueue_i(enqueue[HEMISPHERE_INDEX][Q+:5]),.launch_i(launch[HEMISPHERE_INDEX][Q+:5]),
+				    .payload_i(payload),.enqueue_ready_o(er[HEMISPHERE_INDEX][Q+:5]),.launch_ready_o(lr[HEMISPHERE_INDEX][Q+:5]),
+				    .east_valid_i(sxm_east_valid),.east_data_i(sxm_east_data),
+				    .west_valid_i(local_mxm_gen==0?mem_west_edge_valid_i[HEMISPHERE_INDEX*DMA_TILES*32+:DMA_TILES*32]:'0),
+				    .west_data_i(mem_west_edge_data_i[HEMISPHERE_INDEX*DMA_TILES*32*64+:DMA_TILES*32*64]),
+				    .east_valid_o(local_mxm_east_valid[local_mxm_gen*DMA_TILES*32+:DMA_TILES*32]),.east_data_o(local_mxm_east_data[local_mxm_gen*DMA_TILES*32*64+:DMA_TILES*32*64]),
+				    .west_valid_o(local_mxm_west_valid[local_mxm_gen*DMA_TILES*32+:DMA_TILES*32]),.west_data_o(local_mxm_west_data[local_mxm_gen*DMA_TILES*32*64+:DMA_TILES*32*64]),
+				    .fault_o(local_mxm_fault[local_mxm_gen]),.conflict_o(local_mxm_conflict[local_mxm_gen]),.busy_o(mxm_execution_busy[MXM_INDEX]));
+				  end
+				  if (!LEGACY_MXM) begin : g_native_status
+				  assign {mxm_program_ready[MXM_INDEX],mxm_frontends_ready[MXM_INDEX],mxm_frontends_idle[MXM_INDEX]}=3'b111;
+				  assign {mxm_program_error[MXM_INDEX],mxm_frontend_fault[MXM_INDEX],mxm_frontend_fault_code[MXM_INDEX*6+:6]}='0;
+				  assign {local_mxm_load_issue_valid_o[MXM_INDEX],local_mxm_load_issue_instruction_o[MXM_INDEX*29+:29],local_mxm_load_issue_cycle_o[MXM_INDEX*32+:32],
+				  local_mxm_dequant_issue_valid_o[MXM_INDEX],local_mxm_dequant_issue_instruction_o[MXM_INDEX*16+:16],local_mxm_dequant_issue_cycle_o[MXM_INDEX*32+:32],
+				  local_mxm_compute_issue_valid_o[MXM_INDEX],local_mxm_compute_issue_instruction_o[MXM_INDEX*49+:49],local_mxm_compute_issue_cycle_o[MXM_INDEX*32+:32]}='0;
+				end else begin:g_legacy
+				assign er[HEMISPHERE_INDEX][Q+:5]=0; assign lr[HEMISPHERE_INDEX][Q+:5]=0;
 				lpu_mxm_subsystem #(
+					.STREAMING_VECTOR(LEGACY_VECTOR_ARRAY),
                     .WEIGHT_BLOCKS(DMA_TILES),
 					.LOCAL_MXM_INDEX(local_mxm_gen),
 					.IMEM_DEPTH(MXM_IMEM_DEPTH),
 					.ACTIVE_CONTEXTS(ACTIVE_CONTEXTS),
 					.ACCUMULATOR_BLOCK_COUNT(MXM_ACCUMULATOR_BLOCK_COUNT)
 				) u_mxm_subsystem (
-                    .clk_i, .rst_ni, .program_reset_i,
+                    .clk_i, .rst_ni, .program_reset_i, .discard_partial_sums_i,
 					.execution_enable_i(datapath_enabled_q),
 					.run_i(execution_run), .schedule_cycle_i(schedule_cycle_q),
 					.qctl_active_i({
@@ -594,48 +657,48 @@ module lpu_fu_subsystem_cluster #(
 					.frontend_fault_code_o(mxm_frontend_fault_code[MXM_INDEX*6+:6]),
 					.east_from_sxm_valid_i(sxm_east_valid), .east_from_sxm_data_i(sxm_east_data),
 					.external_west_valid_i(local_mxm_gen == 0 ?
-						mem_west_edge_valid_i[HEMISPHERE_INDEX*4*32+:4*32] : '0),
-					.external_west_data_i(mem_west_edge_data_i[HEMISPHERE_INDEX*4*32*64+:4*32*64]),
-					.east_external_valid_o(local_mxm_east_valid[local_mxm_gen*4*32+:4*32]),
-					.east_external_data_o(local_mxm_east_data[local_mxm_gen*4*32*64+:4*32*64]),
-					.west_to_sxm_valid_o(local_mxm_west_valid[local_mxm_gen*4*32+:4*32]),
-					.west_to_sxm_data_o(local_mxm_west_data[local_mxm_gen*4*32*64+:4*32*64]),
+						mem_west_edge_valid_i[HEMISPHERE_INDEX*DMA_TILES*32+:DMA_TILES*32] : '0),
+					.external_west_data_i(mem_west_edge_data_i[HEMISPHERE_INDEX*DMA_TILES*32*64+:DMA_TILES*32*64]),
+					.east_external_valid_o(local_mxm_east_valid[local_mxm_gen*DMA_TILES*32+:DMA_TILES*32]),
+					.east_external_data_o(local_mxm_east_data[local_mxm_gen*DMA_TILES*32*64+:DMA_TILES*32*64]),
+					.west_to_sxm_valid_o(local_mxm_west_valid[local_mxm_gen*DMA_TILES*32+:DMA_TILES*32]),
+					.west_to_sxm_data_o(local_mxm_west_data[local_mxm_gen*DMA_TILES*32*64+:DMA_TILES*32*64]),
 					.fault_o(local_mxm_fault[local_mxm_gen]),
 					.conflict_o(local_mxm_conflict[local_mxm_gen])
 				);
+				end
 			end
 
 			always_comb begin
-				mxm_east_valid = local_mxm_east_valid[0+:4*32] & local_mxm_east_valid[4*32+:4*32];
-				mxm_east_data = local_mxm_east_data[0+:4*32*64];
-				mxm_west_valid = local_mxm_west_valid[0+:4*32];
-				mxm_west_data = local_mxm_west_data[0+:4*32*64];
+				mxm_east_valid = local_mxm_east_valid[0+:DMA_TILES*32] & local_mxm_east_valid[DMA_TILES*32+:DMA_TILES*32];
+				mxm_east_data = local_mxm_east_data[0+:DMA_TILES*32*64];
+				mxm_west_valid = local_mxm_west_valid[0+:DMA_TILES*32];
+				mxm_west_data = local_mxm_west_data[0+:DMA_TILES*32*64];
 				mxm_stream_conflict = |local_mxm_conflict;
-				for(integer stream_cell = 0; stream_cell < 4*32; stream_cell = stream_cell + 1)begin
-					if(local_mxm_west_valid[4*32+stream_cell])begin
+				for(integer stream_cell = 0; stream_cell < DMA_TILES*32; stream_cell = stream_cell + 1)begin
+					if(local_mxm_west_valid[DMA_TILES*32+stream_cell])begin
 						if(mxm_west_valid[stream_cell])begin
 							mxm_stream_conflict = 1'b1;
 						end
 						else begin
 							mxm_west_valid[stream_cell] = 1'b1;
 							mxm_west_data[stream_cell*64+:64] =
-								local_mxm_west_data[(4*32+stream_cell)*64+:64];
+								local_mxm_west_data[(DMA_TILES*32+stream_cell)*64+:64];
 						end
 					end
 				end
 				mxm_fault = |local_mxm_fault;
 			end
 
-			assign mem_east_edge_valid_o[HEMISPHERE_INDEX*4*32+:4*32] = mxm_east_valid;
-			assign mem_east_edge_data_o[HEMISPHERE_INDEX*4*32*64+:4*32*64] = mxm_east_data;
-			assign mem_west_edge_valid_o[HEMISPHERE_INDEX*4*32+:4*32] = mem_west_valid;
-			assign mem_west_edge_data_o[HEMISPHERE_INDEX*4*32*64+:4*32*64] = mem_west_data;
-			assign mem_to_vxm_west_valid[HEMISPHERE_INDEX*4*32+:4*32] = mem_west_valid;
-			assign mem_to_vxm_west_data[HEMISPHERE_INDEX*4*32*64+:4*32*64] = mem_west_data;
+			assign mem_east_edge_valid_o[HEMISPHERE_INDEX*DMA_TILES*32+:DMA_TILES*32] = mxm_east_valid;
+			assign mem_east_edge_data_o[HEMISPHERE_INDEX*DMA_TILES*32*64+:DMA_TILES*32*64] = mxm_east_data;
+			assign mem_west_edge_valid_o[HEMISPHERE_INDEX*DMA_TILES*32+:DMA_TILES*32] = mem_west_valid;
+			assign mem_west_edge_data_o[HEMISPHERE_INDEX*DMA_TILES*32*64+:DMA_TILES*32*64] = mem_west_data;
+			assign mem_to_vxm_west_valid[HEMISPHERE_INDEX*DMA_TILES*32+:DMA_TILES*32] = mem_west_valid;
+			assign mem_to_vxm_west_data[HEMISPHERE_INDEX*DMA_TILES*32*64+:DMA_TILES*32*64] = mem_west_data;
 			assign sxm_fault_o[HEMISPHERE_INDEX] = sxm_fault;
 			assign mxm_fault_o[HEMISPHERE_INDEX] = mxm_fault;
-			// SXM and VXM have no issue source in this top; these signals
-			// include their passive stream path, including the SXM pass register.
+			// Wait for values still travelling between units, as well as each unit’s busy signal.
 			assign edge_execution_busy[HEMISPHERE_INDEX] = (|mem_east_valid) ||
 				(|mem_west_valid) || (|sxm_east_valid) || (|sxm_west_valid) ||
 				(|local_mxm_east_valid) || (|local_mxm_west_valid);
@@ -645,12 +708,12 @@ module lpu_fu_subsystem_cluster #(
 	endgenerate
 
 	generate if (ENABLE_SXM_VXM_EXECUTION) begin : gen_vxm_execution
-	lpu_vxm_subsystem u_vxm_subsystem (
-		.clk_i, .rst_ni, .run_i(execution_run),
-		.local_issue_valid_i(external_vxm_local_issue_valid_i),
-		.local_issue_instruction_i(external_vxm_local_issue_instruction_i),
-		.global_issue_valid_i(external_vxm_global_issue_valid_i),
-		.global_issue_instruction_i(external_vxm_global_issue_instruction_i),
+	lpu_vxm_subsystem #(.TILES(DMA_TILES)) u_vxm_subsystem (
+		.clk_i, .rst_ni(rst_ni && !program_reset_i), .run_i(execution_run),
+		.local_issue_valid_i({8{launch[0][2]}} & word_q[0][2][7:0]),
+		.local_issue_instruction_i(word_q[0][2][63:8]),
+		.global_issue_valid_i(launch[0][2] && word_q[0][2][64]),
+		.global_issue_instruction_i(word_q[0][2][79:65]),.busy_o(vxm_busy),
 		.west_from_mem_valid_i(mem_to_vxm_west_valid),
 		.west_from_mem_data_i(mem_to_vxm_west_data),
 		.external_east_valid_i(mem_east_edge_valid_i),
@@ -661,9 +724,10 @@ module lpu_fu_subsystem_cluster #(
 		.conflict_o(vxm_stream_conflict)
 	);
 	end else begin : gen_vxm_passive
+		assign vxm_busy=0;
 		// MEM/MXM-only build: keep the real VXM boundary routing, with
 		// no VXM consumer/producer. No issue queue or ALUs are synthesized.
-		lpu_vxm_stream_bridge u_stream_bridge (
+		lpu_vxm_stream_bridge #(.TILES(DMA_TILES)) u_stream_bridge (
 			.west_from_mem_valid_i(mem_to_vxm_west_valid),
 			.west_from_mem_data_i(mem_to_vxm_west_data),
 			.external_east_valid_i(mem_east_edge_valid_i),

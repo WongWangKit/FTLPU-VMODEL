@@ -1,4 +1,4 @@
-module lpu_vxm_control (
+module lpu_vxm_control #(parameter integer TILES=4) (
   input  logic clk_i,
   input  logic rst_ni,
   input  logic datapath_idle_i,
@@ -10,13 +10,14 @@ module lpu_vxm_control (
   input  logic [lpu_pkg::VXM_GLOBAL_CONFIG_WIDTH-1:0]
     global_issue_instruction_i,
 
-  output logic [4*8-1:0] tile_local_valid_o,
-  output logic [4*8*lpu_pkg::VXM_LOCAL_MAX_INSTRUCTION_WIDTH-1:0]
+  output logic [TILES*8-1:0] tile_local_valid_o,
+  output logic [TILES*8*lpu_pkg::VXM_LOCAL_MAX_INSTRUCTION_WIDTH-1:0]
     tile_local_instruction_o,
-  output logic [4*lpu_pkg::VXM_GLOBAL_CONFIG_WIDTH-1:0]
+  output logic [TILES*lpu_pkg::VXM_GLOBAL_CONFIG_WIDTH-1:0]
     tile_global_config_o,
-  output logic [3:0] tile_global_config_valid_o,
+  output logic [TILES-1:0] tile_global_config_valid_o,
   output logic global_config_valid_o,
+  output wire busy_o,
   output logic global_config_fault_o
 );
   localparam integer LOCAL_MAX_WIDTH =
@@ -26,12 +27,13 @@ module lpu_vxm_control (
   logic config_apply;
   logic [CONFIG_WIDTH-1:0] config_apply_data;
   logic control_idle;
-  logic [3:0] global_row_valid;
-  logic [4*CONFIG_WIDTH-1:0] global_row_config;
-  logic [3:0] global_row_loaded_q;
-  logic [4*CONFIG_WIDTH-1:0] global_row_config_q;
+  logic [TILES-1:0] global_row_valid;
+  logic [TILES*CONFIG_WIDTH-1:0] global_row_config;
+  logic [TILES-1:0] global_row_loaded_q;
+  logic [TILES*CONFIG_WIDTH-1:0] global_row_config_q;
 
   assign control_idle = !(|tile_local_valid_o) && !(|global_row_valid);
+  assign busy_o=!control_idle || config_apply;
 
   lpu_vxm_global_config #(.CONFIG_WIDTH(CONFIG_WIDTH)) u_global_config (
     .clk_i,
@@ -50,7 +52,7 @@ module lpu_vxm_control (
 
   // The global word follows the same four-row geometry as the local words.
   // Each row retains its most recently received word after the valid pulse.
-  lpu_control_pipeline #(.WIDTH(CONFIG_WIDTH), .ROWS(4)) u_global_wave (
+  lpu_control_pipeline #(.WIDTH(CONFIG_WIDTH), .ROWS(TILES)) u_global_wave (
     .clk_i,
     .rst_ni,
     .issue_valid_i(config_apply),
@@ -62,7 +64,7 @@ module lpu_vxm_control (
   always_comb begin
     tile_global_config_o = global_row_config_q;
     tile_global_config_valid_o = global_row_loaded_q | global_row_valid;
-    for (integer row = 0; row < 4; row++) begin
+    for (integer row = 0; row < TILES; row++) begin
       if (global_row_valid[row])
         tile_global_config_o[row*CONFIG_WIDTH +: CONFIG_WIDTH] =
           global_row_config[row*CONFIG_WIDTH +: CONFIG_WIDTH];
@@ -75,7 +77,7 @@ module lpu_vxm_control (
       global_row_config_q <= '0;
     end else begin
       global_row_loaded_q <= global_row_loaded_q | global_row_valid;
-      for (integer row = 0; row < 4; row++) begin
+      for (integer row = 0; row < TILES; row++) begin
         if (global_row_valid[row])
           global_row_config_q[row*CONFIG_WIDTH +: CONFIG_WIDTH] <=
             global_row_config[row*CONFIG_WIDTH +: CONFIG_WIDTH];
@@ -87,10 +89,10 @@ module lpu_vxm_control (
     for (genvar queue = 0; queue < 8; queue++) begin : gen_local_wave
       localparam integer LOCAL_WIDTH =
         lpu_pkg::vxm_local_instruction_width(queue);
-      logic [3:0] row_valid;
-      logic [4*LOCAL_WIDTH-1:0] row_instruction;
+      logic [TILES-1:0] row_valid;
+      logic [TILES*LOCAL_WIDTH-1:0] row_instruction;
 
-      lpu_control_pipeline #(.WIDTH(LOCAL_WIDTH), .ROWS(4)) u_pipeline (
+      lpu_control_pipeline #(.WIDTH(LOCAL_WIDTH), .ROWS(TILES)) u_pipeline (
         .clk_i,
         .rst_ni,
         .issue_valid_i(local_issue_valid_i[queue]),
@@ -100,7 +102,7 @@ module lpu_vxm_control (
         .row_payload_o(row_instruction)
       );
 
-      for (genvar tile = 0; tile < 4; tile++) begin : gen_tile
+      for (genvar tile = 0; tile < TILES; tile++) begin : gen_tile
         wire [LOCAL_MAX_WIDTH-1:0] padded_instruction =
           LOCAL_MAX_WIDTH'(
             row_instruction[tile*LOCAL_WIDTH +: LOCAL_WIDTH]);

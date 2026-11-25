@@ -6,6 +6,7 @@
 // owns all stream state; MEM only observes current boundary state and produces
 // consume/inject candidates.  MEM uses two independent local candidate slots (Q06=A).
 module lpu_mem_srf_integration #(
+  parameter bit HAS_FU_RETURN = 0,
   parameter integer MEM_SLICES           = 52,
   parameter integer MEM_SLICES_PER_GROUP = 4,
   parameter integer MEM_DEPTH_ROWS       = 32768,
@@ -30,6 +31,11 @@ module lpu_mem_srf_integration #(
   input  logic [F*2-1:0]    bank_issue_valid_i,
   input  logic [F*2*32-1:0] bank_issue_i,
 
+  // SXM has already registered the reverse hop from the MXM edge. Insert at
+  // the outermost MEM boundary, not the input of the entire SR fabric.
+  input wire [T*STREAMS-1:0] fu_return_valid_i,
+  input wire [T*STREAMS*SEGMENT_BITS-1:0] fu_return_data_i,
+
   // External SRF hemisphere boundaries.  Direction 0 is East and direction 1
   // is West.  Each valid bit describes one complete 64-bit segment.
   input  logic [2*T*STREAMS-1:0] boundary_valid_i,
@@ -45,6 +51,7 @@ module lpu_mem_srf_integration #(
     state_data_o,
   output logic [(F/G+1)*(2*STREAMS*T)-1:0]
     mem_boundary_consume_o,
+  output logic [F*2*T-1:0] normal_write_committed_o,
   output logic [F*2*T-1:0] mem_producer_valid_o,
   output logic [F*2*T*SEGMENT_BITS-1:0] mem_producer_data_o,
   output logic [F*2*T-1:0] mem_producer_direction_o,
@@ -132,6 +139,14 @@ module lpu_mem_srf_integration #(
       end
     end
 
+    if(HAS_FU_RETURN)for(integer tile=0;tile<T;tile++)for(integer s=0;s<STREAMS;s++)begin
+      // A West MEM producer always injects at the *left* side of its group:
+      // none owns the west slot at MEM_GROUPS (right edge of the last group).
+      srf_slot_cell=(((COLUMNS+MEM_GROUPS)*T+tile)*LOCAL_PRODUCERS)*STREAMS+s;
+      srf_inject_valid[srf_slot_cell]=fu_return_valid_i[tile*STREAMS+s];
+      srf_inject_data[srf_slot_cell*SEGMENT_BITS+:SEGMENT_BITS]=fu_return_data_i[(tile*STREAMS+s)*SEGMENT_BITS+:SEGMENT_BITS];
+    end
+
     // Q06=A: MEM owns two local candidates at columns 0..13.
     // The raw producer index identifies tile by modulo T.
     for (producer = 0; producer < MEM_PRODUCERS; producer = producer + 1) begin
@@ -200,6 +215,7 @@ module lpu_mem_srf_integration #(
     .boundary_state_data_i(mem_boundary_state_data),
     .external_producer_collision_i(unused_external_collision),
     .boundary_consume_o(mem_boundary_consume_o),
+    .normal_write_committed_o,
     .producer_valid_o(mem_producer_valid_o),
     .producer_data_o(mem_producer_data_o),
     .producer_stream_dir_o(mem_producer_direction_o),

@@ -75,7 +75,7 @@ set rtl_files [list \
   rtl/mxm/lpu_mxm_shared_accumulator.sv \
   rtl/mxm/lpu_mxm_accumulator.sv \
   rtl/mxm/lpu_mxm_block_accumulator.sv \
-  rtl/mxm/lpu_mxm_slice.sv \
+  rtl/mxm/lpu_mxm_vector_acc_bank.sv rtl/mxm/lpu_mxm_vector_array.sv rtl/mxm/lpu_mxm_slice.sv \
   rtl/sxm/lpu_sxm_control.sv \
   rtl/sxm/lpu_sxm_slice.sv \
   rtl/vxm/lpu_vxm_global_config.sv \

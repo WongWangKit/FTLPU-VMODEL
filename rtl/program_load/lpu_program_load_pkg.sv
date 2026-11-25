@@ -13,6 +13,8 @@ package lpu_program_load_pkg;
 	parameter integer PROGRAM_LOADER_OPCODE_WIDTH = 3;
 	parameter integer PROGRAM_FAULT_CODE_WIDTH = 6;
 
+	localparam integer NATIVE_EVENT_DEPTH = 64;
+	localparam logic [1:0] PROGRAM_ENCODING_NATIVE = 2'd1;
 	// Program Word transport is always 128 bits. Each strobe bit enables one 32-bit segment.
 	typedef enum logic [PROGRAM_FORMAT_WIDTH-1:0] {
 		PROGRAM_FORMAT_96 = 2'd0,
@@ -32,7 +34,10 @@ package lpu_program_load_pkg;
 		PROGRAM_TARGET_MXM_COMPUTE = 4'd3,
 		PROGRAM_TARGET_VXM = 4'd4,
 		PROGRAM_TARGET_SXM_TRANSPOSE = 4'd5,
-		PROGRAM_TARGET_SXM_PERMUTE = 4'd6
+		PROGRAM_TARGET_SXM_PERMUTE = 4'd6,
+		PROGRAM_NATIVE_WEIGHT = 4'd7, PROGRAM_NATIVE_PARAM = 4'd8,
+		PROGRAM_NATIVE_DEQUANT = 4'd9, PROGRAM_NATIVE_COMPUTE = 4'd10,
+		PROGRAM_NATIVE_BACKEND = 4'd11
 	} lpu_program_target_kind_e;
 
 	// Program Load controls manage local iMEM state. They are not FU instruction opcodes.

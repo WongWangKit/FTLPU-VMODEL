@@ -1,5 +1,12 @@
 package lpu_pkg;
   // BEGIN generated DMA mixed iMEM defaults
+  function automatic integer dma_mixed_mem_rows(input integer vector_bytes);
+    case (vector_bytes)
+      16: dma_mixed_mem_rows = 1024;
+      32: dma_mixed_mem_rows = 8192;
+      default: dma_mixed_mem_rows = 2048;
+    endcase
+  endfunction
   function automatic integer dma_mixed_mem_imem_depth(input integer vector_bytes);
     case (vector_bytes)
       16: dma_mixed_mem_imem_depth = 320;
@@ -39,7 +46,36 @@ package lpu_pkg;
   // Keep these values aligned with FTLPU-CMODEL/core/hardware_params.hpp.
   localparam integer TILE_ROWS             = 4;
   localparam integer LANES_PER_TILE        = 8;
-  localparam integer PHYSICAL_VECTOR_BYTES = 32;
+  // Stand-alone architecture reference. T=20 names the paper's architecture,
+  // not the project's old T=8 / 64-byte design. Only T=2,4 have native RTL.
+  localparam integer GROQ_TILES = 20;
+  localparam integer GROQ_LANES_PER_TILE = 16;
+  localparam integer GROQ_MEM_SLICES_PER_HEMISPHERE = 44;
+  localparam integer GROQ_BANKS_PER_SLICE = 2;
+  localparam integer GROQ_ROWS_PER_BANK = 4096; // 220 MiB / (88*2*320 B)
+  localparam integer GROQ_MXM_PLANES = 4;
+  localparam integer GROQ_SXM_SLICES = 2;
+  localparam integer GROQ_INSTRUCTION_QUEUES = 144;
+  function automatic integer mxms_per_hemisphere(input integer tiles);
+    case (tiles)
+      2: return 1;
+      4: return 2;
+      GROQ_TILES: return GROQ_MXM_PLANES / 2;
+      default: return 0;
+    endcase
+  endfunction
+  function automatic integer lanes_for_tiles(input integer tiles);
+    case (tiles)
+      2, 4: return LANES_PER_TILE;
+      GROQ_TILES: return GROQ_LANES_PER_TILE;
+      default: return 0;
+    endcase
+  endfunction
+  function automatic integer vector_bytes_for_tiles(input integer tiles);
+    return tiles * lanes_for_tiles(tiles);
+  endfunction
+  // Default geometry for stand-alone legacy modules.
+  localparam integer PHYSICAL_VECTOR_BYTES = vector_bytes_for_tiles(TILE_ROWS);
 
   localparam integer HEMISPHERES           = 2;
   localparam integer STREAMS_PER_DIRECTION = 32;
@@ -47,6 +83,20 @@ package lpu_pkg;
   localparam integer STREAM_BYTE_WIDTH     = 8;
 
   localparam integer MEM_SLICES_PER_HEMISPHERE = 52;
+  function automatic integer mem_slices_per_side_for_tiles(input integer tiles);
+    case (tiles)
+      2, 4: return MEM_SLICES_PER_HEMISPHERE;
+      GROQ_TILES: return GROQ_MEM_SLICES_PER_HEMISPHERE;
+      default: return 0;
+    endcase
+  endfunction
+  function automatic integer bank_rows_for_tiles(input integer tiles);
+    case (tiles)
+      2, 4: return dma_mixed_mem_rows(vector_bytes_for_tiles(tiles));
+      GROQ_TILES: return GROQ_ROWS_PER_BANK;
+      default: return 0;
+    endcase
+  endfunction
   localparam integer MEM_SLICE_COUNT            = 104;
   localparam integer MEM_BANKS_PER_SLICE = 2;
   localparam integer MEM_BANKS_PER_HEMISPHERE = MEM_SLICES_PER_HEMISPHERE * MEM_BANKS_PER_SLICE;

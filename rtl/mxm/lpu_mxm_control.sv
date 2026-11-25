@@ -2,7 +2,9 @@
 module lpu_mxm_control #(
   parameter integer ROWS=lpu_mxm_config_pkg::SC_ROWS,
   parameter integer QUEUE_DEPTH=lpu_mxm_config_pkg::INSTRUCTION_QUEUE_DEPTH,
-  parameter integer INTERVAL=lpu_mxm_config_pkg::SUPERLANE_INSTRUCTION_INTERVAL
+  parameter integer INTERVAL=lpu_mxm_config_pkg::SUPERLANE_INSTRUCTION_INTERVAL,
+  parameter integer MATRIX_COLUMNS=lpu_mxm_config_pkg::MATRIX_N,
+  localparam integer SHIFT_BITS=$clog2(MATRIX_COLUMNS+1)
 ) (
   input logic clk_i,rst_ni,run_i,
   input logic compute_enqueue_valid_i,
@@ -29,10 +31,10 @@ module lpu_mxm_control #(
   wire [COMPUTE_INSTRUCTION_BITS-1:0] compute_head;
   wire [LOAD_INSTRUCTION_BITS-1:0] load_head;
   wire [ROWS-1:0] load_arrival;
-  logic [LOAD_CYCLE_BITS-1:0] load_remaining_q[0:ROWS-1],load_index_q[0:ROWS-1];
+  logic [SHIFT_BITS-1:0] load_remaining_q[0:ROWS-1],load_index_q[0:ROWS-1];
   // A mode load arriving after launch is already valid for its first shift.
   // These counters belong ONLY to fixed MATRIX/COLUMN loading, never compute.
-  wire load_busy=load_arrival[0] ? (!load_row_instruction_o[0] && MATRIX_N>1) : load_remaining_q[0]>1;
+  wire load_busy=load_arrival[0] ? (!load_row_instruction_o[0] && MATRIX_COLUMNS>1) : load_remaining_q[0]>1;
   assign compute_launch_ready_o=run_i && compute_head_valid;
   assign load_launch_ready_o=run_i && load_head_valid && !load_busy;
   wire compute_pop=compute_launch_i && compute_launch_ready_o;
@@ -63,7 +65,7 @@ module lpu_mxm_control #(
       if(!rst_ni) begin load_remaining_q[r]<=0;load_index_q[r]<=0;end
       else if(!run_i) begin load_remaining_q[r]<=0;load_index_q[r]<=0;end
       else if(load_arrival[r]) begin
-        load_remaining_q[r]<=load_row_instruction_o[r*LOAD_INSTRUCTION_BITS]?0:LOAD_CYCLE_BITS'(MATRIX_N-1);
+        load_remaining_q[r]<=load_row_instruction_o[r*LOAD_INSTRUCTION_BITS]?0:SHIFT_BITS'(MATRIX_COLUMNS-1);
         load_index_q[r]<=1;
       end else if(load_remaining_q[r]!=0) begin
         load_remaining_q[r]<=load_remaining_q[r]-1'b1;
@@ -79,6 +81,6 @@ module lpu_mxm_control #(
       if((compute_launch_i && !compute_launch_ready_o) || (load_launch_i && !load_launch_ready_o)) fault_o<=1;
     end
   end
-  initial if(!CONFIG_VALID || LOAD_CYCLE_BITS>16)
+  initial if(!CONFIG_VALID || SHIFT_BITS>16)
     $fatal(1,"Configuration not representable by new MXM ISA");
 endmodule

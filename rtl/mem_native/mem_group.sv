@@ -47,6 +47,7 @@ module mem_group #(
                                             internal_mem_collision_o,
 
     // Per {slice,bank} fault observation, preserving Slice fault bundles.
+    output wire [P_SLICES*P_BANKS_PER_SLICE*P_TILE_ROWS-1:0] normal_write_committed_o,
     output wire [P_SLICES*P_BANKS_PER_SLICE-1:0] slice_fault_valid_o,
     output wire [P_SLICES*P_BANKS_PER_SLICE*P_SLICE_FAULT_CODE_BITS-1:0]
                                             slice_fault_code_o,
@@ -120,6 +121,7 @@ module mem_group #(
                 .sr_inject_data_o(slice_inject_data[slice*P_BANKS_PER_SLICE*P_TILE_ROWS*P_SEGMENT_BITS +: P_BANKS_PER_SLICE*P_TILE_ROWS*P_SEGMENT_BITS]),
                 .sr_inject_stream_dir_o(slice_inject_stream_dir[slice*P_BANKS_PER_SLICE*P_TILE_ROWS +: P_BANKS_PER_SLICE*P_TILE_ROWS]),
                 .sr_inject_stream_idx_o(slice_inject_stream_idx[slice*P_BANKS_PER_SLICE*P_TILE_ROWS*5 +: P_BANKS_PER_SLICE*P_TILE_ROWS*5]),
+                .normal_write_committed_o(normal_write_committed_o[slice*2*P_TILE_ROWS +: 2*P_TILE_ROWS]),
                 .mem_fault_valid_o(slice_fault_valid_o[slice*2 +: 2]),
                 .mem_fault_code_o(slice_fault_code_o[slice*2*P_SLICE_FAULT_CODE_BITS +:
                                                       2*P_SLICE_FAULT_CODE_BITS]),

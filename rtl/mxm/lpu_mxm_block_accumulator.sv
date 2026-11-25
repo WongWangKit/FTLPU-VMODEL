@@ -1,9 +1,11 @@
 module lpu_mxm_block_accumulator #(
+  parameter integer BLOCKS=4,
   parameter integer ACCUMULATOR_BLOCK_COUNT =
     lpu_pkg::MXM_ACCUMULATOR_BLOCK_COUNT
 ) (
   input  logic clk_i,
   input  logic rst_ni,
+  input  logic discard_partial_sums_i,
   input  logic run_i,
   input  logic write_valid_i,
   input  logic [8*32*32-1:0] write_values_i,
@@ -11,6 +13,8 @@ module lpu_mxm_block_accumulator #(
   input  logic [5:0] write_stream_base_i,
   input  logic write_stream_destination_i,
   input  logic write_clear_i,
+  input  logic write_bf16_i,
+  input  logic [3:0] read_bf16_i,
   output logic write_ready_o,
   input  logic [3:0] read_row_valid_i,
   input  logic [4*48-1:0] read_row_instruction_i,
@@ -21,7 +25,6 @@ module lpu_mxm_block_accumulator #(
 );
   import lpu_vxm_math_pkg::*;
 
-  localparam integer BLOCKS = 4;
   localparam integer ROWS = 8;
   localparam integer LANES = 8;
   localparam integer STREAMS = 32;
@@ -38,7 +41,7 @@ module lpu_mxm_block_accumulator #(
   logic [12:0] pending_address_q;
   logic [5:0] pending_stream_base_q;
   logic pending_stream_destination_q;
-  logic pending_clear_q;
+  logic pending_clear_q, pending_bf16_q, operation_bf16;
 
   logic [3:0] read_opcode_valid;
   logic read_overlapping;
@@ -71,6 +74,7 @@ module lpu_mxm_block_accumulator #(
 
   always_comb begin
     read_opcode_valid = '0;
+    read_opcode_valid='0;
     for (integer block = 0; block < BLOCKS; block++)
       read_opcode_valid[block] = read_row_valid_i[block] &&
         (read_row_instruction_i[block*48 +: 2] == 2'd2);
@@ -98,6 +102,7 @@ module lpu_mxm_block_accumulator #(
     operation_stream_base = '0;
     operation_stream_destination = 1'b0;
     operation_clear = 1'b0;
+    operation_bf16 = 1'b0;
     operation_values = '0;
 
     if (pending_valid_q) begin
@@ -108,6 +113,7 @@ module lpu_mxm_block_accumulator #(
       operation_stream_base = pending_stream_base_q;
       operation_stream_destination = pending_stream_destination_q;
       operation_clear = pending_clear_q;
+      operation_bf16 = pending_bf16_q;
       for (integer row = 0; row < ROWS; row++)
         for (integer lane = 0; lane < LANES; lane++)
           operation_values[(row*LANES+lane)*32 +: 32] =
@@ -121,6 +127,7 @@ module lpu_mxm_block_accumulator #(
       operation_stream_base = write_stream_base_i;
       operation_stream_destination = write_stream_destination_i;
       operation_clear = write_clear_i;
+      operation_bf16 = write_bf16_i;
       for (integer row = 0; row < ROWS; row++)
         for (integer lane = 0; lane < LANES; lane++)
           operation_values[(row*LANES+lane)*32 +: 32] =
@@ -132,6 +139,7 @@ module lpu_mxm_block_accumulator #(
       operation_address = read_instruction[27:15];
       operation_stream_base = read_instruction[14:9];
       operation_clear = read_instruction[28];
+      operation_bf16 = read_bf16_i[read_block];
     end
   end
 
@@ -162,14 +170,14 @@ module lpu_mxm_block_accumulator #(
             : stored_values[(row*LANES+lane)*32 +: 32];
           value_bf16 = fp32_to_bf16(value);
           for (integer byte_index = 0; byte_index < 4; byte_index++) begin
-            if (!operation_write || byte_index < 2) begin
+            if (!operation_bf16 || byte_index < 2) begin
               west_valid_o[
                 operation_block*STREAMS+operation_stream_base+
-                row*(operation_write ? 2 : 4)+byte_index] = 1'b1;
+                row*(operation_bf16 ? 2 : 4)+byte_index] = 1'b1;
               west_data_o[
                 (operation_block*STREAMS+operation_stream_base+
-                 row*(operation_write ? 2 : 4)+byte_index)*64+
-                lane*8 +: 8] = operation_write
+                 row*(operation_bf16 ? 2 : 4)+byte_index)*64+
+                lane*8 +: 8] = operation_bf16
                   ? value_bf16[byte_index*8 +: 8]
                   : value[byte_index*8 +: 8];
             end
@@ -189,6 +197,11 @@ module lpu_mxm_block_accumulator #(
       pending_stream_destination_q <= 1'b0;
       pending_clear_q <= 1'b0;
       fault_o <= 1'b0;
+      for (integer block = 0; block < BLOCKS; block++)
+        for (integer address = 0; address < DEPTH; address++)
+          segment_valid_q[block][address] <= 1'b0;
+    end else if (discard_partial_sums_i) begin
+      pending_valid_q <= 1'b0;
       for (integer block = 0; block < BLOCKS; block++)
         for (integer address = 0; address < DEPTH; address++)
           segment_valid_q[block][address] <= 1'b0;
@@ -216,7 +229,7 @@ module lpu_mxm_block_accumulator #(
       end
 
       if (pending_valid_q) begin
-        if (pending_block_q == 2'd3)
+        if (pending_block_q == BLOCKS-1)
           pending_valid_q <= 1'b0;
         else
           pending_block_q <= pending_block_q + 1'b1;
@@ -228,6 +241,7 @@ module lpu_mxm_block_accumulator #(
         pending_stream_base_q <= write_stream_base_i;
         pending_stream_destination_q <= write_stream_destination_i;
         pending_clear_q <= write_clear_i;
+        pending_bf16_q <= write_bf16_i;
       end
     end
   end

@@ -39,6 +39,7 @@ module mem_slice #(
     output wire [P_BANKS*P_TILE_ROWS-1:0] sr_inject_stream_dir_o,
     output wire [P_BANKS*P_TILE_ROWS*5-1:0] sr_inject_stream_idx_o,
 
+    output wire [P_BANKS*P_TILE_ROWS-1:0] normal_write_committed_o,
     output reg  [P_BANKS-1:0]           mem_fault_valid_o,
     output reg  [P_BANKS*P_SLICE_FAULT_CODE_BITS-1:0] mem_fault_code_o,
     output reg  [P_BANKS-1:0]           mem_fault_bank_id_o,
@@ -73,6 +74,9 @@ module mem_slice #(
     wire [P_BANKS*P_TILE_ROWS*P_SEGMENT_BITS-1:0] selected_stream_data;
 
     wire [P_BANKS*P_TILE_ROWS-1:0]    bank_stream_consume;
+    // Per-leaf registered acknowledgement of a successful non-TAP Write.
+    // Unlike sr_consume_o this still identifies the physical writing bank.
+    assign normal_write_committed_o = bank_stream_consume;
     wire [P_BANKS*P_TILE_ROWS-1:0]    bank_read_valid;
     wire [P_BANKS*P_TILE_ROWS*P_SEGMENT_BITS-1:0] bank_read_data;
     wire [P_BANKS*P_TILE_ROWS-1:0]    bank_read_stream_dir;

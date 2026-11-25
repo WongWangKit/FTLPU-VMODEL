@@ -43,6 +43,7 @@ module mem_hemisphere #(
     output wire [P_MEM_SLICES_PER_HEMI*2*P_TILE_ROWS-1:0] internal_mem_collision_o,
 
     // Per global {slice,bank} fault observation.
+    output wire [P_MEM_SLICES_PER_HEMI*2*P_TILE_ROWS-1:0] normal_write_committed_o,
     output wire [P_MEM_SLICES_PER_HEMI*2-1:0] bank_fault_valid_o,
     output wire [P_MEM_SLICES_PER_HEMI*2*P_SLICE_FAULT_CODE_BITS-1:0]
         bank_fault_code_o,
@@ -131,6 +132,7 @@ module mem_hemisphere #(
                     group_inject_stream_idx[group*P_GROUP_PRODUCERS*5 +: P_GROUP_PRODUCERS*5]),
                 .internal_mem_collision_o(
                     internal_mem_collision_o[group*P_GROUP_PRODUCERS +: P_GROUP_PRODUCERS]),
+                .normal_write_committed_o(normal_write_committed_o[group*8*P_TILE_ROWS +: 8*P_TILE_ROWS]),
                 .slice_fault_valid_o(bank_fault_valid_o[group*8 +: 8]),
                 .slice_fault_code_o(
                     bank_fault_code_o[group*8*P_SLICE_FAULT_CODE_BITS +:

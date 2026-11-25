@@ -178,7 +178,7 @@ module lpu_program_reassembler #(
 		((config_format_i != PROGRAM_FORMAT_96) && (config_format_i != PROGRAM_FORMAT_128)) ||
 		((config_hemisphere_i != PROGRAM_HEMISPHERE_EAST) &&
 		 (config_hemisphere_i != PROGRAM_HEMISPHERE_WEST)) ||
-		(config_target_kind_i > PROGRAM_TARGET_SXM_PERMUTE) ||
+		(config_target_kind_i > PROGRAM_NATIVE_BACKEND) ||
 		(config_expected_word_count_i == '0) ||
 		({1'b0, config_imem_base_address_i} + config_expected_word_count_i > IMEM_DEPTH) ||
 		(config_image_first_i && (image_active_q || (buffer_count_q != '0))) ||

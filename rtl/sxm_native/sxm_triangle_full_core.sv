@@ -62,11 +62,10 @@ module sxm_triangle_full_core #(
   wire [SLOTS*8-1:0] pool_wr;
   wire [SLOTS*2048-1:0] pool_rd,pool_wd;
   wire batch_any=batch_job_i || (|batch_cap_valid_i);
-  wire typed_accept=!row_busy && !legacy_busy && !row_any && !legacy_any;
-  assign batch_ready_o=typed_ready && typed_accept;
-
   wire row_any=ctrl_valid_i || cap_valid_i || p_valid_i || (|run_valid_i);
   wire legacy_any=compat_t_valid_i || compat_p_valid_i;
+  wire typed_accept=!row_busy && !legacy_busy && !row_any && !legacy_any;
+  assign batch_ready_o=typed_ready && typed_accept;
   wire row_accept=!typed_busy && !batch_job_i && !legacy_busy && (!legacy_any || row_busy);
   wire legacy_accept=!typed_busy && !batch_job_i && !row_busy && !(row_any && !legacy_busy);
   wire use_legacy=legacy_busy || (legacy_any && !row_busy && !row_any && !typed_busy && !batch_job_i);

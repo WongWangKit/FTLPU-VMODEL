@@ -9,7 +9,7 @@ module lpu_mem_subsystem #(
 ) (
 	input logic clk_i,
 	input logic rst_ni,
-	input logic dma_req_i,dma_write_i,input logic [6:0] dma_bank_i,input logic [2:0] dma_lane_i,
+	input logic dma_req_i,dma_write_i,input logic [6:0] dma_bank_i,input logic [4:0] dma_stream_i,
 	input logic [14:0] dma_row_i,input logic [64*DMA_TILES-1:0] dma_wdata_i,
 	output logic dma_ready_o,dma_ret_o,dma_err_o,output logic [64*DMA_TILES-1:0] dma_rdata_o,
 	input logic program_reset_i,
@@ -39,14 +39,14 @@ module lpu_mem_subsystem #(
 	output logic frontend_fault_o,
 	output logic [5:0] frontend_fault_code_o,
 
-	input logic [4*32-1:0] east_edge_valid_i,
-	input logic [4*32*64-1:0] east_edge_data_i,
-	output logic [4*32-1:0] east_edge_valid_o,
-	output logic [4*32*64-1:0] east_edge_data_o,
-	input logic [4*32-1:0] west_edge_valid_i,
-	input logic [4*32*64-1:0] west_edge_data_i,
-	output logic [4*32-1:0] west_edge_valid_o,
-	output logic [4*32*64-1:0] west_edge_data_o,
+	input logic [DMA_TILES*32-1:0] east_edge_valid_i,
+	input logic [DMA_TILES*32*64-1:0] east_edge_data_i,
+	output logic [DMA_TILES*32-1:0] east_edge_valid_o,
+	output logic [DMA_TILES*32*64-1:0] east_edge_data_o,
+	input logic [DMA_TILES*32-1:0] west_edge_valid_i,
+	input logic [DMA_TILES*32*64-1:0] west_edge_data_i,
+	output logic [DMA_TILES*32-1:0] west_edge_valid_o,
+	output logic [DMA_TILES*32*64-1:0] west_edge_data_o,
 
 	output logic [lpu_pkg::MEM_BANKS_PER_HEMISPHERE-1:0] mem_fault_o,
 	output logic conflict_o
@@ -205,22 +205,21 @@ module lpu_mem_subsystem #(
     logic [2*16*T-1:0] srf_collision;
     logic [ACTIVE_COLUMNS*2*T-1:0] internal_collision;
     logic [2*16*T*32-1:0] sr_valid;
-    logic [(ACTIVE_COLUMNS/4+1)*2*32*T-1:0] consumed;
+    logic [ACTIVE_BANKS*T-1:0] normal_write_committed;
     logic [ACTIVE_BANKS-1:0] wave_cmd;
     logic [31:0] wave_inst;
     logic [ACTIVE_BANKS*32-1:0] bank_inst;
     logic [T*32-1:0] wave_valid,ev,wv;
-    logic [T*32*64-1:0] wave_data,ed,wd,w_in;
+    logic [T*32*64-1:0] wave_data,ed,wd;
     for(genvar k=0;k<ACTIVE_BANKS;k++)
         assign bank_inst[k*32+:32]=wave_cmd[k]?wave_inst:execution_issue_instruction[k*32+:32];
-    for(genvar k=0;k<T*32;k++)
-        assign w_in[k*64+:64]=wave_valid[k]?wave_data[k*64+:64]:west_edge_data_i[k*64+:64];
-    assign east_edge_valid_o=(4*32)'(ev);assign west_edge_valid_o=(4*32)'(wv);
-    assign east_edge_data_o=(4*32*64)'(ed);assign west_edge_data_o=(4*32*64)'(wd);
+    assign east_edge_valid_o=ev;assign west_edge_valid_o=wv;
+    assign east_edge_data_o=ed;assign west_edge_data_o=wd;
     lpu_dma_mem_wave #(.T(T),.F(ACTIVE_COLUMNS)) u_mem_wave(
-      .clk_i,.rst_ni,.req(dma_req_i),.write_i(dma_write_i),.bank_i(dma_bank_i),.lane_i(dma_lane_i),
+      .clk_i,.rst_ni,.req(dma_req_i),.write_i(dma_write_i),.bank_i(dma_bank_i),
+      .stream_i(dma_stream_i),
       .row_i(dma_row_i),.vector_i(dma_wdata_i),.ready(dma_ready_o),.ret(dma_ret_o),.err(dma_err_o),
-      .vector_o(dma_rdata_o),.cmd_valid(wave_cmd),.cmd(wave_inst),.sr_valid,.consumed,
+      .vector_o(dma_rdata_o),.cmd_valid(wave_cmd),.cmd(wave_inst),.normal_write_committed,
       .east_valid(ev),.east_data(ed),.west_valid(wave_valid),.west_data(wave_data),
       .native_fault(|native_bank_fault),.collision(conflict_o));
     logic native_busy;
@@ -238,17 +237,19 @@ module lpu_mem_subsystem #(
             mem_fault_o[b] = execution_issue_valid[b];
     end
     assign conflict_o = (|srf_collision) || (|internal_collision) ||
-        (|(wave_valid & west_edge_valid_i[T*32-1:0])) || (|(wave_cmd & execution_issue_valid[ACTIVE_BANKS-1:0]));
+        (|(wave_cmd & execution_issue_valid[ACTIVE_BANKS-1:0]));
     lpu_mem_srf_integration #(
-        .MEM_SLICES(ACTIVE_COLUMNS), .MEM_DEPTH_ROWS(DEPTH_ROWS),.SUPERLANES(T)
+        .HAS_FU_RETURN(1), .MEM_SLICES(ACTIVE_COLUMNS), .MEM_DEPTH_ROWS(DEPTH_ROWS),.SUPERLANES(T)
     ) u_native_mem (
         .clk_i, .rst_ni,
         .bank_issue_valid_i(execution_issue_valid[ACTIVE_BANKS-1:0]|wave_cmd),
         .bank_issue_i(bank_inst),
-        .boundary_valid_i({west_edge_valid_i[T*32-1:0]|wave_valid,east_edge_valid_i[T*32-1:0]}),
-        .boundary_data_i({w_in,east_edge_data_i[T*32*64-1:0]}),
+        .fu_return_valid_i(west_edge_valid_i[T*32-1:0]),.fu_return_data_i(west_edge_data_i[T*32*64-1:0]),
+        .boundary_valid_i({wave_valid,east_edge_valid_i[T*32-1:0]}),
+        .boundary_data_i({wave_data,east_edge_data_i[T*32*64-1:0]}),
         .boundary_valid_o({wv,ev}),.boundary_data_o({wd,ed}),
-        .state_valid_o(sr_valid), .state_data_o(), .mem_boundary_consume_o(consumed),
+        .state_valid_o(sr_valid), .state_data_o(), .mem_boundary_consume_o(),
+        .normal_write_committed_o(normal_write_committed),
         .mem_producer_valid_o(), .mem_producer_data_o(), .mem_producer_direction_o(),
         .mem_producer_stream_o(), .mem_producer_boundary_o(),
         .srf_collision_o(srf_collision), .srf_invalid_consume_o(),

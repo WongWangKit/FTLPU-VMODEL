@@ -1,5 +1,6 @@
 module lpu_mxm_weight_buffer #(
-  parameter integer LOCAL_MXM_INDEX = 0
+  parameter integer LOCAL_MXM_INDEX = 0,
+  parameter integer TILES=4
 ) (
   input  logic clk_i,
   input  logic rst_ni,
@@ -15,8 +16,7 @@ module lpu_mxm_weight_buffer #(
   output logic [2*4*4-1:0] cell_valid_o,
   output logic fault_o
 );
-  localparam integer TILES = 4;
-  localparam integer BLOCKS = 4;
+  localparam integer BLOCKS = TILES;
   localparam integer LANES = 8;
   localparam integer STREAMS = 32;
 
@@ -67,7 +67,7 @@ module lpu_mxm_weight_buffer #(
     // Canonical IW payload from the packed frontend; the program selects
     // the east stream range. Do not derive it from the physical MXM index.
     instruction_supported =
-      (instruction[1:0] == 2'd0) && (instruction[47:16] == '0) &&
+      (instruction[4:3] < BLOCKS) && (instruction[1:0] == 2'd0) && (instruction[47:16] == '0) &&
       (instruction[5] || (instruction[8:6] == '0)) &&
       (int'({1'b0,instruction[15:10]}) + input_stream_count(instruction) <= STREAMS);
   endfunction

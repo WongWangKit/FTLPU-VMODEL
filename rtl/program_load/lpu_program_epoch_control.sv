@@ -8,7 +8,7 @@ module lpu_program_epoch_control (
   output logic reload_ready_o,
   output logic reload_ack_o,
   input logic load_fire_i, start_fire_i,
-  input logic load_complete_i, segment_done_i, fault_i,
+  input logic load_complete_i, segment_done_i, fault_i,drained_bg_abort_i,
   input logic axi_idle_i, execution_drained_i,
   output logic admit_o, cancel_transport_o
 );
@@ -18,7 +18,7 @@ module lpu_program_epoch_control (
   assign cancel_ready_o = rst_ni && load_active_q && !executed_q && !cancel_q && !reload_pending_q && !reload_ack_q;
   assign admit_o = !(cancel_ready_o && cancel_valid_i) && rst_ni && !reload_pending_q && !reload_ack_q && !reload_valid_i && !cancel_q;
   assign clear_epoch_w = reload_pending_q && axi_idle_i && execution_drained_i &&
-      (executed_q ? (segment_done_i && !fault_i) : (!load_active_q || load_complete_i || cancel_q));
+      (executed_q ? ((segment_done_i && !fault_i) || (cancel_q && drained_bg_abort_i)) : (!load_active_q || load_complete_i || cancel_q));
   // Registered fault feedback avoids depending combinationally on the DMA
   // response it is cancelling. It only drops private responses; AR/R drain.
   assign cancel_transport_o = cancel_q;

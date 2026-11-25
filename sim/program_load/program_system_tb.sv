@@ -92,13 +92,23 @@ logic [1:0] mxm_fault_o;
 logic [1:0] sxm_fault_o;
 logic vxm_fault_o;
 logic [1:0] stream_conflict_o;
-lpu_top #(
+// This archived binary uses scalar AccumulatorRead (bit 44 clear).
+lpu_top #(.LEGACY_MXM(1), .LEGACY_VECTOR_ARRAY(0),
 .ENABLE_QCTL(PHASE_TEST), .PROGRAM_COMMAND_DEPTH(16), .PROGRAM_MEM_IMEM_DEPTH(16),
 .PROGRAM_MXM_IMEM_DEPTH(16), .MEM_DEPTH_ROWS(32), .ACTIVE_MEM_COLUMNS(4),
 .ENABLE_SXM_VXM_EXECUTION(1'b0), .PROGRAM_ACTIVE_CONTEXTS(2),
 .MXM_ACCUMULATOR_BLOCK_COUNT(1)
 ) dut (.dma_page_last_i(1'b0),.dma_page_event_tag_i('0),.dma_page_generation_i('0),.dma_page_mask_i('0),.dma_desc_valid_i(1'b0),.dma_desc_ready_o(),.dma_store_i(1'b0),.dma_hem_i(1'b0),
+ .dma_indexed_i(1'b0),.dma_index_addr_i('0),.dma_row_limit_i('0),
+ .expert_clear_i(1'b0),.expert_word_valid_i(1'b0),.expert_word_i('0),.expert_count_i('0),
+ .expert_segment_count_i('0),.expert_config_ready_o(),.expert_valid_i(1'b0),.expert_ready_o(),
+ .expert_id_i('0),.expert_bank_xor_i(1'b0),.expert_stream_mask_i('0),
+ .expert_done_o(),.expert_error_o(),.expert_done_ready_i(1'b0),
  .dma_bank_i('0),.dma_lane_i('0),.dma_row_i('0),.dma_addr_i('0),.dma_count_i('0),.dma_stride_i('0),.dma_tag_i('0),
+ .dma_bg_load_i('0),.dma_bg_cancel_i('0),.dma_bg_command_i('0),.dma_bg_epoch_i('0),.dma_bg_bank_mask_i('0),
+ .dma_bg_reject_o(),.dma_bg_cycle_o(),.dma_bg_image_o(),.dma_bg_wave_valid_o(),.dma_bg_wave_fire_o(),.dma_bg_resident_o(),
+ .dma_bg_retire_i('0),.dma_bg_retire_slot_i('0),.dma_bg_retire_page_i('0),.dma_bg_retire_epoch_i('0),.dma_bg_retire_ready_o(),
+ .dma_start_needs_page_i('0),.dma_start_slot_i('0),.dma_start_generation_i('0),.dma_start_page_i('0),
  .dma_busy_o(),.dma_result_valid_o(),.dma_result_error_o(),.dma_result_ready_i(1'b1),.dma_result_tag_o(),.dma_isolated_o(),
  .m_axi_awaddr_o(),.m_axi_awid_o(),.m_axi_awlen_o(),.m_axi_awsize_o(),.m_axi_awburst_o(),
  .m_axi_awvalid_o(),.m_axi_awready_i(1'b0),.m_axi_wvalid_o(),.m_axi_wready_i(1'b0),
@@ -181,8 +191,8 @@ always @(posedge clk_i)if(rst_ni)begin
    ck((PHASE_TEST ? ($time/10-phase_edge+2) : program_schedule_cycle_o)==40 && dut.local_mxm_compute_issue_instruction[0+:49]==MXM_RD,"MXM compute queue issue");
    mxm_seen++;issue_last=cycles;
  end
- if (|dut.u_fu_subsystems.gen_hemisphere[0].gen_mxm[0].u_mxm_subsystem.u_execution.accumulator_produced_valid) begin
-   ck(dut.u_fu_subsystems.gen_hemisphere[0].gen_mxm[0].u_mxm_subsystem.u_execution.accumulator_produced_data=='0,
+ if (|dut.u_fu_subsystems.gen_hemisphere[0].gen_mxm[0].g_legacy.u_mxm_subsystem.u_execution.accumulator_produced_valid) begin
+   ck(dut.u_fu_subsystems.gen_hemisphere[0].gen_mxm[0].g_legacy.u_mxm_subsystem.u_execution.accumulator_produced_data=='0,
       "legacy accumulator reset readback");
    mxm_rows++;
  end

@@ -3,6 +3,7 @@ module lpu_mxm_subsystem #(
 	parameter integer IMEM_DEPTH = 65536,
 	parameter integer ACTIVE_CONTEXTS = 4,
     parameter integer WEIGHT_BLOCKS = 4,
+    parameter bit STREAMING_VECTOR = 1,
 	parameter integer FU_QUEUE_DEPTH = 16,
 	parameter integer ACCUMULATOR_BLOCK_COUNT = lpu_pkg::MXM_ACCUMULATOR_BLOCK_COUNT,
 	parameter bit PAIR_LOAD_DEQUANT = 1'b0
@@ -10,6 +11,7 @@ module lpu_mxm_subsystem #(
 	input logic clk_i,
 	input logic rst_ni,
 	input logic program_reset_i,
+	input logic discard_partial_sums_i,
 	// Keep the legacy datapath powered between program segments: run_i here
 	// is the issue epoch, not an instruction to clear resident weights.
 	input logic execution_enable_i,
@@ -112,13 +114,12 @@ module lpu_mxm_subsystem #(
 	logic [$clog2(FU_QUEUE_DEPTH+1)-1:0] compute_queue_level;
 	logic coordinator_fault;
 	logic [2:0] coordinator_fault_code;
-	logic compute_width_invalid_w;
 	logic execution_load_valid;
 	logic [47:0] execution_load_instruction;
 	logic execution_dequant_valid;
 	logic [15:0] execution_dequant_instruction;
 	logic execution_compute_valid;
-	logic [47:0] execution_compute_instruction;
+	logic [48:0] execution_compute_instruction;
 	logic frontend_rst_ni;
 	logic [2:0] frontend_run;
 	logic [3*32-1:0] frontend_schedule_cycle;
@@ -259,7 +260,6 @@ module lpu_mxm_subsystem #(
 		.level_o(compute_queue_level), .fault_o(compute_queue_fault)
 	);
 
-	assign compute_width_invalid_w = local_compute_issue_valid_o && local_compute_issue_instruction_o[48];
 
 	lpu_mxm_local_coordinator u_coordinator (
 		.clk_i, .rst_ni, .run_i(run_i),
@@ -277,7 +277,7 @@ module lpu_mxm_subsystem #(
 		.load_issue_instruction_o(local_load_issue_instruction_o), .load_issue_cycle_o(local_load_issue_cycle_o),
 		.dequant_issue_valid_o(local_dequant_issue_valid_o), .dequant_issue_ready_i(1'b1),
 		.dequant_issue_instruction_o(local_dequant_issue_instruction_o), .dequant_issue_cycle_o(local_dequant_issue_cycle_o),
-		.compute_issue_valid_o(local_compute_issue_valid_o), .compute_issue_ready_i(!compute_width_invalid_w),
+		.compute_issue_valid_o(local_compute_issue_valid_o), .compute_issue_ready_i(1'b1),
 		.compute_issue_instruction_o(local_compute_issue_instruction_o), .compute_issue_cycle_o(local_compute_issue_cycle_o),
 		.fault_o(coordinator_fault), .fault_code_o(coordinator_fault_code)
 	);
@@ -286,14 +286,16 @@ module lpu_mxm_subsystem #(
 	assign execution_load_instruction = {{19{1'b0}}, local_load_issue_instruction_o};
 	assign execution_dequant_valid = local_dequant_issue_valid_o;
 	assign execution_dequant_instruction = local_dequant_issue_instruction_o;
-	assign execution_compute_valid = local_compute_issue_valid_o && !compute_width_invalid_w;
-	assign execution_compute_instruction = local_compute_issue_instruction_o[47:0];
+	assign execution_compute_valid = local_compute_issue_valid_o;
+	assign execution_compute_instruction = local_compute_issue_instruction_o;
 
 	lpu_mxm_slice #(
+        .TILES(WEIGHT_BLOCKS),
+        .STREAMING_VECTOR(STREAMING_VECTOR),
 		.LOCAL_MXM_INDEX(LOCAL_MXM_INDEX),
 		.ACCUMULATOR_BLOCK_COUNT(ACCUMULATOR_BLOCK_COUNT)
 	) u_execution (
-		.clk_i, .rst_ni, .run_i(execution_enable_i),
+		.clk_i, .rst_ni, .run_i(execution_enable_i), .discard_partial_sums_i,
 		.load_issue_valid_i(execution_load_valid), .load_issue_instruction_i(execution_load_instruction),
 		.dequant_issue_valid_i(execution_dequant_valid), .dequant_issue_instruction_i(execution_dequant_instruction),
 		.compute_issue_valid_i(execution_compute_valid), .compute_issue_instruction_i(execution_compute_instruction),

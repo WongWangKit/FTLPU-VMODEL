@@ -1,4 +1,4 @@
-module lpu_vxm_slice (
+module lpu_vxm_slice #(parameter integer TILES=4) (
   input  logic clk_i,
   input  logic rst_ni,
   input  logic run_i,
@@ -23,20 +23,20 @@ module lpu_vxm_slice (
   input  logic [15:0] lut_write_b_i,
   input  logic [49:0] lut_write_log_i,
 
-  input  logic [2*4*32-1:0]    west_from_mem_valid_i,
-  input  logic [2*4*32*64-1:0] west_from_mem_data_i,
-  input  logic [2*4*32-1:0]    external_east_valid_i,
-  input  logic [2*4*32*64-1:0] external_east_data_i,
-  output wire [2*4*32-1:0]     east_to_mem_valid_o,
-  output wire [2*4*32*64-1:0]  east_to_mem_data_o,
+  input  logic [2*TILES*32-1:0]    west_from_mem_valid_i,
+  input  logic [2*TILES*32*64-1:0] west_from_mem_data_i,
+  input  logic [2*TILES*32-1:0]    external_east_valid_i,
+  input  logic [2*TILES*32*64-1:0] external_east_data_i,
+  output wire [2*TILES*32-1:0]     east_to_mem_valid_o,
+  output wire [2*TILES*32*64-1:0]  east_to_mem_data_o,
 
+  output wire busy_o,
   output logic fault_o,
   output logic conflict_o
 );
   import lpu_pkg::*;
 
   localparam integer HEMISPHERES = 2;
-  localparam integer TILES       = 4;
   localparam integer BOUNDARY_CELLS = HEMISPHERES*TILES;
   localparam integer STREAMS     = lpu_pkg::STREAMS_PER_DIRECTION;
   localparam integer LANES       = lpu_pkg::LANES_PER_TILE;
@@ -96,7 +96,9 @@ module lpu_vxm_slice (
   logic execute_wave_fault;
   wire bridge_conflict;
 
-  lpu_vxm_control u_control (
+  wire ctrl_busy;
+  assign busy_o=!( &tile_idle) || (|tile_execute_wave_q) || ctrl_busy || global_issue_valid_i || (|local_issue_valid_i);
+  lpu_vxm_control #(.TILES(TILES)) u_control (.busy_o(ctrl_busy),
     .clk_i,
     .rst_ni,
     .datapath_idle_i((&tile_idle) && !(|tile_execute_wave_q)),

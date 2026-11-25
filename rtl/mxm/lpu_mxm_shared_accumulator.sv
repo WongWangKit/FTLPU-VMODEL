@@ -1,4 +1,5 @@
 module lpu_mxm_shared_accumulator #(
+  parameter integer BLOCKS=4,
   parameter integer ACCUMULATOR_BLOCK_COUNT =
     lpu_pkg::MXM_ACCUMULATOR_BLOCK_COUNT
 ) (
@@ -12,6 +13,8 @@ module lpu_mxm_shared_accumulator #(
   input  logic [5:0] write_stream_base_i,
   input  logic write_stream_destination_i,
   input  logic write_clear_i,
+  input  logic write_bf16_i,
+  input  logic [3:0] read_bf16_i,
   output logic write_ready_o,
   input  logic [3:0] read_row_valid_i,
   input  logic [4*48-1:0] read_row_instruction_i,
@@ -22,7 +25,7 @@ module lpu_mxm_shared_accumulator #(
 );
 `ifdef FTLPU_USE_SRAM128X512_MACRO
   lpu_mxm_shared_accumulator_macro #(
-    .ACCUMULATOR_BLOCK_COUNT(ACCUMULATOR_BLOCK_COUNT)
+    .BLOCKS(BLOCKS), .ACCUMULATOR_BLOCK_COUNT(ACCUMULATOR_BLOCK_COUNT)
   ) u_backend (.*);
 `else
   logic vector_write_ready;
@@ -62,13 +65,14 @@ module lpu_mxm_shared_accumulator #(
   // Cycle-compatible architectural reference backend. The macro build below
   // replaces this pair with one physically shared 128 KiB banked SRAM.
   lpu_mxm_accumulator #(
-    .ACCUMULATOR_BLOCK_COUNT(ACCUMULATOR_BLOCK_COUNT)
+    .BLOCKS(BLOCKS), .ACCUMULATOR_BLOCK_COUNT(ACCUMULATOR_BLOCK_COUNT)
   ) u_vector_reference (
     .clk_i, .rst_ni, .run_i,
     .write_valid_i(write_valid_i && !write_block_mode_i),
     .write_values_i(write_values_i[0 +: 32*32]),
     .write_address_i, .write_stream_base_i,
     .write_stream_destination_i, .write_clear_i,
+    .write_bf16_i, .read_bf16_i,
     .write_ready_o(vector_write_ready),
     .read_row_valid_i(vector_read_valid), .read_row_instruction_i,
     .west_valid_o(vector_west_valid), .west_data_o(vector_west_data),
@@ -76,12 +80,13 @@ module lpu_mxm_shared_accumulator #(
   );
 
   lpu_mxm_block_accumulator #(
-    .ACCUMULATOR_BLOCK_COUNT(ACCUMULATOR_BLOCK_COUNT)
+    .BLOCKS(BLOCKS), .ACCUMULATOR_BLOCK_COUNT(ACCUMULATOR_BLOCK_COUNT)
   ) u_block_reference (
-    .clk_i, .rst_ni, .run_i,
+    .clk_i, .rst_ni, .run_i, .discard_partial_sums_i(1'b0),
     .write_valid_i(write_valid_i && write_block_mode_i),
     .write_values_i, .write_address_i, .write_stream_base_i,
     .write_stream_destination_i, .write_clear_i,
+    .write_bf16_i, .read_bf16_i,
     .write_ready_o(block_write_ready),
     .read_row_valid_i(block_read_valid), .read_row_instruction_i,
     .west_valid_o(block_west_valid), .west_data_o(block_west_data),
@@ -91,6 +96,7 @@ module lpu_mxm_shared_accumulator #(
 endmodule
 
 module lpu_mxm_shared_accumulator_macro #(
+  parameter integer BLOCKS=4,
   parameter integer ACCUMULATOR_BLOCK_COUNT =
     lpu_pkg::MXM_ACCUMULATOR_BLOCK_COUNT
 ) (
@@ -104,6 +110,8 @@ module lpu_mxm_shared_accumulator_macro #(
   input  logic [5:0] write_stream_base_i,
   input  logic write_stream_destination_i,
   input  logic write_clear_i,
+  input  logic write_bf16_i,
+  input  logic [3:0] read_bf16_i,
   output logic write_ready_o,
   input  logic [3:0] read_row_valid_i,
   input  logic [4*48-1:0] read_row_instruction_i,
@@ -128,7 +136,7 @@ module lpu_mxm_shared_accumulator_macro #(
   } state_t;
 
   state_t state_q;
-  logic operation_write_q;
+  logic operation_write_q, operation_bf16_q;
   logic [1:0] operation_segment_q;
   logic [2:0] operation_row_bank_q;
   logic [1:0] operation_output_block_q;
@@ -274,13 +282,14 @@ module lpu_mxm_shared_accumulator_macro #(
       ? bank_stored_data[vector_bank] : selected_result_data;
     for (integer stream = 0; stream < 4*STREAMS; stream++) begin
       for (integer byte_index = 0; byte_index < 4; byte_index++) begin
-        if (output_active &&
+        if (output_active && (!operation_bf16_q || byte_index<2) &&
             stream == stream_output_block*STREAMS+
                       operation_stream_base_q+byte_index) begin
           west_valid_o[stream] = 1'b1;
           for (integer lane = 0; lane < LANES; lane++) begin
-            west_data_o[stream*64+lane*8 +: 8] =
-              output_values[lane*32+byte_index*8 +: 8];
+            if(operation_bf16_q)
+              west_data_o[stream*64+lane*8 +: 8] = fp32_to_bf16(output_values[lane*32+:32]) >> (8*byte_index);
+            else west_data_o[stream*64+lane*8 +: 8] = output_values[lane*32+byte_index*8 +: 8];
           end
         end
       end
@@ -326,6 +335,7 @@ module lpu_mxm_shared_accumulator_macro #(
         STATE_IDLE: begin
           if (write_valid_i && write_ready_o) begin
             operation_write_q <= 1'b1;
+            operation_bf16_q <= write_bf16_i;
             operation_segment_q <= '0;
             operation_row_bank_q <= write_address_i[2:0];
             operation_output_block_q <= '0;
@@ -341,6 +351,7 @@ module lpu_mxm_shared_accumulator_macro #(
             operation_segment_q <= read_output_block;
             operation_row_bank_q <= read_instruction[17:15];
             operation_output_block_q <= read_output_block;
+            operation_bf16_q <= read_bf16_i[read_output_block];
             operation_address_q <= read_instruction[27:15];
             operation_stream_base_q <= read_instruction[14:9];
             operation_stream_destination_q <= 1'b1;
@@ -373,7 +384,7 @@ module lpu_mxm_shared_accumulator_macro #(
         STATE_WRITE_DATA: begin
           if (!operation_write_q)
             state_q <= STATE_IDLE;
-          else if (operation_segment_q != 2'd3) begin
+          else if (operation_segment_q != BLOCKS-1) begin
             operation_segment_q <= operation_segment_q + 1'b1;
             state_q <= STATE_ISSUE_READ;
           end else

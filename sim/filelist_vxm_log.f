@@ -47,6 +47,8 @@ rtl/mxm/lpu_mxm_accumulator_sram.sv
 rtl/mxm/lpu_mxm_shared_accumulator.sv
 rtl/mxm/lpu_mxm_accumulator.sv
 rtl/mxm/lpu_mxm_block_accumulator.sv
+rtl/mxm/lpu_mxm_vector_acc_bank.sv
+rtl/mxm/lpu_mxm_vector_array.sv
 rtl/mxm/lpu_mxm_slice.sv
 rtl/sxm/lpu_sxm_control.sv
 rtl/sxm/lpu_sxm_slice.sv

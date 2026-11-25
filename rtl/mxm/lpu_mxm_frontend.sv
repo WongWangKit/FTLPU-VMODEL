@@ -50,7 +50,7 @@ module lpu_mxm_frontend #(
   wire [ROWS*COLS-1:0] cell_fault;
   wire [ROWS-1:0] weight_input_fault;
   logic input_fault_q;
-  lpu_mxm_control #(.ROWS(ROWS),.QUEUE_DEPTH(QUEUE_DEPTH)) u_control (
+  lpu_mxm_control #(.ROWS(ROWS),.MATRIX_COLUMNS(COLS*OUTPUTS),.QUEUE_DEPTH(QUEUE_DEPTH)) u_control (
     .clk_i,.rst_ni,.run_i,.compute_enqueue_valid_i,.compute_enqueue_ready_o,.compute_instruction_i,
     .compute_launch_i,.compute_launch_ready_o,.load_enqueue_valid_i,.load_enqueue_ready_o,.load_instruction_i,
     .load_launch_i,.load_launch_ready_o,.compute_row_valid_o,.compute_row_update_o(),
@@ -158,6 +158,6 @@ module lpu_mxm_frontend #(
             (|metadata_fault)) input_fault_q<=1;
   end
   assign fault_o=control_fault || dequant_control_fault || input_fault_q || (|cell_fault) || (|weight_input_fault);
-  initial if(ROWS<1 || COLS*OUTPUTS!=MATRIX_N || ROWS*TERMS!=MATRIX_K)
-    $fatal(1,"Frontend dimensions must match the configured instruction shape");
+  initial if(ROWS<1 || COLS<1 || TERMS!=CELL_K || OUTPUTS!=CELL_N)
+    $fatal(1,"Frontend requires 8x8 supercells");
 endmodule

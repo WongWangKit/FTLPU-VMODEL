@@ -8,6 +8,7 @@ targets={v:json.loads((vm.parent/f'FTLPU-CMODEL/config/ftlpu-lpu{v}-mixed.json')
 begin='  // BEGIN generated DMA mixed iMEM defaults';end='  // END generated DMA mixed iMEM defaults'
 lines=[begin]
 for field,section,key,legacy in [
+    ('mem_rows','mem','rows_per_bank',2048),
     ('mem_imem_depth','icu','mem_imem_depth',131072),
     ('mxm_imem_depth','icu','mxm_imem_depth',65536),
     ('program_response','program_load','response_fifo_depth',192),
@@ -25,4 +26,4 @@ else:
 if args.check:
  if s!=result:raise SystemExit('RTL defaults differ from mixed target JSON')
 else:p.write_text(result,encoding='utf8')
-print('mixed16/32: P/RT/Q and MEM/MXM elaboration constants match target JSON')
+print('mixed16/32: MEM rows, P/RT/Q and MEM/MXM elaboration constants match target JSON')

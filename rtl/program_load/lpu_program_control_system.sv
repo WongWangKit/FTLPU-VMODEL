@@ -89,8 +89,9 @@ module lpu_program_control_system #(
 	localparam logic [5:0] FRONTEND_FAULT_OFFSET = 6'd16;
 	// Descriptor admission checks each destination independently. The common
 	// reassembler must not re-apply the MEM depth to an admitted MXM image.
-	localparam integer TRANSPORT_IMEM_DEPTH =
-		MEM_IMEM_DEPTH > MXM_IMEM_DEPTH ? MEM_IMEM_DEPTH : MXM_IMEM_DEPTH;
+	localparam integer MACRO_DEPTH = MEM_IMEM_DEPTH > MXM_IMEM_DEPTH ? MEM_IMEM_DEPTH : MXM_IMEM_DEPTH;
+	localparam integer NATIVE_WORDS = 2*NATIVE_EVENT_DEPTH;
+	localparam integer TRANSPORT_IMEM_DEPTH = MACRO_DEPTH > NATIVE_WORDS ? MACRO_DEPTH : NATIVE_WORDS;
 
 	logic [1:0] command_hemisphere_w;
 	logic [7:0] command_local_queue_w;
@@ -104,6 +105,8 @@ module lpu_program_control_system #(
 	logic [3:0] mxm_load_target_seen_q;
 	logic [3:0] mxm_dequant_target_seen_q;
 	logic [3:0] mxm_compute_target_seen_q;
+	logic [31:0] native_target_seen_q;
+	wire [4:0] native_target_index={command_write_target_kind_i[2:0], command_write_global_queue_id_i[1:0]};
 
 	logic west_load_valid;
 	logic west_load_ready;
@@ -173,9 +176,9 @@ module lpu_program_control_system #(
 		command_target_valid_w = 1'b0;
 		case(command_write_target_kind_i)
 			PROGRAM_TARGET_MEM: begin
-				if(command_write_global_queue_id_i < lpu_pkg::MEM_BANK_COUNT)begin
+				if(command_write_global_queue_id_i < lpu_pkg::MEM_BANK_COUNT) begin
 					command_target_valid_w = 1'b1;
-					if(command_write_global_queue_id_i < lpu_pkg::MEM_BANKS_PER_HEMISPHERE)begin
+					if(command_write_global_queue_id_i < lpu_pkg::MEM_BANKS_PER_HEMISPHERE) begin
 						command_hemisphere_w = PROGRAM_HEMISPHERE_EAST;
 						command_local_queue_w = command_write_global_queue_id_i;
 					end
@@ -186,8 +189,15 @@ module lpu_program_control_system #(
 					end
 				end
 			end
-			PROGRAM_TARGET_MXM_LOAD,
-			PROGRAM_TARGET_MXM_DEQUANT,
+			PROGRAM_TARGET_SXM_TRANSPOSE, PROGRAM_TARGET_SXM_PERMUTE: begin
+				command_target_valid_w = command_write_global_queue_id_i < 2;
+				command_hemisphere_w = command_write_global_queue_id_i[0] ? PROGRAM_HEMISPHERE_WEST : PROGRAM_HEMISPHERE_EAST;
+				command_local_queue_w = 0;
+			end
+			PROGRAM_TARGET_VXM: command_target_valid_w = command_write_global_queue_id_i == 0;
+			PROGRAM_NATIVE_WEIGHT, PROGRAM_NATIVE_PARAM, PROGRAM_NATIVE_DEQUANT,
+			PROGRAM_NATIVE_COMPUTE, PROGRAM_NATIVE_BACKEND,
+			PROGRAM_TARGET_MXM_LOAD, PROGRAM_TARGET_MXM_DEQUANT,
 			PROGRAM_TARGET_MXM_COMPUTE: begin
 				if(command_write_global_queue_id_i < 2*MXMS_PER_HEMISPHERE)begin
 					command_target_valid_w = 1'b1;
@@ -208,7 +218,12 @@ module lpu_program_control_system #(
 	assign command_write_fire = command_write_valid_i && command_write_ready_o;
 	assign descriptor_invalid_w = command_write_fire &&
 		(command_write_opcode_i == PROGRAM_LOADER_LOAD_IMEM) &&
-		(!command_target_valid_w || (command_write_encoding_mode_i != PROGRAM_ENCODING_MACRO) ||
+		(!command_target_valid_w ||
+		 (command_write_target_kind_i >= PROGRAM_TARGET_VXM ?
+		   (command_write_encoding_mode_i != PROGRAM_ENCODING_NATIVE || command_write_format_i != PROGRAM_FORMAT_128 ||
+		    command_write_imem_base_address_i != 0 || command_write_byte_count_i[4:0]!=0 ||
+		    command_write_byte_count_i > 32*NATIVE_EVENT_DEPTH || command_write_expected_word_count_i != command_write_byte_count_i/16) :
+		   (command_write_encoding_mode_i != PROGRAM_ENCODING_MACRO)) ||
 		 (command_write_byte_count_i == 0) ||
 		 ((command_write_target_kind_i == PROGRAM_TARGET_MEM) &&
 		  ((command_write_format_i != PROGRAM_FORMAT_96) ||
@@ -231,7 +246,7 @@ module lpu_program_control_system #(
 				PROGRAM_TARGET_MXM_LOAD: descriptor_duplicate_w = mxm_load_target_seen_q[command_write_global_queue_id_i[1:0]];
 				PROGRAM_TARGET_MXM_DEQUANT: descriptor_duplicate_w = mxm_dequant_target_seen_q[command_write_global_queue_id_i[1:0]];
 				PROGRAM_TARGET_MXM_COMPUTE: descriptor_duplicate_w = mxm_compute_target_seen_q[command_write_global_queue_id_i[1:0]];
-				default: descriptor_duplicate_w = 1'b0;
+				default: descriptor_duplicate_w = native_target_seen_q[native_target_index];
 			endcase
 		end
 	end
@@ -391,6 +406,7 @@ module lpu_program_control_system #(
 			mxm_load_target_seen_q <= '0;
 			mxm_dequant_target_seen_q <= '0;
 			mxm_compute_target_seen_q <= '0;
+			native_target_seen_q <= '0;
 		end
 		else if(program_reset_i)begin
 			descriptor_fault_q <= 1'b0;
@@ -398,6 +414,7 @@ module lpu_program_control_system #(
 			mxm_load_target_seen_q <= '0;
 			mxm_dequant_target_seen_q <= '0;
 			mxm_compute_target_seen_q <= '0;
+			native_target_seen_q <= '0;
 		end
 		else begin
 			if(descriptor_invalid_w || descriptor_duplicate_w)begin
@@ -410,7 +427,7 @@ module lpu_program_control_system #(
 					PROGRAM_TARGET_MXM_LOAD: mxm_load_target_seen_q[command_write_global_queue_id_i[1:0]] <= 1'b1;
 					PROGRAM_TARGET_MXM_DEQUANT: mxm_dequant_target_seen_q[command_write_global_queue_id_i[1:0]] <= 1'b1;
 					PROGRAM_TARGET_MXM_COMPUTE: mxm_compute_target_seen_q[command_write_global_queue_id_i[1:0]] <= 1'b1;
-					default: mem_target_seen_q <= mem_target_seen_q;
+					default: native_target_seen_q[native_target_index] <= 1'b1;
 				endcase
 			end
 		end
