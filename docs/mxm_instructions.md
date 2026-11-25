@@ -19,7 +19,7 @@ FP32累加器、两个单端口Bank及可选BF16输出。旧 `lpu_top` 仍使用
 
 ### 计算队列：7位
 
-定义见 `rtl/mxm/lpu_mxm_isa_pkg.sv` 的 `compute_instruction_t`。
+定义见 `rtl/icu/icu_mxm/lpu_mxm_isa_pkg.sv` 的 `compute_instruction_t`。
 
 | 位域 | 字段 | 含义 |
 |---|---|---|
