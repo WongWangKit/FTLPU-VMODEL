@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-module native_chain_tb #(parameter integer PROBE_BYTES=32,parameter bit PROBE_PRODUCT_GEOMETRY=0);
+module native_chain_tb #(parameter integer PROBE_BYTES=32,parameter bit TAP_TEST=0,parameter bit PROBE_PRODUCT_GEOMETRY=0);
 import lpu_program_load_pkg::*;
 
 localparam PROGRAM_COMMAND_DEPTH=32, PROGRAM_COMMAND_ADDRESS_WIDTH=5, PROGRAM_DMA_DATA_WIDTH=8*PROBE_BYTES;
@@ -96,7 +96,7 @@ lpu_top #(
 .T(PROBE_BYTES/8),.ENABLE_QCTL(0), .PROGRAM_COMMAND_DEPTH(32),
 .PROGRAM_MEM_IMEM_DEPTH(PROBE_PRODUCT_GEOMETRY?lpu_pkg::dma_mixed_mem_imem_depth(PROBE_BYTES):16),
 .PROGRAM_MXM_IMEM_DEPTH(PROBE_PRODUCT_GEOMETRY?lpu_pkg::dma_mixed_mxm_imem_depth(PROBE_BYTES):16),
-.MEM_DEPTH_ROWS(PROBE_PRODUCT_GEOMETRY?0:32), .ACTIVE_MEM_COLUMNS(PROBE_PRODUCT_GEOMETRY?52:4),
+.MEM_DEPTH_ROWS(PROBE_PRODUCT_GEOMETRY?0:32), .ACTIVE_MEM_COLUMNS(PROBE_PRODUCT_GEOMETRY?52:(TAP_TEST?16:4)),
 .ENABLE_SXM_VXM_EXECUTION(1'b1), .PROGRAM_ACTIVE_CONTEXTS(2),
 .MXM_ACCUMULATOR_BLOCK_COUNT(1)
 ) dut (.dma_page_last_i(1'b0),.dma_page_event_tag_i('0),.dma_page_generation_i('0),.dma_page_mask_i('0),.dma_desc_valid_i(1'b0),.dma_desc_ready_o(),.dma_store_i(1'b0),.dma_hem_i(1'b0),
@@ -125,11 +125,36 @@ logic [255:0] external_ddr[0:65535];
 task automatic event_at(input int k,cy,input logic [127:0] payload,input logic [31:0] aux=0);
  ddr[k*64+n[k]]={64'b0,aux,32'(cy),payload};n[k]++;
 endtask
+bit macro_test;bit tap_fp32,tap_drop;
+function automatic [31:0] test_value(input int row,col);
+ return 32'h56781200+32'(row*32+col)*259;
+endfunction
+function automatic [255:0] macro_beat(input int k);
+ int kind,pos,nb; logic [127:0] bits;
+ kind=k==7?0:k==8?3:k==9?2:k==10?1:4;
+ nb=lpu_mxm_isa_pkg::macro_native_bits(kind);
+ bits=128'(ddr[k*64][159:128])<<3; // empty dictionary, absolute cycle, operand 0
+ pos=3+32+lpu_mxm_isa_pkg::macro_operand_bits(kind)+2; // single run, compact template
+ bits|=128'(ddr[k*64][127:0])<<pos;
+ if(n[k]>1)begin bits|=128'(1)<<(pos+nb);bits|=128'(n[k]-1)<<(pos+nb+4);end
+ if(k==9 && $test$plusargs("STREAM_MXM"))begin
+   // Four contexts of eight consecutive issues. Two fit before START.
+   // Dictionary[0] advances the absolute start by eight, leaving the operand fixed.
+   bits=128'd1 | (128'd8<<3) | (128'(L)<<39) | (128'd1<<72) | (128'd3<<73) | (128'd1<<91) | (128'd7<<95);
+   return {bits,128'h45};
+ end
+ return {bits,128'h15};
+endfunction
 task automatic cmd(input int op,k);
  @(negedge clk_i);program_command_write_valid_i=1;program_command_write_address_i=5'(ix++);program_command_write_opcode_i=3'(op);
  program_command_write_source_address_i=64'(k*2048);program_command_write_byte_count_i=32*n[k];
  program_command_write_target_kind_i=4'(k);program_command_write_format_i=PROGRAM_FORMAT_128;
  program_command_write_image_first_i=1;program_command_write_image_last_i=1;program_command_write_expected_word_count_i=2*n[k];
+ if(macro_test && k>=7)begin
+   program_command_write_target_kind_i=k==7?1:k==8?7:k==9?2:k==10?3:8;
+   program_command_write_encoding_mode_i=0;
+   program_command_write_byte_count_i=32;program_command_write_expected_word_count_i=2;
+ end else program_command_write_encoding_mode_i=1;
  if(file_probe)begin
    program_command_write_source_address_i=0;program_command_write_target_kind_i=image_kind;
    program_command_write_global_queue_id_i=image_q;program_command_write_byte_count_i=image_bytes;
@@ -149,7 +174,7 @@ always @(negedge clk_i)if(rst_ni)begin
  if(afire)begin addr=int'(araddr/PROBE_BYTES);beats=arlen+1;m_axi_rid_i=arid;if(file_probe)file_ar++;end
  m_axi_arready_i=(beats==0);
  if(beats>0)begin m_axi_rvalid_i=1;m_axi_rlast_i=beats==1;m_axi_rdata_i=file_probe?
-   (external_ddr[addr/(32/PROBE_BYTES)] >> ((addr%(32/PROBE_BYTES))*8*PROBE_BYTES)):ddr[addr];end
+   (external_ddr[addr/(32/PROBE_BYTES)] >> ((addr%(32/PROBE_BYTES))*8*PROBE_BYTES)):(macro_test && addr/64>=7?macro_beat(addr/64):ddr[addr]);end
 end
 
 always @(posedge clk_i)begin afire=m_axi_arvalid_o&&m_axi_arready_i;rfire=m_axi_rvalid_i&&m_axi_rready_o;
@@ -219,6 +244,15 @@ mem_west_edge_data_i='0;
    $display("ADMITTED remote VXM queue; no partial START");$finish;
  end
 
+ macro_test=$test$plusargs("MACRO_MXM");
+ tap_fp32=$test$plusargs("FP32");tap_drop=$test$plusargs("DROP_PLANE");
+ if(TAP_TEST)begin
+   for(int t=0;t<4;t++)begin w=t+((tap_fp32?3-t:t)<<3);
+     for(int l=0;l<8;l++)w[6+3*l+:3]=3'(tap_fp32?(3*l+1)%8:l);
+     event_at(5,1+t,w,32'h40);
+   end
+   event_at(5,6,128'd16+(128'd1<<15)+(128'(tap_fp32)<<31),32'h41);
+ end else begin
  event_at(7,L,0);event_at(8,P,0);for(int i=0;i<32;i++)event_at(9,L+i,0);
  event_at(10,C,8);event_at(11,B,4096);
  w=0;w[112]=1;for(int j=0;j<16;j++)w[6*j+:6]=6'(j);event_at(5,1,w,1);
@@ -233,16 +267,28 @@ mem_west_edge_data_i='0;
  for(int t=0;t<4;t++)event_at(6,RUN+t,(128'(1)<<(32+t))+(128'(2)<<53)+(128'(1)<<69));
  vf='0;vf.compute_dtype=lpu_pkg::VXM_FORMAT_BF16;vf.lhs_dtype=lpu_pkg::VXM_FORMAT_BF16;
  vf.rhs_dtype=lpu_pkg::VXM_FORMAT_BF16;
+ event_at(4,2,128'd3+(128'hbc00<<2)+(128'h3c00<<18),1);
+ event_at(4,3,128'd3+(128'd13<<2)+(128'h3123456789abc<<40),2);
  event_at(4,10,(128'(vf)<<65)+(128'(1)<<64));
  event_at(4,RUN,3+(4<<8)); // Q0 negate, Q1 bypass
- for(int k=4;k<=11;k++)begin cmd(PROGRAM_LOADER_LOAD_IMEM,k);cmd(PROGRAM_LOADER_WAIT_DMA,k);cmd(PROGRAM_LOADER_COMMIT_QUEUE,k);end
+ end
+ for(int k=4;k<=11;k++)if(n[k]>0)begin cmd(PROGRAM_LOADER_LOAD_IMEM,k);cmd(PROGRAM_LOADER_WAIT_DMA,k);cmd(PROGRAM_LOADER_COMMIT_QUEUE,k);end
  cmd(PROGRAM_LOADER_END,0);
  @(negedge clk_i);program_load_start_valid_i=1;program_load_start_command_count_i=ix;
  do @(posedge clk_i);while(!program_load_start_ready_o);
  @(negedge clk_i);program_load_start_valid_i=0;wait(program_ready_o);
  @(negedge clk_i);program_dependencies_ready_i=1;program_start_request_i=1;
  wait(program_start_ack_o);@(negedge clk_i);program_start_request_i=0;
- wait(program_done_o);if(results!=4)$fatal(1,"missing VXM vectors %d",results);
+ wait(program_done_o);
+ if(TAP_TEST)begin
+   if(dut.u_fu_subsystems.gen_hemisphere[0].gen_sxm_execution.u_sxm_subsystem.committed_segments!==(tap_fp32?512:256))
+     $fatal(1,"WriteTap completion count");
+   @(negedge clk_i);#1;
+   $display("PASS top WriteTap: AXI image -> SXM ICU -> transpose -> SRF -> MEM, 1024 elements, %0d byte planes checked",tap_fp32?4:2);$finish;
+ end
+ @(negedge clk_i);
+ if(results!=4)$fatal(1,"missing VXM vectors %d",results);
+ if(macro_test)$display("PASS all five packed MXM queues: same issue cycles, SRF values and VXM results as native events");
  $display("PASS native chain: 4 tiles x 8 lanes reached the opposite top-level SRF boundary");$finish;
 end
 function automatic logic [15:0] bf(input integer val);
@@ -250,7 +296,17 @@ function automatic logic [15:0] bf(input integer val);
 endfunction
 always @(negedge clk_i)begin
  mem_east_edge_valid_i=0;mem_west_edge_valid_i=0;
- if(program_running_o)for(int t=0;t<4;t++)begin
+ if(TAP_TEST && program_running_o)begin
+   for(int t=0;t<4;t++)begin
+     int row;row=int'(program_schedule_cycle_o)-7-t;
+     if(row>=0 && row<32)begin
+       for(int b=0;b<(tap_fp32?4:2);b++)begin
+         mem_west_edge_valid_i[t*32+b]=!(tap_drop && t==0 && row==0 && b==1);
+         for(int l=0;l<8;l++)mem_west_edge_data_i[(t*32+b)*64+8*l+:8]=8'(test_value(row,t*8+l)>>(8*b));
+       end
+     end
+   end
+ end else if(program_running_o)for(int t=0;t<4;t++)begin
  int c,j; c=int'(program_schedule_cycle_o);j=c+17-(L+1+3*t);
  if(c+17==P+1+3*t)begin
  mem_east_edge_valid_i[t*32+1+:3]=7;mem_east_edge_data_i[(t*32+1)*64+:192]={64'd0,{8{8'h3f}},{8{8'h80}}};end
@@ -264,12 +320,35 @@ end
 `define H dut.u_fu_subsystems.gen_hemisphere[0]
 `define V dut.u_fu_subsystems.gen_vxm_execution.u_vxm_subsystem.u_execution
 `define M `H.gen_mxm[0].g_native.u_execution.u_core
+// Inspect the RAM after the program drains, independently of the writer's accounting.
+if(TAP_TEST)for(genvar g=0;g<4;g++)for(genvar b=0;b<8;b++)for(genvar t=0;t<4;t++)begin:g_check_ram
+  wire [63:0] rows[0:5];
+  for(genvar r=0;r<6;r++)
+    assign rows[r]=`H.u_mem_subsystem.u_native_mem.u_mem.gen_group[3-g].u_group.gen_slice[b/2].u_slice.gen_bank[b%2].u_logical_bank.gen_leaf[t].u_leaf.mem_array[15+r];
+  always @(posedge program_done_o)begin
+    int bytes,st;logic [63:0] expected;
+    bytes=tap_fp32?4:2;st=g*8+b;
+    for(int r=0;r<6;r++)begin
+      expected=0;
+      if(r>=1 && r<=4 && st<8*bytes)for(int l=0;l<8;l++)
+        expected[8*l+:8]=8'(test_value(8*(tap_fp32?3-t:t)+(tap_fp32?(3*l+1)%8:l),(r-1)*8+st/bytes)>>(8*(st%bytes)));
+      if(rows[r]!==expected)$fatal(1,"MEM WriteTap group=%0d bank=%0d tile=%0d row=%0d got=%h expected=%h",g,b,t,15+r,rows[r],expected);
+    end
+  end
+end
+for(genvar t=0;t<4;t++)for(genvar l=0;l<8;l++)begin:g_check_lut
+  always @(posedge program_done_o)if(!TAP_TEST)begin
+    if(`V.gen_lut_tile[t].u_tile_lut.g_function[3].g_lane_sram[l].u_sram.coefficient_memory[13]!==50'h3123456789abc ||
+       !`V.tile_lut_configured[t*4+3] || `V.tile_lut_input_min[(t*4+3)*16+:16]!==16'hbc00 ||
+       `V.tile_lut_segment_width[(t*4+3)*16+:16]!==16'h3c00)$fatal(1,"LUT programming tile=%0d lane=%0d",t,l);
+  end
+end
 // Golden SRF contents, independent of the DUT's interconnect or producer valids.
 // bin is the edge on which the corresponding external input was supplied.
 for(genvar h=0;h<2;h++)begin:check_hem_srf
  wire [4095:0] valid=dut.u_fu_subsystems.gen_hemisphere[h].u_mem_subsystem.u_native_mem.state_valid_o;
  wire [262143:0] data=dut.u_fu_subsystems.gen_hemisphere[h].u_mem_subsystem.u_native_mem.state_data_o;
- always @(posedge clk_i)if(program_running_o)begin
+ always @(posedge clk_i)if(!TAP_TEST && program_running_o)begin
   int c,idx,bin,shift;logic [31:0] mask; logic [63:0] segment; logic [15:0] value;
   c=int'(program_schedule_cycle_o);
   for(int dir=0;dir<2;dir++)for(int col=0;col<16;col++)for(int t=0;t<4;t++)begin
@@ -311,7 +390,7 @@ always @(posedge clk_i)if(program_running_o || program_start_ack_o)begin
    next_push[k]++;
  end
 end
-always @(posedge clk_i)if(program_running_o)begin
+always @(posedge clk_i)if(!TAP_TEST && program_running_o)begin
  int c;logic [12:0] expected_issue;
  c=int'(program_schedule_cycle_o);
  expected_issue='0;
@@ -387,18 +466,23 @@ always @(posedge clk_i)if(program_running_o)begin
   end
  end
 end
-always @(posedge clk_i)if(rst_ni && (program_fault_o || dut.data_fault))$fatal(1,"fault %0d at %0d: mem=%h mxm=%b sxm=%b vxm=%b clash=%b",program_fault_code_o,program_schedule_cycle_o,mem_fault_o,mxm_fault_o,sxm_fault_o,vxm_fault_o,stream_conflict_o);
+always @(posedge clk_i)if(rst_ni && (program_fault_o || dut.data_fault))begin
+ if(TAP_TEST && tap_drop && sxm_fault_o===2'b01 && program_fault_o && program_fault_code_o==20 &&
+    program_schedule_cycle_o==8 && !program_done_o && `H.gen_sxm_execution.u_sxm_subsystem.committed_segments==0)begin
+   $display("PASS missing high byte plane at cycle 7: SXM and top fault at cycle 8, zero MEM commits");$finish;
+ end else $fatal(1,"fault %0d at %0d: mem=%h mxm=%b sxm=%b vxm=%b clash=%b",program_fault_code_o,program_schedule_cycle_o,mem_fault_o,mxm_fault_o,sxm_fault_o,vxm_fault_o,stream_conflict_o);
+end
 always @(posedge clk_i) if(file_probe && rst_ni)begin
  if(program_command_write_ready_o && program_command_write_valid_i && program_command_write_opcode_i==PROGRAM_LOADER_LOAD_IMEM)
    $display("REMOTE_DESCRIPTOR bytes=%0d word=%0d mode=%0d AR=%0d",image_bytes,image_word,program_command_write_encoding_mode_i,file_ar);
  if(program_fault_o)
    $display("REMOTE_FAULT code=%0d edge=%0t ar=%0d schedule=%0d",program_fault_code_o,$time,file_ar,program_schedule_cycle_o);
- if(dut.u_fu_subsystems.g_native_sched[0].g_queue[2].u_calendar.write_i)
+ if(dut.u_fu_subsystems.g_native_sched[0].g_queue[2].g_icu.u_issue_frontend.write_i)
    $display("REMOTE_VXM_WRITE edge=%0t addr=%0d strb=%h data=%h",$time,
-    dut.u_fu_subsystems.g_native_sched[0].g_queue[2].u_calendar.addr_i,
-    dut.u_fu_subsystems.g_native_sched[0].g_queue[2].u_calendar.strb_i,
-    dut.u_fu_subsystems.g_native_sched[0].g_queue[2].u_calendar.data_i);
- if(dut.u_fu_subsystems.g_native_sched[0].g_queue[2].u_calendar.fault_o)
+    dut.u_fu_subsystems.g_native_sched[0].g_queue[2].g_icu.u_issue_frontend.addr_i,
+    dut.u_fu_subsystems.g_native_sched[0].g_queue[2].g_icu.u_issue_frontend.strb_i,
+    dut.u_fu_subsystems.g_native_sched[0].g_queue[2].g_icu.u_issue_frontend.data_i);
+ if(dut.u_fu_subsystems.g_native_sched[0].g_queue[2].g_icu.u_issue_frontend.fault_o)
    $fatal(1,"REMOTE_VXM_REJECT edge=%0t ar_accepted=%0d starts=0",$time,file_ar);
 end
 initial begin #100000;$fatal(1,"timeout");end

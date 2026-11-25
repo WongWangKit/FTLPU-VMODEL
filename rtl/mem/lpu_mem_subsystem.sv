@@ -1,4 +1,5 @@
 module lpu_mem_subsystem #(
+	parameter bit HAS_WRITETAP=0,
 	parameter integer PACKED_MEM_ROW_BITS = 13,
 	parameter integer DMA_TILES = 4,
 	parameter integer IMEM_DEPTH = 131072,
@@ -7,7 +8,15 @@ module lpu_mem_subsystem #(
 	parameter integer DEPTH_ROWS = 2048,
 	parameter integer ACTIVE_COLUMNS = 52
 ) (
-	input logic clk_i,
+	input wire [31:0] wt_cmd_valid_i,
+    input wire [1023:0] wt_cmd_i,
+    input wire [DMA_TILES*32-1:0] wt_valid_i,
+    input wire [DMA_TILES*2048-1:0] wt_data_i,
+    input wire [4*DMA_TILES-1:0] wt_target_i,
+    output wire [DMA_TILES*32-1:0] wt_sample_valid_o,
+    output wire [31:0] wt_foreign_cmd_o,
+    output wire [3:0] wt_busy_o,wt_fault_o,
+    input logic clk_i,
 	input logic rst_ni,
 	input logic dma_req_i,dma_write_i,input logic [6:0] dma_bank_i,input logic [4:0] dma_stream_i,
 	input logic [14:0] dma_row_i,input logic [64*DMA_TILES-1:0] dma_wdata_i,
@@ -211,8 +220,27 @@ module lpu_mem_subsystem #(
     logic [ACTIVE_BANKS*32-1:0] bank_inst;
     logic [T*32-1:0] wave_valid,ev,wv;
     logic [T*32*64-1:0] wave_data,ed,wd;
-    for(genvar k=0;k<ACTIVE_BANKS;k++)
+    wire [ACTIVE_BANKS-1:0] bank_valid,bank_clash;
+    for(genvar k=0;k<ACTIVE_BANKS;k++)begin:g_bank_mux
+      localparam WG=(ACTIVE_BANKS-1-k)/8;
+      localparam Q=WG*8+k%8;
+      wire native_valid=wave_cmd[k] || execution_issue_valid[k];
+      if(HAS_WRITETAP && WG<4)begin
+        assign bank_clash[k]=wt_cmd_valid_i[Q] && native_valid;
+        assign bank_valid[k]=(wt_cmd_valid_i[Q] || native_valid) && !bank_clash[k];
+        assign bank_inst[k*32+:32]=wt_cmd_valid_i[Q]?wt_cmd_i[Q*32+:32]:
+                                   wave_cmd[k]?wave_inst:execution_issue_instruction[k*32+:32];
+      end else begin
+        assign bank_clash[k]=0;
+        assign bank_valid[k]=native_valid;
         assign bank_inst[k*32+:32]=wave_cmd[k]?wave_inst:execution_issue_instruction[k*32+:32];
+      end
+    end
+    for(genvar q=0;q<32;q++)begin:g_wt_foreign
+      localparam B=ACTIVE_BANKS-(q/8+1)*8+q%8;
+      if(HAS_WRITETAP && B>=0)assign wt_foreign_cmd_o[q]=wave_cmd[B] || execution_issue_valid[B];
+      else assign wt_foreign_cmd_o[q]=0;
+    end
     assign east_edge_valid_o=ev;assign west_edge_valid_o=wv;
     assign east_edge_data_o=ed;assign west_edge_data_o=wd;
     lpu_dma_mem_wave #(.T(T),.F(ACTIVE_COLUMNS)) u_mem_wave(
@@ -236,13 +264,14 @@ module lpu_mem_subsystem #(
         for (integer b=ACTIVE_BANKS;b<QUEUE_COUNT;b++)
             mem_fault_o[b] = execution_issue_valid[b];
     end
-    assign conflict_o = (|srf_collision) || (|internal_collision) ||
+    assign conflict_o = (|bank_clash) || (|srf_collision) || (|internal_collision) ||
         (|(wave_cmd & execution_issue_valid[ACTIVE_BANKS-1:0]));
     lpu_mem_srf_integration #(
-        .HAS_FU_RETURN(1), .MEM_SLICES(ACTIVE_COLUMNS), .MEM_DEPTH_ROWS(DEPTH_ROWS),.SUPERLANES(T)
+        .HAS_WRITETAP(HAS_WRITETAP),.HAS_FU_RETURN(1), .MEM_SLICES(ACTIVE_COLUMNS), .MEM_DEPTH_ROWS(DEPTH_ROWS),.SUPERLANES(T)
     ) u_native_mem (
         .clk_i, .rst_ni,
-        .bank_issue_valid_i(execution_issue_valid[ACTIVE_BANKS-1:0]|wave_cmd),
+        .wt_valid_i,.wt_data_i,.wt_target_i,.wt_sample_valid_o,.wt_busy_o,.wt_fault_o,
+        .bank_issue_valid_i(bank_valid),
         .bank_issue_i(bank_inst),
         .fu_return_valid_i(west_edge_valid_i[T*32-1:0]),.fu_return_data_i(west_edge_data_i[T*32*64-1:0]),
         .boundary_valid_i({wave_valid,east_edge_valid_i[T*32-1:0]}),

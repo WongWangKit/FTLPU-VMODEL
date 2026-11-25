@@ -101,7 +101,7 @@ module lpu_program_load_distributor #(
 	assign east_required_w = (head_target_kind == PROGRAM_TARGET_VXM) ||
 		(head_hemisphere == PROGRAM_HEMISPHERE_EAST) || (head_hemisphere == PROGRAM_HEMISPHERE_BOTH);
 	assign route_invalid_w = head_valid && ((head_hemisphere > PROGRAM_HEMISPHERE_BOTH) ||
-		(head_target_kind > PROGRAM_NATIVE_BACKEND));
+		(head_target_kind > PROGRAM_MACRO_BACKEND));
 	assign west_valid_o = head_valid && west_required_w && !west_done_q && !fault_q && !route_invalid_w;
 	assign east_valid_o = head_valid && east_required_w && !east_done_q && !fault_q && !route_invalid_w;
 	assign west_fire = west_valid_o && west_ready_i;

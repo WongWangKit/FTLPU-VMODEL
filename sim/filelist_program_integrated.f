@@ -11,6 +11,7 @@ rtl/program_load/lpu_program_epoch_control.sv
 rtl/program_load/lpu_program_axi_read.sv
 rtl/program_load/lpu_program_loader.sv
 rtl/program_load/lpu_program_config_fifo.sv
+rtl/icu/lpu_fifo.sv
 rtl/program_load/lpu_instruction_dma.sv
 rtl/program_load/lpu_program_reassembler.sv
 rtl/program_load/lpu_program_word_fifo.sv
@@ -21,7 +22,13 @@ rtl/program_load/lpu_program_control_system.sv
 rtl/mxm/lpu_mxm_config_pkg.sv
 rtl/mxm/lpu_mxm_backend_isa_pkg.sv
 rtl/mxm/lpu_mxm_isa_pkg.sv
-rtl/program_load/lpu_native_issue_calendar.sv
+rtl/icu/lpu_sram.sv
+rtl/icu/lpu_slice_imem.sv
+rtl/icu/lpu_slice_imem_fetch.sv
+rtl/icu/lpu_five_macro_decoder_core.sv
+rtl/icu/lpu_five_macro_scheduler_core.sv
+rtl/icu/lpu_five_macro_frontend.sv
+rtl/icu/lpu_slice_issue_frontend.sv
 rtl/icu/lpu_qctl_pkg.sv
 rtl/icu/lpu_qctl_event_buffer.sv
 rtl/icu/lpu_qctl_shared_pool.sv
@@ -55,6 +62,9 @@ rtl/sxm_native/sxm_compat_decode.sv
 rtl/sxm_native/sxm_compat_engine.sv
 rtl/sxm_native/sxm_triangle_core.sv
 rtl/sxm_native/sxm_triangle_full_core.sv
+rtl/integration/lpu_sxm_triangle_mem_adapter.sv
+rtl/integration/lpu_sxm_writetap_completion.sv
+rtl/integration/sxm_triangle_writetap_core.sv
 rtl/sxm/lpu_sxm_subsystem.sv
 rtl/mxm/lpu_mxm_command_queue.sv
 rtl/mxm/lpu_mxm_instruction_wave.sv

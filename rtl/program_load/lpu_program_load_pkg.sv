@@ -37,7 +37,8 @@ package lpu_program_load_pkg;
 		PROGRAM_TARGET_SXM_PERMUTE = 4'd6,
 		PROGRAM_NATIVE_WEIGHT = 4'd7, PROGRAM_NATIVE_PARAM = 4'd8,
 		PROGRAM_NATIVE_DEQUANT = 4'd9, PROGRAM_NATIVE_COMPUTE = 4'd10,
-		PROGRAM_NATIVE_BACKEND = 4'd11
+		PROGRAM_NATIVE_BACKEND = 4'd11,
+		PROGRAM_MACRO_PARAM = 4'd12, PROGRAM_MACRO_BACKEND = 4'd13
 	} lpu_program_target_kind_e;
 
 	// Program Load controls manage local iMEM state. They are not FU instruction opcodes.

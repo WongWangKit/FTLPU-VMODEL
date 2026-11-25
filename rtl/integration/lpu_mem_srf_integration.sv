@@ -6,7 +6,7 @@
 // owns all stream state; MEM only observes current boundary state and produces
 // consume/inject candidates.  MEM uses two independent local candidate slots (Q06=A).
 module lpu_mem_srf_integration #(
-  parameter bit HAS_FU_RETURN = 0,
+  parameter bit HAS_FU_RETURN = 0, HAS_WRITETAP = 0,
   parameter integer MEM_SLICES           = 52,
   parameter integer MEM_SLICES_PER_GROUP = 4,
   parameter integer MEM_DEPTH_ROWS       = 32768,
@@ -26,6 +26,12 @@ module lpu_mem_srf_integration #(
 ) (
   input  logic clk_i,
   input  logic rst_ni,
+
+  input wire [T*32-1:0] wt_valid_i,
+  input wire [T*2048-1:0] wt_data_i,
+  input wire [4*T-1:0] wt_target_i,
+  output wire [32*T-1:0] wt_sample_valid_o,
+  output wire [3:0] wt_busy_o,wt_fault_o,
 
   // Native MEM command issue interface: one 32-bit command per {slice,bank}.
   input  logic [F*2-1:0]    bank_issue_valid_i,
@@ -91,6 +97,19 @@ module lpu_mem_srf_integration #(
   logic [SRF_INJECT_CELLS*SEGMENT_BITS-1:0] srf_inject_data;
   logic [SRF_CONSUME_CELLS-1:0] srf_consume;
 
+  for(genvar g=0;g<4;g++)begin:g_wt_group
+    if(HAS_WRITETAP && g<MEM_GROUPS)begin
+      assign wt_busy_o[g]=mem_group_busy[MEM_GROUPS-1-g];
+      assign wt_fault_o[g]=mem_group_fault_valid[MEM_GROUPS-1-g];
+      for(genvar b=0;b<8;b++)for(genvar t=0;t<T;t++)
+        assign wt_sample_valid_o[(8*g+b)*T+t]=state_valid_o[((COLUMNS+MEM_GROUPS-g)*T+t)*32+8*g+b];
+    end else begin
+      assign wt_busy_o[g]=0;
+      assign wt_fault_o[g]=0;
+      assign wt_sample_valid_o[g*8*T+:8*T]='0;
+    end
+  end
+
   integer boundary;
   integer direction;
   integer superlane;
@@ -145,6 +164,16 @@ module lpu_mem_srf_integration #(
       srf_slot_cell=(((COLUMNS+MEM_GROUPS)*T+tile)*LOCAL_PRODUCERS)*STREAMS+s;
       srf_inject_valid[srf_slot_cell]=fu_return_valid_i[tile*STREAMS+s];
       srf_inject_data[srf_slot_cell*SEGMENT_BITS+:SEGMENT_BITS]=fu_return_data_i[(tile*STREAMS+s)*SEGMENT_BITS+:SEGMENT_BITS];
+    end
+
+    if(HAS_WRITETAP)for(integer t=0;t<T;t++)for(integer b=0;b<32;b++)begin
+      srf_slot_cell=(((COLUMNS+MEM_GROUPS+1)*T+t)*LOCAL_PRODUCERS)*STREAMS+b;
+      srf_inject_valid[srf_slot_cell]=wt_valid_i[t*32+b];
+      srf_inject_data[srf_slot_cell*SEGMENT_BITS+:SEGMENT_BITS]=wt_data_i[(t*32+b)*SEGMENT_BITS+:SEGMENT_BITS];
+      if(b/8<MEM_GROUPS)begin
+        srf_slot_cell=(((COLUMNS+MEM_GROUPS-b/8)*T+t)*LOCAL_CONSUMERS+1)*STREAMS+b;
+        srf_consume[srf_slot_cell]=wt_target_i[(b/8)*T+t] && wt_sample_valid_o[b*T+t];
+      end
     end
 
     // Q06=A: MEM owns two local candidates at columns 0..13.
@@ -240,7 +269,7 @@ module lpu_mem_srf_integration #(
     if ((F % G) != 0 ||
         MEM_BOUNDARIES > 14 || COLUMNS != 16 || (T != 2 && T != 4 && T != 8) ||
         STREAMS != 32 || SEGMENT_BITS != 64 || LOCAL_PRODUCERS < 2 ||
-        LOCAL_CONSUMERS < 1) begin
+        LOCAL_CONSUMERS < (HAS_WRITETAP?2:1)) begin
       $fatal(1, "lpu_mem_srf_integration parameter contract violation");
     end
   end

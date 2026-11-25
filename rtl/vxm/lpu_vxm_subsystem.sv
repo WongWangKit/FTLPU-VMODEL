@@ -2,7 +2,9 @@ module lpu_vxm_subsystem #(parameter integer TILES=4) (
 	input logic clk_i,
 	input logic rst_ni,
 	input logic run_i,
-	input logic [7:0] local_issue_valid_i,
+	input logic lut_config_issue_i,lut_write_issue_i,
+    input logic [89:0] lut_word_i,
+    input logic [7:0] local_issue_valid_i,
 	input logic [8*lpu_pkg::VXM_LOCAL_MAX_INSTRUCTION_WIDTH-1:0] local_issue_instruction_i,
 	input logic global_issue_valid_i,
 	input logic [lpu_pkg::VXM_GLOBAL_CONFIG_WIDTH-1:0] global_issue_instruction_i,
@@ -17,7 +19,7 @@ module lpu_vxm_subsystem #(parameter integer TILES=4) (
 	output logic conflict_o
 );
 
-	// Program Load integration remains blocked until the resident-config/Execute adapter is fixed.
+	// All tiles see the same LUT programming word; local/global execute use their own valids.
 	lpu_vxm_slice #(.TILES(TILES)) u_execution (
 		.clk_i,
 		.rst_ni,
@@ -26,16 +28,16 @@ module lpu_vxm_subsystem #(parameter integer TILES=4) (
 		.local_issue_instruction_i,
 		.global_issue_valid_i,
 		.global_issue_instruction_i,
-		.lut_config_valid_i(1'b0),
-		.lut_config_bank_i('0),
-		.lut_config_input_min_i('0),
-		.lut_config_segment_width_i('0),
-		.lut_write_valid_i(1'b0),
-		.lut_write_bank_i('0),
-		.lut_write_address_i('0),
-		.lut_write_k_i('0),
-		.lut_write_b_i('0),
-		.lut_write_log_i('0),
+		.lut_config_valid_i(lut_config_issue_i),
+		.lut_config_bank_i(lut_word_i[1:0]),
+		.lut_config_input_min_i(lut_word_i[17:2]),
+		.lut_config_segment_width_i(lut_word_i[33:18]),
+		.lut_write_valid_i(lut_write_issue_i),
+		.lut_write_bank_i(lut_word_i[1:0]),
+		.lut_write_address_i(lut_word_i[7:2]),
+		.lut_write_k_i(lut_word_i[23:8]),
+		.lut_write_b_i(lut_word_i[39:24]),
+		.lut_write_log_i(lut_word_i[89:40]),
 		.west_from_mem_valid_i,
 		.west_from_mem_data_i,
 		.external_east_valid_i,

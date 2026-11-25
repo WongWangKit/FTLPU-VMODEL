@@ -16,9 +16,12 @@ module lpu_mxm_command_queue #(
   integer unsigned count_q;
   wire pop=pop_i && valid_o;
   wire push=enqueue_valid_i && enqueue_ready_o;
-  assign valid_o=count_q!=0;
+  wire empty=count_q==0;
+  // A locally scheduled command may enter and launch on the same edge.
+  wire bypass=empty && pop;
+  assign valid_o=!empty || enqueue_valid_i;
   assign enqueue_ready_o=count_q<DEPTH || pop;
-  assign data_o=valid_o?memory_q[read_q]:'0;
+  assign data_o=empty?enqueue_data_i:memory_q[read_q];
   always_ff @(posedge clk_i or negedge rst_ni) begin
     if(!rst_ni) begin read_q<=0;write_q<=0;count_q<=0;end
     else begin
@@ -27,11 +30,11 @@ module lpu_mxm_command_queue #(
         2'b01:count_q<=count_q-1;
         default:begin end
       endcase
-      if(push) begin
+      if(push && !bypass) begin
         memory_q[write_q]<=enqueue_data_i;
         write_q<=int'(write_q)==DEPTH-1?'0:write_q+1'b1;
       end
-      if(pop) read_q<=int'(read_q)==DEPTH-1?'0:read_q+1'b1;
+      if(pop && !bypass) read_q<=int'(read_q)==DEPTH-1?'0:read_q+1'b1;
     end
   end
   initial if(DEPTH<1 || WIDTH<1) $fatal(1,"Invalid MXM queue configuration");
