@@ -1,0 +1,12 @@
+{
+  "projectRoot": "D:\\path\\to\\FTLPU-VMODEL",
+  "sourceDirectory": "rtl",
+  "filelist": "sim/filelist.f",
+  "veribleExecutable": "D:\\path\\to\\verible-verilog-syntax.exe",
+  "preferredTop": "lpu_top",
+  "projectStatusNote": "Local RTL snapshot used by RTL Explorer.",
+  "port": 4173,
+  "hierarchyMaxDepth": 14,
+  "hierarchyMaxNodes": 3000,
+  "parseConcurrency": 4
+}

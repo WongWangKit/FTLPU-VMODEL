@@ -1,0 +1,174 @@
+{
+  "schemaVersion": 1,
+  "description": "Explorer-owned semantic aliases for architecture canvases. Raw RTL signal names, port names and connection expressions remain in the snapshot and Bus Detail evidence.",
+  "aliases": [
+    {
+      "semantic_id": "program-read",
+      "interface_id": "arch:control:program-load:interface:dma-command",
+      "display_name": "Program DMA Read Request",
+      "classification": "control",
+      "confidence": "rtl-confirmed",
+      "evidence": "A LOAD_IMEM descriptor atomically launches the Instruction DMA request and paired Image Context entry."
+    },
+    {
+      "semantic_id": "reassembled-instructions",
+      "interface_id": "arch:control:program-load:interface:word-handoff",
+      "display_name": "Word FIFO Dequeue + Route Metadata",
+      "classification": "control",
+      "confidence": "rtl-confirmed",
+      "evidence": "The explicit eight-entry Program Word FIFO supplies data, strobe and routing fields to the WRITE / PRIME handoff mux."
+    },
+    {
+      "semantic_id": "program-load-elastic-handoff",
+      "interface_id": "arch:control:program-load:interface:elastic-handoff",
+      "display_name": "Distributor Input Handshake",
+      "classification": "control",
+      "confidence": "rtl-confirmed",
+      "evidence": "The WRITE / PRIME mux drives distributor_input_* directly into the two-entry input elastic stage."
+    },
+    {
+      "semantic_id": "west-load",
+      "interface_id": "physical-interface:program:west-branch",
+      "display_name": "West Load",
+      "classification": "control",
+      "confidence": "rtl-confirmed",
+      "evidence": "Independent West ready/valid program-load branch."
+    },
+    {
+      "semantic_id": "east-load",
+      "interface_id": "physical-interface:program:east-branch",
+      "display_name": "East Load",
+      "classification": "control",
+      "confidence": "rtl-confirmed",
+      "evidence": "Independent East ready/valid program-load branch."
+    },
+    {
+      "semantic_id": "mem-local-imem-load",
+      "interface_id": "physical-interface:control:*:mem:program",
+      "display_name": "MEM Local iMEM Load",
+      "classification": "program-load",
+      "confidence": "architecture-inferred",
+      "evidence": "Hemisphere target-kind and queue-ID decode terminates at the MEM subsystem program-load endpoint."
+    },
+    {
+      "semantic_id": "mxm-local-imem-load",
+      "interface_id": "physical-interface:control:*:mxm:program",
+      "display_name": "MXM Local iMEM Load",
+      "classification": "program-load",
+      "confidence": "architecture-inferred",
+      "evidence": "Hemisphere target-kind and local MXM queue decode terminates at the selected MXM subsystem program-load endpoint."
+    },
+    {
+      "semantic_id": "mem-fetched-macro-words",
+      "interface_id": "arch:*:mem:interface:fetch-macro",
+      "display_name": "Fetched Macro Words",
+      "classification": "program-load",
+      "confidence": "rtl-confirmed",
+      "evidence": "Fetched program words enter the explicit macro Word FIFO."
+    },
+    {
+      "semantic_id": "mem-scheduled-macro",
+      "interface_id": "arch:*:mem:macro:scheduler:interface:direct-issue",
+      "display_name": "Direct MEM64 Issue",
+      "classification": "control",
+      "confidence": "rtl-confirmed",
+      "evidence": "Macro Scheduler mem_issue_valid/instruction/cycle outputs cross the downstream ready/valid boundary directly; no independent MEM Instruction Queue exists."
+    },
+    {
+      "semantic_id": "mem-direct-adapter-issue",
+      "interface_id": "arch:*:mem:interface:selector-execution",
+      "display_name": "Scheduler to MEM64 / Native32 Adapter",
+      "classification": "control",
+      "confidence": "rtl-confirmed",
+      "evidence": "The selected bank-local Scheduler issue vector enters the matching MEM64 / Native32 adapter lane directly."
+    },
+    {
+      "semantic_id": "mem-fu-issue-vector",
+      "interface_id": "arch:*:mem:interface:selector-execution",
+      "display_name": "FU Issue Vector",
+      "classification": "control",
+      "confidence": "rtl-confirmed",
+      "evidence": "The selector presents the bank issue vector to MEM execution."
+    },
+    {
+      "semantic_id": "mem-stream-output",
+      "interface_id": "arch:*:mem:interface:stream-egress",
+      "display_name": "Execution Stream Output",
+      "classification": "data",
+      "confidence": "rtl-confirmed",
+      "evidence": "MEM execution results drive the East/West stream boundary."
+    },
+    {
+      "semantic_id": "macro-word-read",
+      "interface_id": "arch:*:mem:macro:interface:word-to-decoder",
+      "display_name": "Macro Word Read",
+      "classification": "control",
+      "confidence": "rtl-confirmed",
+      "evidence": "The explicit Word FIFO supplies the macro decoder."
+    },
+    {
+      "semantic_id": "decoded-macro-context",
+      "interface_id": "arch:*:mem:macro:interface:decoder-context",
+      "display_name": "Decoded Macro Context",
+      "classification": "control",
+      "confidence": "rtl-confirmed",
+      "evidence": "Decoded macro context is buffered by the Context FIFO."
+    },
+    {
+      "semantic_id": "scheduled-macro-context",
+      "interface_id": "arch:*:mem:macro:interface:context-scheduler",
+      "display_name": "Scheduled Macro Context",
+      "classification": "control",
+      "confidence": "rtl-confirmed",
+      "evidence": "Context FIFO output is consumed by the macro scheduler."
+    },
+    {
+      "semantic_id": "mxm-load-enqueue",
+      "interface_id": "arch:*:mxm:interface:load-enqueue",
+      "display_name": "Load Enqueue",
+      "classification": "control",
+      "confidence": "rtl-confirmed",
+      "evidence": "Load frontend enters the load timed queue."
+    },
+    {
+      "semantic_id": "mxm-dequant-enqueue",
+      "interface_id": "arch:*:mxm:interface:dequant-enqueue",
+      "display_name": "Dequant Enqueue",
+      "classification": "control",
+      "confidence": "rtl-confirmed",
+      "evidence": "Dequant frontend enters the dequant timed queue."
+    },
+    {
+      "semantic_id": "mxm-compute-enqueue",
+      "interface_id": "arch:*:mxm:interface:compute-enqueue",
+      "display_name": "Compute Enqueue",
+      "classification": "control",
+      "confidence": "rtl-confirmed",
+      "evidence": "Compute frontend enters the compute timed queue."
+    },
+    {
+      "semantic_id": "mxm-queue-coordination",
+      "interface_id": "arch:*:mxm:interface:queues-coordinator",
+      "display_name": "Queue Coordination",
+      "classification": "control",
+      "confidence": "rtl-confirmed",
+      "evidence": "Three timed queues converge at the local coordinator."
+    },
+    {
+      "semantic_id": "mxm-coordinated-execution",
+      "interface_id": "arch:*:mxm:interface:coordinator-execution",
+      "display_name": "Coordinated Execution",
+      "classification": "control",
+      "confidence": "rtl-confirmed",
+      "evidence": "The coordinator dispatches the selected MXM operation into the slice."
+    },
+    {
+      "semantic_id": "router-target-decode",
+      "interface_id": "arch:control:*router:interface:decode",
+      "display_name": "Target Decode",
+      "classification": "program-load",
+      "confidence": "rtl-confirmed",
+      "evidence": "Hemisphere load metadata is decoded by target kind and queue ID."
+    }
+  ]
+}

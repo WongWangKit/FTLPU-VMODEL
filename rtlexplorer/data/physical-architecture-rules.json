@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "description": "Explorer-owned physical-topology presentation rules. Layout form may follow the supplied reference, but every quantity and RTL mapping is sourced from the current snapshot or explicitly marked inferred.",
+  "hemisphereIndexMapping": [
+    {
+      "index": 0,
+      "regionId": "east",
+      "status": "rtl-confirmed",
+      "basis": "HEMISPHERE_INDEX == 0 selects gen_east_host_column",
+      "source": { "file": "rtl/core/lpu_fu_subsystem_cluster.sv", "line": 428 }
+    },
+    {
+      "index": 1,
+      "regionId": "west",
+      "status": "rtl-confirmed",
+      "basis": "The else branch is named gen_west_host_column",
+      "source": { "file": "rtl/core/lpu_fu_subsystem_cluster.sv", "line": 431 }
+    }
+  ],
+  "regionOrder": ["external", "control", "west", "central", "east"],
+  "functionalOrder": {
+    "external": ["external-memory", "external-bus-boundary"],
+    "west": ["mxm", "sxm", "mem"],
+    "central": ["vxm"],
+    "east": ["mem", "sxm", "mxm"],
+    "control": ["instruction-control", "qctl"]
+  },
+  "wrapperPolicy": [
+    {
+      "moduleName": "lpu_fu_subsystem_cluster",
+      "architectureRole": "organization-wrapper",
+      "showAsFunctionalBlock": false,
+      "status": "rtl-confirmed",
+      "basis": "The module groups FU subsystem instances and their routing; its children are the user-facing functional blocks."
+    }
+  ]
+}

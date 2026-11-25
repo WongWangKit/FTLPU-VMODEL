@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "description": "Explorer-owned semantic aggregation rules. They never modify or override RTL source data.",
+  "primaryTopInstances": [
+    "u_program_controller",
+    "u_fu_subsystems"
+  ],
+  "legacyTopInstances": [
+    "u_mem",
+    "u_sxm",
+    "u_mxm",
+    "u_vxm"
+  ],
+  "semanticRules": [
+    { "id": "clock-reset", "name": "Clock / Reset", "category": "clock-reset", "confidence": "high", "patterns": ["(^|_)(clk|clock|rst|reset)(_|$)"] },
+    { "id": "east-stream", "name": "East Stream Interface", "category": "stream", "confidence": "high", "patterns": ["(^|_)east(_|$)"] },
+    { "id": "west-stream", "name": "West Stream Interface", "category": "stream", "confidence": "high", "patterns": ["(^|_)west(_|$)"] },
+    { "id": "program-load", "name": "Program Load Interface", "category": "program", "confidence": "high", "patterns": ["(^|_)(program|imem)(_|$)"] },
+    { "id": "host-memory", "name": "Host Memory Interface", "category": "host", "confidence": "high", "patterns": ["(^|_)host(_|$)"] },
+    { "id": "queue-enqueue", "name": "Queue Enqueue Interface", "category": "queue", "confidence": "high", "patterns": ["(^|_)enqueue(_|$)"] },
+    { "id": "queue-dequeue", "name": "Queue Dequeue Interface", "category": "queue", "confidence": "high", "patterns": ["(^|_)dequeue(_|$)"] },
+    { "id": "issue", "name": "Issue Interface", "category": "issue", "confidence": "high", "patterns": ["(^|_)issue(_|$)"] },
+    { "id": "queue-control", "name": "Queue Control Interface", "category": "control", "confidence": "medium", "patterns": ["(^|_)(qctl|scheduler|schedule_cycle|queue_active)(_|$)"] },
+    { "id": "configuration", "name": "Configuration Interface", "category": "configuration", "confidence": "medium", "patterns": ["(^|_)(config|mode|enable|partition)(_|$)"] },
+    { "id": "status-fault", "name": "Status / Fault Interface", "category": "status", "confidence": "high", "patterns": ["(^|_)(fault|error|conflict)(_|$)"] },
+    { "id": "status", "name": "Status Interface", "category": "status", "confidence": "medium", "patterns": ["(^|_)(busy|done|complete|configured|idle|primed|status)(_|$)"] },
+    { "id": "load", "name": "Load Interface", "category": "load", "confidence": "medium", "patterns": ["(^|_)load(_|$)"] }
+  ],
+  "signalGroupRules": [
+    { "id": "data", "name": "Data / Payload", "patterns": ["(^|_)(data|payload|result|value)(_|$)"] },
+    { "id": "address", "name": "Address", "patterns": ["(^|_)(addr|address|offset)(_|$)"] },
+    { "id": "handshake", "name": "Handshake", "patterns": ["(^|_)(valid|ready|fire|consume)(_|$)"] },
+    { "id": "command", "name": "Command / Instruction", "patterns": ["(^|_)(command|opcode|issue|instr|instruction)(_|$)"] },
+    { "id": "configuration", "name": "Configuration", "patterns": ["(^|_)(config|mode|enable|parameter|partition)(_|$)"] },
+    { "id": "status", "name": "Status", "patterns": ["(^|_)(busy|done|complete|configured|idle|primed|status|level)(_|$)"] },
+    { "id": "fault", "name": "Fault / Error", "patterns": ["(^|_)(fault|error|conflict)(_|$)"] },
+    { "id": "clock-reset", "name": "Clock / Reset", "patterns": ["(^|_)(clk|clock|rst|reset)(_|$)"] }
+  ],
+  "manualInterfaces": []
+}
