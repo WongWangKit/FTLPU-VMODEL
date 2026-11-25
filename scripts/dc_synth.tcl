@@ -39,7 +39,7 @@ set rtl_files [list \
   rtl/mxm/lpu_mxm_fp32_add_pipe.sv \
   rtl/mxm/lpu_mxm_output_pipe.sv \
   rtl/mxm/lpu_mxm_supercell.sv \
-  rtl/mxm/lpu_mxm_isa_pkg.sv \
+  rtl/icu/icu_mxm/lpu_mxm_isa_pkg.sv \
   rtl/mxm/lpu_mxm_command_queue.sv \
   rtl/mxm/lpu_mxm_instruction_wave.sv \
   rtl/mxm/lpu_mxm_control.sv \
@@ -84,7 +84,7 @@ set rtl_files [list \
   rtl/vxm/lpu_vxm_local_decoder.sv \
   rtl/vxm/lpu_vxm_datapath_mux.sv \
   rtl/vxm/lpu_vxm_datapath_stage.sv \
-  rtl/vxm/lpu_vxm_instruction_controller.sv \
+  rtl/icu/icu_vxm/lpu_vxm_instruction_controller.sv \
   rtl/vxm/lpu_vxm_mul8x8.sv \
   rtl/vxm/lpu_vxm_csa3_2.sv \
   rtl/vxm/lpu_vxm_significand_multiplier.sv \
