@@ -38,7 +38,8 @@ package lpu_program_load_pkg;
 		PROGRAM_NATIVE_WEIGHT = 4'd7, PROGRAM_NATIVE_PARAM = 4'd8,
 		PROGRAM_NATIVE_DEQUANT = 4'd9, PROGRAM_NATIVE_COMPUTE = 4'd10,
 		PROGRAM_NATIVE_BACKEND = 4'd11,
-		PROGRAM_MACRO_PARAM = 4'd12, PROGRAM_MACRO_BACKEND = 4'd13
+		PROGRAM_MACRO_PARAM = 4'd12, PROGRAM_MACRO_BACKEND = 4'd13,
+		PROGRAM_VXM_RAW96 = 4'd14 // internal route: host target 4, encoding 0
 	} lpu_program_target_kind_e;
 
 	// Program Load controls manage local iMEM state. They are not FU instruction opcodes.
@@ -55,7 +56,9 @@ package lpu_program_load_pkg;
 		PROGRAM_LOADER_COMMIT_QUEUE = 3'd2,
 		PROGRAM_LOADER_NEXT = 3'd3,
 		PROGRAM_LOADER_JUMP = 3'd4,
-		PROGRAM_LOADER_END = 3'd5
+		PROGRAM_LOADER_END = 3'd5,
+		PROGRAM_LOADER_REFILL = 3'd6,
+		PROGRAM_LOADER_SEAL_WRITES = 3'd7
 	} lpu_program_loader_opcode_e;
 
 	typedef enum logic [PROGRAM_FAULT_CODE_WIDTH-1:0] {

@@ -5,6 +5,7 @@ module lpu_program_control_system #(
 	parameter integer DMA_OUTSTANDING_DEPTH = 16,
 	parameter integer MEM_IMEM_DEPTH = 131072,
 	parameter integer MXM_IMEM_DEPTH = 65536,
+	parameter integer VXM_IMEM_DEPTH = 1536,
 	parameter integer ACTIVE_CONTEXTS = 4,
     parameter integer MXMS_PER_HEMISPHERE = 2,
 	parameter integer COMMAND_ADDRESS_WIDTH = COMMAND_DEPTH <= 1 ? 1 : $clog2(COMMAND_DEPTH)
@@ -91,7 +92,8 @@ module lpu_program_control_system #(
 	// reassembler must not re-apply the MEM depth to an admitted MXM image.
 	localparam integer MACRO_DEPTH = MEM_IMEM_DEPTH > MXM_IMEM_DEPTH ? MEM_IMEM_DEPTH : MXM_IMEM_DEPTH;
 	localparam integer NATIVE_WORDS = 2*NATIVE_EVENT_DEPTH;
-	localparam integer TRANSPORT_IMEM_DEPTH = MACRO_DEPTH > NATIVE_WORDS ? MACRO_DEPTH : NATIVE_WORDS;
+	localparam integer OLD_DEPTH = MACRO_DEPTH > NATIVE_WORDS ? MACRO_DEPTH : NATIVE_WORDS;
+	localparam integer TRANSPORT_IMEM_DEPTH = OLD_DEPTH > VXM_IMEM_DEPTH ? OLD_DEPTH : VXM_IMEM_DEPTH;
 
 	logic [1:0] command_hemisphere_w;
 	logic [7:0] command_local_queue_w;
@@ -106,7 +108,10 @@ module lpu_program_control_system #(
 	logic [3:0] mxm_dequant_target_seen_q;
 	logic [3:0] mxm_compute_target_seen_q;
 	// Remote macro kind 7/8 shares pins with the v1 event namespace.
-    wire [3:0] route_kind=(command_write_encoding_mode_i==PROGRAM_ENCODING_MACRO && command_write_target_kind_i==7)?PROGRAM_MACRO_PARAM:
+    wire raw_vxm=command_write_target_kind_i==PROGRAM_TARGET_VXM && command_write_encoding_mode_i==0;
+    logic [7:0] raw_seen;
+    wire [3:0] route_kind=raw_vxm?PROGRAM_VXM_RAW96:
+                          (command_write_encoding_mode_i==PROGRAM_ENCODING_MACRO && command_write_target_kind_i==7)?PROGRAM_MACRO_PARAM:
                           (command_write_encoding_mode_i==PROGRAM_ENCODING_MACRO && command_write_target_kind_i==8)?PROGRAM_MACRO_BACKEND:
                           command_write_target_kind_i;
     wire mxm_macro=route_kind inside {PROGRAM_TARGET_MXM_LOAD,PROGRAM_TARGET_MXM_COMPUTE,PROGRAM_TARGET_MXM_DEQUANT,PROGRAM_MACRO_PARAM,PROGRAM_MACRO_BACKEND};
@@ -200,6 +205,7 @@ module lpu_program_control_system #(
 				command_local_queue_w = 0;
 			end
 			PROGRAM_TARGET_VXM: command_target_valid_w = command_write_global_queue_id_i == 0;
+			PROGRAM_VXM_RAW96: command_target_valid_w = command_write_global_queue_id_i < 8;
 			PROGRAM_NATIVE_WEIGHT, PROGRAM_NATIVE_PARAM, PROGRAM_NATIVE_DEQUANT,
 			PROGRAM_NATIVE_COMPUTE, PROGRAM_NATIVE_BACKEND, PROGRAM_MACRO_PARAM, PROGRAM_MACRO_BACKEND,
 			PROGRAM_TARGET_MXM_LOAD, PROGRAM_TARGET_MXM_DEQUANT,
@@ -218,13 +224,17 @@ module lpu_program_control_system #(
 		endcase
 	end
 
-	assign command_write_ready_o = loader_command_write_ready && !load_request_active_q &&
+	logic command_refill;
+	assign command_write_ready_o = loader_command_write_ready && (!load_request_active_q || command_refill) &&
 		!descriptor_fault_q;
 	assign command_write_fire = command_write_valid_i && command_write_ready_o;
 	assign descriptor_invalid_w = command_write_fire &&
 		(command_write_opcode_i == PROGRAM_LOADER_LOAD_IMEM) &&
 		(!command_target_valid_w || command_write_target_kind_i>PROGRAM_NATIVE_BACKEND ||
-		 (!mxm_macro && route_kind >= PROGRAM_TARGET_VXM ?
+		 (raw_vxm ? (command_write_format_i != PROGRAM_FORMAT_96 || command_write_byte_count_i%12!=0 ||
+		    command_write_expected_word_count_i != command_write_byte_count_i/12 ||
+		    {1'b0,command_write_imem_base_address_i}+command_write_expected_word_count_i>VXM_IMEM_DEPTH) :
+		  !mxm_macro && route_kind >= PROGRAM_TARGET_VXM ?
 		   (command_write_encoding_mode_i != PROGRAM_ENCODING_NATIVE || command_write_format_i != PROGRAM_FORMAT_128 ||
 		    command_write_imem_base_address_i != 0 || command_write_byte_count_i[4:0]!=0 ||
 		    command_write_byte_count_i > 32*NATIVE_EVENT_DEPTH || command_write_expected_word_count_i != command_write_byte_count_i/16) :
@@ -245,6 +255,8 @@ module lpu_program_control_system #(
 		descriptor_duplicate_w = 1'b0;
 		if(command_write_fire && (command_write_opcode_i == PROGRAM_LOADER_LOAD_IMEM) && command_target_valid_w)begin
 			case(route_kind)
+				PROGRAM_VXM_RAW96: descriptor_duplicate_w=raw_seen[command_write_global_queue_id_i[2:0]] || native_target_seen_q[{PROGRAM_TARGET_VXM,2'b0}];
+				PROGRAM_TARGET_VXM: descriptor_duplicate_w=(|raw_seen) || native_target_seen_q[native_target_index];
 				PROGRAM_TARGET_MEM: descriptor_duplicate_w = mem_target_seen_q[command_write_global_queue_id_i];
 				PROGRAM_TARGET_MXM_LOAD: descriptor_duplicate_w = mxm_load_target_seen_q[command_write_global_queue_id_i[1:0]];
 				PROGRAM_TARGET_MXM_DEQUANT: descriptor_duplicate_w = mxm_dequant_target_seen_q[command_write_global_queue_id_i[1:0]];
@@ -309,8 +321,9 @@ module lpu_program_control_system #(
 		.clk_i,
 		.rst_ni,
 		.abort_i(program_reset_i),
-		.command_write_valid_i,
+		.command_write_valid_i(command_write_fire),
 		.command_write_ready_o(loader_command_write_ready),
+		.command_refill_o(command_refill),
 		.command_write_address_i,
 		.command_write_opcode_i,
 		.command_write_source_address_i,
@@ -405,6 +418,7 @@ module lpu_program_control_system #(
 	always_ff @(posedge clk_i or negedge rst_ni) begin
 		if(!rst_ni)begin
 			descriptor_fault_q <= 1'b0;
+			raw_seen <= 0;
 			mem_target_seen_q <= '0;
 			mxm_load_target_seen_q <= '0;
 			mxm_dequant_target_seen_q <= '0;
@@ -413,6 +427,7 @@ module lpu_program_control_system #(
 		end
 		else if(program_reset_i)begin
 			descriptor_fault_q <= 1'b0;
+			raw_seen <= 0;
 			mem_target_seen_q <= '0;
 			mxm_load_target_seen_q <= '0;
 			mxm_dequant_target_seen_q <= '0;
@@ -426,6 +441,7 @@ module lpu_program_control_system #(
 			if(command_write_fire && (command_write_opcode_i == PROGRAM_LOADER_LOAD_IMEM) &&
 				command_target_valid_w && !descriptor_invalid_w && !descriptor_duplicate_w)begin
 				case(route_kind)
+					PROGRAM_VXM_RAW96: raw_seen[command_write_global_queue_id_i[2:0]] <= 1'b1;
 					PROGRAM_TARGET_MEM: mem_target_seen_q[command_write_global_queue_id_i] <= 1'b1;
 					PROGRAM_TARGET_MXM_LOAD: mxm_load_target_seen_q[command_write_global_queue_id_i[1:0]] <= 1'b1;
 					PROGRAM_TARGET_MXM_DEQUANT: mxm_dequant_target_seen_q[command_write_global_queue_id_i[1:0]] <= 1'b1;

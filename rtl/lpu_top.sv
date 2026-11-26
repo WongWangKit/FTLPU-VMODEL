@@ -18,12 +18,14 @@ module lpu_top #(
 	parameter integer PROGRAM_DMA_OUTSTANDING_DEPTH = 16,
 	parameter integer PROGRAM_MEM_IMEM_DEPTH = lpu_pkg::dma_mixed_mem_imem_depth(DMA_VECTOR_BYTES),
 	parameter integer PROGRAM_MXM_IMEM_DEPTH = lpu_pkg::dma_mixed_mxm_imem_depth(DMA_VECTOR_BYTES),
+	parameter integer PROGRAM_VXM_IMEM_DEPTH = DMA_VECTOR_BYTES==16 ? 256 : 1536,
 	parameter integer PROGRAM_ACTIVE_CONTEXTS = 4,
-	parameter bit ENABLE_QCTL = 1'b0,
-	parameter bit ENABLE_STATIC_WEIGHTS = 1'b0,
+	parameter bit PRODUCT_PROFILE = 1'b0,
+	parameter bit ENABLE_QCTL = PRODUCT_PROFILE,
+	parameter bit ENABLE_STATIC_WEIGHTS = PRODUCT_PROFILE,
 	parameter bit ENABLE_SXM_VXM_EXECUTION = 1'b1,
 	parameter bit LEGACY_MXM = 1'b0,
-	parameter bit LEGACY_VECTOR_ARRAY = 1'b1, // legacy images only
+	parameter bit LEGACY_VECTOR_ARRAY = !PRODUCT_PROFILE, // legacy images only
 	parameter integer QCTL_QUEUE_COUNT = 220,
 	parameter integer PROGRAM_COMMAND_ADDRESS_WIDTH = PROGRAM_COMMAND_DEPTH <= 1 ? 1 : $clog2(PROGRAM_COMMAND_DEPTH)
 ) (
@@ -175,6 +177,17 @@ module lpu_top #(
 	output logic [1:0] stream_conflict_o
 );
 
+	if (PRODUCT_PROFILE && (!(T==2 || T==4) || !ENABLE_QCTL || !ENABLE_STATIC_WEIGHTS ||
+	    !ENABLE_SXM_VXM_EXECUTION || LEGACY_MXM || LEGACY_VECTOR_ARRAY || MEM_DEPTH_ROWS!=0 ||
+	    ACTIVE_MEM_COLUMNS!=lpu_pkg::mem_slices_per_side_for_tiles(T) ||
+	    MXM_ACCUMULATOR_BLOCK_COUNT!=lpu_pkg::MXM_ACCUMULATOR_BLOCK_COUNT ||
+	    PROGRAM_COMMAND_DEPTH!=32 || PROGRAM_ACTIVE_CONTEXTS!=4 ||
+	    PROGRAM_MEM_IMEM_DEPTH!=lpu_pkg::dma_mixed_mem_imem_depth(DMA_VECTOR_BYTES) ||
+	    PROGRAM_MXM_IMEM_DEPTH!=lpu_pkg::dma_mixed_mxm_imem_depth(DMA_VECTOR_BYTES) ||
+	    PROGRAM_VXM_IMEM_DEPTH!=(T==2 ? 256 : 1536) ||
+	    DMA_RT!=lpu_pkg::dma_mixed_rt(DMA_VECTOR_BYTES) || DMA_Q!=lpu_pkg::dma_mixed_q(DMA_VECTOR_BYTES) ||
+	    PROGRAM_DMA_RX_FIFO_DEPTH!=lpu_pkg::dma_mixed_program_response(DMA_VECTOR_BYTES)))
+	  initial $fatal(1,"Non-product overrides in mixed LPU16/32 product profile");
 	logic [lpu_pkg::MEM_BANK_COUNT-1:0] local_mem_issue_valid;
 	logic [lpu_pkg::MEM_BANK_COUNT*lpu_pkg::MEM_INSTRUCTION_WIDTH-1:0] local_mem_issue_instruction;
 	logic [lpu_pkg::MEM_BANK_COUNT*32-1:0] local_mem_issue_cycle;
@@ -498,6 +511,7 @@ module lpu_top #(
 		.DMA_RX_FIFO_DEPTH(PROGRAM_DMA_RX_FIFO_DEPTH),
 		.DMA_OUTSTANDING_DEPTH(PROGRAM_DMA_OUTSTANDING_DEPTH),
 		.MEM_IMEM_DEPTH(PROGRAM_MEM_IMEM_DEPTH), .MXM_IMEM_DEPTH(PROGRAM_MXM_IMEM_DEPTH),
+		.VXM_IMEM_DEPTH(PROGRAM_VXM_IMEM_DEPTH),
 		.ACTIVE_CONTEXTS(PROGRAM_ACTIVE_CONTEXTS), .COMMAND_ADDRESS_WIDTH(PROGRAM_COMMAND_ADDRESS_WIDTH)
 	) u_program_control (
 		.clk_i, .rst_ni, .program_reset_i(program_reload_ack_o),
@@ -552,6 +566,7 @@ module lpu_top #(
 		.PACKED_MEM_ROW_BITS(PACKED_MEM_ROW_BITS),
 		.DMA_TILES(T),
 		.MEM_IMEM_DEPTH(PROGRAM_MEM_IMEM_DEPTH), .MXM_IMEM_DEPTH(PROGRAM_MXM_IMEM_DEPTH),
+		.VXM_IMEM_DEPTH(PROGRAM_VXM_IMEM_DEPTH),
 		.ACTIVE_CONTEXTS(PROGRAM_ACTIVE_CONTEXTS), .MEM_DEPTH_ROWS(NATIVE_MEM_ROWS),
 		.ACTIVE_MEM_COLUMNS(ACTIVE_MEM_COLUMNS), .MXM_ACCUMULATOR_BLOCK_COUNT(MXM_ACCUMULATOR_BLOCK_COUNT),
 		.ENABLE_QCTL(ENABLE_QCTL),

@@ -72,6 +72,7 @@ logic [31:0] generated_word_count_o;
 logic [31:0] committed_word_count_o;
 logic error_o;
 logic [5:0] error_code_o;
+wire command_refill_o;
 lpu_program_load_subsystem #(
 .COMMAND_DEPTH(COMMAND_DEPTH), .DMA_DATA_WIDTH(DMA_DATA_WIDTH),
 .CONFIG_FIFO_DEPTH(FIFO_DEPTH), .DMA_OUTSTANDING_DEPTH(FIFO_DEPTH),
@@ -123,7 +124,7 @@ always @(negedge clk_i) if(rst_ni)begin
  east_load_ready_i=!(cyc>=25&&cyc<100)&&cyc%3!=0;
  west_load_ready_i=cyc%5!=0;
  if(took_rsp)dma_rsp_valid_i=0;
- if(!dma_rsp_valid_i && req_r<req_w && cyc%4!=0 && (mode==0 || mode==5 || (req_r==0 && off==0)))begin
+ if(!dma_rsp_valid_i && req_r<req_w && cyc%4!=0 && (mode==0 || mode>=5 || (req_r==0 && off==0)))begin
   n=lengths[req_r]-off;if(n>DMA_DATA_WIDTH/8)n=DMA_DATA_WIDTH/8;
   dma_rsp_valid_i=1;dma_rsp_data_i=0;dma_rsp_keep_i=0;
   for(integer b=0;b<n;b++)begin dma_rsp_keep_i[b]=1;dma_rsp_data_i[b*8+:8]=8'(addresses[req_r]+off+b);end
@@ -189,16 +190,26 @@ all_frontends_ready_i='0;
  repeat(4)@(negedge clk_i);rst_ni=1;
  command(0,PROGRAM_LOADER_LOAD_IMEM,0,20,0,0,3,0,5,1,0,5);
  command(1,PROGRAM_LOADER_LOAD_IMEM,20,40,0,0,3,0,5,0,1,5);
- command(2,PROGRAM_LOADER_WAIT_DMA,0,0,0,0,3,0,0,0,0,0);
+ if(mode==6)command(2,PROGRAM_LOADER_LOAD_IMEM,0,48,1,3,1,1,7,1,1,3);
+ else command(2,PROGRAM_LOADER_WAIT_DMA,0,0,0,0,3,0,0,0,0,0);
  command(3,PROGRAM_LOADER_COMMIT_QUEUE,0,0,0,0,3,0,0,0,0,0);
- command(4,PROGRAM_LOADER_LOAD_IMEM,0,48,1,3,1,1,7,1,1,3);
+ if(mode==6)command(4,PROGRAM_LOADER_NEXT,0,0,0,0,0,0,0,0,0,0);
+ else command(4,PROGRAM_LOADER_LOAD_IMEM,0,48,1,3,1,1,7,1,1,3);
  command(5,PROGRAM_LOADER_WAIT_DMA,0,0,1,3,1,0,0,0,0,0);
  command(6,PROGRAM_LOADER_COMMIT_QUEUE,0,0,1,3,1,0,0,0,0,0);
- command(7,PROGRAM_LOADER_END,0,0,0,0,0,0,0,0,0,0);
+ command(7,mode>=6?PROGRAM_LOADER_REFILL:PROGRAM_LOADER_END,0,0,0,0,0,0,0,0,0,0);
  @(negedge clk_i);start_command_count_i=8;start_valid_i=1;
  do @(posedge clk_i);while(!start_ready_o);
  @(negedge clk_i);start_valid_i=0;
- if(mode!=0)begin
+ if(mode>=6)begin
+   wait(command_refill_o);ck(!instruction_load_done_o && !primes,"partial page visible");
+   command(0,PROGRAM_LOADER_SEAL_WRITES,0,0,0,0,0,0,0,0,0,0);
+   for(int j=1;j<7;j++)command(j,PROGRAM_LOADER_NEXT,0,0,0,0,0,0,0,0,0,0);
+   // A partial host refill cannot replay a stale terminal slot.
+   repeat(15)@(negedge clk_i);ck(command_refill_o && !primes && !program_start_o,"stale command replay");
+   command(7,mode==7?PROGRAM_LOADER_LOAD_IMEM:PROGRAM_LOADER_END,0,12,0,0,3,0,5,1,1,1);
+ end
+ if(mode!=0 && mode!=6)begin
   // Faults, like ready/valid, are sampled on the clock edge. LAST changes
   // the FIFO head after the edge; the driver releases VALID on negedge.
   wait(sampled_fault!=-1);@(negedge clk_i);
@@ -208,6 +219,7 @@ all_frontends_ready_i='0;
    3:ck(sampled_fault==PROGRAM_FAULT_KEEP,"keep fault");
    4:ck(sampled_fault==PROGRAM_FAULT_BURST_LENGTH,"length fault");
    5:ck(sampled_fault==PROGRAM_FAULT_COMMIT,"commit fault");
+   7:ck(sampled_fault==PROGRAM_FAULT_COMMAND && req_w==3 && !instruction_load_done_o,"load after seal escaped");
   endcase
   repeat(5)@(negedge clk_i);ck(error_o&&!program_start_o,"sticky error");
  end else begin

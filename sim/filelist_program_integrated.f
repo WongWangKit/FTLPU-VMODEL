@@ -25,6 +25,7 @@ rtl/mxm/lpu_mxm_isa_pkg.sv
 rtl/icu/lpu_sram.sv
 rtl/icu/lpu_slice_imem.sv
 rtl/icu/lpu_slice_imem_fetch.sv
+rtl/vxm/lpu_vxm_raw_queue.sv
 rtl/icu/lpu_five_macro_decoder_core.sv
 rtl/icu/lpu_five_macro_scheduler_core.sv
 rtl/icu/lpu_five_macro_frontend.sv

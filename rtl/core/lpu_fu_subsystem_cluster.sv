@@ -4,6 +4,7 @@ module lpu_fu_subsystem_cluster #(
 	localparam integer ACTIVE_MXMS=lpu_pkg::mxms_per_hemisphere(DMA_TILES),
 	parameter integer MEM_IMEM_DEPTH = 131072,
 	parameter integer MXM_IMEM_DEPTH = 65536,
+	parameter integer VXM_IMEM_DEPTH = 1536,
 	parameter integer ACTIVE_CONTEXTS = 4,
 	parameter integer MEM_DEPTH_ROWS = lpu_pkg::SRAM_DEPTH_ROWS,
 	parameter integer ACTIVE_MEM_COLUMNS = 52,
@@ -169,6 +170,25 @@ module lpu_fu_subsystem_cluster #(
 	wire [12:0] launch[2],enqueue[2],lr[2],er[2],cal_ready[2],cal_idle[2],cal_fault[2];
 	wire [127:0] word_q[2][13]; wire [31:0] aux_q[2][13];
 	wire [1:0] sxm_busy; wire vxm_busy;
+	wire [7:0] raw_issue,raw_ready,raw_idle,raw_fault,raw_cfg;
+	wire [95:0] raw_word[8];
+	for(genvar q=0;q<8;q++)begin:g_raw
+	  if(ENABLE_SXM_VXM_EXECUTION)begin:g_active
+	    wire fire=endpoint_load_valid_i[0] && endpoint_load_ready_o[0];
+	    wire hit=fire && endpoint_load_target_kind_i[3:0]==PROGRAM_VXM_RAW96 &&
+	             endpoint_load_queue_id_i[7:0]==q;
+	    wire [2:0] ctl=endpoint_load_control_i[2:0];
+	    lpu_vxm_raw_queue #(.DEPTH(VXM_IMEM_DEPTH)) u_queue(
+	      .clk_i,.rst_ni,.clear_i(program_reset_i || (fire && (ctl==PROGRAM_LOAD_CLEAR || ctl==PROGRAM_LOAD_ABORT))),
+	      .write_i(hit && ctl==PROGRAM_LOAD_WRITE),.prime_i(hit && ctl==PROGRAM_LOAD_PRIME),
+	      .last_i(endpoint_load_last_i[0]),.run_i(execution_run),.addr_i(endpoint_load_imem_address_i[16:0]),
+	      .strb_i(endpoint_load_strb_i[3:0]),.data_i(endpoint_load_data_i[95:0]),.configured_o(raw_cfg[q]),
+	      .ready_o(raw_ready[q]),.idle_o(raw_idle[q]),.fault_o(raw_fault[q]),.issue_o(raw_issue[q]),.word_o(raw_word[q]));
+	  end else begin
+	    assign {raw_cfg[q],raw_fault[q],raw_issue[q],raw_word[q]}='0;
+	    assign {raw_ready[q],raw_idle[q]}=2'b11;
+	  end
+	end
 	for(genvar h=0;h<2;h++)begin:g_native_sched
 	  for(genvar q=0;q<13;q++)begin:g_queue
 	    localparam K=q==0?5:q==1?6:q==2?4:7+(q-3)%5;
@@ -215,16 +235,16 @@ module lpu_fu_subsystem_cluster #(
 	assign endpoint_commit_valid_o = commit_valid_q;
 	assign endpoint_commit_error_o = commit_error_q;
 	assign all_frontends_ready_o = (&mem_frontends_ready) && (&mxm_frontends_ready) && (&cal_ready[0]) && (&cal_ready[1]) &&
-		(!ENABLE_QCTL || qctl_all_primed) && !(|commit_valid_q) && !frontend_fault_o;
+		(&raw_ready) && (!ENABLE_QCTL || qctl_all_primed) && !(|commit_valid_q) && !frontend_fault_o;
 	assign all_frontends_idle_o = (&mem_frontends_idle) && (&mxm_frontends_idle) && (&cal_idle[0]) && (&cal_idle[1]) &&
-		(!ENABLE_QCTL || qctl_all_done) && !(|commit_valid_q);
+		(&raw_idle) && (!ENABLE_QCTL || qctl_all_done) && !(|commit_valid_q);
 	assign execution_drained_o = !(|sxm_busy) && !vxm_busy && !(|mem_execution_busy) && !(|mxm_execution_busy) &&
 		!(|edge_execution_busy) && !(|mem_east_edge_valid_i) && !(|mem_west_edge_valid_i);
 	assign program_start_ready_o = all_frontends_ready_o && !started_q;
 	assign frontend_fault_o = (|cal_fault[0]) || (|cal_fault[1]) || route_fault_q || (|mem_frontend_fault) ||
-		(|mxm_frontend_fault) || (ENABLE_QCTL && qctl_fault_o);
+		(|raw_fault) || (|mxm_frontend_fault) || (ENABLE_QCTL && qctl_fault_o);
 	assign frontend_fault_code_o = route_fault_q ? FAULT_ROUTE :
-		(((|cal_fault[0]) || (|cal_fault[1]) || (|mem_frontend_fault) || (|mxm_frontend_fault)) ? FAULT_FRONTEND :
+			(((|raw_fault) || (|cal_fault[0]) || (|cal_fault[1]) || (|mem_frontend_fault) || (|mxm_frontend_fault)) ? FAULT_FRONTEND :
 		((ENABLE_QCTL && qctl_fault_o) ? FAULT_QCTL : FAULT_NONE));
 
 	// Shared storage is global, while every generated Controller owns exactly one
@@ -341,6 +361,7 @@ module lpu_fu_subsystem_cluster #(
 					end
 				end
 				PROGRAM_TARGET_VXM: selected_valid_w[hemisphere]=ENABLE_SXM_VXM_EXECUTION && hemisphere==0 && endpoint_load_queue_id_i[hemisphere*8+:8]==0;
+				PROGRAM_VXM_RAW96: selected_valid_w[hemisphere]=ENABLE_SXM_VXM_EXECUTION && hemisphere==0 && endpoint_load_queue_id_i[hemisphere*8+:8]<8;
 				PROGRAM_TARGET_SXM_TRANSPOSE,PROGRAM_TARGET_SXM_PERMUTE:
 				  selected_valid_w[hemisphere]=ENABLE_SXM_VXM_EXECUTION && endpoint_load_queue_id_i[hemisphere*8+:8]==0;
 				PROGRAM_MACRO_PARAM,PROGRAM_MACRO_BACKEND,PROGRAM_NATIVE_WEIGHT,PROGRAM_NATIVE_PARAM,PROGRAM_NATIVE_DEQUANT,PROGRAM_NATIVE_COMPUTE,PROGRAM_NATIVE_BACKEND:
@@ -742,20 +763,36 @@ module lpu_fu_subsystem_cluster #(
     wire [127:0] cmd=word_q[0][2];
     wire malformed=(op==3 || (op==0 && |cmd[89:80]) || (op==1 && |cmd[89:34]));
     wire issue=launch[0][2] && !malformed;
+    // Compact depth-two FP16 chain. Both physical halves mirror these logical ALUs.
+    // Head: two streams, no output. Tail: previous/original, FP16 output.
+    // Reject other layouts before driving local issue.
+    // VxmCompactInstructionCodec control[53:0] occupies word[55:2].
+    // For NEG/BYPASS there is no intermediate arithmetic rounding. Read and
+    // write FP16 streams; other FP32-compute opcodes need separate lowering.
+    function automatic logic fp16_chain_word(input logic [95:0] w,input bit tail);
+      logic [53:0] c;
+      c=w[55:2];
+      return w[95:56]==0 && w[1:0]==0 && c[53:51]==0 && c[50:19]==1 &&
+        c[18:17]==0 && c[16:14]==3'b100 && c[13]==tail &&
+        c[12:11]==1 && c[10] && c[9:7]==(tail?1:4) &&
+        c[6:4]==(tail?0:4) && (tail ? c[3:0]==0 : (c[3:0]==0 || c[3:0]==4));
+    endfunction
+    wire raw_pair=raw_issue==8'h03 && fp16_chain_word(raw_word[0],0) && fp16_chain_word(raw_word[1],1);
+    wire raw_global=(|raw_cfg) && program_start_i && program_start_ready_o;
     wire slice_fault;
     logic command_fault;
     always_ff @(posedge clk_i or negedge rst_ni)
       if(!rst_ni)command_fault<=0;
       else if(program_reset_i)command_fault<=0;
-      else if(launch[0][2] && malformed)command_fault<=1;
+      else if((launch[0][2] && malformed) || ((|raw_issue) && !raw_pair))command_fault<=1;
     assign vxm_fault_o=command_fault || slice_fault;
     lpu_vxm_subsystem #(.TILES(DMA_TILES)) u_vxm_subsystem (
 		.clk_i, .rst_ni(rst_ni && !program_reset_i), .run_i(execution_run),
 		.lut_config_issue_i(issue && op==1),.lut_write_issue_i(issue && op==2),.lut_word_i(cmd[89:0]),
-        .local_issue_valid_i({8{issue && op==0}} & word_q[0][2][7:0]),
-		.local_issue_instruction_i(word_q[0][2][63:8]),
-		.global_issue_valid_i(issue && op==0 && word_q[0][2][64]),
-		.global_issue_instruction_i(word_q[0][2][79:65]),.busy_o(vxm_busy),
+        .local_issue_valid_i(raw_pair ? 8'h03 : ({8{issue && op==0}} & word_q[0][2][7:0])),
+		.local_issue_instruction_i(raw_pair ? {42'b0,4'b0,raw_word[1][4:2],4'b0,raw_word[0][4:2]} : word_q[0][2][63:8]),
+		.global_issue_valid_i(raw_global || (issue && op==0 && word_q[0][2][64])),
+		.global_issue_instruction_i(raw_global ? 15'b0 : word_q[0][2][79:65]),.busy_o(vxm_busy),
 		.west_from_mem_valid_i(mem_to_vxm_west_valid),
 		.west_from_mem_data_i(mem_to_vxm_west_data),
 		.external_east_valid_i(mem_east_edge_valid_i),

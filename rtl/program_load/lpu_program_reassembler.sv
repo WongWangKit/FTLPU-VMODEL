@@ -172,13 +172,17 @@ module lpu_program_reassembler #(
 		end
 	end
 
-	assign config_start_w = config_valid_i && !config_seen_q && !fault_q;
+	// RLAST retires the transaction descriptor, not the final iMEM word.
+	// Keep the next descriptor at the FIFO head while that word drains.
+	// Do not mask malformed continuations on an unfinished image.
+	assign config_start_w = config_valid_i && !config_seen_q && !fault_q &&
+		!(image_active_q && image_last_seen_q);
 	assign config_invalid_w = config_start_w && (
 		(config_byte_count_i == '0) ||
 		((config_format_i != PROGRAM_FORMAT_96) && (config_format_i != PROGRAM_FORMAT_128)) ||
 		((config_hemisphere_i != PROGRAM_HEMISPHERE_EAST) &&
 		 (config_hemisphere_i != PROGRAM_HEMISPHERE_WEST)) ||
-		(config_target_kind_i > PROGRAM_MACRO_BACKEND) ||
+		(config_target_kind_i > PROGRAM_VXM_RAW96) ||
 		(config_expected_word_count_i == '0) ||
 		({1'b0, config_imem_base_address_i} + config_expected_word_count_i > IMEM_DEPTH) ||
 		(config_image_first_i && (image_active_q || (buffer_count_q != '0))) ||

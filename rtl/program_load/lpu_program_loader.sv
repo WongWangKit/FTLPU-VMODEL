@@ -49,6 +49,8 @@ module lpu_program_loader #(
 
 	output logic [COMMAND_ADDRESS_WIDTH-1:0] command_pc_o,
 	output logic busy_o,
+	output logic refill_o,
+	output logic writes_sealed_o,
 	output logic done_o,
 	output logic fault_o,
 	output logic [5:0] fault_code_o
@@ -132,7 +134,11 @@ module lpu_program_loader #(
 		active_jump_address_w
 	} = active_record_q;
 
-	assign command_write_ready_o = !busy_q;
+	// REFILL replaces just the host command page, never the image or its epoch.
+	logic refill_q, sealed_q;
+	assign refill_o = refill_q;
+	assign writes_sealed_o = sealed_q;
+	assign command_write_ready_o = !busy_q || refill_q;
 	assign command_write_fire = command_write_valid_i && command_write_ready_o;
 	assign command_write_invalid_w = command_write_fire &&
 		(int'(command_write_address_i) >= COMMAND_DEPTH);
@@ -148,11 +154,11 @@ module lpu_program_loader #(
 				start_range_written_w = 1'b0;
 		end
 	end
-	assign fetch_command_w = busy_q && !active_valid_q &&
+	assign fetch_command_w = busy_q && !refill_q && !active_valid_q &&
 		(command_pc_q < command_count_q);
 
 	assign transaction_valid_o = active_valid_q &&
-		(active_opcode_w == PROGRAM_LOADER_LOAD_IMEM) && !fault_q;
+		(active_opcode_w == PROGRAM_LOADER_LOAD_IMEM) && !sealed_q && !fault_q;
 	assign transaction_fire = transaction_valid_o && transaction_ready_i;
 	assign transaction_source_address_o = active_source_address_w;
 	assign transaction_byte_count_o = active_byte_count_w;
@@ -177,9 +183,13 @@ module lpu_program_loader #(
 		(active_opcode_w == PROGRAM_LOADER_JUMP) &&
 		(active_jump_address_w >= command_count_q);
 	assign active_invalid_w = active_valid_q &&
-		((active_opcode_w > PROGRAM_LOADER_END) || jump_invalid_w);
+		((active_opcode_w == PROGRAM_LOADER_LOAD_IMEM && sealed_q) ||
+		 (active_opcode_w == PROGRAM_LOADER_REFILL && (int'(command_pc_q)+1 != int'(command_count_q))) ||
+		 (active_opcode_w == PROGRAM_LOADER_SEAL_WRITES && sealed_q) || jump_invalid_w);
 	assign active_complete_w = active_valid_q && (
 		((active_opcode_w == PROGRAM_LOADER_LOAD_IMEM) && transaction_fire) ||
+		((active_opcode_w == PROGRAM_LOADER_SEAL_WRITES) && load_pipeline_idle_i) ||
+		(active_opcode_w == PROGRAM_LOADER_REFILL) ||
 		((active_opcode_w == PROGRAM_LOADER_WAIT_DMA) && load_pipeline_idle_i) ||
 		((active_opcode_w == PROGRAM_LOADER_COMMIT_QUEUE) && commit_fire) ||
 		(active_opcode_w == PROGRAM_LOADER_NEXT) ||
@@ -206,6 +216,8 @@ module lpu_program_loader #(
 	// previous program segment can be executed without a new host write.
 	always_ff @(posedge clk_i or negedge rst_ni) begin
 		if (!rst_ni) command_valid_q <= '0;
+		else if (active_valid_q && active_opcode_w == PROGRAM_LOADER_REFILL)
+			command_valid_q <= '0;
 		else if (command_write_fire && !command_write_invalid_w)
 			command_valid_q[command_write_address_i] <= 1'b1;
 	end
@@ -229,9 +241,12 @@ module lpu_program_loader #(
 			busy_q <= 1'b0;
 			done_q <= 1'b0;
 			next_dma_id_q <= '0;
+			refill_q <= 0;
+			sealed_q <= 0;
 		end
 		else begin
 			if(start_fire)begin
+				sealed_q <= 0;
 				command_pc_q <= '0;
 				command_count_q <= start_command_count_i;
 				active_valid_q <= 1'b0;
@@ -240,6 +255,7 @@ module lpu_program_loader #(
 				next_dma_id_q <= '0;
 			end
 			else if(busy_q)begin
+				if(refill_q && start_range_written_w) refill_q <= 0;
 				if(fetch_command_w)begin
 					active_valid_q <= 1'b1;
 				end
@@ -251,6 +267,14 @@ module lpu_program_loader #(
 				else if(active_complete_w)begin
 					active_valid_q <= 1'b0;
 					case(active_opcode_w)
+						PROGRAM_LOADER_REFILL: begin
+							command_pc_q <= '0;
+							refill_q <= 1;
+						end
+						PROGRAM_LOADER_SEAL_WRITES: begin
+							sealed_q <= 1;
+							command_pc_q <= command_pc_q + 1'b1;
+						end
 						PROGRAM_LOADER_JUMP: command_pc_q <= active_jump_address_w;
 						PROGRAM_LOADER_END: begin
 							busy_q <= 1'b0;

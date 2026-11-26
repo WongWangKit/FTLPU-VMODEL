@@ -12,17 +12,14 @@ Existing local native MEM and MXM core work is retained, not replaced.
   request can wait for segment retirement and physical drain before re-arming.
 - MEM uses the local native **32-bit** command directly, including the bit-30
   one/three-cycle hop mode; there is no 47/64-bit translation in this path.
-- MEM and the three source-version MXM streams have program frontends. QCTL
-  adds a shared control pool and independent queue-local scheduling time.
-- The old top-level `schedule_*`, host peek/poke and mode-select ports were
-  removed. Existing module-level tests remain; historical top injection benches
-  are not the active API and are excluded from the main filelist.
-- The integrated MXM execution path still uses `lpu_mxm_slice`, as the pre-merge
-  local top did. The independently developed count-free `lpu_mxm_core` is
-  preserved and separately tested, but is **not connected to Program Load**.
-- The program port is read-only AXI4, single-beat/single-outstanding. This is not
-  the final program/data shared Master, a global program SRAM, or a data-DMA SoC.
-  SXM/VXM program loading and full LPU16/64 top parameterization are not present.
+- The default top schedules five native MXM queues (weight, parameter, dequant,
+  compute, backend), SXM CTRL/EXEC, and VXM global/local issue from Program Load.
+  The native chain uses the shared SRF. The former SXM slice is out of the top.
+- For the archived three-queue MXM format, select `LEGACY_MXM=1` at build time.
+  The native build uses its own timed-event format; there is no binary translator.
+- The descriptor interface shares the AXI master with data DMA. The native
+  full-system chain regression exercises the four-tile profile. See
+  [native event encoding and test](docs/program_load_integration.md#原生命令镜像).
 
 See [Program Load integration](docs/program_load_integration.md) for the exact
 interfaces, queue map, tests and known limits. The older

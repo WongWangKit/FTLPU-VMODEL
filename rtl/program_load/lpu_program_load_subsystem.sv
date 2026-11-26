@@ -17,6 +17,7 @@ module lpu_program_load_subsystem #(
 
 	input logic command_write_valid_i,
 	output logic command_write_ready_o,
+	output logic command_refill_o,
 	input logic [COMMAND_ADDRESS_WIDTH-1:0] command_write_address_i,
 	input logic [2:0] command_write_opcode_i,
 	input logic [63:0] command_write_source_address_i,
@@ -112,6 +113,7 @@ module lpu_program_load_subsystem #(
 	logic [7:0] loader_commit_queue_id;
 	logic loader_busy;
 	logic loader_done;
+	logic writes_sealed;
 	logic loader_fault;
 	logic [5:0] loader_fault_code;
 
@@ -294,6 +296,7 @@ module lpu_program_load_subsystem #(
 		.load_pipeline_idle_i(load_pipeline_idle_w),
 		.command_pc_o(),
 		.busy_o(loader_busy),
+		.refill_o(command_refill_o), .writes_sealed_o(writes_sealed),
 		.done_o(loader_done),
 		.fault_o(loader_fault),
 		.fault_code_o(loader_fault_code)
@@ -473,7 +476,9 @@ module lpu_program_load_subsystem #(
 
 	assign {prime_dequeue_hemisphere, prime_dequeue_target_kind,
 		prime_dequeue_queue_id} = prime_dequeue_data;
-	assign prime_select_w = instruction_load_done_q && prime_dequeue_valid;
+	// A sealed image cannot accept more writes. Prime while the host streams
+	// the remaining COMMITs; execution still requires the final END and drain.
+	assign prime_select_w = (instruction_load_done_q || writes_sealed) && prime_dequeue_valid;
 	assign distributor_input_valid = prime_select_w ? prime_dequeue_valid : word_dequeue_valid;
 	assign distributor_input_control = prime_select_w ? PROGRAM_LOAD_PRIME : PROGRAM_LOAD_WRITE;
 	assign distributor_input_data = prime_select_w ? 128'd0 : word_dequeue_data;

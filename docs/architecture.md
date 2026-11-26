@@ -211,8 +211,8 @@ streams retain the three-cycle row interval. See [mxm_weight_ingress.md](mxm_wei
 No Block8 mode, per-cycle vertical instruction shift or result-feedback path
 exists in the new frontend. The following table describes the
 legacy compatibility datapath only; its old control is explicitly isolated
-under `rtl/mxm/legacy/` because `lpu_top` and existing C-model schedules still
-use it. Shared control pipelines used by MEM/SXM/VXM are not removed.
+under `rtl/mxm/legacy/` for archived three-queue schedules. The default top uses
+`lpu_mxm_core` and five native issue queues. See [Program Load](program_load_integration.md).
 
 | Module | Hardware responsibility |
 | --- | --- |

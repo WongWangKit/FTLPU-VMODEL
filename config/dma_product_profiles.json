@@ -1,0 +1,8 @@
+{
+  "top": "lpu_top",
+  "source_list": "sim/filelist_program_integrated.f",
+  "profiles": {
+    "LPU16": {"PRODUCT_PROFILE": 1, "T": 2},
+    "LPU32": {"PRODUCT_PROFILE": 1, "T": 4}
+  }
+}

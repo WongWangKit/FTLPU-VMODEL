@@ -1,9 +1,8 @@
-# Program Load 整合契约（56c7adf 基线 + 共享 AXI 与安全换段）
+# Program Load 整合契约（共享 AXI、指令 DMA 与各 FU 本地取指）
 
 ## 基线与范围
 
-- 移植源：`wzqwzqwzq123-123/FTLPU-VMODEL-DEV` 的
-  `56c7adf30d58eace0dd30df862db1a3ffbb582ab`，不是远程 main 后续版本。
+- 装载框架原基线为 `56c7adf`。2026-11-25 在本地共享 AXI 上接入 [VMODEL-DEV/main 快照 73462d8](https://github.com/wzqwzqwzq123-123/FTLPU-VMODEL-DEV/tree/73462d8da629f476f5c65f2d46149324b5a64bb7)：逻辑指令 DMA、队列 iMEM/Fetch 和五队列 MXM ICU。
 - 本地基线：`2ec0824c2b5a014b8a0b6c1d08a05d4e03175e4b` 加用户已确认保留的工作区修改。
 - 补齐 `lpu_mem_subsystem`、`lpu_mxm_subsystem`、`lpu_qctl_fabric`，以及
   iMEM、Fetch、Macro Decoder/Scheduler、Timed Queue、QCTL Pool/Controller 等依赖。
@@ -20,12 +19,12 @@ Host 写 Program Descriptor RAM / 发出 LOAD_START
   <- 内部 DMA response {data, keep, last, id, error}
   -> RX FIFO -> 字节重组 -> 96/128-bit Program Word FIFO
   -> 东/西 endpoint -> WRITE / 写入确认 -> PRIME
-  -> 各 MEM bank / MXM stream 的本地 iMEM
-  -> Fetch -> Macro Decode -> Context FIFO -> Scheduler
-  -> FU-local Timed Queue -> 在目标 queue cycle 发射 -> FU 执行
+  -> MEM / 旧 MXM 镜像：本地 iMEM -> Fetch -> Macro Decode -> Timed Queue
+  -> 新 MXM：队列 iMEM -> Fetch -> 宏解码/调度或原生事件 -> 已有对应 FIFO -> 执行
+  -> SXM / VXM：各队列 iMEM -> Fetch -> 按事件指定绝对周期发射 -> 对应 FU
 ```
 
-这是 56c7adf 的 **DMA 直接装载 FU 本地 iMEM** 路线。
+本地共享 AXI 负责总线传输；远程逻辑指令 DMA 跟踪装载命令和响应。
 图中没有全局程序 SRAM，也没有把程序先写数据 MEM 再经 SR 搬入 ICU。
 当前顶层对外仅有一个五通道 AXI4 Master；程序请求/响应留在模块内部。接真实板卡时须连接
 同一时钟域的 AXI 互联或 DDR 控制器；此仓不自带 DDR 控制器、PHY 或跨时钟桥。
@@ -40,7 +39,10 @@ Host 写 Program Descriptor RAM / 发出 LOAD_START
 |---|---|---|---|
 | MEM East | 0–103 | slice × 2 + bank | 96 bit |
 | MEM West | 104–207 | global − 104 | 96 bit |
-| MXM Load / Dequant / Compute | 每种 target 各 0–3 | East 0/1；West global − 2 | 128 bit |
+| 旧 MXM（回归构建）Load / Dequant / Compute | 每种 target 各 0–3（32 档） | East 0/1；West global − 2 | 128 bit |
+| 原生 MXM 五队列 | 每种 target 各 0–3（32 档） | 同上 | 模式 0：128-bit 压缩宏字流；模式 1：每事件两个 128-bit 字 |
+| SXM CTRL / EXEC | 0=East，1=West | 各半球 0 | 模式 1，每事件两个 128-bit 字 |
+| VXM | 0=中央 VXM | East 0 | 同上 |
 
 QCTL 的 220 个逻辑 queue 为 MEM 0–207、MXM Load 208–211、
 Dequant 212–215、Compute 216–219；它与 descriptor 的 `{target, global_queue}`
@@ -63,16 +65,42 @@ MEM_READ_SYNC/MEM_WRITE_SYNC 的上层语义尚未自动下沉为 QCTL 控制记
 缩减配置只实例化实际 bank 的 iMEM/前端，未实例化的 global ID 保留并在装载时拒绝。
 这个参数控制列数，**不代表 LPU16/32/64 的 tile 行数参数化已完成**。
 
-### MXM
+### 原生命令镜像
 
-继承源版本的 Load 29 bit、Dequant 16 bit、Compute 49 bit macro/timed-queue 接口。
-执行仍连接整合前本地顶层使用的 `lpu_mxm_slice`：Load 零扩展到 48 bit，
-Compute bit48 非零会报错，不截断后继续执行；这是源版本已有的能力限制。
+`encoding_mode=1`，`format=PROGRAM_FORMAT_128`。每个目标队列每段一个完整镜像，基址为 0。
+每事件 32 B：低地址的 128 bit 是指令，下一字是 `{64'b0, aux[31:0], cycle[31:0]}`。
+每队列容纳 64 个事件。同队列的周期严格递增；不同队列可同拍发射。每条命令的高位和未使用的 aux 位填零。
+这些队列使用 START 之后的段内时钟；原有 220 路 QCTL 的局部停顿只控制原有队列。
 
-本地独立的 count-free `lpu_mxm_core` 及其 compact ISA、参数装载、backend/result-return
-没有被覆盖，也没有新加旧→新转换层。但 Program Load **尚未接入该新 core**。
-真正切换新 core 需要直接重写其程序格式、队列划分及发射控制，不能把这次前端移植
-当作已完成新 core 集成。
+| target | 执行端 | payload（低位起） |
+|---:|---|---|
+| 7–11 | `lpu_mxm_core` 的 weight / param / dequant / compute / backend | 分别为 2 / 1 / 1 / 7 / 13 bit（默认配置），直接使用各队列原生指令 |
+| 5 | SXM CTRL | 128-bit 控制字；aux[1:0] 是 op，[2] 是 ctx，[5:3] 是 index |
+| 6 | SXM EXEC | [0] CAP、[1] ctx、[4:2] tile、[7:5] group、[11:8] row；[12] P、[13] ctx、[16:14] dest、[19:17] source、[23:20] row、[24] paired、[25] branch、[31:26] sequence；[35:32] RUN mask、[36] ctx、[52:37] delay、[68:53] interval、[74:69] count、[80:75] sequence |
+| 4 | VXM local/global | [7:0] local 队列有效位、[63:8] 八条 7-bit local 指令；[64] global 有效位、[79:65] 15-bit global 指令 |
+
+PRIME 启动队列本地取指。发射拍到达时，空的 MXM FIFO 可在同一边沿接受并执行这条指令；有积压时仍先取原队首。调度器发现错拍、同队列同拍冲突或到期无法接受会报错。权重和 BF16 激活来自向东的 SRF，激活的低、高字节分别使用 base、base+1（base 0–30）。各列的结果写入向西的 S00 起始 stream，BF16 用两条，FP32 用四条。软件排开同一物理 stream 的写入。
+
+每个半球的 SXM 使用 `sxm_triangle_full_core` 的 CTRL/CAP/P/RUN 入口。当前 row frontend 接受单行 CAP：向量在第 0 行捕获后可重排；矩阵在八行有效后允许 P，可整块提交。逐行路径的输出继续经 SRF 送 VXM。整矩阵另有下述 WriteTap 写 MEM 路径。旧 raw compatibility 引脚保留在核心层。中央 VXM 保留既有指令波前、方向选择与 ALU；调度器决定 global/local 命令何时到达。
+
+**五队列压缩镜像（encoding_mode=0）。** 对外 target 1、2、3、7、8 分别是 Load、Dequant、Compute、ParamLoad、Backend，与远程加载包一致。模式 1 的 target 7–11 保持原有含义。每段为一个物理队列选一种格式，COMMIT_QUEUE 沿用 LOAD_IMEM 的模式。模式 0 按 128-bit 字原样写入 iMEM；模式 1 在收到第二个字时组合成一条带周期的事件写入同一 iMEM。
+
+`lpu_five_macro_decoder_core` 来自远程 `rtl/mxm/icu/lpu_mxm_macro_decoder_core.sv`（最后修改 `4b2df33`）。本地仅更改模块名，以便与旧三队列解码器共存。每条 MXM 队列的实例通过 `QUEUE_KIND` 选择本队列的指令格式。SXM 与 VXM 复用队列存储和取指，分别解释自己的控制字。远程该版本的 SXM 装载口未应答，VXM local/global 发射无效。本地定时事件是集成接口；远程编译器的 VXM resident-config 镜像需单独适配。
+
+**SXM 批处理写 MEM。** 下表是本地 SXM CTRL 事件扩展，原 CTRL/CAP/P/RUN 字段保持原值。保留位填零。
+
+| aux | payload | 动作 |
+|---|---|---|
+| 0x40 | [2:0] source tile、[5:3] 映射的 tile 编号、[29:6] 八个 3-bit lane 选择 | 每个源 tile 配置一次。跨 tile 映射取排列，批次执行期间保持。 |
+| 0x41 | [14:0] MEM 起始行、[30:15] 矩阵数、[31] FP32（0 为 16-bit）、[36:32] 第一个输入 stream、[37] 输入方向（1：来自 MEM 的 East；0：来自 MXM 的 West） | 启动一批矩阵。每行占连续 2 或 4 个 byte-plane stream，MEM 地址范围为 base 至 base+矩阵数×T−1。 |
+
+若在周期 J 启动，源 tile t 在 J+1+t 接受第一行，随后每拍一行，每个 tile 共接受 矩阵数×8×T 行。每个 stream segment 提供 8 个元素的同一字节。缺少应到的 byte plane 会触发 SXM 故障。逐行路径与批处理共享已有转置存储。WriteTap 从输出 block 生成向西的 SRF 数据和带 preserve 的 MEM 写命令。16-bit 写距 SXM 最近的两个 MEM group，32-bit 写四个。批次执行期间，软件须把最近的四个监控组（缩减配置取实际存在的组）的其他 MEM/DMA 指令排在批次以外。完成时检查采样数量、目标地址和 MEM 排空。
+
+**VXM 查表装载。** VXM 事件 aux=0 沿用上表的 local/global 格式。aux=1 配置查表函数：[1:0] 函数、[17:2] 输入最小值、[33:18] 段宽。aux=2 写系数：[1:0] 函数、[7:2] 表地址、[23:8]/[39:24] 为 k/b、[89:40] 为 log 专用系数。每个 tile 现有的 LUT SRAM 同拍接收；查表装载与 local/global 共用一个有序事件入口。
+
+历史三队列镜像使用单独构建 `LEGACY_MXM=1`。早期 AccumulatorRead 镜像选 `LEGACY_VECTOR_ARRAY=0`：读操作本身就产生输出；后来的 streaming vector 路径按 bit 44 选择输出。两个回归构建均复用同一顶层。
+
+整机验证入口：`sim/program_load/run_fu_chain.ps1 -Mode native -Build <新的编译目录> -Results <新的结果目录>`。`-Mode macro` 比较五队列压缩镜像与原生事件的发射拍、SRF 数据和结果；`-Mode tap` 检查 SRAM 落点及异常输入；`-Mode geometry` 检查 T=2 边界；`-Mode legacy` 执行三个历史用例。运行器保存源文件散列、编译日志和仿真记录。
 
 ## 启动、停顿和完成边界
 
@@ -82,17 +110,17 @@ Compute bit48 非零会报错，不截断后继续执行；这是源版本已有
 3. WAIT_DMA、写入确认和 COMMIT_QUEUE/PRIME 保证 iMEM 写入与预取顺序。
 4. START 请求可先到并被记住，但必须等所有已配置前端就绪、装载完成和
    `program_dependencies_ready_i` 有效。上层负责权重等依赖的真实性。
-5. PRIME 先发入逻辑周期0和1的操作。短镜像在 Decoder/Context 入口排清后就绪。
+5. MEM/旧 MXM 的 PRIME 先发入逻辑周期0和1的操作。短镜像在 Decoder/Context 入口排清后就绪。
    槽位不足时，有序前缀已占满 Active Context，且首条被阻塞的 Context 至少在
    周期4，才提前 START；执行期间按 FIFO credit 从已提交 iMEM 持续 fetch、decode、
    补 Context/Timed Queue。流式模式要求各 Context 起点单调不降且满足编译器的前瞻
    与容量合同。发现乱序、首个未准入项过近或运行期迟到时报错，不补拍重排。
+   新 MXM 压缩队列在全部宏解码并进入活动槽后就绪；槽满且后续已解码宏开始排队时也可启动。随后边执行边补充。编译排程需给解码和槽位复用留足时间；运行期遇到过期命令即报错。原生事件队列预取到首条再启动。
 6. 运行时 Timed Queue 仅在目标 queue cycle 发射；到期而 FU 不可接受会报错，
    不会自动延后静态时序。QCTL 可在 WAIT_EVENT、SYNC、NOTIFY、MEM_PACKET 边界
    冻结相应 queue 的局部调度时钟，其它 queue 可继续。
 7. `program_load_complete_o` 是装载流水完成；`program_done_o` 要求已启动，并等待
-   iMEM fetch/Decoder/Timed Queue、可选 QCTL、native MEM 与 SR valid、legacy MXM
-   注册波前及累加器 pending、边界流水和程序 AXI 均排空。段结束后停止逻辑时钟推进；
+   指令队列、可选 QCTL、MEM 与 SRF 传输、MXM 阵列与后端、SXM 活动任务、VXM 控制及执行流水排空。段结束后停止逻辑时钟推进；
    这不等于数据 DMA、外部消费者或未接入 FU 已完成。
 
 `program_reset_i` 是可提前提交的重装请求：与 `program_reload_ready_o` 握手后撤除
@@ -112,15 +140,15 @@ Host 写下一段描述符并按本段逻辑时间重编址后重新 LOAD/START�
 
 ## 保留的限制与后续缺口
 
-- 无全局程序 SRAM；SXM/VXM 没有本次 Program Load 前端，顶层直控输入被置零。
-- 新 `lpu_mxm_core` 尚未接入；Compute bit48 对现用 slice 仍受限制。
+- 整机原生回归覆盖四个 tile、单个活动 MXM、一条 BF16 VXM 链；其他配置与指令组合应分别验证。
+- 原生事件按绝对周期排程。需要跨 FU 动态等待的程序须另行定义同步机制。
 
 ## 容量参数化增量（2026-11-19）
 
 - `lpu_top.PROGRAM_DMA_RX_FIFO_DEPTH` 与 `PROGRAM_DMA_OUTSTANDING_DEPTH`
   传到 Program Load 实例；16/32 档的 RX 默认112/192，逻辑命令槽仍为16。前者单位为有序 program-response
   条目，256-bit 配置下一条承载32 B；后者是逻辑 DMA 命令槽数，不是 AXI ID/事务数。
-- MEM 和 MXM 描述符各按目标 iMEM 深度检查；共享重组器的公共地址上界取二者较大值。
+- 各目标按自身容量检查；共享重组器地址上界取 MEM、旧 MXM、原生队列三者所需最大字数。
   例如 MEM128/MXM2048 时，合法 MXM word2047 不再被二次误拒，2048 仍在描述符入口拒绝。
 - `program_dma_sizing_tb.sv` 验证 P64/P80＋窗口4、600拍消费者停收、
   FIFO回绕、在途ID释放及逐响应顺序。输入响应握手有反压；本测试不证明 AXI 读发出前的容量预约。
